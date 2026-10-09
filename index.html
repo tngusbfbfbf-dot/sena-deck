@@ -897,6 +897,24 @@
     .sgboss{grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:5px} .sgbk{padding:4px 1px 5px;gap:2px;min-width:0} .sgbk .sgface{width:38px;height:38px}
     .sgbk b{font-size:10px;font-weight:600;color:var(--text-muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .sgseq{gap:4px} .sgsk{padding:3px 6px 3px 3px;gap:4px} .sgsk .sgface{width:30px;height:30px} .sgsk b{font-size:11px} }
+  .sgdots{display:none}
+  /* 휴대폰: 진형(왼쪽) + 속공 순서 세로 목록(오른쪽) 한 줄 · 장비 세팅은 아래에서 옆으로 넘기는 카드 */
+  @media (max-width:560px){
+    .sgtop{grid-template-columns:auto minmax(0,1fr);gap:8px} .sgright{display:contents}
+    .sgtop>.sgblk{margin-bottom:0;padding:8px} .sgblk>h3{font-size:14px;margin-bottom:6px}
+    .sgform{text-align:center} .sgform .fpanel{padding:5px 5px 4px} .sgform .fphead{font-size:11px;margin-bottom:3px} .sgform .fgrid{gap:5px} .sgform .fch{font-size:10px;margin-bottom:3px} .sgform .fch b{font-size:11px}
+    .sgform .ftile{width:54px} .sgform .ftile .sname{width:46px;height:46px;margin:0 auto;border-width:1.5px;border-radius:7px} .sgform .tname{position:static;background:none;padding:1px 0 0;font-size:10px;line-height:1.2;overflow:hidden;text-overflow:ellipsis} .sgform .tfoot{display:none} .sgform .fcol{gap:3px}
+    .sgtop>.sgright>.sgblk:first-child{grid-column:2;grid-row:1}
+    .sgspd{flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:5px} .sgspd .sgarr{display:none}
+    .sgsp{flex-direction:row;gap:7px;padding:3px 6px 3px 3px;border-radius:8px;background:rgba(0,0,0,.2);border:1px solid #3a3426} .sgsp .sgface{width:34px;height:34px;border-width:1.5px;border-radius:6px}
+    .sgsp .sgnum{position:static;width:20px;height:20px;font-size:12px;flex:none} .sgsp b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+    .sgtop>.sgright>.sgblk:last-child{grid-column:1/-1;grid-row:2;min-width:0}
+    .sggear{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;padding-bottom:4px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none} .sggear::-webkit-scrollbar{display:none}
+    .sggear>.sgrow{flex:0 0 84%;scroll-snap-align:start;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-content:start;min-width:0}
+    .sggear>.sgrow>.sgmain,.sggear>.sgrow>.sgstats,.sggear>.sgrow>.sgring{grid-column:1/-1;justify-self:start} .sggear>.sgrow>.sgstats{padding-left:0}
+    .sgdots{display:flex;justify-content:center;align-items:center;gap:5px;margin-top:6px} .sgdots i{width:6px;height:6px;border-radius:50%;background:#4a4030} .sgdots i.on{background:var(--gold-hi);width:14px;border-radius:3px}
+    .sgdn{font-size:11px;color:var(--text-muted);margin-left:6px;font-variant-numeric:tabular-nums}
+  }
   @media (max-width:560px){ .sgrnd{flex-direction:column;gap:6px} .sgrl{flex:none;padding-top:0} .sgrl small{display:inline;margin-left:6px} .sgwho{min-width:0} .sgmain{min-width:0} }
   /* 타이틀 로고 · 둥실 + 은은한 금빛 */
   h1.ttl{padding:6px 0 20px;margin:0 0 8px;font-size:0;line-height:1}
@@ -4852,7 +4870,7 @@ function sgGuideHTML(g){
   return `<div class="sgtitle">${esc(g.title)}${g.boss?`<small>(${esc(g.boss)})</small>`:""}</div>${g.note?`<div class="sgnote" data-sgnote><b>중요</b>${esc(g.note)}</div>`:""}${info}
     <div class="sgtop"><div class="sgblk sgform"><h3>진형</h3>${sgFormHTML(g)}</div>
     <div class="sgright"><div class="sgblk"><h3>속공 순서</h3><div class="sgspd">${spd}</div></div>
-    <div class="sgblk"><h3>장비 세팅${g.gearNote?` <small>${esc(g.gearNote)}</small>`:""}</h3><div class="sggear">${gear}</div></div></div></div>
+    <div class="sgblk"><h3>장비 세팅${g.gearNote?` <small>${esc(g.gearNote)}</small>`:""}</h3><div class="sggear">${gear}</div><div class="sgdots" aria-hidden="true">${g.gear.map((_,i)=>`<i${i?"":' class="on"'}></i>`).join("")}<span class="sgdn">1/${g.gear.length}</span></div></div></div></div>
     <div class="sgblk"><h3>스킬 순서</h3>${rnd}</div>`; }
 function renderSiege(){
   if(!sgDay||!SIEGE_DAYS.includes(sgDay)) sgDay=sgDefaultDay();
@@ -4898,6 +4916,10 @@ function recMiniHTML(kind,id){ return `<label class="recmini"><span>역대 최�
 function recRefresh(kind,src){ document.querySelectorAll(`[data-rec^="${kind}:"]`).forEach(el=>{ if(el===src) return; const id=el.dataset.rec.slice(kind.length+1), v=recS[kind][id]; el.value=v?fmtC(v):""; });
   document.querySelectorAll(`[data-rectot="${kind}"]`).forEach(e=>e.textContent=fmtC(recTotal(kind)));
   document.querySelectorAll(`[data-recprog="${kind}"]`).forEach(e=>e.innerHTML=recProgHTML(kind)); }
+// 휴대폰 장비 카드 넘김 → 점·n/5 표시
+document.addEventListener("scroll",e=>{ const g=e.target; if(!g.classList||!g.classList.contains("sggear")) return; const cs=[...g.children]; if(!cs.length) return;
+  const x=g.scrollLeft+8; let i=0; cs.forEach((c,j)=>{ if(c.offsetLeft-g.offsetLeft<=x) i=j; }); if(g.scrollLeft+g.clientWidth>=g.scrollWidth-4) i=cs.length-1;
+  const d=g.nextElementSibling; if(!d||!d.classList.contains("sgdots")) return; d.querySelectorAll("i").forEach((el,j)=>el.classList.toggle("on",j===i)); const n=d.querySelector(".sgdn"); if(n) n.textContent=`${i+1}/${cs.length}`; },true);
 function onRecInput(e){ const el=e.target.closest&&e.target.closest("[data-rec]"); if(!el) return;
   const [kind,id]=[el.dataset.rec.split(":")[0], el.dataset.rec.slice(el.dataset.rec.indexOf(":")+1)];
   const pos=el.selectionStart??el.value.length, dBefore=el.value.slice(0,pos).replace(/\D/g,"").length, digits=el.value.replace(/\D/g,"").replace(/^0+(?=\d)/,"").slice(0,12);
