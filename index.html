@@ -892,6 +892,11 @@
   @container (max-width:860px){ .sgrow{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:8px 12px} .sgstats{grid-column:1/-1;padding-left:52px} .sgring{grid-row:1;grid-column:4;justify-self:end} }
   @container (max-width:560px){ .sgrow{grid-template-columns:auto minmax(0,1fr)} .sgmain{grid-column:1/-1} .sgstats{padding-left:0} .sgring{grid-row:auto;grid-column:1/-1;justify-self:start} }
   @media (max-width:1000px){ .sgtop{grid-template-columns:1fr} .sgform{text-align:center} }
+  /* 좁은 화면: 라운드 줄이 세로로 바뀌면 칸이 내용 폭으로 줄어 1열이 됐음 → 늘려서 가로 꽉 채움 */
+  @media (max-width:560px){ .sgrnd{align-items:stretch} .sgboss,.sgseq{width:100%;flex:none}
+    .sgboss{grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:5px} .sgbk{padding:4px 1px 5px;gap:2px;min-width:0} .sgbk .sgface{width:38px;height:38px}
+    .sgbk b{font-size:10px;font-weight:600;color:var(--text-muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .sgseq{gap:4px} .sgsk{padding:3px 6px 3px 3px;gap:4px} .sgsk .sgface{width:30px;height:30px} .sgsk b{font-size:11px} }
   @media (max-width:560px){ .sgrnd{flex-direction:column;gap:6px} .sgrl{flex:none;padding-top:0} .sgrl small{display:inline;margin-left:6px} .sgwho{min-width:0} .sgmain{min-width:0} }
   /* 타이틀 로고 · 둥실 + 은은한 금빛 */
   h1.ttl{padding:6px 0 20px;margin:0 0 8px;font-size:0;line-height:1}
@@ -4840,8 +4845,8 @@ function sgGuideHTML(g){
       <div class="sgstats">${r.stats.map(chip).join("")}</div>
       ${ringHTML(r.ring)}</div>`; }).join("");
   const rnd=!g.skills?`<div class="sgempty sm" data-sgskpending>준비 중</div>`:g.skills.map(R=>`<div class="sgrnd"${R.boss?' data-sgbossrnd':""}>${R.label?`<div class="sgrl">${esc(R.label)}${R.note?`<small>${esc(R.note)}</small>`:""}</div>`:""}${R.boss
-    ? `<div class="sgboss">${R.seq.map(([n,k,t])=>`<div class="sgbk" data-sgboss="${t}"><span class="sgt">${t}턴</span>${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}</div>`).join("")}</div>`
-    : `<div class="sgseq">${R.seq.map(([n,k,t],i)=>`${i?'<span class="sgarr" style="margin:0" aria-hidden="true">›</span>':""}<span class="sgsk">${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}${t!==undefined?`<span class="sgtt">${t}턴</span>`:""}</span>`).join("")}</div>`}</div>`).join("");
+    ? `<div class="sgboss">${R.seq.map(([n,k,t])=>`<div class="sgbk" data-sgboss="${t}" title="${t}턴 ${esc(n)} ${esc(k)}"><span class="sgt">${t}턴</span>${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}</div>`).join("")}</div>`
+    : `<div class="sgseq">${R.seq.map(([n,k,t],i)=>`${i?'<span class="sgarr" style="margin:0" aria-hidden="true">›</span>':""}<span class="sgsk" title="${esc(n)} ${esc(k)}">${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}${t!==undefined?`<span class="sgtt">${t}턴</span>`:""}</span>`).join("")}</div>`}</div>`).join("");
   const pt=g.pet&&petByName(g.pet.name);
   const info=(g.pet||g.buff)?`<div class="sginfo">${g.pet?`<div class="sgpet" data-sgpet="${esc(g.pet.name)}"><span class="lb">펫</span>${pt&&pt.icon?`<img src="${esc(pt.icon)}" alt="" aria-hidden="true">`:""}<b>${esc(g.pet.name)}</b><span class="sgchip"><b>${esc(g.pet.skill)}</b></span><span class="sgchip"><span>잠재능력 모공%</span><b>${g.pet.pot.map(esc).join(" / ")}</b></span></div>`:""}${g.buff?`<div class="sgbuff" data-sgbuff><span class="lb">${esc(g.buff.hero)} 버프 대상</span>${g.buff.targets.map(n=>`<span class="sgsk" data-sgbt="${esc(n)}">${sgFace(n)}<b>${esc(n)}</b></span>`).join("")}</div>`:""}</div>`:"";
   return `<div class="sgtitle">${esc(g.title)}${g.boss?`<small>(${esc(g.boss)})</small>`:""}</div>${g.note?`<div class="sgnote" data-sgnote><b>중요</b>${esc(g.note)}</div>`:""}${info}
