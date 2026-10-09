@@ -770,6 +770,63 @@
   .ftile.dropok .sname,.ftile.dropok .bbox,.gwslot.dropok{outline:3px solid var(--gold);box-shadow:0 0 0 6px rgba(214,178,106,.18)}
   .spdico{color:var(--gold-text)}
   .pcls{color:#120e06}
+  /* 공성전 (보기 전용 공략) */
+  .sgdays{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 12px}
+  .sgdays button{min-width:44px;padding:6px 12px;font-size:14px;font-weight:700;background:var(--surface-2);border:1px solid var(--gold-line);color:var(--text-muted);border-radius:8px;position:relative}
+  .sgdays button.has{color:var(--text)} .sgdays button.has::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--gold-text)}
+  .sgdays button.on{background:linear-gradient(180deg,#3a3020,#251f15);border-color:var(--gold);color:var(--gold-hi);box-shadow:0 0 10px rgba(240,196,90,.25)}
+  .sgtitle{font-size:20px;font-weight:800;color:var(--gold-hi);margin:2px 0 12px;letter-spacing:-.01em}
+  .sgtitle small{font-size:14px;color:var(--gold-text);font-weight:600;margin-left:6px}
+  .sgempty{padding:40px 0;text-align:center;color:var(--text-faint);font-size:15px}
+  .sgblk{background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--gold-line);border-radius:10px;padding:10px 12px;margin-bottom:12px;min-width:0}
+  .sgblk>h3{margin:0 0 10px;font-size:15px;color:var(--gold-text);display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .sgblk>h3 small{font-size:12px;color:var(--text-muted);font-weight:500}
+  .sgtop{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start}
+  .sgtop>.sgblk{margin-bottom:0} .sgtop{margin-bottom:12px}
+  .sgform .fpanel{display:inline-block} .sgform .ftile .sname{cursor:default} .sgform .tname{display:block;text-align:center;font-size:12px;font-weight:700;color:var(--text);margin-top:1px;white-space:nowrap}
+  .sgform .tfoot{margin-top:0}
+  .sgface{position:relative;display:inline-block;flex:0 0 auto;width:44px;height:44px;border-radius:8px;border:2px solid var(--border-strong);overflow:hidden;background:var(--surface-3)}
+  .sgface img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block} .sgface .tpic{position:absolute}
+  .sgface.ph{display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-muted)}
+  .sgface.fg0{border-color:#2164b9} .sgface.fg1{border-color:#ca7220} .sgface.fg2{border-color:#ba1849} .sgface.fg3{border-color:#46119f}
+  .sgspd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px}
+  .sgsp{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+  .sgsp .sgface{width:64px;height:64px}
+  .sgsp b{font-size:13px}
+  .sgnum{position:absolute;top:-6px;left:-6px;z-index:3;width:22px;height:22px;border-radius:50%;background:linear-gradient(180deg,#f3dc9c,#b8913f);color:#1a1307;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.6)}
+  .sgarr{color:var(--gold-line);font-size:18px;padding:0 2px;align-self:center;margin-bottom:18px}
+  .sggear{display:flex;flex-direction:column;gap:8px}
+  .sgrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:8px 10px;border:1px solid #3a3426;border-radius:9px;background:rgba(0,0,0,.18)}
+  .sgwho{display:flex;align-items:center;gap:8px;min-width:118px}
+  .sgwho b{font-size:15px}
+  .sgset{display:flex;align-items:center;gap:5px;font-weight:700;color:var(--gold-text);min-width:84px}
+  .sgset img{width:28px;height:28px}
+  .sgmain{display:flex;align-items:center;gap:6px;font-size:13px;min-width:150px}
+  .sgmain .mk{font-size:11px;color:var(--text-faint)} .sgmain .mv{font-weight:800;color:var(--text);background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:1px 6px}
+  .sgstats{display:flex;flex-wrap:wrap;gap:5px;flex:1 1 260px}
+  .sgchip{display:inline-flex;align-items:baseline;gap:4px;font-size:13px;padding:2px 8px;border-radius:12px;background:var(--surface-3);border:1px solid var(--border);white-space:nowrap}
+  .sgchip span{color:var(--text-muted);font-size:12px} .sgchip b{color:var(--text)}
+  .sgring{display:inline-flex;align-items:center;gap:5px;font-size:13px;padding:3px 10px;border-radius:12px;border:1px solid var(--gold);background:var(--gold-weak);color:var(--gold-hi);font-weight:700;white-space:nowrap}
+  .sgring img{width:22px;height:22px}
+  .sgrnd{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-top:1px dashed #3a3426}
+  .sgrnd:first-of-type{border-top:0;padding-top:0}
+  .sgrl{flex:0 0 86px;font-weight:800;color:var(--gold-text);font-size:14px;line-height:1.3;padding-top:6px} .sgrl small{display:block;font-weight:500;color:var(--text-muted);font-size:11px}
+  .sgseq{display:flex;flex-wrap:wrap;align-items:center;gap:6px;flex:1;min-width:0}
+  .sgboss{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px;flex:1;min-width:0}
+  .sgsk{display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:9px;background:var(--surface-3);border:1px solid var(--border)}
+  .sgsk .sgface{width:34px;height:34px;border-width:1px;border-radius:6px}
+  .sgsk b{font-size:13px}
+  .sgsb{font-size:11px;font-weight:800;padding:1px 6px;border-radius:5px;white-space:nowrap}
+  .sgsb.s1{background:#173a4a;color:#8fd8f5;border:1px solid #2f6f8c} .sgsb.s2{background:#43261a;color:#ffbf8a;border:1px solid #8c4f2f}
+  .sgbk{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px 6px;border-radius:9px;background:var(--surface-3);border:1px solid var(--border);position:relative}
+  .sgbk .sgt{font-size:11px;font-weight:800;color:var(--gold-text)}
+  .sgbk .sgface{width:40px;height:40px;border-radius:7px}
+  .sgbk b{font-size:12px;line-height:1.1}
+  .sgright{display:flex;flex-direction:column;gap:12px;min-width:0;container-type:inline-size} .sgright>.sgblk{margin-bottom:0}
+  @container (max-width:860px){ .sgrow{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:8px 12px} .sgstats{grid-column:1/-1;padding-left:52px} .sgring{grid-row:1;grid-column:4;justify-self:end} }
+  @container (max-width:560px){ .sgrow{grid-template-columns:auto minmax(0,1fr)} .sgmain{grid-column:1/-1} .sgstats{padding-left:0} .sgring{grid-row:auto;grid-column:1/-1;justify-self:start} }
+  @media (max-width:1000px){ .sgtop{grid-template-columns:1fr} .sgform{text-align:center} }
+  @media (max-width:560px){ .sgrnd{flex-direction:column;gap:6px} .sgrl{flex:none;padding-top:0} .sgrl small{display:inline;margin-left:6px} .sgwho{min-width:0} .sgmain{min-width:0} }
 </style>
 </head>
 <body>
@@ -777,7 +834,7 @@
 <div id="solveModal" class="gmodal hidden"><div class="gbox sbox" id="solveBox" role="dialog" aria-modal="true" aria-label="목표 스탯 장비 자동 세팅"></div></div>
 <div id="gearModal" class="gmodal hidden"><div class="gbox" id="gearBox" role="dialog" aria-modal="true" aria-label="장비 편집"></div></div>
 <div id="gwModal" class="gmodal hidden"><div class="gbox gwbox" id="gwBox" role="dialog" aria-modal="true" aria-label="길드전 덱 편집"></div></div>
-<nav class="tabs" id="tabs"><button data-tab="deck">배치</button><button data-tab="heroes">영웅 입력</button><button data-tab="guild">길드전 추천덱</button><button data-tab="tune">조율</button><button data-tab="craft">세공</button><button data-tab="gacha">가챠</button></nav>
+<nav class="tabs" id="tabs"><button data-tab="deck">배치</button><button data-tab="heroes">영웅 입력</button><button data-tab="guild">길드전 추천덱</button><button data-tab="tune">조율</button><button data-tab="craft">세공</button><button data-tab="gacha">가챠</button><button data-tab="siege">공성전</button></nav>
 
 <div id="tab-deck">
 <section>
@@ -984,6 +1041,14 @@
 </div><!-- /tab-gacha -->
 
 
+
+<div id="tab-siege" class="hidden">
+<section>
+  <h2>공성전</h2>
+  <nav class="sgdays" id="sgDays" aria-label="요일"></nav>
+  <div id="sgBody"></div>
+</section>
+</div><!-- /tab-siege -->
 
 <datalist id="heroes"></datalist>
 
@@ -4618,11 +4683,77 @@ function flashEl(el,cls){ if(!el) return; el.classList.remove(cls); void el.offs
 let toastT=0;
 function toast(msg){ let t=$("toast"); if(!t){ t=document.createElement("div"); t.id="toast"; t.setAttribute("role","status"); t.setAttribute("aria-live","polite"); document.body.appendChild(t); }
   t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1600); }
+
+/* ===== 공성전 공략 (보기 전용) · 요일별 데이터만 추가하면 됨 =====
+   back/front: 진형 칸 순서 · speed: 속공 순서 · gear: [영웅, 세트, 무기 메인 2, 방어구 메인 2, [스탯, 수치], 반지]
+   skills: 라운드별 [영웅, 스킬번호, (턴)] */
+const SIEGE_DAYS=["월","화","수","목","금","토","일"];
+const SIEGE_GUIDES={
+  "월":{
+    title:"월요일", boss:"수호자의 성 - 루디",
+    formation:"보호", back:["나타"], front:["미호","에반","비스킷","리나"],
+    speed:["미호","나타","비스킷","리나","에반"],
+    gearNote:"12초월 기준",
+    gear:[
+      {hero:"나타", set:"복수자", w:["치피","치피"], a:["공","공"], stats:[["속공","29"],["치확","55"],["치피","330"],["약공","30"],["피증","16"]], ring:"토약"},
+      {hero:"미호", set:"복수자", w:["치확","치피"], a:["공","공"], stats:[["속공","29"],["치확","85"],["치피","264"],["약공","45"],["피증","16"]], ring:"토치"},
+      {hero:"비스킷", set:"복수자", w:["치피","치확"], a:["공","공"], stats:[["속공","19"],["치확","100"],["치피","234"],["약공","25"]], ring:"화출"},
+      {hero:"리나", set:"복수자", w:["치확","치확"], a:["공","공"], stats:[["속공","19"],["치확","100"],["치피","228"],["약공","15"]], ring:"화출"},
+      {hero:"에반", set:"주술사", w:["방","방"], a:["막","받"], stats:[["속공","16"],["막기","80 이상"],["효적","40 이상"],["받피감","16"]], ring:"화출"}
+    ],
+    skills:[
+      {label:"1라운드", seq:[["비스킷",1],["미호",2]]},
+      {label:"2라운드", seq:[["나타",1]]},
+      {label:"보스 라운드", note:"시작 시 4턴", boss:true, seq:[["나타",2,4],["비스킷",2,8],["리나",2,12],["미호",1,16],["미호",2,20],["나타",1,24],["나타",2,28],["비스킷",2,32],["비스킷",1,36],["미호",1,40],["나타",1,44],["나타",2,48],["리나",2,52],["비스킷",2,56],["미호",1,60],["나타",1,64],["나타",2,68]]}
+    ]
+  }
+};
+const SG_MAIN_FULL={"공":"공격력%","방":"방어력%","생":"생명력%","치확":"치명타 확률","치피":"치명타 피해","막":"막기 확률","받":"받는 피해 감소","약공":"약점 공격 확률","효적":"효과 적중","효저":"효과 저항"};
+let sgDay=null;
+function sgToday(){ try{ const w=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Seoul",weekday:"short"}).format(new Date()); return {Mon:"월",Tue:"화",Wed:"수",Thu:"목",Fri:"금",Sat:"토",Sun:"일"}[w]||"월"; }catch{ return "월"; } }
+function sgDefaultDay(){ const t=sgToday(); return SIEGE_GUIDES[t]?t:"월"; }
+function sgHero(n){ return heroDB.find(x=>x.name===n)||DEX_DATA.heroes.find(x=>x.name===n)||{name:n}; }
+function sgFace(n,cls){ const h=sgHero(n), pt=portraitFor(h), gi=GRADES.indexOf(h.grade);
+  if(!pt) return `<span class="sgface ph${cls?" "+cls:""}" title="${esc(n)}">${esc(n)}</span>`;
+  const gbg=gradeBgFor(h);
+  return `<span class="sgface${gi>=0?" fg"+gi:""}${cls?" "+cls:""}">${gbg?`<img src="${esc(gbg)}" alt="" aria-hidden="true">`:""}<img src="${esc(pt)}" alt="${esc(n)}"></span>`; }
+function sgSkB(k){ return `<span class="sgsb s${k}">${k}스</span>`; }
+function sgFormHTML(g){
+  const f=FORMATIONS[g.formation]||{};
+  const tile=(n,lab)=>{ const h=sgHero(n), pt=portraitFor(h), gi=GRADES.indexOf(h.grade), gbg=pt&&gradeBgFor(h);
+    return `<div class="ftile${gi>=0?" fg"+gi:""}" data-sgslot="${lab}"><div class="sname">${pt?`${gbg?`<img class="gbg" src="${esc(gbg)}" alt="" aria-hidden="true">`:""}<img class="tpic" src="${esc(pt)}" alt="">`:`<span class="tpic ticon">${esc(n)}</span>`}</div><span class="tname">${esc(n)}</span><div class="tfoot"><span class="tpos">${lab}</span></div></div>`; };
+  return `<div class="fpanel my"><div class="fphead"><b>${esc(g.formation)} 진형 · ${g.back.length+g.front.length}인</b></div><div class="fgrid">
+    <div class="fcolw back"><div class="fch"><b>후열</b><br>모공 +${f.backAtk}%</div><div class="fcol">${g.back.map((n,i)=>tile(n,"후"+(i+1))).join("")}</div></div>
+    <div class="fcolw front"><div class="fch"><b>전열</b><br>방어력 +${f.frontDef}%</div><div class="fcol">${g.front.map((n,i)=>tile(n,"전"+(i+1))).join("")}</div></div>
+  </div></div>`; }
+function sgGuideHTML(g){
+  const spd=g.speed.map((n,i)=>`${i?'<span class="sgarr" aria-hidden="true">›</span>':""}<div class="sgsp" data-sgspd="${i+1}"><span class="sgnum">${i+1}</span>${sgFace(n)}<b>${esc(n)}</b></div>`).join("");
+  const mains=(arr)=>arr.map(k=>`<span class="mv" title="${esc(SG_MAIN_FULL[k]||k)}">${esc(k)}</span>`).join("");
+  const gear=g.gear.map(r=>{ const si=setIconURI(r.set), ri=accIconURI(r.ring);
+    return `<div class="sgrow" data-sggear="${esc(r.hero)}"><div class="sgwho">${sgFace(r.hero)}<b>${esc(r.hero)}</b></div>
+      <div class="sgset">${si?`<img src="${esc(si)}" alt="" aria-hidden="true">`:""}${esc(r.set)}</div>
+      <div class="sgmain"><span class="mk">무기</span>${mains(r.w)}<span class="mk">방어구</span>${mains(r.a)}</div>
+      <div class="sgstats">${r.stats.map(([k,v])=>`<span class="sgchip"><span>${esc(k)}</span><b>${esc(v)}</b></span>`).join("")}</div>
+      <span class="sgring">${ri?`<img src="${esc(ri)}" alt="" aria-hidden="true">`:""}${esc(r.ring)} 반지</span></div>`; }).join("");
+  const rnd=g.skills.map(R=>`<div class="sgrnd"${R.boss?' data-sgbossrnd':""}><div class="sgrl">${esc(R.label)}${R.note?`<small>${esc(R.note)}</small>`:""}</div>${R.boss
+    ? `<div class="sgboss">${R.seq.map(([n,k,t])=>`<div class="sgbk" data-sgboss="${t}"><span class="sgt">${t}턴</span>${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}</div>`).join("")}</div>`
+    : `<div class="sgseq">${R.seq.map(([n,k],i)=>`${i?'<span class="sgarr" style="margin:0" aria-hidden="true">›</span>':""}<span class="sgsk">${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}</span>`).join("")}</div>`}</div>`).join("");
+  return `<div class="sgtitle">${esc(g.title)}${g.boss?`<small>(${esc(g.boss)})</small>`:""}</div>
+    <div class="sgtop"><div class="sgblk sgform"><h3>진형</h3>${sgFormHTML(g)}</div>
+    <div class="sgright"><div class="sgblk"><h3>속공 순서</h3><div class="sgspd">${spd}</div></div>
+    <div class="sgblk"><h3>장비 세팅${g.gearNote?` <small>${esc(g.gearNote)}</small>`:""}</h3><div class="sggear">${gear}</div></div></div></div>
+    <div class="sgblk"><h3>스킬 순서</h3>${rnd}</div>`; }
+function renderSiege(){
+  if(!sgDay||!SIEGE_DAYS.includes(sgDay)) sgDay=sgDefaultDay();
+  $("sgDays").innerHTML=SIEGE_DAYS.map(d=>`<button type="button" data-sgday="${d}" class="${SIEGE_GUIDES[d]?"has":""}${d===sgDay?" on":""}" aria-pressed="${d===sgDay}">${d}</button>`).join("");
+  const g=SIEGE_GUIDES[sgDay];
+  $("sgBody").innerHTML=g?sgGuideHTML(g):`<div class="sgempty">준비 중</div>`;
+}
 function showTab(t){
-  ["deck","heroes","guild","tune","craft","gacha"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); flashEl($("tab-"+t),"tabfade");
+  ["deck","heroes","guild","tune","craft","gacha","siege"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); flashEl($("tab-"+t),"tabfade");
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   try{ localStorage.setItem("7kr_tab",t); }catch{}
-  if(t==="deck"){ if(hSaveT) saveHeroesNow(); refreshDatalist(); renderAll(); } else if(t==="guild"){ if(hSaveT) saveHeroesNow(); renderGW(); } else if(t==="tune"){ if(hSaveT) saveHeroesNow(); renderTune(); } else if(t==="gacha"){ if(hSaveT) saveHeroesNow(); renderGacha(); } else if(t==="craft"){ if(hSaveT) saveHeroesNow(); renderCraft(); } else { renderHeroList(); updateRoleSum(); updateTransSum(); }
+  if(t==="deck"){ if(hSaveT) saveHeroesNow(); refreshDatalist(); renderAll(); } else if(t==="guild"){ if(hSaveT) saveHeroesNow(); renderGW(); } else if(t==="tune"){ if(hSaveT) saveHeroesNow(); renderTune(); } else if(t==="gacha"){ if(hSaveT) saveHeroesNow(); renderGacha(); } else if(t==="craft"){ if(hSaveT) saveHeroesNow(); renderCraft(); } else if(t==="siege"){ if(hSaveT) saveHeroesNow(); renderSiege(); } else { renderHeroList(); updateRoleSum(); updateTransSum(); }
 }
 
 let deck = blankDeck();
@@ -5886,6 +6017,7 @@ $("addSkill").onclick=()=>{ deck.skills.push({hero:"",skill:"1"}); renderSkills(
 $("gearModal").addEventListener("click",onGearClick); $("gearModal").addEventListener("input",onGearInput); $("gearModal").addEventListener("change",onGearInput);
 $("solveModal").addEventListener("click",onSolveClick); $("solveModal").addEventListener("input",onSolveInput); $("solveModal").addEventListener("change",onSolveInput);
 document.addEventListener("keydown",e=>{ if(e.key!=="Escape") return; if(gwCtx) gwCancel(); else if(gearCtx) closeGearEditor(); else if(solveCtx) closeSolver(); });
+$("sgDays").addEventListener("click",e=>{ const b=e.target.closest("[data-sgday]"); if(!b) return; sgDay=b.dataset.sgday; renderSiege(); flashEl($("sgBody"),"tabfade"); });
 initPicker(); initFormationDnD(); $("cardsAll").onclick=toggleAllCards;
 $("oppSrc").onchange=e=>{ $("simEnemySrc").value=e.target.value; refreshEnemySrc(); };
 ["oppForm","eqForm"].forEach(id=>$(id).onchange=e=>{ if($("simEnemySrc").value) return; enemyQuick.formation=e.target.value; saveEnemyQuick(); renderOpp(); });
@@ -5893,7 +6025,7 @@ $("oppPanel").addEventListener("click",e=>{ if(e.target.closest("[data-opp]")) g
 $("tNotice").addEventListener("click",e=>{ if(e.target.closest("[data-tnclose]")) showTNotice(null); });
 showTNotice(migrateDeckTTypes());
 refreshList(); renderAll();
-showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"?t:"deck"; }catch{ return "deck"; } })());
+showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"?t:"deck"; }catch{ return "deck"; } })());
 </script>
 </body>
 </html>
