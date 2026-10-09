@@ -164,6 +164,7 @@
   .gear{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
   .gslot{aspect-ratio:1;border-radius:8px;border:1px dashed #4b4b4f;background:#222223;color:var(--text-muted);font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;min-width:0;overflow:hidden;cursor:pointer}
   .gslot.ex{border-color:#61444b;color:#d0b5bb}
+  .g22{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--gold-text);white-space:nowrap} .g22 input{width:16px;height:16px;margin:0}
   .gslot.on{border-style:solid;border-color:var(--gold);background:linear-gradient(160deg,#28251f,#22211e);color:#ebe2c5}
   .gslot.ex.on{border-color:#a1506b;background:linear-gradient(160deg,#281f24,#221d20);color:#f0ced9}
   .gslot small{display:block;max-width:100%;font-size:10px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gold-text)}
@@ -2208,11 +2209,11 @@ const num = v => Number(v)||0;
 const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 // ===== 장비 시스템 =====
-// 윗줄: 무기·방어구·장신구 / 아랫줄: 무기·방어구·전용장비. h.gear[slot.key] = 아이템 (없으면 빈 칸)
+// 표시 순서: 무기1·무기2·방어구1 / 방어구2·장신구·전용장비 (데이터 키는 그대로). h.gear[slot.key] = 아이템 (없으면 빈 칸)
 //   무기·방어구: {set, main, subs:[{k, rolls, val|null}×4]}   장신구: {id, star}   전용장비: {opts:[{k, grade}×4]}
 const GEAR_SLOTS = [
-  {key:"weapon1",label:"무기"},{key:"armor1",label:"방어구"},{key:"accessory",label:"장신구"},
-  {key:"weapon2",label:"무기"},{key:"armor2",label:"방어구"},{key:"exclusive",label:"전용장비"}
+  {key:"weapon1",label:"무기"},{key:"weapon2",label:"무기"},{key:"armor1",label:"방어구"},
+  {key:"armor2",label:"방어구"},{key:"accessory",label:"장신구"},{key:"exclusive",label:"전용장비"}
 ];
 const GEAR_KIND = {weapon1:"weapon",weapon2:"weapon",armor1:"armor",armor2:"armor",accessory:"acc",exclusive:"ex"};
 const GEAR_WA = ["weapon1","weapon2","armor1","armor2"]; // 세트를 세는 4부위
@@ -2306,6 +2307,9 @@ function normItem(slot,o){
   it.subs=it.subs.map((x,i)=>{ const s=(o.subs||[])[i]||{}, v=s.val===""||s.val==null?null:parseFloat(s.val);
     return {k:SUB_BASE[s.k]!==undefined?s.k:"", rolls:Math.max(0,Math.min(SUB_ROLL_MAX,Math.round(num(s.rolls)))), val:isFinite(v)?v:null}; });
   return it; }
+function subDups(it){ const seen=new Set(), d=[]; (it&&it.subs||[]).forEach((x,i)=>{ if(!x.k) return; if(seen.has(x.k)) d.push(i); else seen.add(x.k); }); return d; }
+function waSets(gear){ return GEAR_WA.map(k=>gear&&gear[k]&&gear[k].set).filter(Boolean); }
+function mixedSets(gear){ return new Set(waSets(gear)).size>1; }
 function normGear(g){ const out={}; if(g&&typeof g==="object") for(const s of GEAR_SLOTS){ const it=normItem(s.key,g[s.key]); if(it) out[s.key]=it; } return out; }
 function potMax(h){ const c=potCap(h.tLv); POT_LV.forEach(([f])=>h[f]=c); }
 function gearCount(h){ return Object.keys((h&&h.gear)||{}).length; }
@@ -2791,6 +2795,7 @@ function normHero(o){
   // 예전 덱의 세트 선택(h.set, 4세트) → 무기·방어구 4칸이 비어 있으면 그 세트 4부위로 옮김 (주·부옵션 없음, +15 기본치만)
   if(SET4[o.set]&&!GEAR_WA.some(k=>h.gear[k])) GEAR_WA.forEach(k=>{ const it=newItem(k); it.set=o.set; h.gear[k]=it; });
   h.set="";
+  h.set22=!!o.set22||mixedSets(h.gear); // 2+2: 무기·방어구 세트를 칸마다 따로 (끄면 한 칸 세트를 고르면 4칸 모두 같은 세트) · 예전 데이터가 섞여 있으면 자동 체크
   ALL_KEYS.forEach(k=>h[k]=num(h[k]));
   Object.assign(h,FIXED_STATS); // 예전 데이터(장비 포함 41%/156% 등)도 고정값으로
   ZERO_KEYS.forEach(k=>h[k]=0);  // 9개 기본 스탯은 모든 영웅 0 (예전 데이터·예전 엑셀 값은 무시)
@@ -3455,7 +3460,7 @@ function gearSummary(slot,it,h){ // [윗줄, 아랫줄]
   if(kind==="acc"){ const A=accById(it.id), S=it.socket&&accById(it.socket.id); return [A?A.short:"반지 미선택",`${it.star}성${S?` + 세공: ${S.short}${it.socket.star!==it.star?" "+it.socket.star+"성":""}`:""}`]; }
   if(kind==="ex"){ const T=exTypeOf(h).type; const o=it.opts.filter(x=>x.k).map(x=>OPT_SHORT[x.k]); return [T||"타입?",o.length?o.join("·"):"조율 없음"]; }
   const subs=it.subs.filter(x=>x.k).map(x=>OPT_SHORT[x.k]);
-  return [it.set||"세트 없음",`${it.main?OPT_SHORT[it.main]:"주옵 —"}${subs.length?" / "+subs.join("·"):""}`];
+  return [it.set||"세트 없음",`${subDups(it).length?"⚠ ":""}${it.main?OPT_SHORT[it.main]:"주옵 —"}${subs.length?" / "+subs.join("·"):""}`];
 }
 function gearSlotsHTML(h){
   return GEAR_SLOTS.map(g=>{ const it=h.gear&&h.gear[g.key], sm=it?gearSummary(g.key,it,h):null, kind=GEAR_KIND[g.key];
@@ -3483,9 +3488,16 @@ function gearNoteHTML(h){
 }
 let gearCtx=null; // {mode:"deck"|"db", i(배치 칸 / 영웅 번호), slot}
 function gearHero(c){ c=c||gearCtx; return !c?null:c.mode==="deck"?deck.heroes[c.i]:heroByNo(c.i); }
-function openGearEditor(mode,i,slot){ gearCtx={mode,i,slot}; renderGearEditor(); $("gearModal").classList.remove("hidden"); $("gearModal").scrollTop=0; }
+// 부옵션 중복 (예전 데이터): 첫 줄은 두고 뒤 줄은 비움 → 그 강화 횟수는 남은 횟수로 돌아감 · 편집 창에 ⚠ 로 알림
+function gearFixDups(){ const c=gearCtx, h=gearHero(c), it=h&&h.gear&&h.gear[c.slot]; c.dupNote="";
+  if(!it||!it.subs) return false; const d=subDups(it); if(!d.length) return false;
+  c.dupNote=d.map(i=>`부옵션 ${i+1} ${OPT_NAME[it.subs[i].k]} 중복 → 비움 (강화 ${it.subs[i].val!=null?"직접 값 "+it.subs[i].val:it.subs[i].rolls+"회"} 반환)`).join(" · ");
+  d.forEach(i=>{ it.subs[i]={k:"",rolls:0,val:null}; }); return true; }
+function openGearEditor(mode,i,slot){ gearCtx={mode,i,slot}; const fx=gearFixDups(); if(fx) afterGearChange(false); renderGearEditor(); $("gearModal").classList.remove("hidden"); $("gearModal").scrollTop=0; }
 function closeGearEditor(){ $("gearModal").classList.add("hidden"); gearCtx=null; }
-function gearItem(create){ const h=gearHero(); h.gear=h.gear||{}; let it=h.gear[gearCtx.slot]; if(!it&&create){ it=newItem(gearCtx.slot); h.gear[gearCtx.slot]=it; } return it; }
+function gearItem(create){ const h=gearHero(); h.gear=h.gear||{}; let it=h.gear[gearCtx.slot]; if(!it&&create){ it=newItem(gearCtx.slot);
+    if(GEAR_WA.includes(gearCtx.slot)&&!h.set22){ const w=waSets(h.gear); if(w.length) it.set=w[0]; } // 2+2 아니면 새 칸도 같은 세트
+    h.gear[gearCtx.slot]=it; } return it; }
 function itemSumText(h,slot,it){ // 이 칸 하나가 주는 값 (세트 제외)
   const E=equipInfo(Object.assign({},h,{gear:{[slot]:it}})), parts=[];
   ["gear","acc","ex"].forEach(s=>{ const S=E.src[s]; for(const k in S.pct) parts.push(`${k==="atk"?"모든 공격력":STAT_LABEL[k]} +${fmtN(S.pct[k])}%`); for(const k in S.add) parts.push(`${k==="atk"?"모든 공격력":STAT_LABEL[k]} +${fmtN(S.add[k])}${PCT.has(k)?"%":""}`); });
@@ -3516,14 +3528,15 @@ function renderGearEditor(){
   const slot=c.slot, kind=GEAR_KIND[slot], has=!!(h.gear&&h.gear[slot]), it=has?h.gear[slot]:newItem(slot);
   let body="";
   if(kind==="weapon"||kind==="armor"){ const M=MAIN_OPTS[kind];
-    body=`<div class="grow">${gico(setIconURI(it.set)||pieceIconFor(it.set,kind,h.atkType),"gico lg")}<label>세트 ${gsel('data-ge="set"',Object.keys(SET4),it.set,n=>n,"— 세트 없음 —")}</label>
+    body=`<div class="grow">${gico(setIconURI(it.set)||pieceIconFor(it.set,kind,h.atkType),"gico lg")}<label>세트 ${gsel('data-ge="set"',Object.keys(SET4),it.set,n=>n,"— 세트 없음 —")}</label><label class="g22" title="체크하면 무기·방어구 4칸 세트를 칸마다 따로 고름 · 끄면 한 칸에서 고른 세트가 4칸 모두에 들어감"><input type="checkbox" data-ge="set22"${h.set22?" checked":""}> 2+2</label>
       <label>주옵션 ${gsel('data-ge="main"',Object.keys(M),it.main,k=>`${OPT_NAME[k]} +${M[k]}${optUnit(k)}`,"— 선택 —")}</label></div>
       <div class="gbase">+15 기본치: ${Object.entries(GEAR_BASE[kind]).map(([k,v])=>`${k==="atk"?"모든 공격력":STAT_LABEL[k]} +${v}`).join(" · ")} (고정치)</div>
       <div class="gsubs"><span class="gh">부옵션 (4줄)</span><span class="gh">강화</span><span class="gh">직접 값</span><span class="gh">값</span>
-      ${it.subs.map((s,si)=>`${gsel(`data-ge="sk" data-si="${si}" aria-label="부옵션 ${si+1}"`,SUB_KEYS,s.k,k=>`${OPT_NAME[k]} (1회 ${SUB_BASE[k]}${optUnit(k)})`,`부옵션 ${si+1} —`)}
+      ${it.subs.map((s,si)=>{ const used=new Set(it.subs.filter((x,j)=>j!==si&&x.k).map(x=>x.k)); return `<select data-ge="sk" data-si="${si}" aria-label="부옵션 ${si+1}"><option value="">부옵션 ${si+1} —</option>${SUB_KEYS.map(k=>`<option value="${esc(k)}" ${k===s.k?"selected":""}${used.has(k)&&k!==s.k?" disabled":""}>${esc(OPT_NAME[k])} (1회 ${SUB_BASE[k]}${optUnit(k)})${used.has(k)&&k!==s.k?" · 사용 중":""}</option>`).join("")}</select>
         <select data-ge="rolls" data-si="${si}" aria-label="강화 횟수 ${si+1}"${s.k?"":" disabled"}>${[0,1,2,3,4,5].map(n=>`<option value="${n}" ${n===s.rolls?"selected":""}>+${n}회</option>`).join("")}</select>
         <input type="number" step="any" inputmode="decimal" data-ge="val" data-si="${si}" value="${s.val??""}" placeholder="자동" aria-label="직접 값 ${si+1}"${s.k?"":" disabled"}>
-        <span class="gv" data-gv="${si}">${s.k?fmtN(subValue(s))+optUnit(s.k):""}</span>`).join("")}</div>
+        <span class="gv" data-gv="${si}">${s.k?fmtN(subValue(s))+optUnit(s.k):""}</span>`; }).join("")}</div>
+      ${c.dupNote?`<div class="warn" data-gdupnote>⚠ ${esc(c.dupNote)} · 같은 부옵션은 한 장비에 한 번만</div>`:""}
       <div class="gnote2" data-grolls>${rollInfo(it)}</div>`;
   } else if(kind==="acc"){ const A=ACCESSORIES.find(a=>a.id===it.id), rb=A&&ringBonus(A,it.star);
     const grp=["전설","희귀","고급","일반"].map(g=>{ const l=ACCESSORIES.filter(a=>a.grade===g); return l.length?`<optgroup label="${g}">${l.map(a=>`<option value="${esc(a.id)}" ${a.id===it.id?"selected":""}>${esc(a.name)}</option>`).join("")}</optgroup>`:""; }).join("");
@@ -3563,15 +3576,20 @@ function onGearInput(e){
   if(t.matches("[data-gcopy]")){ if(e.type!=="change"||!t.value) return; const [what,ref]=t.value.split("|"), [m,n]=ref.split(":"), src=m==="d"?deck.heroes[+n]:heroByNo(+n); if(!src) return;
     const cp=o=>JSON.parse(JSON.stringify(o));
     if((what==="all"?gearCount(h):h.gear&&h.gear[gearCtx.slot])&&!confirm(what==="all"?"이 카드의 장비 6칸을 모두 바꿀까요?":"이 칸의 장비를 바꿀까요?")){ t.value=""; return; }
-    if(what==="all"){ h.gear=normGear(cp(src.gear)); if(h.trait==="만능형"&&src.trait==="만능형"&&src.exType) h.exType=src.exType; } else { h.gear=h.gear||{}; h.gear[gearCtx.slot]=normItem(gearCtx.slot,cp(src.gear[gearCtx.slot])); }
+    if(what==="all"){ h.gear=normGear(cp(src.gear)); h.set22=!!src.set22||mixedSets(h.gear); if(h.trait==="만능형"&&src.trait==="만능형"&&src.exType) h.exType=src.exType; } else { h.gear=h.gear||{}; h.gear[gearCtx.slot]=normItem(gearCtx.slot,cp(src.gear[gearCtx.slot])); }
+    if(mixedSets(h.gear)) h.set22=true; // 섞인 세트를 들여오면 2+2 자동 체크 (덮어쓰지 않음)
+    if(gearFixDups()) afterGearChange(false);
     return afterGearChange(true); }
   const f=t.dataset.ge; if(!f) return;
   if(f==="extype"){ if(e.type!=="change") return; h.exType=t.value; return afterGearChange(true); }
+  if(f==="set22"){ if(e.type!=="change") return; h.set22=t.checked; return afterGearChange(true); }
   const si=+t.dataset.si;
   if(f==="val"){ const it=gearItem(true), v=t.value.trim(), n=parseFloat(v); it.subs[si].val=v===""||!isFinite(n)?null:n; return afterGearChange(e.type==="change"); }
   if(e.type!=="change") return;
   const it=gearItem(true);
-  if(f==="set") it.set=t.value; else if(f==="main") it.main=t.value;
+  if(f==="set"){ it.set=t.value; if(!h.set22&&GEAR_WA.includes(gearCtx.slot)) GEAR_WA.forEach(k=>{ if(h.gear[k]) h.gear[k].set=t.value; }); }
+  else if(f==="sk"&&t.value&&it.subs.some((x,j)=>j!==si&&x.k===t.value)){ t.value=it.subs[si].k; return; } // 다른 줄에서 쓰는 부옵션은 못 고름
+  else if(f==="main") it.main=t.value;
   else if(f==="sk"){ it.subs[si].k=t.value; if(!t.value){ it.subs[si].rolls=0; it.subs[si].val=null; } }
   else if(f==="rolls") it.subs[si].rolls=Math.max(0,Math.min(SUB_ROLL_MAX,+t.value||0));
   else if(f==="acc"){ it.id=t.value; gearCtx.notice="";
@@ -3586,7 +3604,7 @@ function onGearClick(e){
   const t=e.target;
   if(t===$("gearModal")||t.closest("[data-gclose]")){ closeGearEditor(); return; }
   if(!gearCtx) return; const h=gearHero();
-  const sb=t.closest("[data-gslot]"); if(sb){ gearCtx.slot=sb.dataset.gslot; gearCtx.notice=""; renderGearEditor(); return; }
+  const sb=t.closest("[data-gslot]"); if(sb){ gearCtx.slot=sb.dataset.gslot; gearCtx.notice=""; if(gearFixDups()) afterGearChange(false); renderGearEditor(); return; }
   if(t.closest("[data-gequip]")){ gearItem(true); afterGearChange(true); return; }
   if(t.closest("[data-gclear]")){ if(h.gear) delete h.gear[gearCtx.slot]; afterGearChange(true); return; }
   const rb=t.closest("[data-greco]"); if(rb){ const rec=exRecoFor(h); if(!rec) return; const cur=h.gear&&h.gear.exclusive;
