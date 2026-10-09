@@ -807,7 +807,7 @@
   .sgchip{display:inline-flex;align-items:baseline;gap:4px;font-size:13px;padding:2px 8px;border-radius:12px;background:var(--surface-3);border:1px solid var(--border);white-space:nowrap}
   .sgchip span{color:var(--text-muted);font-size:12px} .sgchip b{color:var(--text)}
   .sgring{display:inline-flex;align-items:center;gap:5px;font-size:13px;padding:3px 10px;border-radius:12px;border:1px solid var(--gold);background:var(--gold-weak);color:var(--gold-hi);font-weight:700;white-space:nowrap}
-  .sgring img{width:22px;height:22px}
+  .sgring{padding:2px 4px 2px 3px;gap:4px} .sgring img{width:26px;height:26px} .sgring .rn{font-size:12px} .sgring .rc{font-size:11px;font-weight:800;padding:1px 6px;border-radius:8px;background:#2a1f10;border:1px solid var(--gold-line);color:var(--gold-text)}
   .sgrnd{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-top:1px dashed #3a3426}
   .sgrnd:first-of-type{border-top:0;padding-top:0}
   .sgrl{flex:0 0 86px;font-weight:800;color:var(--gold-text);font-size:14px;line-height:1.3;padding-top:6px} .sgrl small{display:block;font-weight:500;color:var(--text-muted);font-size:11px}
@@ -4685,7 +4685,7 @@ function toast(msg){ let t=$("toast"); if(!t){ t=document.createElement("div"); 
   t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1600); }
 
 /* ===== 공성전 공략 (보기 전용) · 요일별 데이터만 추가하면 됨 =====
-   back/front: 진형 칸 순서 · speed: 속공 순서 · gear: [영웅, 세트, 무기 메인 2, 방어구 메인 2, [스탯, 수치], 반지]
+   back/front: 진형 칸 순서 (전1 = 맨 아래 → 위로) · speed: 속공 순서 · gear: [영웅, 세트, 무기 메인 2, 방어구 메인 2, [스탯, 수치], 반지]
    skills: 라운드별 [영웅, 스킬번호, (턴)] */
 const SIEGE_DAYS=["월","화","수","목","금","토","일"];
 const SIEGE_GUIDES={
@@ -4695,11 +4695,11 @@ const SIEGE_GUIDES={
     speed:["미호","나타","비스킷","리나","에반"],
     gearNote:"12초월 기준",
     gear:[
-      {hero:"나타", set:"복수자", w:["치피","치피"], a:["공","공"], stats:[["속공","29"],["치확","55"],["치피","330"],["약공","30"],["피증","16"]], ring:"토약"},
-      {hero:"미호", set:"복수자", w:["치확","치피"], a:["공","공"], stats:[["속공","29"],["치확","85"],["치피","264"],["약공","45"],["피증","16"]], ring:"토치"},
-      {hero:"비스킷", set:"복수자", w:["치피","치확"], a:["공","공"], stats:[["속공","19"],["치확","100"],["치피","234"],["약공","25"]], ring:"화출"},
-      {hero:"리나", set:"복수자", w:["치확","치확"], a:["공","공"], stats:[["속공","19"],["치확","100"],["치피","228"],["약공","15"]], ring:"화출"},
-      {hero:"에반", set:"주술사", w:["방","방"], a:["막","받"], stats:[["속공","16"],["막기","80 이상"],["효적","40 이상"],["받피감","16"]], ring:"화출"}
+      {hero:"나타", set:"복수자", w:["치피","치피"], a:["공","공"], stats:[["속공","29"],["치확","55"],["치피","330"],["약공","30"],["피증","16"]], ring:{acc:"토벌", craft:["약공"]}},
+      {hero:"미호", set:"복수자", w:["치확","치피"], a:["공","공"], stats:[["속공","29"],["치확","85"],["치피","264"],["약공","45"],["피증","16"]], ring:{acc:"토벌", craft:["치확"]}},
+      {hero:"비스킷", set:"복수자", w:["치피","치확"], a:["공","공"], stats:[["속공","19"],["치확","100"],["치피","234"],["약공","25"]], ring:{acc:"샐리맨더", craft:["출혈"]}},
+      {hero:"리나", set:"복수자", w:["치확","치확"], a:["공","공"], stats:[["속공","19"],["치확","100"],["치피","228"],["약공","15"]], ring:{acc:"샐리맨더", craft:["출혈"]}},
+      {hero:"에반", set:"주술사", w:["방","방"], a:["막","받"], stats:[["속공","16"],["막기","80 이상"],["효적","40 이상"],["받피감","16"]], ring:{acc:"샐리맨더", craft:["출혈"]}}
     ],
     skills:[
       {label:"1라운드", seq:[["비스킷",1],["미호",2]]},
@@ -4724,17 +4724,19 @@ function sgFormHTML(g){
     return `<div class="ftile${gi>=0?" fg"+gi:""}" data-sgslot="${lab}"><div class="sname">${pt?`${gbg?`<img class="gbg" src="${esc(gbg)}" alt="" aria-hidden="true">`:""}<img class="tpic" src="${esc(pt)}" alt="">`:`<span class="tpic ticon">${esc(n)}</span>`}</div><span class="tname">${esc(n)}</span><div class="tfoot"><span class="tpos">${lab}</span></div></div>`; };
   return `<div class="fpanel my"><div class="fphead"><b>${esc(g.formation)} 진형 · ${g.back.length+g.front.length}인</b></div><div class="fgrid">
     <div class="fcolw back"><div class="fch"><b>후열</b><br>모공 +${f.backAtk}%</div><div class="fcol">${g.back.map((n,i)=>tile(n,"후"+(i+1))).join("")}</div></div>
-    <div class="fcolw front"><div class="fch"><b>전열</b><br>방어력 +${f.frontDef}%</div><div class="fcol">${g.front.map((n,i)=>tile(n,"전"+(i+1))).join("")}</div></div>
+    <div class="fcolw front"><div class="fch"><b>전열</b><br>방어력 +${f.frontDef}%</div><div class="fcol">${g.front.map((n,i)=>tile(n,"전"+(i+1))).reverse().join("")}</div></div>
   </div></div>`; }
 function sgGuideHTML(g){
   const spd=g.speed.map((n,i)=>`${i?'<span class="sgarr" aria-hidden="true">›</span>':""}<div class="sgsp" data-sgspd="${i+1}"><span class="sgnum">${i+1}</span>${sgFace(n)}<b>${esc(n)}</b></div>`).join("");
   const mains=(arr)=>arr.map(k=>`<span class="mv" title="${esc(SG_MAIN_FULL[k]||k)}">${esc(k)}</span>`).join("");
-  const gear=g.gear.map(r=>{ const si=setIconURI(r.set), ri=accIconURI(r.ring);
+  const ringHTML=rg=>{ const a=ACCESSORIES.find(x=>x.short===rg.acc), nm=a?a.name:rg.acc, ri=accIconURI(rg.acc);
+    return `<span class="sgring" data-sgring="${esc(nm)}" title="${esc(nm)}${rg.craft.length?" · 세공 "+rg.craft.join("·"):""}">${ri?`<img src="${esc(ri)}" alt="" aria-hidden="true">`:""}<span class="rn">${esc(nm)}</span>${rg.craft.map(c=>`<span class="rc" data-sgcraft>${esc(c)}</span>`).join("")}</span>`; };
+  const gear=g.gear.map(r=>{ const si=setIconURI(r.set);
     return `<div class="sgrow" data-sggear="${esc(r.hero)}"><div class="sgwho">${sgFace(r.hero)}<b>${esc(r.hero)}</b></div>
       <div class="sgset">${si?`<img src="${esc(si)}" alt="" aria-hidden="true">`:""}${esc(r.set)}</div>
       <div class="sgmain"><span class="mk">무기</span>${mains(r.w)}<span class="mk">방어구</span>${mains(r.a)}</div>
       <div class="sgstats">${r.stats.map(([k,v])=>`<span class="sgchip"><span>${esc(k)}</span><b>${esc(v)}</b></span>`).join("")}</div>
-      <span class="sgring">${ri?`<img src="${esc(ri)}" alt="" aria-hidden="true">`:""}${esc(r.ring)} 반지</span></div>`; }).join("");
+      ${ringHTML(r.ring)}</div>`; }).join("");
   const rnd=g.skills.map(R=>`<div class="sgrnd"${R.boss?' data-sgbossrnd':""}><div class="sgrl">${esc(R.label)}${R.note?`<small>${esc(R.note)}</small>`:""}</div>${R.boss
     ? `<div class="sgboss">${R.seq.map(([n,k,t])=>`<div class="sgbk" data-sgboss="${t}"><span class="sgt">${t}턴</span>${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}</div>`).join("")}</div>`
     : `<div class="sgseq">${R.seq.map(([n,k],i)=>`${i?'<span class="sgarr" style="margin:0" aria-hidden="true">›</span>':""}<span class="sgsk">${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}</span>`).join("")}</div>`}</div>`).join("");
