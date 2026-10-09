@@ -805,6 +805,13 @@
   .sgring.txt{border-style:dashed;background:transparent;color:var(--text-muted);font-weight:600;padding:3px 10px}
   .sgsb.sb{background:#2a2f3a;color:#d6dbe6;border:1px solid #5a6273} .sgsb.sa{background:#3a1f4a;color:#e7b8ff;border:1px solid #7d4b99}
   .sgtt{font-size:11px;font-weight:800;color:var(--gold-text)}
+  .sginfo{display:flex;flex-wrap:wrap;gap:8px 12px;margin:-4px 0 12px}
+  .sgpet,.sgbuff{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:6px 12px;border:1px solid var(--gold-line);border-radius:10px;background:linear-gradient(180deg,var(--surface-2),var(--surface))}
+  .sgpet img{width:36px;height:36px;border-radius:8px;border:1px solid var(--gold-line);background:var(--surface-3)} .sgpet>b{font-size:15px}
+  .sginfo .lb{font-size:12px;font-weight:800;color:var(--gold-text);margin-right:2px}
+  .sgnogear{font-size:13px;font-weight:700;color:var(--text-muted);padding:3px 12px;border:1px dashed var(--border-strong);border-radius:12px}
+  .sgempty.sm{padding:14px 0;font-size:14px}
+  .sgdays.sub button{min-width:0;font-size:13px;padding:5px 12px} .sgdays.sub{margin-top:-4px}
   .sgnote{display:flex;gap:8px;align-items:baseline;margin:-4px 0 12px;padding:8px 12px;border:1px solid var(--gold);border-left-width:4px;border-radius:8px;background:linear-gradient(90deg,rgba(201,164,92,.18),rgba(201,164,92,.04));color:var(--text);font-size:14px;line-height:1.45} .sgnote b{flex:none;color:#1a1307;background:var(--gold-text);border-radius:5px;padding:0 7px;font-size:12px}
   .sgmain{display:flex;align-items:center;gap:6px;font-size:13px;min-width:150px}
   .sgmain .mk{font-size:11px;color:var(--text-faint)} .sgmain .mv{font-weight:800;color:var(--text);background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:1px 6px}
@@ -839,7 +846,7 @@
 <div id="solveModal" class="gmodal hidden"><div class="gbox sbox" id="solveBox" role="dialog" aria-modal="true" aria-label="목표 스탯 장비 자동 세팅"></div></div>
 <div id="gearModal" class="gmodal hidden"><div class="gbox" id="gearBox" role="dialog" aria-modal="true" aria-label="장비 편집"></div></div>
 <div id="gwModal" class="gmodal hidden"><div class="gbox gwbox" id="gwBox" role="dialog" aria-modal="true" aria-label="길드전 덱 편집"></div></div>
-<nav class="tabs" id="tabs"><button data-tab="deck">배치</button><button data-tab="heroes">영웅 입력</button><button data-tab="guild">길드전 추천덱</button><button data-tab="tune">조율</button><button data-tab="craft">세공</button><button data-tab="gacha">가챠</button><button data-tab="siege">공성전</button></nav>
+<nav class="tabs" id="tabs"><button data-tab="deck">배치</button><button data-tab="heroes">영웅 입력</button><button data-tab="guild">길드전 추천덱</button><button data-tab="tune">조율</button><button data-tab="craft">세공</button><button data-tab="gacha">가챠</button><button data-tab="siege">공성전</button><button data-tab="raid">강림원정대</button></nav>
 
 <div id="tab-deck">
 <section>
@@ -1054,6 +1061,14 @@
   <div id="sgBody"></div>
 </section>
 </div><!-- /tab-siege -->
+
+<div id="tab-raid" class="hidden">
+<section>
+  <h2>강림원정대</h2>
+  <div id="rdTabs"></div>
+  <div id="rdBody"></div>
+</section>
+</div><!-- /tab-raid -->
 
 <datalist id="heroes"></datalist>
 
@@ -4727,15 +4742,18 @@ function sgGuideHTML(g){
   const setHTML=sv=>(Array.isArray(sv)?sv:[[sv,""]]).map(([n,part])=>{ const si=setIconURI(n); return `<span class="sgs1">${si?`<img src="${esc(si)}" alt="" aria-hidden="true">`:""}${esc(n)}${part?`<small>${esc(part)}</small>`:""}</span>`; }).join("");
   const chip=([k,v,f])=>`<span class="sgchip${f?" "+f:""}"><span>${esc(k)}</span><b>${esc(v)}</b>${f==="must"?'<i>필수</i>':""}</span>`;
   const gear=g.gear.map(r=>{
+    if(r.note) return `<div class="sgrow" data-sggear="${esc(r.hero)}"><div class="sgwho">${sgFace(r.hero)}<b>${esc(r.hero)}</b></div><span class="sgnogear" data-sgnogear>${esc(r.note)}</span></div>`;
     return `<div class="sgrow" data-sggear="${esc(r.hero)}"><div class="sgwho">${sgFace(r.hero)}<b>${esc(r.hero)}</b></div>
       <div class="sgset${Array.isArray(r.set)?" two":""}">${setHTML(r.set)}</div>
       <div class="sgmain"><span class="mk">무기</span>${mains(r.w)}<span class="mk">방어구</span>${mains(r.a)}</div>
       <div class="sgstats">${r.stats.map(chip).join("")}</div>
       ${ringHTML(r.ring)}</div>`; }).join("");
-  const rnd=g.skills.map(R=>`<div class="sgrnd"${R.boss?' data-sgbossrnd':""}><div class="sgrl">${esc(R.label)}${R.note?`<small>${esc(R.note)}</small>`:""}</div>${R.boss
+  const rnd=!g.skills?`<div class="sgempty sm" data-sgskpending>준비 중</div>`:g.skills.map(R=>`<div class="sgrnd"${R.boss?' data-sgbossrnd':""}>${R.label?`<div class="sgrl">${esc(R.label)}${R.note?`<small>${esc(R.note)}</small>`:""}</div>`:""}${R.boss
     ? `<div class="sgboss">${R.seq.map(([n,k,t])=>`<div class="sgbk" data-sgboss="${t}"><span class="sgt">${t}턴</span>${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}</div>`).join("")}</div>`
     : `<div class="sgseq">${R.seq.map(([n,k,t],i)=>`${i?'<span class="sgarr" style="margin:0" aria-hidden="true">›</span>':""}<span class="sgsk">${sgFace(n)}<b>${esc(n)}</b>${sgSkB(k)}${t!==undefined?`<span class="sgtt">${t}턴</span>`:""}</span>`).join("")}</div>`}</div>`).join("");
-  return `<div class="sgtitle">${esc(g.title)}${g.boss?`<small>(${esc(g.boss)})</small>`:""}</div>${g.note?`<div class="sgnote" data-sgnote><b>중요</b>${esc(g.note)}</div>`:""}
+  const pt=g.pet&&petByName(g.pet.name);
+  const info=(g.pet||g.buff)?`<div class="sginfo">${g.pet?`<div class="sgpet" data-sgpet="${esc(g.pet.name)}"><span class="lb">펫</span>${pt&&pt.icon?`<img src="${esc(pt.icon)}" alt="" aria-hidden="true">`:""}<b>${esc(g.pet.name)}</b><span class="sgchip"><b>${esc(g.pet.skill)}</b></span><span class="sgchip"><span>잠재능력 모공%</span><b>${g.pet.pot.map(esc).join(" / ")}</b></span></div>`:""}${g.buff?`<div class="sgbuff" data-sgbuff><span class="lb">${esc(g.buff.hero)} 버프 대상</span>${g.buff.targets.map(n=>`<span class="sgsk" data-sgbt="${esc(n)}">${sgFace(n)}<b>${esc(n)}</b></span>`).join("")}</div>`:""}</div>`:"";
+  return `<div class="sgtitle">${esc(g.title)}${g.boss?`<small>(${esc(g.boss)})</small>`:""}</div>${g.note?`<div class="sgnote" data-sgnote><b>중요</b>${esc(g.note)}</div>`:""}${info}
     <div class="sgtop"><div class="sgblk sgform"><h3>진형</h3>${sgFormHTML(g)}</div>
     <div class="sgright"><div class="sgblk"><h3>속공 순서</h3><div class="sgspd">${spd}</div></div>
     <div class="sgblk"><h3>장비 세팅${g.gearNote?` <small>${esc(g.gearNote)}</small>`:""}</h3><div class="sggear">${gear}</div></div></div></div>
@@ -4746,11 +4764,24 @@ function renderSiege(){
   const g=SIEGE_GUIDES[sgDay];
   $("sgBody").innerHTML=g?sgGuideHTML(g):`<div class="sgempty">준비 중</div>`;
 }
+/* ===== 강림원정대 (보기 전용 · 공성전과 같은 부품) · 데이터는 tools/raid_data.py 로 생성 ===== */
+const RAID_GUIDES={"파괴의 그림자":{"태오":{"1라운드":null,"2라운드":null},"카일":{"1라운드":null,"2라운드":null},"연희":{"1라운드":null,"2라운드":null},"카르마":{"1라운드":null,"2라운드":null}},"파괴신":{"":{"1라운드":{"title":"1라운드","boss":"4턴 세팅","formation":"보호","back":["파스칼"],"front":["레긴레이프","소교","미호","선란"],"pet":{"name":"제오","skill":"스킬강화 3단계","pot":["15","15","13","13"]},"speed":["레긴레이프","소교","파스칼","미호"],"gear":[{"hero":"파스칼","set":"복수자","w":["치피","치피"],"a":["공","공"],"stats":[["모공","4510"],["속공","33"],["치확","0"],["치피","306"],["약공","85"],["피증","16"]],"ring":{"acc":"토벌","craft":["약공"]}},{"hero":"레긴레이프","set":"복수자","w":["치피","치확"],"a":["공","공"],"stats":[["모공","4560"],["속공","33"],["치확","85"],["치피","240"],["약공","65"]],"ring":{"acc":"토벌","craft":["치확"]}},{"hero":"소교","set":"복수자","w":["치피","치확"],"a":["공","공"],"stats":[["모공","4615"],["속공","33"],["치확","89"],["치피","240"],["약공","55"],["피증","14.4"]],"ring":{"acc":"토벌","craft":["치확"]}},{"hero":"미호","set":"복수자","w":["치확","치확"],"a":["공","공"],"stats":[["모공","4385"],["속공","29"],["치확","93"],["치피","228"],["약공","30"]],"ring":{"acc":"집중","craft":["치확"]}},{"hero":"선란","note":"장비 모두 제거"}],"skills":[{"label":"","seq":[["소교",2,0],["파스칼",2,4]]}]},"2라운드":{"title":"2라운드","formation":"보호","back":["세인"],"front":["비스킷","아일린","샤오","헤브니아"],"pet":{"name":"윈디","skill":"스킬강화 3단계","pot":["15","15","15","13"]},"speed":["비스킷","아일린","샤오","세인","헤브니아"],"buff":{"hero":"비스킷","targets":["세인","샤오"]},"gear":[{"hero":"세인","set":"복수자","w":["치피","치피"],"a":["공","공"],"stats":[["모공","4660"],["속공","29"],["치확","59"],["치피","300"],["약공","45"],["피증","14.4"]],"ring":{"acc":"토벌","craft":["공성"]}},{"hero":"비스킷","set":"수문장","w":["방","방"],"a":["받","막"],"stats":[["속공","35"],["막기","98"],["받피감","26"]],"ring":{"acc":"불사","craft":["부활"]}},{"hero":"아일린","set":"복수자","w":["치확","치확"],"a":["공","공"],"stats":[["모공","4163"],["속공","29"],["치확","100"],["치피","222"],["약공","25"]],"ring":{"acc":"가시","craft":[]}},{"hero":"샤오","set":"복수자","w":["치피","치확"],"a":["공","공"],"stats":[["모공","4297"],["속공","29"],["치확","100"],["치피","252"],["약공","15"],["피증","6.4"]],"ring":{"acc":"가시","craft":["화상"]}},{"hero":"헤브니아","set":"복수자","w":["치확","치확"],"a":["받","공"],"stats":[["모공","4147"],["속공","25"],["치확","100"],["치피","246"],["약공","30"],["받피감","16"],["피증","6.4"]],"ring":{"acc":"공성","craft":["약공"]}}],"skills":null}}}};
+/*RAID_GUIDES_END*/
+const rdS={boss:"파괴신",group:null,round:null};
+function renderRaid(){
+  const bosses=Object.keys(RAID_GUIDES); if(!bosses.includes(rdS.boss)) rdS.boss=bosses.includes("파괴신")?"파괴신":bosses[0];
+  const B=RAID_GUIDES[rdS.boss], groups=Object.keys(B); if(!groups.includes(rdS.group)) rdS.group=groups[0];
+  const Gp=B[rdS.group], rounds=Object.keys(Gp); if(!rounds.includes(rdS.round)) rdS.round=rounds[0];
+  const row=(k,list,cur,cls)=>`<nav class="sgdays${cls?" "+cls:""}" data-rdrow="${k}">${list.map(v=>`<button type="button" data-rdk="${k}" data-rdv="${esc(v)}" class="${v===cur?"on":""}" aria-pressed="${v===cur}">${esc(v)}</button>`).join("")}</nav>`;
+  $("rdTabs").innerHTML=row("boss",bosses,rdS.boss)+(groups.length>1||groups[0]?row("group",groups,rdS.group,"sub"):"")+row("round",rounds,rdS.round,"sub");
+  const g=Gp[rdS.round];
+  $("rdBody").innerHTML=g?sgGuideHTML(g):`<div class="sgempty">준비 중</div>`;
+}
 function showTab(t){
-  ["deck","heroes","guild","tune","craft","gacha","siege"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); flashEl($("tab-"+t),"tabfade");
+  ["deck","heroes","guild","tune","craft","gacha","siege","raid"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); flashEl($("tab-"+t),"tabfade");
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   try{ localStorage.setItem("7kr_tab",t); }catch{}
-  if(t==="deck"){ if(hSaveT) saveHeroesNow(); refreshDatalist(); renderAll(); } else if(t==="guild"){ if(hSaveT) saveHeroesNow(); renderGW(); } else if(t==="tune"){ if(hSaveT) saveHeroesNow(); renderTune(); } else if(t==="gacha"){ if(hSaveT) saveHeroesNow(); renderGacha(); } else if(t==="craft"){ if(hSaveT) saveHeroesNow(); renderCraft(); } else if(t==="siege"){ if(hSaveT) saveHeroesNow(); renderSiege(); } else { renderHeroList(); updateRoleSum(); updateTransSum(); }
+  if(t==="deck"){ if(hSaveT) saveHeroesNow(); refreshDatalist(); renderAll(); } else if(t==="guild"){ if(hSaveT) saveHeroesNow(); renderGW(); } else if(t==="tune"){ if(hSaveT) saveHeroesNow(); renderTune(); } else if(t==="gacha"){ if(hSaveT) saveHeroesNow(); renderGacha(); } else if(t==="craft"){ if(hSaveT) saveHeroesNow(); renderCraft(); } else if(t==="siege"){ if(hSaveT) saveHeroesNow(); renderSiege(); } else if(t==="raid"){ if(hSaveT) saveHeroesNow(); renderRaid(); } else { renderHeroList(); updateRoleSum(); updateTransSum(); }
 }
 
 let deck = blankDeck();
@@ -6014,6 +6045,7 @@ $("addSkill").onclick=()=>{ deck.skills.push({hero:"",skill:"1"}); renderSkills(
 $("gearModal").addEventListener("click",onGearClick); $("gearModal").addEventListener("input",onGearInput); $("gearModal").addEventListener("change",onGearInput);
 $("solveModal").addEventListener("click",onSolveClick); $("solveModal").addEventListener("input",onSolveInput); $("solveModal").addEventListener("change",onSolveInput);
 document.addEventListener("keydown",e=>{ if(e.key!=="Escape") return; if(gwCtx) gwCancel(); else if(gearCtx) closeGearEditor(); else if(solveCtx) closeSolver(); });
+$("rdTabs").addEventListener("click",e=>{ const b=e.target.closest("[data-rdk]"); if(!b) return; const k=b.dataset.rdk, v=b.dataset.rdv; if(k==="boss"){ rdS.boss=v; rdS.group=null; rdS.round=null; } else rdS[k]=v; renderRaid(); flashEl($("rdBody"),"tabfade"); });
 $("sgDays").addEventListener("click",e=>{ const b=e.target.closest("[data-sgday]"); if(!b) return; sgDay=b.dataset.sgday; renderSiege(); flashEl($("sgBody"),"tabfade"); });
 initPicker(); initFormationDnD(); $("cardsAll").onclick=toggleAllCards;
 $("oppSrc").onchange=e=>{ $("simEnemySrc").value=e.target.value; refreshEnemySrc(); };
@@ -6022,7 +6054,7 @@ $("oppPanel").addEventListener("click",e=>{ if(e.target.closest("[data-opp]")) g
 $("tNotice").addEventListener("click",e=>{ if(e.target.closest("[data-tnclose]")) showTNotice(null); });
 showTNotice(migrateDeckTTypes());
 refreshList(); renderAll();
-showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"?t:"deck"; }catch{ return "deck"; } })());
+showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"||t==="raid"?t:"deck"; }catch{ return "deck"; } })());
 </script>
 </body>
 </html>
