@@ -969,6 +969,10 @@
   .acctl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center} .acctl button.on{border-color:var(--gold);color:var(--gold-hi)}
   .acgo{background:linear-gradient(180deg,#c9a45c,#8d6b2e)!important;color:#1a1307!important;font-weight:900;border-color:#f3dc9c!important}
   .acmsg{min-height:20px;margin-top:6px;font-size:13px;color:var(--gold-hi)}
+  .acroster{margin-top:10px;border:1px solid var(--gold-line);border-radius:10px;padding:6px 10px;background:rgba(14,17,25,.6)} .acroster summary{cursor:pointer;font-weight:800;color:var(--gold-text);font-size:13px}
+  .acrt{margin-top:8px} .acrh{display:block;font-size:13px;color:var(--tc);margin-bottom:4px} .acrh small{color:var(--text-muted);font-weight:500;font-size:11px}
+  .acrl{display:flex;flex-wrap:wrap;gap:5px} .acrw{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 2px;border:1px solid #3a3426;border-radius:8px;background:rgba(0,0,0,.25);font-size:12px;font-weight:700}
+  .acrw .acface{width:30px;height:30px;border:1.5px solid var(--tc);border-radius:6px;position:relative;overflow:hidden;display:block;flex:none} .acrw small{display:block;font-size:10px;font-weight:500;color:var(--text-muted)} .acrnote{font-size:11px;margin:8px 0 2px}
   .acfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;font-size:12px}
   .acov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,10,16,.72);z-index:10}
   .acovb{text-align:center;padding:18px 26px;border:1px solid var(--gold);border-radius:12px;background:linear-gradient(180deg,#2a241b,#15130f)}
@@ -5010,7 +5014,16 @@ const AC_CONFIG={
   streakBonus:[[6,3],[4,2],[2,1]],   // [연속 n 이상, +골드] (큰 것부터)
   winBonus:1, rerollCost:2, xpBuyCost:4, xpBuyAmount:4, xpPerRound:2,
   xpToNext:[2,2,6,10,20,36,56,80,100], // Lv1→2 … Lv9→10
-  tierCost:{1:1,2:2,3:3,4:4,5:5}, poolCopies:{1:29,2:22,3:18,4:12,5:10},
+  tierCost:{1:1,2:2,3:3,4:4,5:5}, poolCopies:{1:18,2:15,3:13,4:10,5:8},
+  // 상점 로스터 (티어 = 비용 · 이름은 툴 영웅 이름 그대로 · 고치면 바로 반영). 등급과 맞지 않는 이름은 무시
+  roster:{1:["에반","라쿤","아수라","빅토리아","샤오","풍연","유리","실비아","유이","카린"],
+          2:["아라곤","지크","관우","세인","리나","미호","소교","파스칼"],
+          3:["라드그리드","레이첼","스파이크","라이언","나타","레긴레이프","비스킷"],
+          4:["겔리두스","파이","로지","밀리아","쥬리"],
+          5:["루디","아일린","헤브니아","동영"]},
+  // 힘 배율 (툴 초월 스탯 위에 곱함): 비용별 기본 배율 · 초월 1마다 +% · 3/6/9/12초월 이정표 (+% · 스킬 계수 +%p) · 방어는 증가분의 defShare만
+  tierMult:{1:1.0,2:1.2,3:1.45,4:1.75,5:2.1}, tStepPct:{1:13,2:15,3:18,4:21,5:25},
+  tMilestones:[3,6,9,12], milestonePct:22, milestoneSkill:50, defShare:0.4,
   tierName:{1:"희귀",2:"전설",3:"전설 스페셜",4:"(구)세나",5:"각성"},
   odds:[[100,0,0,0,0],[100,0,0,0,0],[75,25,0,0,0],[55,30,15,0,0],[45,33,20,2,0],[30,40,25,5,0],[19,30,35,15,1],[18,25,32,22,3],[10,20,25,35,10],[5,10,20,40,25]],
   lossBase:2, lossPerUnit:2,
@@ -5028,7 +5041,11 @@ const AC={
   /* ---------- 난수 (시드) ---------- */
   rnd(o){ let t=(o.seed=(o.seed+0x6D2B79F5)>>>0); t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; },
   /* ---------- 영웅 ---------- */
-  heroes(){ if(!AC._H) AC._H=heroDB.filter(h=>h.builtin&&h.name).map(h=>({no:h.no,tier:AC.tierOf(h)})).filter(x=>x.tier); return AC._H; },
+  heroes(){ if(!AC._H){ const R=AC_CONFIG.roster, all=heroDB.filter(h=>h.builtin&&h.name);
+      AC._H=R?Object.entries(R).flatMap(([t,ns])=>ns.map(n=>all.find(h=>h.name===n&&AC.tierOf(h)===+t)).filter(Boolean).map(h=>({no:h.no,tier:+t})))
+        :all.map(h=>({no:h.no,tier:AC.tierOf(h)})).filter(x=>x.tier); } return AC._H; },
+  powerOf(no,t){ const C=AC_CONFIG, tr=AC.tierNo(no)||AC.tierOf(AC.hero(no)), ms=C.tMilestones.filter(m=>t>=m).length;
+    const m=(C.tierMult[tr]||1)*(1+t*(C.tStepPct[tr]||0)/100)*(1+ms*C.milestonePct/100); return {mult:m, def:1+(m-1)*C.defShare, skill:ms*C.milestoneSkill, ms}; },
   tierOf(h){ if(!h) return 0; if(h.awake==="O") return 5; return {"희귀":1,"전설":2,"전설 스페셜":3,"(구)세나":4}[h.grade]||0; },
   tierNo(no){ const x=AC.heroes().find(y=>y.no===no); return x?x.tier:0; },
   cost(no){ return AC_CONFIG.tierCost[AC.tierNo(no)]||1; },
@@ -5037,7 +5054,8 @@ const AC={
   statsOf(no,t){ const k=no+":"+t; AC._S=AC._S||{}; if(AC._S[k]) return AC._S[k];
     const h=AC.hero(no); const c=Object.assign({},h,{tLv:t,gear:{}}); if(!AC_CONFIG.usePotential){ c.pAtk=0; c.pDef=0; c.pHp=0; }
     const R=resolveStats(c,{}), f=x=>+(R[x]&&R[x].final)||0;
-    return AC._S[k]={atk:f("atk"),def:f("def"),hp:f("hp"),spd:f("spd"),crit:f("crit"),cdmg:f("cdmg")||150,weak:f("weak"),block:f("block"),dmgRed:f("dmgRed")}; },
+    const P=AC.powerOf(no,t);
+    return AC._S[k]={atk:f("atk")*P.mult,def:f("def")*P.def,hp:f("hp")*P.mult,skill:P.skill,spd:f("spd"),crit:f("crit"),cdmg:f("cdmg")||150,weak:f("weak"),block:f("block"),dmgRed:f("dmgRed")}; },
   /* ---------- 경제 ---------- */
   interest(g){ return Math.min(AC_CONFIG.interestMax,Math.floor(Math.max(0,g)/AC_CONFIG.interestPer)); },
   streakGold(s){ const a=Math.abs(s); for(const [n,g] of AC_CONFIG.streakBonus) if(a>=n) return g; return 0; },
@@ -5046,7 +5064,7 @@ const AC={
   addXp(S,n){ if(S.level>=AC_CONFIG.maxLevel) return; S.xp+=n; while(S.level<AC_CONFIG.maxLevel&&S.xp>=AC.xpNeed(S.level)){ S.xp-=AC.xpNeed(S.level); S.level++; } if(S.level>=AC_CONFIG.maxLevel) S.xp=0; },
   /* ---------- 새 게임 ---------- */
   side(){ return {gold:AC_CONFIG.startGold,level:1,xp:0,streak:0,units:[],shop:[],locked:false,lastWin:null}; },
-  newGame(seed){ const st={v:1,round:1,hp:AC_CONFIG.startHp,phase:"prep",seed:(seed==null?(Date.now()^(Math.random()*1e9))>>>0:seed>>>0),uid:1,pool:{},me:AC.side(),ai:AC.side(),last:null,log:[]};
+  newGame(seed){ const st={v:2,round:1,hp:AC_CONFIG.startHp,phase:"prep",seed:(seed==null?(Date.now()^(Math.random()*1e9))>>>0:seed>>>0),uid:1,pool:{},me:AC.side(),ai:AC.side(),last:null,log:[]};
     AC.heroes().forEach(x=>st.pool[x.no]=AC_CONFIG.poolCopies[x.tier]); st.me.shop=AC.roll(st,1); AC.aiPrepare(st); return st; },
   /* ---------- 상점 ---------- */
   rollOne(st,level){ const od=AC_CONFIG.odds[Math.min(level,AC_CONFIG.maxLevel)-1]; let r=AC.rnd(st)*100, tier=1;
@@ -5098,7 +5116,7 @@ const AC={
       let tg=foes[0], bd=1e9; for(const f of foes){ const d=Math.hypot(f.R-u.R,f.C-u.C); if(d<bd){ bd=d; tg=f; } }
       u.cd=Math.max(-C.dt,u.cd-dt);
       if(AC.dist(u,tg)<=u.range){ if(u.cd<=0){ u.cd+=u.iv; u.atks++; const sk=u.atks%C.skillEvery===0, crit=AC.rnd(B)*100<u.s.crit, weak=AC.rnd(B)*100<u.s.weak, block=AC.rnd(B)*100<tg.s.block;
-          const ot=B.t>C.overtimeAt?(B.t-C.overtimeAt)*C.overtimeAmp:0; const d=Math.max(1,Math.round(damage({atk:u.s.atk,def:tg.s.def,coef:sk?C.skillCoef:100,crit,cdmg:u.s.cdmg,weak,block,dmgRed:tg.s.dmgRed,amp:ot}).dmg*C.dmgMult));
+          const ot=B.t>C.overtimeAt?(B.t-C.overtimeAt)*C.overtimeAmp:0; const d=Math.max(1,Math.round(damage({atk:u.s.atk,def:tg.s.def,coef:sk?C.skillCoef+(u.s.skill||0):100,crit,cdmg:u.s.cdmg,weak,block,dmgRed:tg.s.dmgRed,amp:ot}).dmg*C.dmgMult));
           tg.hp-=d; B.events.push({k:"hit",a:u.uid,b:tg.uid,d,crit,sk}); if(tg.hp<=0){ tg.hp=0; tg.alive=false; B.events.push({k:"die",b:tg.uid}); } } }
       else { u.mv-=dt; if(u.mv<=0){ u.mv=C.moveTime; let best=null, bv=Math.hypot(tg.R-u.R,tg.C-u.C);
           for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=u.R+dr, Cc=u.C+dc; if(R<0||R>=C.rows*2||Cc<0||Cc>=C.cols) continue;
@@ -5118,9 +5136,22 @@ const AC={
     for(const S of [st.me,st.ai]){ S.gold+=AC.income(S.gold,S.streak,S.lastWin); AC.addXp(S,C.xpPerRound); }
     st.round++; if(st.me.locked){ st.me.locked=false; st.me.shop=st.me.shop.map(n=>n); } else st.me.shop=AC.roll(st,st.me.level);
     AC.aiPrepare(st); st.phase="prep"; },
+  /* ---------- 밸런스 모의 (시드 고정) ---------- */
+  duel(seed,A,B){ const r={seed}; const pickT=(t,n)=>{ const c=AC.heroes().filter(x=>x.tier===t).map(x=>x.no); const out=[]; while(out.length<n&&c.length) out.push(c.splice(Math.floor(AC.rnd(r)*c.length),1)[0]); return out; };
+    const mk=spec=>{ const S={level:0,units:[]}; let id=1; spec.forEach(([tier,n,t])=>pickT(tier,n).forEach(no=>S.units.push({uid:id++,no,t,copies:t+1,loc:"b0"}))); S.level=S.units.length; AC.autoPlace(S); return S; };
+    const st={seed:(seed*2654435761)>>>0,me:mk(A),ai:mk(B)}; return AC.battleRun(AC.battleInit(st)).winner==="me"; },
+  winRate(A,B,n){ let w=0; for(let i=1;i<=n;i++) if(AC.duel(i,A,B)) w++; return Math.round(w/n*100); },
+  balanceReport(n){ n=n||300; return {
+    "초월 소수(2코 3명 3초월) vs 다수(2코 6명 1초월) 같은 24골드":AC.winRate([[2,3,3]],[[2,6,1]],n),
+    "초월 소수(1코 3명 4초월) vs 다수(1코 5명 2초월) 같은 15골드":AC.winRate([[1,3,4]],[[1,5,2]],n),
+    "4코 6초월 vs 1코 6초월 (1:1)":AC.winRate([[4,1,6]],[[1,1,6]],n),
+    "1코 3명 6초월 vs 1코 5명 0초월 (레벨 +2)":AC.winRate([[1,3,6]],[[1,5,0]],n),
+    "5코 1명 0초월 vs 1코 1명 0초월":AC.winRate([[5,1,0]],[[1,1,0]],n),
+    "1코 6초월 vs 4코 0초월 (1:1)":AC.winRate([[1,1,6]],[[4,1,0]],n),
+    "거울 (2코 4명 2초월)":AC.winRate([[2,4,2]],[[2,4,2]],n) }; },
   /* ---------- 저장 ---------- */
   save(){ try{ if(AC.st) localStorage.setItem(AC.KEY,JSON.stringify(Object.assign({},AC.st,{phase:AC.st.phase==="battle"?"prep":AC.st.phase}))); }catch{} },
-  load(){ try{ const o=JSON.parse(localStorage.getItem(AC.KEY)||"null"); if(o&&o.v===1&&o.me&&o.ai) return o; }catch{} return null; },
+  load(){ try{ const o=JSON.parse(localStorage.getItem(AC.KEY)||"null"); if(o&&o.v===2&&o.me&&o.ai) return o; /* v1(밸런스 전) 저장은 버림 */ }catch{} return null; },
   /* ---------- 화면 ---------- */
   init(){ AC.st=AC.load()||AC.newGame(); AC.render(); },
   msg(t){ AC._m=t; const m=$("acMsg"); if(m) m.textContent=t; clearTimeout(AC.msgT); AC.msgT=setTimeout(()=>{ AC._m=""; const e=$("acMsg"); if(e) e.textContent=""; },2200); },
@@ -5146,8 +5177,14 @@ const AC={
     box.innerHTML=`${hud}<div class="acmain"><div class="acleft"><div class="acboard" id="acBoard"><div class="acgrid">${grid}</div><div class="aclayer" id="acLayer"></div><div class="acmid" aria-hidden="true"></div>${ov}</div>
       <div class="acbench" data-acsellzone>${bench}</div></div>
       <div class="acright"><div class="acshops" data-acsellzone>${shop}</div>${ctl}<div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div>
+      ${AC.rosterHTML()}
       <div class="acfoot"><button type="button" data-acdo="new">새 게임</button><span class="muted">탭 = 선택 → 칸/대기석 탭 = 이동 · 끌어다 놓기 · 상점으로 끌면 판매 · v1: 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격, 시너지 없음</span></div></div></div>`;
     if(st.phase==="battle"&&AC.anim) AC.drawBattle(AC.anim.B,[]); },
+  rosterHTML(){ const C=AC_CONFIG, st=AC.st;
+    return `<details class="acroster" data-acroster${AC.rosterOpen?" open":""}><summary>로스터 (티어별 영웅 · 남은 장 수)</summary>${[1,2,3,4,5].map(t=>{ const L=AC.heroes().filter(x=>x.tier===t);
+      return `<div class="acrt tier${t}" data-acrtier="${t}"><b class="acrh">${t}코 ${C.tierName[t]} <small>${L.length}명 · 각 ${C.poolCopies[t]}장 · ×${C.tierMult[t]} · 초월당 +${C.tStepPct[t]}%</small></b><div class="acrl">${L.map(x=>{ const h=AC.hero(x.no);
+        return `<span class="acrw" data-acrhero="${esc(h.name)}" title="${esc(h.name)} · ${esc(h.trait)} · 사거리 ${AC.rangeOf(x.no)}">${AC.face(x.no)}<span>${esc(h.name)}<small>${esc((h.trait||"").replace("형",""))} · ${st.pool[x.no]??"-"}장</small></span></span>`; }).join("")}</div></div>`; }).join("")}
+      <p class="muted acrnote">초월 이정표 ${C.tMilestones.join("/")}: 이정표마다 공·생 +${C.milestonePct}% · 스킬 계수 +${C.milestoneSkill}%p · 방어는 증가분의 ${Math.round(C.defShare*100)}% · 로스터는 AC_CONFIG.roster 에서 고침</p></details>`; },
   /* 전투 그리기 */
   startBattle(){ const st=AC.st; if(st.phase!=="prep") return; AC.save(); st.phase="battle"; AC.sel=null; const B=AC.battleInit(st); AC.anim={B,last:0,acc:0,raf:0}; AC.render();
     if(B.done) return AC.finishBattle(); AC.anim.last=performance.now(); AC.anim.raf=requestAnimationFrame(AC.frame); },
@@ -5163,7 +5200,7 @@ const AC={
     ev.filter(e=>e.k==="hit").slice(-12).forEach(e=>{ const t=B.units.find(u=>u.uid===e.b); if(!t) return; const d=document.createElement("span"); d.className="acdmg"+(e.crit?" crit":"")+(e.sk?" sk":"")+(t.side==="me"?" onme":"");
       d.textContent=fmtN(e.d); d.style.left=((t.C+0.5)/C.cols*100)+"%"; d.style.top=(t.R/(C.rows*2)*100)+"%"; L.appendChild(d); setTimeout(()=>d.remove(),700); }); },
   /* 입력 */
-  onClick(e){ const st=AC.st, S=st.me, t=e.target; const prep=st.phase==="prep";
+  onClick(e){ const st=AC.st, S=st.me, t=e.target; const prep=st.phase==="prep"; if(t.closest("[data-acroster] summary")){ setTimeout(()=>{ const d=document.querySelector("[data-acroster]"); AC.rosterOpen=!!(d&&d.open); }); return; } if(t.closest("[data-acroster]")) return;
     const d=t.closest("[data-acdo]"); if(d){ const k=d.dataset.acdo; let w="";
       if(k==="new"){ if(st.phase!=="over"&&st.round>1&&!confirm("새 게임을 시작할까요? 지금 게임은 사라져요.")) return; if(AC.anim){ cancelAnimationFrame(AC.anim.raf); AC.anim=null; } AC.st=AC.newGame(); AC.sel=null; }
       else if(k==="speed"){ AC.speed=AC.speed===1?2:1; d.textContent=AC.speed+"x"; return; }
