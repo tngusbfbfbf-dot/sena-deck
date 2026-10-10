@@ -927,6 +927,54 @@
   html.intro #tabs{--d:100ms}
   @keyframes introIn{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:none}}
   @media (prefers-reduced-motion:reduce){ .tlogo{animation:none} html.intro h1.ttl,html.intro #tabs,html.intro .introel{animation:none} }
+  /* ===== 오토체스 ===== */
+  #acRoot{--acw:min(100%,560px)}
+  .achud{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}
+  .achud .hi{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:14px;border:1px solid var(--gold-line);background:rgba(14,17,25,.7);font-size:13px;white-space:nowrap}
+  .achud .hi b{color:var(--gold-hi);font-variant-numeric:tabular-nums} .achud .hp b{color:#ff8f9b} .achud small{color:var(--text-muted);font-size:11px}
+  .acxp{display:inline-block;width:56px;height:6px;border-radius:3px;background:#1c1f28;overflow:hidden} .acxp>i{display:block;height:100%;background:linear-gradient(90deg,#3d7bd6,#8fc2ff)}
+  .achud .odds{gap:3px;padding:3px 6px} .achud .odds i{font-style:normal;font-size:11px;padding:0 4px;border-radius:5px;font-variant-numeric:tabular-nums}
+  .tier1{--tc:#5d8fd6} .tier2{--tc:#e08a2c} .tier3{--tc:#d2365f} .tier4{--tc:#9a5ce6} .tier5{--tc:#f3d27a}
+  .achud .odds i{border:1px solid var(--tc);color:var(--tc)}
+  .acmain{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:14px;align-items:start}
+  .acboard{position:relative;width:100%;aspect-ratio:7/8;border:1px solid var(--gold-line);border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#26161b 0 50%,#141a26 50% 100%)}
+  .acgrid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(8,1fr)}
+  .accell{border:1px solid rgba(214,178,106,.08);position:relative;min-width:0;min-height:0}
+  .accell.me{background:rgba(70,110,180,.06)} .accell.ai{background:rgba(180,60,80,.05)} .accell.me.front{box-shadow:inset 0 2px 0 rgba(214,178,106,.25)}
+  .accell.me:hover{background:rgba(214,178,106,.10)}
+  .acmid{position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--gold) 80%,transparent);opacity:.6;pointer-events:none}
+  .aclayer{position:absolute;inset:0;pointer-events:none}
+  .actk{position:relative;width:100%;height:100%;padding:3px;box-sizing:border-box;cursor:pointer;touch-action:manipulation}
+  .actk .acface{display:block;position:relative;width:100%;height:100%;border-radius:7px;overflow:hidden;border:2px solid var(--tc);background:#121620}
+  .acface img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover} .acface b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px}
+  .actk .act{position:absolute;right:1px;top:1px;z-index:2;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:linear-gradient(180deg,#f3dc9c,#b8913f);color:#1a1307;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center}
+  .actk .acnm{position:absolute;left:3px;right:3px;bottom:3px;z-index:2;font-size:9px;text-align:center;background:linear-gradient(transparent,#000c);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:0 0 6px 6px;padding-top:6px}
+  .actk.sel .acface{outline:3px solid var(--gold-hi);outline-offset:1px;box-shadow:0 0 12px #ffd98a99}
+  .actk.foe{cursor:default}
+  .actk.bt{position:absolute;width:calc(100%/7);height:calc(100%/8);transition:left .3s linear,top .3s linear,opacity .4s}
+  .actk.bt.ai .acface{box-shadow:0 0 0 2px #ff4a64,0 0 8px #ff4a6488} .actk.bt.me .acface{box-shadow:0 0 0 2px #4a90ff,0 0 8px #4a90ff88} .actk.bt.dead{opacity:0}
+  .achp{position:absolute;left:4px;right:4px;top:-1px;height:5px;border-radius:3px;background:#000a;z-index:3;overflow:hidden} .achp>i{display:block;height:100%;background:#59d17a;transition:width .15s} .actk.ai .achp>i{background:#ef5a6f}
+  .acdmg{position:absolute;transform:translate(-50%,0);font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 2px #000,0 0 4px #000;animation:acfloat .7s ease-out forwards;z-index:5;pointer-events:none;white-space:nowrap}
+  .acdmg.onme{color:#ffb0b9} .acdmg.crit{color:#ffd76a;font-size:15px} .acdmg.sk{color:#9fd0ff;font-size:16px}
+  @keyframes acfloat{0%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-26px)}}
+  .acbench{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:8px;padding:6px;border:1px solid var(--gold-line);border-radius:10px;background:rgba(14,17,25,.6)}
+  .acbs{aspect-ratio:1;border:1px dashed #4a4030;border-radius:8px;min-width:0}
+  .acshops{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .acshop{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border-radius:10px;border:1px solid var(--tc,#333);background:linear-gradient(180deg,#1d1a14,#121016);color:var(--text);cursor:pointer;min-width:0}
+  .acshop.empty{border:1px dashed #3a3426;background:transparent;min-height:90px}
+  .acshop .acface{width:100%;max-width:72px;aspect-ratio:1;border:2px solid var(--tc);border-radius:8px;display:block;position:relative;overflow:hidden}
+  .acshop .acnm{font-size:12px;font-weight:700;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .acshop .accost{font-size:12px;color:var(--gold-hi);font-weight:800} .acshop .acown{position:absolute;top:2px;left:2px;font-size:9px;font-weight:800;padding:0 4px;border-radius:6px;background:#2a1f10;border:1px solid var(--gold);color:var(--gold-hi)}
+  .acshop[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+  .acctl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center} .acctl button.on{border-color:var(--gold);color:var(--gold-hi)}
+  .acgo{background:linear-gradient(180deg,#c9a45c,#8d6b2e)!important;color:#1a1307!important;font-weight:900;border-color:#f3dc9c!important}
+  .acmsg{min-height:20px;margin-top:6px;font-size:13px;color:var(--gold-hi)}
+  .acfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;font-size:12px}
+  .acov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,10,16,.72);z-index:10}
+  .acovb{text-align:center;padding:18px 26px;border:1px solid var(--gold);border-radius:12px;background:linear-gradient(180deg,#2a241b,#15130f)}
+  .acovb b{display:block;font-size:30px;font-weight:900} .acovb b.win{color:var(--gold-hi)} .acovb b.lose{color:#ff8f9b} .acovb p{margin:6px 0 12px;color:var(--text-muted)}
+  @media (max-width:900px){ .acmain{grid-template-columns:1fr} .acboard{max-width:560px;margin:0 auto} .acbench{max-width:560px;margin:8px auto 0} }
+  @media (max-width:560px){ .achud .hi{padding:3px 7px;font-size:12px} .acxp{width:40px} .acshop .acnm{font-size:10px} .acshop{padding:4px 2px} .actk .acnm{display:none} .acshop .acown{font-size:8px} }
 </style>
 <script>document.documentElement.classList.add("intro");</script>
 </head>
@@ -935,7 +983,7 @@
 <div id="solveModal" class="gmodal hidden"><div class="gbox sbox" id="solveBox" role="dialog" aria-modal="true" aria-label="목표 스탯 장비 자동 세팅"></div></div>
 <div id="gearModal" class="gmodal hidden"><div class="gbox" id="gearBox" role="dialog" aria-modal="true" aria-label="장비 편집"></div></div>
 <div id="gwModal" class="gmodal hidden"><div class="gbox gwbox" id="gwBox" role="dialog" aria-modal="true" aria-label="길드전 덱 편집"></div></div>
-<nav class="tabs" id="tabs"><button data-tab="deck">배치</button><button data-tab="heroes">영웅 입력</button><button data-tab="guild">길드전 추천덱</button><button data-tab="tune">조율</button><button data-tab="craft">세공</button><button data-tab="gacha">가챠</button><button data-tab="siege"><img class="tabico" data-art="siegeIcon" alt="" aria-hidden="true">공성전</button><button data-tab="raid"><img class="tabico" data-art="raidIcon" alt="" aria-hidden="true">강림원정대</button></nav>
+<nav class="tabs" id="tabs"><button data-tab="deck">배치</button><button data-tab="heroes">영웅 입력</button><button data-tab="guild">길드전 추천덱</button><button data-tab="tune">조율</button><button data-tab="craft">세공</button><button data-tab="gacha">가챠</button><button data-tab="siege"><img class="tabico" data-art="siegeIcon" alt="" aria-hidden="true">공성전</button><button data-tab="raid"><img class="tabico" data-art="raidIcon" alt="" aria-hidden="true">강림원정대</button><button data-tab="ac">오토체스</button></nav>
 
 <div id="tab-deck">
 <section>
@@ -1155,6 +1203,12 @@
 </section>
 </div><!-- /tab-siege -->
 
+<div id="tab-ac" class="hidden">
+<section id="acSec">
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">프로토타입 v1 · 숫자는 나중에 밸런스</span></h2>
+  <div id="acRoot"></div>
+</section>
+</div>
 <div id="tab-raid" class="hidden">
 <section id="rdSec">
   <h2 class="arth"><img class="hemb" data-art="raidIcon" alt="" aria-hidden="true">강림원정대</h2>
@@ -4947,8 +5001,196 @@ function renderRaid(){
   $("rdRecSec").classList.toggle("hidden",rdS.boss!=="파괴의 그림자");
   renderRec("raid");
 }
+/* ===================== 오토체스 (프로토타입 v1) =====================
+   AC_CONFIG = 밸런스 숫자 전부 · AC = 로직(경제·상점·배치·전투·AI) + 화면.  상태는 localStorage '7kr_ac'.
+   v1 단순화: 실제 스킬 글은 안 읽음 → N번째 공격마다 강화 일격 · 시너지 없음(훅만) · 장비 없음 · 잠재 끔 */
+const AC_CONFIG={
+  rows:4, cols:7, bench:8, shopSize:5, maxLevel:10,
+  startHp:100, startGold:5, baseIncome:5, interestPer:10, interestMax:5,
+  streakBonus:[[6,3],[4,2],[2,1]],   // [연속 n 이상, +골드] (큰 것부터)
+  winBonus:1, rerollCost:2, xpBuyCost:4, xpBuyAmount:4, xpPerRound:2,
+  xpToNext:[2,2,6,10,20,36,56,80,100], // Lv1→2 … Lv9→10
+  tierCost:{1:1,2:2,3:3,4:4,5:5}, poolCopies:{1:29,2:22,3:18,4:12,5:10},
+  tierName:{1:"희귀",2:"전설",3:"전설 스페셜",4:"(구)세나",5:"각성"},
+  odds:[[100,0,0,0,0],[100,0,0,0,0],[75,25,0,0,0],[55,30,15,0,0],[45,33,20,2,0],[30,40,25,5,0],[19,30,35,15,1],[18,25,32,22,3],[10,20,25,35,10],[5,10,20,40,25]],
+  lossBase:2, lossPerUnit:2,
+  startT:0, mergeT:1, maxT:12, usePotential:false,   // 초월 성장 (자리표시 규칙): 같은 영웅을 사면 +1초월
+  range:{"방어형":1,"만능형":1,"공격형":1,"마법형":3,"지원형":3},
+  atkInterval:0.75, spdFactor:1, moveTime:0.32, dt:0.05, battleTimeout:40, playRate:1.5, // playRate = 1x 화면 속도 (모의 시간 배율)
+  overtimeAt:25, overtimeAmp:8,   // 25초 뒤 매초 주는 피해 +8% (질질 끄는 원거리 대치 방지)
+  skillEvery:3, skillCoef:250, hpMult:2.0, dmgMult:1.0,
+  aiLevelByRound:[1,2,3,3,4,4,5,5,6,6,6,7,7,7,8,8,8,8,9,9,9,9,10], aiBonusPerRound:0.5, aiReserve:0, aiMaxRolls:3,
+  colOrder:[3,2,4,1,5,0,6],
+};
+const AC={
+  KEY:"7kr_ac", st:null, sel:null, speed:1, anim:null, msgT:0,
+  synergies:[],                                   // 훅: [{id, test(units)→bool, apply(unit)}] (v1 비어 있음)
+  /* ---------- 난수 (시드) ---------- */
+  rnd(o){ let t=(o.seed=(o.seed+0x6D2B79F5)>>>0); t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; },
+  /* ---------- 영웅 ---------- */
+  heroes(){ if(!AC._H) AC._H=heroDB.filter(h=>h.builtin&&h.name).map(h=>({no:h.no,tier:AC.tierOf(h)})).filter(x=>x.tier); return AC._H; },
+  tierOf(h){ if(!h) return 0; if(h.awake==="O") return 5; return {"희귀":1,"전설":2,"전설 스페셜":3,"(구)세나":4}[h.grade]||0; },
+  tierNo(no){ const x=AC.heroes().find(y=>y.no===no); return x?x.tier:0; },
+  cost(no){ return AC_CONFIG.tierCost[AC.tierNo(no)]||1; },
+  hero(no){ return heroByNo(no); },
+  rangeOf(no){ const h=AC.hero(no); return AC_CONFIG.range[h&&h.trait]||1; },
+  statsOf(no,t){ const k=no+":"+t; AC._S=AC._S||{}; if(AC._S[k]) return AC._S[k];
+    const h=AC.hero(no); const c=Object.assign({},h,{tLv:t,gear:{}}); if(!AC_CONFIG.usePotential){ c.pAtk=0; c.pDef=0; c.pHp=0; }
+    const R=resolveStats(c,{}), f=x=>+(R[x]&&R[x].final)||0;
+    return AC._S[k]={atk:f("atk"),def:f("def"),hp:f("hp"),spd:f("spd"),crit:f("crit"),cdmg:f("cdmg")||150,weak:f("weak"),block:f("block"),dmgRed:f("dmgRed")}; },
+  /* ---------- 경제 ---------- */
+  interest(g){ return Math.min(AC_CONFIG.interestMax,Math.floor(Math.max(0,g)/AC_CONFIG.interestPer)); },
+  streakGold(s){ const a=Math.abs(s); for(const [n,g] of AC_CONFIG.streakBonus) if(a>=n) return g; return 0; },
+  income(gold,streak,won){ return AC_CONFIG.baseIncome+AC.interest(gold)+AC.streakGold(streak)+(won?AC_CONFIG.winBonus:0); },
+  xpNeed(lv){ return lv>=AC_CONFIG.maxLevel?0:AC_CONFIG.xpToNext[lv-1]; },
+  addXp(S,n){ if(S.level>=AC_CONFIG.maxLevel) return; S.xp+=n; while(S.level<AC_CONFIG.maxLevel&&S.xp>=AC.xpNeed(S.level)){ S.xp-=AC.xpNeed(S.level); S.level++; } if(S.level>=AC_CONFIG.maxLevel) S.xp=0; },
+  /* ---------- 새 게임 ---------- */
+  side(){ return {gold:AC_CONFIG.startGold,level:1,xp:0,streak:0,units:[],shop:[],locked:false,lastWin:null}; },
+  newGame(seed){ const st={v:1,round:1,hp:AC_CONFIG.startHp,phase:"prep",seed:(seed==null?(Date.now()^(Math.random()*1e9))>>>0:seed>>>0),uid:1,pool:{},me:AC.side(),ai:AC.side(),last:null,log:[]};
+    AC.heroes().forEach(x=>st.pool[x.no]=AC_CONFIG.poolCopies[x.tier]); st.me.shop=AC.roll(st,1); AC.aiPrepare(st); return st; },
+  /* ---------- 상점 ---------- */
+  rollOne(st,level){ const od=AC_CONFIG.odds[Math.min(level,AC_CONFIG.maxLevel)-1]; let r=AC.rnd(st)*100, tier=1;
+    for(let i=0;i<5;i++){ if(r<od[i]){ tier=i+1; break; } r-=od[i]; }
+    const pick=t=>{ const c=AC.heroes().filter(x=>x.tier===t&&st.pool[x.no]>0); const tot=c.reduce((a,x)=>a+st.pool[x.no],0); if(!tot) return null; let q=AC.rnd(st)*tot; for(const x of c){ q-=st.pool[x.no]; if(q<0) return x.no; } return c[c.length-1].no; };
+    let no=pick(tier); for(let d=1;no==null&&d<5;d++) no=pick(tier-d)||pick(tier+d); return no; },
+  roll(st,level){ return Array.from({length:AC_CONFIG.shopSize},()=>AC.rollOne(st,level)); },
+  owned(S,no){ return S.units.find(u=>u.no===no); },
+  benchFree(S){ for(let i=0;i<AC_CONFIG.bench;i++) if(!S.units.some(u=>u.loc==="b"+i)) return i; return -1; },
+  field(S){ return S.units.filter(u=>u.loc[0]==="f"); },
+  canBuy(st,S,i){ const no=S.shop[i]; if(no==null) return "없음"; if(S.gold<AC.cost(no)) return "골드 부족"; const u=AC.owned(S,no);
+    if(u) return u.t>=AC_CONFIG.maxT?"최대 초월":""; return AC.benchFree(S)<0?"대기석 가득":""; },
+  buy(st,S,i){ const why=AC.canBuy(st,S,i); if(why) return why; const no=S.shop[i], u=AC.owned(S,no);
+    S.gold-=AC.cost(no); st.pool[no]--; S.shop[i]=null;
+    if(u){ u.t=Math.min(AC_CONFIG.maxT,u.t+AC_CONFIG.mergeT); u.copies++; } else S.units.push({uid:st.uid++,no,t:AC_CONFIG.startT,copies:1,loc:"b"+AC.benchFree(S)});
+    return ""; },
+  sell(st,S,uid){ const u=S.units.find(x=>x.uid===uid); if(!u) return 0; const g=AC.cost(u.no)*u.copies; S.gold+=g; st.pool[u.no]+=u.copies; S.units.splice(S.units.indexOf(u),1); return g; },
+  reroll(st,S){ if(S.gold<AC_CONFIG.rerollCost) return "골드 부족"; S.gold-=AC_CONFIG.rerollCost; S.shop=AC.roll(st,S.level); return ""; },
+  buyXp(S){ if(S.level>=AC_CONFIG.maxLevel) return "최대 레벨"; if(S.gold<AC_CONFIG.xpBuyCost) return "골드 부족"; S.gold-=AC_CONFIG.xpBuyCost; AC.addXp(S,AC_CONFIG.xpBuyAmount); return ""; },
+  move(S,uid,loc){ const u=S.units.find(x=>x.uid===uid); if(!u||u.loc===loc) return "";
+    const o=S.units.find(x=>x.loc===loc);
+    if(loc[0]==="f"&&u.loc[0]!=="f"&&!o&&AC.field(S).length>=S.level) return `배치 한도 ${S.level}명 (레벨 = 배치 수)`;
+    if(o) o.loc=u.loc; u.loc=loc; return ""; },
+  /* ---------- 상대 AI ---------- */
+  aiPrepare(st){ const S=st.ai, C=AC_CONFIG, tl=C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel;
+    if(st.round>1) S.gold+=Math.floor((st.round-1)*C.aiBonusPerRound);
+    while(S.level<tl&&S.gold>=C.xpBuyCost+C.aiReserve) AC.buyXp(S);
+    for(let r=0;r<=C.aiMaxRolls;r++){ S.shop=AC.roll(st,S.level);
+      const order=S.shop.map((no,i)=>({no,i})).filter(x=>x.no!=null).sort((a,b)=>(AC.owned(S,b.no)?10:0)+AC.tierNo(b.no)-((AC.owned(S,a.no)?10:0)+AC.tierNo(a.no)));
+      for(const x of order){ if(AC.canBuy(st,S,x.i)==="대기석 가득"){ const w=S.units.filter(u=>u.loc[0]==="b").sort((a,b)=>AC.score(a)-AC.score(b))[0]; if(w&&AC.score(w)<AC.tierNo(x.no)*20) AC.sell(st,S,w.uid); }
+        if(!AC.canBuy(st,S,x.i)) AC.buy(st,S,x.i); }
+      if(S.gold<C.rerollCost+C.aiReserve+2) break; S.gold-=C.rerollCost; }
+    AC.autoPlace(S); },
+  score(u){ return AC.tierNo(u.no)*20+u.t*3; },
+  autoPlace(S){ const C=AC_CONFIG; S.units.forEach((u,i)=>u.loc="t"+i); const best=[...S.units].sort((a,b)=>AC.score(b)-AC.score(a)), on=best.slice(0,S.level), off=best.slice(S.level);
+    const used=new Set(), put=(u,rows)=>{ for(const r of rows) for(const c of C.colOrder){ const k="f"+r+","+c; if(!used.has(k)){ used.add(k); u.loc=k; return; } } };
+    on.filter(u=>AC.rangeOf(u.no)<=1).forEach(u=>put(u,[0,1,2,3])); on.filter(u=>AC.rangeOf(u.no)>1).forEach(u=>put(u,[3,2,1,0]));
+    off.forEach((u,i)=>{ if(i<C.bench) u.loc="b"+i; }); S.units=S.units.filter(u=>u.loc[0]!=="t"); },
+  /* ---------- 전투 ---------- */
+  battleInit(st){ const C=AC_CONFIG, B={t:0,units:[],seed:(st.seed^0x9e3779b9)>>>0,done:false,winner:null,events:[]};
+    const add=(S,side)=>AC.field(S).forEach(u=>{ const [r,c]=u.loc.slice(1).split(",").map(Number), s=AC.statsOf(u.no,u.t), h=AC.hero(u.no), hp=Math.round(s.hp*C.hpMult);
+      B.units.push({uid:side+u.uid,side,no:u.no,t:u.t,name:h.name,R:side==="me"?C.rows+r:C.rows-1-r,C:c,s,hp,maxHp:hp,range:AC.rangeOf(u.no),cd:AC.rnd(B)*0.3,mv:0,atks:0,alive:true,iv:C.atkInterval*100/(100+s.spd*C.spdFactor)}); });
+    add(st.me,"me"); add(st.ai,"ai"); AC.synergies.forEach(sy=>["me","ai"].forEach(sd=>{ const us=B.units.filter(u=>u.side===sd); if(sy.test(us)) us.forEach(sy.apply); }));
+    if(!B.units.some(u=>u.side==="me")||!B.units.some(u=>u.side==="ai")) AC.battleEnd(B); return B; },
+  dist(a,b){ return Math.max(Math.abs(a.R-b.R),Math.abs(a.C-b.C)); },
+  battleStep(B,dt){ if(B.done) return; const C=AC_CONFIG; B.t+=dt;
+    const ord=B.units.slice(); for(let i=ord.length-1;i>0;i--){ const j=Math.floor(AC.rnd(B)*(i+1)); [ord[i],ord[j]]=[ord[j],ord[i]]; } // 매 틱 순서 섞기 (선공 유리 없앰)
+    for(const u of ord){ if(!u.alive) continue; const foes=B.units.filter(x=>x.alive&&x.side!==u.side); if(!foes.length) break;
+      let tg=foes[0], bd=1e9; for(const f of foes){ const d=Math.hypot(f.R-u.R,f.C-u.C); if(d<bd){ bd=d; tg=f; } }
+      u.cd=Math.max(-C.dt,u.cd-dt);
+      if(AC.dist(u,tg)<=u.range){ if(u.cd<=0){ u.cd+=u.iv; u.atks++; const sk=u.atks%C.skillEvery===0, crit=AC.rnd(B)*100<u.s.crit, weak=AC.rnd(B)*100<u.s.weak, block=AC.rnd(B)*100<tg.s.block;
+          const ot=B.t>C.overtimeAt?(B.t-C.overtimeAt)*C.overtimeAmp:0; const d=Math.max(1,Math.round(damage({atk:u.s.atk,def:tg.s.def,coef:sk?C.skillCoef:100,crit,cdmg:u.s.cdmg,weak,block,dmgRed:tg.s.dmgRed,amp:ot}).dmg*C.dmgMult));
+          tg.hp-=d; B.events.push({k:"hit",a:u.uid,b:tg.uid,d,crit,sk}); if(tg.hp<=0){ tg.hp=0; tg.alive=false; B.events.push({k:"die",b:tg.uid}); } } }
+      else { u.mv-=dt; if(u.mv<=0){ u.mv=C.moveTime; let best=null, bv=Math.hypot(tg.R-u.R,tg.C-u.C);
+          for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=u.R+dr, Cc=u.C+dc; if(R<0||R>=C.rows*2||Cc<0||Cc>=C.cols) continue;
+            if(B.units.some(x=>x.alive&&x!==u&&x.R===R&&x.C===Cc)) continue; const v=Math.hypot(tg.R-R,tg.C-Cc); if(v<bv-1e-9){ bv=v; best=[R,Cc]; } }
+          if(best){ u.R=best[0]; u.C=best[1]; } } } }
+    const me=B.units.some(u=>u.alive&&u.side==="me"), ai=B.units.some(u=>u.alive&&u.side==="ai");
+    if(!me||!ai||B.t>=C.battleTimeout) AC.battleEnd(B); },
+  battleEnd(B){ B.done=true; const me=B.units.filter(u=>u.alive&&u.side==="me").length, ai=B.units.filter(u=>u.alive&&u.side==="ai").length;
+    B.winner=me&&!ai?"me":"ai"; B.survivors=B.winner==="me"?me:ai; },
+  battleRun(B){ let n=0; while(!B.done&&n++<1e5) AC.battleStep(B,AC_CONFIG.dt); return B; },
+  /* ---------- 라운드 ---------- */
+  applyResult(st,B){ const won=B.winner==="me", C=AC_CONFIG, loss=won?0:C.lossBase+C.lossPerUnit*B.survivors;
+    st.hp=Math.max(0,st.hp-loss); const sk=(S,w)=>{ S.streak=w?(S.streak>0?S.streak+1:1):(S.streak<0?S.streak-1:-1); S.lastWin=w; }; sk(st.me,won); sk(st.ai,!won);
+    st.last={round:st.round,won,loss,survivors:B.survivors,time:+B.t.toFixed(1)}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
+    st.phase=st.hp<=0?"over":"result"; },
+  nextRound(st){ if(st.phase!=="result") return; const C=AC_CONFIG;
+    for(const S of [st.me,st.ai]){ S.gold+=AC.income(S.gold,S.streak,S.lastWin); AC.addXp(S,C.xpPerRound); }
+    st.round++; if(st.me.locked){ st.me.locked=false; st.me.shop=st.me.shop.map(n=>n); } else st.me.shop=AC.roll(st,st.me.level);
+    AC.aiPrepare(st); st.phase="prep"; },
+  /* ---------- 저장 ---------- */
+  save(){ try{ if(AC.st) localStorage.setItem(AC.KEY,JSON.stringify(Object.assign({},AC.st,{phase:AC.st.phase==="battle"?"prep":AC.st.phase}))); }catch{} },
+  load(){ try{ const o=JSON.parse(localStorage.getItem(AC.KEY)||"null"); if(o&&o.v===1&&o.me&&o.ai) return o; }catch{} return null; },
+  /* ---------- 화면 ---------- */
+  init(){ AC.st=AC.load()||AC.newGame(); AC.render(); },
+  msg(t){ AC._m=t; const m=$("acMsg"); if(m) m.textContent=t; clearTimeout(AC.msgT); AC.msgT=setTimeout(()=>{ AC._m=""; const e=$("acMsg"); if(e) e.textContent=""; },2200); },
+  face(no,cls){ const h=AC.hero(no), pt=portraitFor(h), bg=pt&&gradeBgFor(h); return `<span class="acface ${cls||""}">${bg?`<img class="gbg" src="${esc(bg)}" alt="">`:""}${pt?`<img src="${esc(pt)}" alt="">`:`<b>${esc(h?h.name:"?")}</b>`}</span>`; },
+  tokenHTML(u){ const h=AC.hero(u.no), tr=AC.tierNo(u.no); return `<div class="actk tier${tr}${AC.sel===u.uid?" sel":""}" data-acu="${u.uid}" draggable="true" title="${esc(h.name)} · ${AC_CONFIG.tierName[tr]} ${AC.cost(u.no)}골드 · ${u.t}초월 (${u.copies}장)">${AC.face(u.no)}<span class="act">${u.t}</span><span class="acnm">${esc(h.name)}</span></div>`; },
+  render(){ const st=AC.st, S=st.me, C=AC_CONFIG, box=$("acRoot"); if(!box) return;
+    const need=AC.xpNeed(S.level), od=C.odds[S.level-1], fieldN=AC.field(S).length, prep=st.phase==="prep";
+    const hud=`<div class="achud"><span class="hi">라운드 <b data-ach="round">${st.round}</b></span><span class="hi hp">♥ <b data-ach="hp">${st.hp}</b></span><span class="hi gold">💰 <b data-ach="gold">${S.gold}</b></span>
+      <span class="hi lv">Lv <b data-ach="level">${S.level}</b><i class="acxp"><i style="width:${need?S.xp/need*100:100}%"></i></i><small data-ach="xp">${need?`${S.xp}/${need}`:"MAX"}</small></span>
+      <span class="hi">${S.streak>0?`🔥 ${S.streak}연승`:S.streak<0?`💧 ${-S.streak}연패`:"연속 —"}</span><span class="hi">배치 <b data-ach="deploy">${fieldN}/${S.level}</b></span>
+      <span class="hi odds" title="현재 레벨 상점 확률">${od.map((p,i)=>`<i class="tier${i+1}">${p}%</i>`).join("")}</span></div>`;
+    const cell=(side,r,c)=>{ const U=side==="me"?S.units:st.ai.units, u=U.find(x=>x.loc==="f"+r+","+c); return `<div class="accell ${side}${r===0?" front":""}" ${side==="me"?`data-acloc="f${r},${c}"`:""}>${u?(side==="me"?AC.tokenHTML(u):`<div class="actk tier${AC.tierNo(u.no)} foe" title="${esc(AC.hero(u.no).name)} ${u.t}초월">${AC.face(u.no)}<span class="act">${u.t}</span><span class="acnm">${esc(AC.hero(u.no).name)}</span></div>`):""}</div>`; };
+    let grid=""; for(let R=0;R<C.rows*2;R++) for(let c=0;c<C.cols;c++) grid+=R<C.rows?cell("ai",C.rows-1-R,c):cell("me",R-C.rows,c);
+    const bench=Array.from({length:C.bench},(_,i)=>{ const u=S.units.find(x=>x.loc==="b"+i); return `<div class="acbs" data-acloc="b${i}">${u?AC.tokenHTML(u):""}</div>`; }).join("");
+    const shop=S.shop.map((no,i)=>{ if(no==null) return `<div class="acshop empty"></div>`; const h=AC.hero(no), tr=AC.tierNo(no), o=AC.owned(S,no), why=AC.canBuy(st,S,i);
+      return `<button type="button" class="acshop tier${tr}" data-acbuy="${i}"${why||!prep?" aria-disabled=\"true\"":""} title="${esc(h.name)} · ${C.tierName[tr]}${why?" · "+why:""}">${AC.face(no)}<span class="acnm">${esc(h.name)}</span><span class="accost">${AC.cost(no)}💰</span>${o?`<span class="acown">보유 ${o.t}→${Math.min(C.maxT,o.t+C.mergeT)}</span>`:""}</button>`; }).join("");
+    const selU=AC.sel&&S.units.find(u=>u.uid===AC.sel);
+    const ctl=`<div class="acctl"><button type="button" data-acdo="reroll"${prep?"":" disabled"}>새로고침 ${C.rerollCost}💰</button><button type="button" data-acdo="xp"${prep?"":" disabled"}>경험치 +${C.xpBuyAmount} (${C.xpBuyCost}💰)</button>
+      <button type="button" data-acdo="lock" class="${S.locked?"on":""}"${prep?"":" disabled"}>${S.locked?"🔒 잠금":"🔓 잠금"}</button><button type="button" data-acdo="sell" data-acsell${selU&&prep?"":" disabled"}>판매${selU?` +${AC.cost(selU.no)*selU.copies}💰`:""}</button>
+      <span style="flex:1"></span><button type="button" data-acdo="speed">${AC.speed}x</button>${st.phase==="battle"?`<button type="button" data-acdo="skip">건너뛰기</button>`:""}<button type="button" class="acgo" data-acdo="fight"${prep?"":" disabled"}>⚔ 전투 시작</button></div>`;
+    const ov=st.phase==="result"&&st.last?`<div class="acov" data-acov="result"><div class="acovb"><b class="${st.last.won?"win":"lose"}">${st.last.won?"승리":"패배"}</b><p>라운드 ${st.last.round}${st.last.won?"":` · ♥ −${st.last.loss} (상대 생존 ${st.last.survivors}명)`} · ${st.last.time}초</p><button type="button" class="acgo" data-acdo="next">다음 라운드</button></div></div>`
+      :st.phase==="over"?`<div class="acov" data-acov="over"><div class="acovb"><b class="lose">게임 오버</b><p>${st.round}라운드에서 탈락 · 버틴 라운드 ${st.round-1}</p><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div>`:"";
+    box.innerHTML=`${hud}<div class="acmain"><div class="acleft"><div class="acboard" id="acBoard"><div class="acgrid">${grid}</div><div class="aclayer" id="acLayer"></div><div class="acmid" aria-hidden="true"></div>${ov}</div>
+      <div class="acbench" data-acsellzone>${bench}</div></div>
+      <div class="acright"><div class="acshops" data-acsellzone>${shop}</div>${ctl}<div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div>
+      <div class="acfoot"><button type="button" data-acdo="new">새 게임</button><span class="muted">탭 = 선택 → 칸/대기석 탭 = 이동 · 끌어다 놓기 · 상점으로 끌면 판매 · v1: 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격, 시너지 없음</span></div></div></div>`;
+    if(st.phase==="battle"&&AC.anim) AC.drawBattle(AC.anim.B,[]); },
+  /* 전투 그리기 */
+  startBattle(){ const st=AC.st; if(st.phase!=="prep") return; AC.save(); st.phase="battle"; AC.sel=null; const B=AC.battleInit(st); AC.anim={B,last:0,acc:0,raf:0}; AC.render();
+    if(B.done) return AC.finishBattle(); AC.anim.last=performance.now(); AC.anim.raf=requestAnimationFrame(AC.frame); },
+  frame(now){ const A=AC.anim; if(!A) return; const dt=Math.min(0.1,(now-A.last)/1000)*AC.speed*AC_CONFIG.playRate; A.last=now; A.acc+=dt; const B=A.B; B.events=[];
+    while(A.acc>=AC_CONFIG.dt&&!B.done){ AC.battleStep(B,AC_CONFIG.dt); A.acc-=AC_CONFIG.dt; }
+    AC.drawBattle(B,B.events); if(B.done){ setTimeout(AC.finishBattle,450); return; } A.raf=requestAnimationFrame(AC.frame); },
+  skip(){ const A=AC.anim; if(!A) return; cancelAnimationFrame(A.raf); A.B.events=[]; AC.battleRun(A.B); AC.drawBattle(A.B,[]); AC.finishBattle(); },
+  finishBattle(){ const A=AC.anim; if(!A||AC.st.phase!=="battle") return; cancelAnimationFrame(A.raf); AC.applyResult(AC.st,A.B); AC.anim=null; AC.save(); AC.render(); },
+  drawBattle(B,ev){ const L=$("acLayer"); if(!L) return; const C=AC_CONFIG; document.querySelectorAll("#acBoard .accell .actk").forEach(e=>e.remove());
+    for(const u of B.units){ let el=L.querySelector(`[data-acb="${u.uid}"]`);
+      if(!el){ el=document.createElement("div"); el.className=`actk bt tier${AC.tierNo(u.no)} ${u.side}`; el.dataset.acb=u.uid; el.innerHTML=`${AC.face(u.no)}<span class="act">${u.t}</span><i class="achp"><i></i></i>`; L.appendChild(el); }
+      el.style.left=(u.C/C.cols*100)+"%"; el.style.top=(u.R/(C.rows*2)*100)+"%"; el.querySelector(".achp>i").style.width=(u.hp/u.maxHp*100)+"%"; el.classList.toggle("dead",!u.alive); }
+    ev.filter(e=>e.k==="hit").slice(-12).forEach(e=>{ const t=B.units.find(u=>u.uid===e.b); if(!t) return; const d=document.createElement("span"); d.className="acdmg"+(e.crit?" crit":"")+(e.sk?" sk":"")+(t.side==="me"?" onme":"");
+      d.textContent=fmtN(e.d); d.style.left=((t.C+0.5)/C.cols*100)+"%"; d.style.top=(t.R/(C.rows*2)*100)+"%"; L.appendChild(d); setTimeout(()=>d.remove(),700); }); },
+  /* 입력 */
+  onClick(e){ const st=AC.st, S=st.me, t=e.target; const prep=st.phase==="prep";
+    const d=t.closest("[data-acdo]"); if(d){ const k=d.dataset.acdo; let w="";
+      if(k==="new"){ if(st.phase!=="over"&&st.round>1&&!confirm("새 게임을 시작할까요? 지금 게임은 사라져요.")) return; if(AC.anim){ cancelAnimationFrame(AC.anim.raf); AC.anim=null; } AC.st=AC.newGame(); AC.sel=null; }
+      else if(k==="speed"){ AC.speed=AC.speed===1?2:1; d.textContent=AC.speed+"x"; return; }
+      else if(k==="skip") return AC.skip();
+      else if(k==="next"){ AC.nextRound(st); }
+      else if(!prep) return;
+      else if(k==="reroll") w=AC.reroll(st,S); else if(k==="xp") w=AC.buyXp(S); else if(k==="lock") S.locked=!S.locked;
+      else if(k==="sell"&&AC.sel){ const g=AC.sell(st,S,AC.sel); AC.sel=null; AC.msg(`판매 +${g}골드`); }
+      else if(k==="fight") return AC.startBattle();
+      if(w) AC.msg(w); AC.save(); AC.render(); return; }
+    if(!prep) return;
+    const b=t.closest("[data-acbuy]"); if(b){ const i=+b.dataset.acbuy, no=S.shop[i], w=AC.buy(st,S,i); if(w) AC.msg(w); else { const u=AC.owned(S,no); if(u&&u.copies>1) AC.msg(`${AC.hero(no).name} ${u.t}초월!`); } AC.save(); AC.render(); return; }
+    const tk=t.closest("[data-acu]"), lc=t.closest("[data-acloc]");
+    if(tk&&(!AC.sel||+tk.dataset.acu===AC.sel)){ const id=+tk.dataset.acu; AC.sel=AC.sel===id?null:id; AC.render(); return; }
+    if(AC.sel&&lc){ const w=AC.move(S,AC.sel,lc.dataset.acloc); if(w) AC.msg(w); AC.sel=null; AC.save(); AC.render(); return; }
+    if(AC.sel){ AC.sel=null; AC.render(); } },
+  onDrag(e){ const st=AC.st; if(st.phase!=="prep") return; const tk=e.target.closest&&e.target.closest("[data-acu]");
+    if(e.type==="dragstart"){ if(!tk) return; e.dataTransfer.setData("text/plain",tk.dataset.acu); e.dataTransfer.effectAllowed="move"; AC.dragId=+tk.dataset.acu; return; }
+    const lc=e.target.closest&&e.target.closest("[data-acloc]"), sz=e.target.closest&&e.target.closest(".acshops");
+    if(e.type==="dragover"){ if(lc||sz){ e.preventDefault(); } return; }
+    if(e.type==="drop"){ e.preventDefault(); const id=AC.dragId; AC.dragId=null; if(!id) return;
+      if(sz){ const g=AC.sell(st,st.me,id); AC.msg(`판매 +${g}골드`); } else if(lc){ const w=AC.move(st.me,id,lc.dataset.acloc); if(w) AC.msg(w); }
+      AC.sel=null; AC.save(); AC.render(); } },
+};
+
 function showTab(t){
-  ["deck","heroes","guild","tune","craft","gacha","siege","raid"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); flashEl($("tab-"+t),"tabfade");
+  ["deck","heroes","guild","tune","craft","gacha","siege","raid","ac"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); flashEl($("tab-"+t),"tabfade");
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
   try{ localStorage.setItem("7kr_tab",t); }catch{}
   if(t==="deck"){ if(hSaveT) saveHeroesNow(); refreshDatalist(); renderAll(); } else if(t==="guild"){ if(hSaveT) saveHeroesNow(); renderGW(); } else if(t==="tune"){ if(hSaveT) saveHeroesNow(); renderTune(); } else if(t==="gacha"){ if(hSaveT) saveHeroesNow(); renderGacha(); } else if(t==="craft"){ if(hSaveT) saveHeroesNow(); renderCraft(); } else if(t==="siege"){ if(hSaveT) saveHeroesNow(); renderSiege(); } else if(t==="raid"){ if(hSaveT) saveHeroesNow(); renderRaid(); } else { renderHeroList(); updateRoleSum(); updateTransSum(); }
@@ -6225,7 +6467,8 @@ $("oppPanel").addEventListener("click",e=>{ if(e.target.closest("[data-opp]")) g
 $("tNotice").addEventListener("click",e=>{ if(e.target.closest("[data-tnclose]")) showTNotice(null); });
 showTNotice(migrateDeckTTypes());
 refreshList(); renderAll();
-showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"||t==="raid"?t:"deck"; }catch{ return "deck"; } })());
+AC.init(); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
+showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"||t==="raid"||t==="ac"?t:"deck"; }catch{ return "deck"; } })());
 (function intro(){ const de=document.documentElement; if(!de.classList.contains("intro")) return;
   if(reduceMotion()){ de.classList.remove("intro"); return; }
   const tab=document.querySelector('[id^="tab-"]:not(.hidden)'); if(tab) tab.classList.remove("tabfade");
