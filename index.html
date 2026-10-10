@@ -5043,6 +5043,7 @@ const AC_CONFIG={
   // PVE: 1~3라운드 몬스터 (PVP는 4라운드부터) · 몬스터마다 드롭 판정 1번 · 같은 드롭을 나와 AI 모두 받음 · 연승/연패·승리 보너스에 안 셈
   uniqueTiers:[4], // (구)세나: 몇 장이든 살 수 있지만 판에는 1종만 (다른 걸 올리면 자리 바꿈)
   pveRounds:[1,2,3], pveCount:{1:2,2:3,3:4}, pveMon:{hp:2600,atk:520,def:250,spd:15,crit:5,cdmg:150,weak:0,block:0,dmgRed:0}, pveScale:{1:1.25,2:1.7,3:2.05},
+  pveSafeRounds:[1], pveWeak:{1:{hp:350,atk:1,def:0},2:{hp:2550,atk:375,def:180},3:{hp:2200,atk:335,def:165}}, // 1라운드: 몬스터 아주 약함 + 내 유닛이 1명이라도 살아 있으면 무조건 승리 (0명 배치면 패배)
   pveLossBase:1, pveLossPerMon:1, pveDrops:{goldChance:60, gold:[1,2], heroChance:35},
   atkInterval:0.75, spdFactor:1, moveTime:0.32, dt:0.05, battleTimeout:40, playRate:1.5, // playRate = 1x 화면 속도 (모의 시간 배율)
   overtimeAt:25, overtimeAmp:8,   // 25초 뒤 매초 주는 피해 +8% (질질 끄는 원거리 대치 방지)
@@ -5073,7 +5074,7 @@ const AC={
   /* ---------- PVE ---------- */
   isPve(st){ return AC_CONFIG.pveRounds.includes(st.round); },
   monsters(st){ const C=AC_CONFIG, n=C.pveCount[st.round]||2; return Array.from({length:n},(_,i)=>({uid:i+1,mon:true,no:0,t:0,loc:`f${i<4?0:1},${C.colOrder[i%4+1]}`})); },
-  monStats(round){ const C=AC_CONFIG, k=C.pveScale[round]||1, M=C.pveMon; return {atk:M.atk*k,def:M.def*k,hp:M.hp*k,spd:M.spd,crit:M.crit,cdmg:M.cdmg,weak:M.weak,block:M.block,dmgRed:M.dmgRed,skill:0}; },
+  monStats(round){ const C=AC_CONFIG, k=C.pveScale[round]||1, M=C.pveMon; const W=C.pveWeak[round]; if(W) return {atk:W.atk,def:W.def,hp:W.hp,spd:M.spd,crit:0,cdmg:100,weak:0,block:0,dmgRed:0,skill:0}; return {atk:M.atk*k,def:M.def*k,hp:M.hp*k,spd:M.spd,crit:M.crit,cdmg:M.cdmg,weak:M.weak,block:M.block,dmgRed:M.dmgRed,skill:0}; },
   monFace(){ return `<span class="acface mon"><b>👾</b></span>`; },
   rollDrops(st){ const C=AC_CONFIG, D=C.pveDrops, n=C.pveCount[st.round]||2, out={gold:0,heroes:[]};
     for(let i=0;i<n;i++){ if(AC.rnd(st)*100<D.goldChance) out.gold+=D.gold[0]+Math.floor(AC.rnd(st)*(D.gold[1]-D.gold[0]+1));
@@ -5171,7 +5172,7 @@ const AC={
     st.hp=Math.max(0,st.hp-loss); const sk=(S,w)=>{ S.streak=w?(S.streak>0?S.streak+1:1):(S.streak<0?S.streak-1:-1); S.lastWin=w; }; sk(st.me,won); sk(st.ai,!won);
     st.last={round:st.round,won,loss,survivors:B.survivors,time:+B.t.toFixed(1)}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
     st.phase=st.hp<=0?"over":"result"; },
-  applyPve(st,B){ const C=AC_CONFIG, won=B.winner==="me", left=won?0:B.units?B.units.filter(u=>u.alive&&u.side==="ai").length:(B.survivors||0), loss=won?0:C.pveLossBase+C.pveLossPerMon*left;
+  applyPve(st,B){ const C=AC_CONFIG, won=B.winner==="me"||(C.pveSafeRounds.includes(st.round)&&!!(B.units&&B.units.some(u=>u.alive&&u.side==="me"))), left=won?0:B.units?B.units.filter(u=>u.alive&&u.side==="ai").length:(B.survivors||0), loss=won?0:C.pveLossBase+C.pveLossPerMon*left;
     st.hp=Math.max(0,st.hp-loss); st.me.lastWin=null; st.ai.lastWin=null; // PVE: 연승/연패 그대로 · 승리 보너스 없음
     const d=AC.rollDrops(st), me=AC.applyDrops(st,st.me,d), ai=AC.applyDrops(st,st.ai,d);
     st.last={round:st.round,pve:true,won,loss,survivors:left,time:+B.t.toFixed(1),drops:d,dropText:me,aiDropText:ai}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
@@ -5216,7 +5217,7 @@ const AC={
     const selU=AC.sel&&S.units.find(u=>u.uid===AC.sel);
     const ctl=`<div class="acctl"><button type="button" data-acdo="reroll"${prep?"":" disabled"}>새로고침 ${C.rerollCost}💰</button><button type="button" data-acdo="xp"${prep?"":" disabled"}>경험치 +${C.xpBuyAmount} (${C.xpBuyCost}💰)</button>
       <button type="button" data-acdo="lock" class="${S.locked?"on":""}"${prep?"":" disabled"}>${S.locked?"🔒 잠금":"🔓 잠금"}</button><button type="button" data-acdo="sell" data-acsell${selU&&prep?"":" disabled"}>판매${selU?` +${AC.cost(selU.no)*selU.copies}💰`:""}</button>
-      <span style="flex:1"></span><button type="button" data-acdo="speed">${AC.speed}x</button>${st.phase==="battle"?`<button type="button" data-acdo="skip">건너뛰기</button>`:""}<button type="button" class="acgo" data-acdo="fight"${prep?"":" disabled"}>⚔ 전투 시작</button></div>`;
+      <span style="flex:1"></span><button type="button" data-acdo="speed">${AC.speed}x</button>${st.phase==="battle"?`<button type="button" data-acdo="skip">건너뛰기</button>`:""}<button type="button" class="acgo" data-acdo="fight"${prep&&!(st.round===1&&!AC.field(S).length)?"":" disabled"}${st.round===1&&!AC.field(S).length?' title="영웅을 1명 이상 배치하세요"':""}>⚔ 전투 시작</button></div>`;
     const L0=st.last, ov=st.phase==="result"&&L0?`<div class="acov" data-acov="result"><div class="acovb"><b class="${L0.won?"win":"lose"}">${L0.pve?(L0.won?"몬스터 처치!":"몬스터에게 패배"):L0.won?"승리":"패배"}</b><p>라운드 ${L0.round}${L0.won?"":` · ♥ −${L0.loss} (${L0.pve?"남은 몬스터":"상대 생존"} ${L0.survivors}${L0.pve?"마리":"명"})`} · ${L0.time}초</p>${L0.pve?`<div class="acdrop" data-acdrop>${L0.dropText.length?L0.dropText.map(t=>`<span>${esc(t)}</span>`).join(""):'<span class="muted">드롭 없음</span>'}<small>같은 드롭을 상대도 받음</small></div>`:""}<button type="button" class="acgo" data-acdo="next">다음 라운드</button></div></div>`
       :st.phase==="over"?`<div class="acov" data-acov="over"><div class="acovb"><b class="lose">게임 오버</b><p>${st.round}라운드에서 탈락 · 버틴 라운드 ${st.round-1}</p><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div>`:"";
     box.innerHTML=`${hud}<div class="acmain"><div class="acleft"><div class="acboard" id="acBoard"><div class="acgrid">${grid}</div><div class="aclayer" id="acLayer"></div><div class="acmid" aria-hidden="true"></div>${ov}</div>
@@ -5231,7 +5232,7 @@ const AC={
         return `<span class="acrw" data-acrhero="${esc(h.name)}" title="${esc(h.name)} · ${esc(h.trait)} · 사거리 ${AC.rangeOf(x.no)}">${AC.face(x.no)}<span>${esc(h.name)} ${AC.rbadge(x.no)}<small>${esc((h.trait||"").replace("형",""))} · ${st.pool[x.no]??"-"}장</small></span></span>`; }).join("")}</div></div>`; }).join("")}
       <p class="muted acrnote">초월 이정표 ${C.tMilestones.join("/")}: 이정표마다 공·생 +${C.milestonePct}% · 스킬 계수 +${C.milestoneSkill}%p · 방어는 증가분의 ${Math.round(C.defShare*100)}% · 로스터는 AC_CONFIG.roster 에서 고침</p></details>`; },
   /* 전투 그리기 */
-  startBattle(){ const st=AC.st; if(st.phase!=="prep") return; AC.save(); st.phase="battle"; AC.sel=null; const B=AC.battleInit(st); AC.anim={B,last:0,acc:0,raf:0}; AC.render();
+  startBattle(){ const st=AC.st; if(st.phase!=="prep") return; if(st.round===1&&!AC.field(st.me).length) return AC.msg("영웅을 1명 이상 배치하세요"); AC.save(); st.phase="battle"; AC.sel=null; const B=AC.battleInit(st); AC.anim={B,last:0,acc:0,raf:0}; AC.render();
     if(B.done) return AC.finishBattle(); AC.anim.last=performance.now(); AC.anim.raf=requestAnimationFrame(AC.frame); },
   frame(now){ const A=AC.anim; if(!A) return; const dt=Math.min(0.1,(now-A.last)/1000)*AC.speed*AC_CONFIG.playRate; A.last=now; A.acc+=dt; const B=A.B; B.events=[];
     while(A.acc>=AC_CONFIG.dt&&!B.done){ AC.battleStep(B,AC_CONFIG.dt); A.acc-=AC_CONFIG.dt; }
