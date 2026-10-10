@@ -985,6 +985,48 @@
   .acov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,10,16,.72);z-index:10}
   .acovb{text-align:center;padding:18px 26px;border:1px solid var(--gold);border-radius:12px;background:linear-gradient(180deg,#2a241b,#15130f)}
   .acovb b{display:block;font-size:30px;font-weight:900} .acovb b.win{color:var(--gold-hi)} .acovb b.lose{color:#ff8f9b} .acovb p{margin:6px 0 12px;color:var(--text-muted)}
+
+  /* 0.3v: 초월 배지 · 공격 표시 · HP/골드 · 통계 · 정보 */
+  .actk .act,.acshop .act{right:-2px;top:-3px;min-width:0;height:auto;padding:0;background:none;filter:drop-shadow(0 0 4px var(--tg)) drop-shadow(0 1px 1px #000);--tg:#fff8;--tb:linear-gradient(180deg,#ffffff,#bfc6d4);--tx:#151821;pointer-events:none}
+  .actk .act b,.acshop .act b{display:flex;align-items:center;justify-content:center;width:26px;height:28px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--tb);color:var(--tx);font-size:16px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+  .act.t0{--tg:#0000;--tb:linear-gradient(180deg,#59606e,#363b46);--tx:#cfd5e0;opacity:.85} .act.t0 b{font-size:13px;width:20px;height:22px}
+  .act.t1{--tg:#ffffffaa} .act.t2{--tg:#7fb8ffcc;--tb:linear-gradient(180deg,#9ccaff,#2f6fd6);--tx:#fff} .act.t3{--tg:#c58cffdd;--tb:linear-gradient(180deg,#d8a8ff,#7a35d6);--tx:#fff}
+  .act.t4{--tg:#ffab4aee;--tb:linear-gradient(180deg,#ffd08a,#e0711c);--tx:#2a1200} .act.t5{--tg:#ff4a4aff;--tb:linear-gradient(180deg,#ff8a7a,#c41a1a);--tx:#fff}
+  .act.t5 b{animation:acred 1.2s ease-in-out infinite alternate} @keyframes acred{to{filter:brightness(1.35)}}
+  .acshop .act{position:absolute;right:auto;left:3px;top:19px;z-index:6} .acshop .act b{width:20px;height:22px;font-size:12px}
+  .actk.pulse .acface{animation:acpulse .9s ease-out} @keyframes acpulse{0%{transform:scale(1)}30%{transform:scale(1.18);box-shadow:0 0 18px #ffd98a}100%{transform:scale(1)}}
+  .actk.pulse .act b{animation:acbadge .9s ease-out} @keyframes acbadge{0%{transform:scale(1)}35%{transform:scale(1.7)}100%{transform:scale(1)}}
+  .acup{position:absolute;left:50%;top:0;z-index:6;transform:translate(-50%,0);font-size:14px;font-weight:900;color:#ffe08a;text-shadow:0 0 6px #000,0 0 10px #c98a1a;white-space:nowrap;pointer-events:none;animation:acup 1.4s ease-out forwards} @keyframes acup{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}20%{opacity:1;transform:translate(-50%,-6px) scale(1.25)}100%{opacity:0;transform:translate(-50%,-30px) scale(1)}}
+  .achud .hpbig{gap:7px;padding:5px 12px} .achud .hpbig .hrt{font-size:20px;line-height:1} .achud .hpbig b{font-size:22px} .achud .hpbig.foe b{color:#ffb38a}
+  .achpbar{display:inline-block;width:70px;height:8px;border-radius:4px;background:#1c1f28;overflow:hidden} .achpbar>i{display:block;height:100%;background:linear-gradient(90deg,#c8324a,#ff7d8f)} .hpbig.foe .achpbar>i{background:linear-gradient(90deg,#c86a1e,#ffb36a)}
+  .acshophead{display:flex;align-items:center;gap:10px;margin-bottom:6px} .acshophead .ttl{font-weight:800;color:var(--gold-text);font-size:13px}
+  .acgold{display:inline-flex;align-items:center;gap:6px;padding:3px 12px 3px 6px;border-radius:16px;border:1px solid var(--gold);background:linear-gradient(180deg,#3a2c12,#1a1409);box-shadow:0 0 10px #d6b26a44}
+  .acgold .coin{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3c4,#e8b84a 45%,#9a6b1c);color:#5a3b06;font-weight:900;font-size:14px;box-shadow:inset 0 -2px 0 #0004}
+  .acgold b{font-size:24px;font-weight:900;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+  .actk.bt{pointer-events:auto}
+  .acproj{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:radial-gradient(circle,#fff,#7fc4ff 60%,#2f6fd6);box-shadow:0 0 8px #7fc4ff;z-index:6;pointer-events:none}
+  .acproj.ai{background:radial-gradient(circle,#fff,#ff9aa6 60%,#d6324a);box-shadow:0 0 8px #ff6a7f} .acproj.sk{width:16px;height:16px;margin:-8px 0 0 -8px;background:radial-gradient(circle,#fff,#ffd36a 55%,#e0711c);box-shadow:0 0 16px #ffb84a,0 0 4px #fff}
+  .acslash{position:absolute;width:30px;height:4px;margin:-2px 0 0 -15px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 6px #fff;z-index:6;pointer-events:none}
+  .acslash.sk{width:52px;height:7px;margin:-3.5px 0 0 -26px;background:linear-gradient(90deg,transparent,#ffe08a,#fff,#ffe08a,transparent);box-shadow:0 0 14px #ffb84a}
+  .acburst{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;border:3px solid #ffd36a;z-index:5;pointer-events:none;animation:acburst .45s ease-out forwards} @keyframes acburst{to{transform:scale(5);opacity:0}}
+  .acsktx{position:absolute;transform:translate(-50%,-100%);font-size:11px;font-weight:900;color:#ffd36a;text-shadow:0 0 4px #000;z-index:7;pointer-events:none;animation:acfloat .8s ease-out forwards;white-space:nowrap}
+  .acst{width:100%;max-height:100%;overflow:auto;text-align:left} .acst table{width:100%;border-collapse:collapse;font-size:12px} .acst th{font-size:11px;color:var(--text-muted);font-weight:600;text-align:right;padding:2px 4px}
+  .acst th:first-child,.acst td:first-child{text-align:left} .acst td{padding:2px 4px;text-align:right;font-variant-numeric:tabular-nums;border-top:1px solid #ffffff10;white-space:nowrap}
+  .acst td.nm{max-width:110px;overflow:hidden;text-overflow:ellipsis} .acst td.dead{opacity:.55} .acst .dl{color:#ffd76a;font-weight:800} .acst .tk{color:#ff9aa6}
+  .acst .side{font-weight:800;font-size:12px;margin:6px 0 2px} .acst .side.me{color:#8fc2ff} .acst .side.ai{color:#ff9aa6} .acst .tot td{font-weight:800;border-top:1px solid #ffffff30}
+  .acstbar{display:block;height:3px;border-radius:2px;background:#ffd76a;margin-top:1px}
+  .acovb.wide{width:min(94%,520px);max-height:92%;display:flex;flex-direction:column;padding:12px 14px;box-sizing:border-box} .acovb.wide .acst{flex:1;min-height:0;margin-bottom:8px}
+  .acmodal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(5,6,10,.75)} .acmodal .acovb{max-height:86vh}
+  .acrsel{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:6px 0 8px} .acrsel button{min-width:34px;padding:3px 6px;font-size:12px} .acrsel button.on{border-color:var(--gold);color:var(--gold-hi);background:#2a2214}
+  .acrsel button.w{box-shadow:inset 0 -2px 0 #59d17a} .acrsel button.l{box-shadow:inset 0 -2px 0 #ef5a6f}
+  .acinfo{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:900;display:flex;gap:10px;align-items:center;padding:8px 12px;min-width:240px;max-width:calc(100vw - 20px);box-sizing:border-box;border:1px solid var(--gold);border-radius:12px;background:linear-gradient(180deg,#2a241b,#15130f);box-shadow:0 6px 24px #000a}
+  .acinfo .acface{width:46px;height:46px;flex:none;border:2px solid var(--tc);border-radius:8px;position:relative;overflow:hidden;display:block}
+  .acinfo .nm{font-weight:800;font-size:14px} .acinfo .nm small{color:var(--text-muted);font-weight:500;font-size:11px;margin-left:4px}
+  .acinfo dl{display:flex;gap:12px;margin:3px 0 0} .acinfo dt{font-size:11px;color:var(--text-muted)} .acinfo dd{margin:0;font-size:15px;font-weight:900;font-variant-numeric:tabular-nums} .acinfo dd.hp{color:#7fe39a} .acinfo dd.df{color:#9fd0ff} .acinfo dd.at{color:#ffb36a}
+  .acinfo .x{margin-left:auto;align-self:flex-start;padding:0 7px;font-size:14px}
+  .acib{position:absolute;right:2px;bottom:2px;z-index:4;width:20px;height:20px;border-radius:50%;padding:0;font-size:12px;font-weight:900;line-height:18px;background:#1a1f2a;border:1px solid var(--gold);color:var(--gold-hi);cursor:pointer}
+  .acovb .acgo+.acgo,.acovb .acgo+button{margin-left:6px}
+  @media (max-width:560px){ .actk .act b{width:20px;height:22px;font-size:13px} .act.t0 b{width:16px;height:18px;font-size:11px} .acgold b{font-size:20px} .achud .hpbig b{font-size:18px} .achpbar{width:46px} .acst table{font-size:11px} .acst td.nm{max-width:72px} }
   @media (max-width:900px){ .acmain{grid-template-columns:1fr} .acboard{max-width:560px;margin:0 auto} .acbench{max-width:560px;margin:8px auto 0} }
   @media (max-width:560px){ .achud .hi{padding:3px 7px;font-size:12px} .acxp{width:40px} .acshop .acnm{font-size:10px} .acshop{padding:4px 2px} .actk .acnm{display:none} .acshop .acown{font-size:8px} }
 </style>
@@ -1217,7 +1259,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">프로토타입 v1 · 숫자는 나중에 밸런스</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.3v · 숫자는 나중에 밸런스</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5045,9 +5087,10 @@ const AC_CONFIG={
   pveRounds:[1,2,3], pveCount:{1:2,2:3,3:4}, pveMon:{hp:2600,atk:520,def:250,spd:15,crit:5,cdmg:150,weak:0,block:0,dmgRed:0}, pveScale:{1:1.25,2:1.7,3:2.05},
   pveSafeRounds:[1], pveWeak:{1:{hp:350,atk:1,def:0},2:{hp:2550,atk:375,def:180},3:{hp:2200,atk:335,def:165}}, // 1라운드: 몬스터 아주 약함 + 내 유닛이 1명이라도 살아 있으면 무조건 승리 (0명 배치면 패배)
   pveLossBase:1, pveLossPerMon:1, pveDrops:{goldChance:60, gold:[1,2], heroChance:35},
-  atkInterval:0.75, spdFactor:1, moveTime:0.32, dt:0.05, battleTimeout:40, playRate:1.5, // playRate = 1x 화면 속도 (모의 시간 배율)
+  atkInterval:0.75, spdFactor:1, moveTime:0.32, dt:0.05, battleTimeout:40, playRate:0.8, // playRate = 1x 화면 속도 (모의 시간 배율)
   overtimeAt:25, overtimeAmp:8,   // 25초 뒤 매초 주는 피해 +8% (질질 끄는 원거리 대치 방지)
-  skillEvery:3, skillCoef:250, hpMult:2.0, dmgMult:1.0,
+  skillEvery:3, skillCoef:250, aiStartHp:100, projMs:280, // 0.3v: 상대 체력 · 원거리 투사체 시간(ms)
+  hpMult:2.0, dmgMult:1.0,
   aiLevelByRound:[1,2,3,3,4,4,5,5,6,6,6,7,7,7,8,8,8,8,9,9,9,9,10], aiBonusPerRound:0.5, aiReserve:0, aiMaxRolls:3,
   colOrder:[3,2,4,1,5,0,6],
 };
@@ -5069,6 +5112,9 @@ const AC={
   rangeKind(no){ const h=AC.hero(no), C=AC_CONFIG; return (h&&(C.heroRange[h.name]||C.range[h.trait]))||"melee"; },
   rangeOf(no){ return AC_CONFIG.rangeCells[AC.rangeKind(no)]||1; },
   isUnique(no){ return AC_CONFIG.uniqueTiers.includes(AC.tierNo(no)); },
+  tband(t){ return t>=12?5:t>=9?4:t>=6?3:t>=3?2:t>=1?1:0; },
+  tbadge(t){ return `<span class="act t${AC.tband(t)}" data-act="${t}" title="${t}초월"><b>${t}</b></span>`; },
+  infoStats(no,t){ const s=AC.statsOf(no,t); return {hp:Math.round(s.hp*AC_CONFIG.hpMult),def:Math.round(s.def),atk:Math.round(s.atk)}; },
   ubadge(no){ return AC.isUnique(no)?`<span class="acuq" data-acuq title="(구)세나 특수: 판에 1종만 배치">특수 · 1종만 배치</span>`:""; },
   rbadge(no){ const k=AC.rangeKind(no); return `<span class="acrg ${k}" data-acrg="${k}" title="${k==="ranged"?"원거리":k==="mid"?"중거리":"근거리"} (사거리 ${AC.rangeOf(no)})">${k==="ranged"?"원":k==="mid"?"중":"근"}</span>`; },
   /* ---------- PVE ---------- */
@@ -5100,7 +5146,7 @@ const AC={
   addXp(S,n){ if(S.level>=AC_CONFIG.maxLevel) return; S.xp+=n; while(S.level<AC_CONFIG.maxLevel&&S.xp>=AC.xpNeed(S.level)){ S.xp-=AC.xpNeed(S.level); S.level++; } if(S.level>=AC_CONFIG.maxLevel) S.xp=0; },
   /* ---------- 새 게임 ---------- */
   side(){ return {gold:AC_CONFIG.startGold,level:1,xp:0,streak:0,units:[],shop:[],locked:false,lastWin:null}; },
-  newGame(seed){ const st={v:3,round:1,hp:AC_CONFIG.startHp,phase:"prep",seed:(seed==null?(Date.now()^(Math.random()*1e9))>>>0:seed>>>0),uid:1,pool:{},me:AC.side(),ai:AC.side(),last:null,log:[]};
+  newGame(seed){ const st={v:3,round:1,hp:AC_CONFIG.startHp,aiHp:AC_CONFIG.aiStartHp,phase:"prep",seed:(seed==null?(Date.now()^(Math.random()*1e9))>>>0:seed>>>0),uid:1,pool:{},me:AC.side(),ai:AC.side(),last:null,log:[]};
     AC.heroes().forEach(x=>st.pool[x.no]=AC_CONFIG.poolCopies[x.tier]); st.me.shop=AC.roll(st,1); AC.aiPrepare(st); return st; },
   /* ---------- 상점 ---------- */
   rollOne(st,level){ const od=AC_CONFIG.odds[Math.min(level,AC_CONFIG.maxLevel)-1]; let r=AC.rnd(st)*100, tier=1;
@@ -5145,7 +5191,7 @@ const AC={
   /* ---------- 전투 ---------- */
   battleInit(st){ const C=AC_CONFIG, B={t:0,units:[],seed:(st.seed^0x9e3779b9)>>>0,done:false,winner:null,events:[]};
     const addL=(L,side)=>L.forEach(u=>{ const [r,c]=u.loc.slice(1).split(",").map(Number), s=u.mon?AC.monStats(st.round):AC.statsOf(u.no,u.t), hp=Math.round(s.hp*C.hpMult);
-      B.units.push({uid:side+u.uid,side,no:u.no,t:u.t,mon:!!u.mon,name:u.mon?"몬스터":AC.hero(u.no).name,R:side==="me"?C.rows+r:C.rows-1-r,C:c,s,hp,maxHp:hp,range:u.mon?1:AC.rangeOf(u.no),cd:AC.rnd(B)*0.3,mv:0,atks:0,alive:true,iv:C.atkInterval*100/(100+s.spd*C.spdFactor)}); });
+      B.units.push({uid:side+u.uid,side,no:u.no,t:u.t,mon:!!u.mon,name:u.mon?"몬스터":AC.hero(u.no).name,R:side==="me"?C.rows+r:C.rows-1-r,C:c,s,hp,maxHp:hp,range:u.mon?1:AC.rangeOf(u.no),cd:AC.rnd(B)*0.3,mv:0,atks:0,alive:true,dealt:0,taken:0,iv:C.atkInterval*100/(100+s.spd*C.spdFactor)}); });
     const add=(S,side)=>addL(AC.field(S),side);
     add(st.me,"me"); if(st.round&&AC.isPve(st)) addL(AC.monsters(st),"ai"); else add(st.ai,"ai"); AC.synergies.forEach(sy=>["me","ai"].forEach(sd=>{ const us=B.units.filter(u=>u.side===sd); if(sy.test(us)) us.forEach(sy.apply); }));
     if(!B.units.some(u=>u.side==="me")||!B.units.some(u=>u.side==="ai")) AC.battleEnd(B); return B; },
@@ -5157,7 +5203,7 @@ const AC={
       u.cd=Math.max(-C.dt,u.cd-dt);
       if(AC.dist(u,tg)<=u.range){ if(u.cd<=0){ u.cd+=u.iv; u.atks++; const sk=u.atks%C.skillEvery===0, crit=AC.rnd(B)*100<u.s.crit, weak=AC.rnd(B)*100<u.s.weak, block=AC.rnd(B)*100<tg.s.block;
           const ot=B.t>C.overtimeAt?(B.t-C.overtimeAt)*C.overtimeAmp:0; const d=Math.max(1,Math.round(damage({atk:u.s.atk,def:tg.s.def,coef:sk?C.skillCoef+(u.s.skill||0):100,crit,cdmg:u.s.cdmg,weak,block,dmgRed:tg.s.dmgRed,amp:ot}).dmg*C.dmgMult));
-          tg.hp-=d; B.events.push({k:"hit",a:u.uid,b:tg.uid,d,crit,sk}); if(tg.hp<=0){ tg.hp=0; tg.alive=false; B.events.push({k:"die",b:tg.uid}); } } }
+          tg.hp-=d; u.dealt+=d; tg.taken+=d; B.events.push({k:"hit",a:u.uid,b:tg.uid,d,crit,sk,rg:u.range>1,aR:u.R,aC:u.C,bR:tg.R,bC:tg.C}); if(tg.hp<=0){ tg.hp=0; tg.alive=false; B.events.push({k:"die",b:tg.uid}); } } }
       else { u.mv-=dt; if(u.mv<=0){ u.mv=C.moveTime; let best=null, bv=Math.hypot(tg.R-u.R,tg.C-u.C);
           for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=u.R+dr, Cc=u.C+dc; if(R<0||R>=C.rows*2||Cc<0||Cc>=C.cols) continue;
             if(B.units.some(x=>x.alive&&x!==u&&x.R===R&&x.C===Cc)) continue; const v=Math.hypot(tg.R-R,tg.C-Cc); if(v<bv-1e-9){ bv=v; best=[R,Cc]; } }
@@ -5168,14 +5214,15 @@ const AC={
     B.winner=me&&!ai?"me":"ai"; B.survivors=B.winner==="me"?me:ai; },
   battleRun(B){ let n=0; while(!B.done&&n++<1e5) AC.battleStep(B,AC_CONFIG.dt); return B; },
   /* ---------- 라운드 ---------- */
-  applyResult(st,B){ if(AC.isPve(st)) return AC.applyPve(st,B); const won=B.winner==="me", C=AC_CONFIG, loss=won?0:C.lossBase+C.lossPerUnit*B.survivors;
-    st.hp=Math.max(0,st.hp-loss); const sk=(S,w)=>{ S.streak=w?(S.streak>0?S.streak+1:1):(S.streak<0?S.streak-1:-1); S.lastWin=w; }; sk(st.me,won); sk(st.ai,!won);
-    st.last={round:st.round,won,loss,survivors:B.survivors,time:+B.t.toFixed(1)}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
-    st.phase=st.hp<=0?"over":"result"; },
+  roundStats(B){ return (B&&B.units||[]).map(u=>({side:u.side,no:u.no,t:u.t,mon:u.mon,name:u.name,dealt:u.dealt||0,taken:u.taken||0,alive:u.alive})); },
+  applyResult(st,B){ if(AC.isPve(st)) return AC.applyPve(st,B); const won=B.winner==="me", C=AC_CONFIG, loss=won?0:C.lossBase+C.lossPerUnit*B.survivors, aiLoss=won?C.lossBase+C.lossPerUnit*B.survivors:0;
+    st.hp=Math.max(0,st.hp-loss); if(st.aiHp==null) st.aiHp=C.aiStartHp; st.aiHp=Math.max(0,st.aiHp-aiLoss); const sk=(S,w)=>{ S.streak=w?(S.streak>0?S.streak+1:1):(S.streak<0?S.streak-1:-1); S.lastWin=w; }; sk(st.me,won); sk(st.ai,!won);
+    st.last={round:st.round,won,loss,aiLoss,aiHp:st.aiHp,survivors:B.survivors,time:+B.t.toFixed(1),stats:AC.roundStats(B)}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
+    st.phase=st.hp<=0?"over":st.aiHp<=0?"win":"result"; },
   applyPve(st,B){ const C=AC_CONFIG, won=B.winner==="me"||(C.pveSafeRounds.includes(st.round)&&!!(B.units&&B.units.some(u=>u.alive&&u.side==="me"))), left=won?0:B.units?B.units.filter(u=>u.alive&&u.side==="ai").length:(B.survivors||0), loss=won?0:C.pveLossBase+C.pveLossPerMon*left;
     st.hp=Math.max(0,st.hp-loss); st.me.lastWin=null; st.ai.lastWin=null; // PVE: 연승/연패 그대로 · 승리 보너스 없음
     const d=AC.rollDrops(st), me=AC.applyDrops(st,st.me,d), ai=AC.applyDrops(st,st.ai,d);
-    st.last={round:st.round,pve:true,won,loss,survivors:left,time:+B.t.toFixed(1),drops:d,dropText:me,aiDropText:ai}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
+    st.last={round:st.round,pve:true,won,loss,survivors:left,time:+B.t.toFixed(1),drops:d,dropText:me,aiDropText:ai,stats:AC.roundStats(B)}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
     st.phase=st.hp<=0?"over":"result"; },
   nextRound(st){ if(st.phase!=="result") return; const C=AC_CONFIG;
     for(const S of [st.me,st.ai]){ S.gold+=AC.income(S.gold,S.streak,S.lastWin); AC.addXp(S,C.xpPerRound); }
@@ -5196,35 +5243,58 @@ const AC={
     "거울 (2코 4명 2초월)":AC.winRate([[2,4,2]],[[2,4,2]],n) }; },
   /* ---------- 저장 ---------- */
   save(){ try{ if(AC.st) localStorage.setItem(AC.KEY,JSON.stringify(Object.assign({},AC.st,{phase:AC.st.phase==="battle"?"prep":AC.st.phase}))); }catch{} },
-  load(){ try{ const o=JSON.parse(localStorage.getItem(AC.KEY)||"null"); if(o&&o.v===3&&o.me&&o.ai) return o; /* v1(밸런스 전) 저장은 버림 */ }catch{} return null; },
+  load(){ try{ const o=JSON.parse(localStorage.getItem(AC.KEY)||"null"); if(o&&o.v===3&&o.me&&o.ai){ if(o.aiHp==null) o.aiHp=AC_CONFIG.aiStartHp; return o; } /* v1(밸런스 전) 저장은 버림 */ }catch{} return null; },
   /* ---------- 화면 ---------- */
   init(){ AC.st=AC.load()||AC.newGame(); AC.render(); },
   msg(t){ AC._m=t; const m=$("acMsg"); if(m) m.textContent=t; clearTimeout(AC.msgT); AC.msgT=setTimeout(()=>{ AC._m=""; const e=$("acMsg"); if(e) e.textContent=""; },2200); },
   face(no,cls){ const h=AC.hero(no), pt=portraitFor(h), bg=pt&&gradeBgFor(h); return `<span class="acface ${cls||""}">${bg?`<img class="gbg" src="${esc(bg)}" alt="">`:""}${pt?`<img src="${esc(pt)}" alt="">`:`<b>${esc(h?h.name:"?")}</b>`}</span>`; },
-  tokenHTML(u){ const h=AC.hero(u.no), tr=AC.tierNo(u.no); return `<div class="actk tier${tr}${AC.sel===u.uid?" sel":""}" data-acu="${u.uid}" draggable="true" title="${esc(h.name)} · ${AC_CONFIG.tierName[tr]} ${AC.cost(u.no)}골드 · ${u.t}초월 (${u.copies}장)">${AC.face(u.no)}<span class="act">${u.t}</span>${AC.rbadge(u.no)}${AC.ubadge(u.no)}<span class="acnm">${esc(h.name)}</span></div>`; },
+  tokenHTML(u){ const h=AC.hero(u.no), tr=AC.tierNo(u.no), pu=AC.pulse===u.uid; return `<div class="actk tier${tr}${AC.sel===u.uid?" sel":""}${pu?" pulse":""}" data-acu="${u.uid}" draggable="true" title="${esc(h.name)} · ${AC_CONFIG.tierName[tr]} ${AC.cost(u.no)}골드 · ${u.t}초월 (${u.copies}장)">${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}${AC.ubadge(u.no)}<span class="acnm">${esc(h.name)}</span>${pu?`<span class="acup" data-acup>+1초월!</span>`:""}</div>`; },
+  /* 통계 표 (라운드 1개) */
+  statsHTML(L){ if(!L||!L.stats||!L.stats.length) return `<p class="muted">이 라운드는 통계가 없어요</p>`; const all=L.stats, mx=Math.max(1,...all.map(x=>x.dealt));
+    const part=(sd,title)=>{ const U=all.filter(x=>x.side===sd).sort((a,b)=>b.dealt-a.dealt), td=U.reduce((a,x)=>a+x.dealt,0), tt=U.reduce((a,x)=>a+x.taken,0);
+      return `<div class="side ${sd}">${title}</div><table data-acstside="${sd}"><tr><th>영웅</th><th>가한 피해</th><th>받은 피해</th></tr>${U.map(x=>`<tr data-acstrow class="${x.alive?"":"dead"}"><td class="nm${x.alive?"":" dead"}">${x.mon?"👾 몬스터":`${esc(x.name)} <small>${x.t}초월</small>`}${x.alive?"":" ✕"}</td><td class="dl" data-acdealt="${x.dealt}">${fmtN(x.dealt)}<i class="acstbar" style="width:${x.dealt/mx*100}%"></i></td><td class="tk" data-actaken="${x.taken}">${fmtN(x.taken)}</td></tr>`).join("")}<tr class="tot"><td>합계</td><td class="dl" data-acsum="${sd}:dealt">${fmtN(td)}</td><td class="tk" data-acsum="${sd}:taken">${fmtN(tt)}</td></tr></table>`; };
+    return `<div class="acst" data-acst="${L.round}">${part("me","내 영웅")}${part("ai",L.pve?"몬스터":"상대 영웅")}</div>`; },
+  histHTML(){ const st=AC.st, H=st.log.filter(x=>x.stats); if(!H.length) return `<div class="acmodal" data-acmodal="stats"><div class="acovb wide"><b class="win" style="font-size:20px">라운드 통계</b><p>아직 끝난 라운드가 없어요</p><button type="button" data-acdo="hclose">닫기</button></div></div>`;
+    const i=Math.max(0,Math.min(H.length-1,AC.histI==null?H.length-1:AC.histI)), L=H[i];
+    return `<div class="acmodal" data-acmodal="stats"><div class="acovb wide"><b class="win" style="font-size:20px">라운드 통계</b><div class="acrsel" data-acrsel>${H.map((x,j)=>`<button type="button" class="${j===i?"on":""} ${x.won?"w":"l"}" data-achist="${j}">${x.round}</button>`).join("")}</div>
+      <p style="margin:0 0 6px">라운드 ${L.round} · ${L.pve?"몬스터":"PVP"} · <b class="${L.won?"win":"lose"}" style="display:inline;font-size:14px">${L.won?"승리":"패배"}</b> · ${L.time}초</p>${AC.statsHTML(L)}<button type="button" data-acdo="hclose">닫기</button></div></div>`; },
+  infoHTML(){ const I=AC.info; if(!I) return ""; const C=AC_CONFIG; let no=I.no, t=I.t, mon=I.mon, hp, mhp, def, atk, side=I.side;
+    if(I.bt&&AC.anim){ const u=AC.anim.B.units.find(x=>x.uid===I.bt); if(!u) return ""; no=u.no; t=u.t; mon=u.mon; side=u.side; hp=Math.max(0,Math.round(u.hp)); mhp=u.maxHp; def=Math.round(u.s.def); atk=Math.round(u.s.atk); }
+    else if(I.bt) return "";
+    else if(mon){ const s=AC.monStats(AC.st.round); mhp=Math.round(s.hp*C.hpMult); def=Math.round(s.def); atk=Math.round(s.atk); }
+    else { const x=AC.infoStats(no,t); mhp=x.hp; def=x.def; atk=x.atk; }
+    const h=mon?null:AC.hero(no), tr=mon?0:AC.tierNo(no), k=mon?"melee":AC.rangeKind(no);
+    return `<div class="acinfo tier${tr}" data-acinfo>${mon?AC.monFace():AC.face(no)}<div><div class="nm">${mon?"몬스터":esc(h.name)}<small>${mon?`${AC.st.round}라운드`:`${C.tierName[tr]} ${AC.cost(no)}코 · ${t}초월 · ${k==="ranged"?"원거리":k==="mid"?"중거리":"근거리"}`}${side==="ai"?" · 상대":""}</small></div>
+      <dl><div><dt>체력</dt><dd class="hp" data-acst-hp>${hp!=null?`${fmtN(hp)} / ${fmtN(mhp)}`:fmtN(mhp)}</dd></div><div><dt>방어력</dt><dd class="df" data-acst-def>${fmtN(def)}</dd></div><div><dt>공격력</dt><dd class="at" data-acst-atk>${fmtN(atk)}</dd></div></dl></div><button type="button" class="x" data-acdo="iclose" aria-label="닫기">✕</button></div>`; },
+  drawInfo(){ let el=document.querySelector("#acRoot [data-acinfo]"); const h=AC.infoHTML(); if(!h){ if(el) el.remove(); return; } const tmp=document.createElement("div"); tmp.innerHTML=h; const n=tmp.firstChild, key=JSON.stringify(AC.info); n.dataset.k=key;
+    if(el&&el.dataset.k===key){ ["hp","def","atk"].forEach(k=>{ const q=el.querySelector(`[data-acst-${k}]`), r=n.querySelector(`[data-acst-${k}]`); if(q&&r&&q.textContent!==r.textContent) q.textContent=r.textContent; }); return; }
+    if(el) el.replaceWith(n); else $("acRoot").appendChild(n); },
   render(){ const st=AC.st, S=st.me, C=AC_CONFIG, box=$("acRoot"); if(!box) return;
     const need=AC.xpNeed(S.level), od=C.odds[S.level-1], fieldN=AC.field(S).length, prep=st.phase==="prep";
-    const hud=`<div class="achud"><span class="hi">라운드 <b data-ach="round">${st.round}</b><i class="acmode ${AC.isPve(st)?"pve":"pvp"}" data-acmode>${AC.isPve(st)?"몬스터":"PVP"}</i></span><span class="hi hp">♥ <b data-ach="hp">${st.hp}</b></span><span class="hi gold">💰 <b data-ach="gold">${S.gold}</b></span>
+    const hud=`<div class="achud"><span class="hi">라운드 <b data-ach="round">${st.round}</b><i class="acmode ${AC.isPve(st)?"pve":"pvp"}" data-acmode>${AC.isPve(st)?"몬스터":"PVP"}</i></span><span class="hi hp hpbig" data-achp="me" title="내 체력"><span class="hrt">❤️</span><b data-ach="hp">${st.hp}</b><i class="achpbar"><i style="width:${st.hp/C.startHp*100}%"></i></i></span><span class="hi hp hpbig foe" data-achp="ai" title="상대 체력">상대 <span class="hrt">🖤</span><b data-ach="aihp">${st.aiHp??C.aiStartHp}</b><i class="achpbar"><i style="width:${(st.aiHp??C.aiStartHp)/C.aiStartHp*100}%"></i></i></span><span class="hi gold">💰 <b data-ach="gold">${S.gold}</b></span>
       <span class="hi lv">Lv <b data-ach="level">${S.level}</b><i class="acxp"><i style="width:${need?S.xp/need*100:100}%"></i></i><small data-ach="xp">${need?`${S.xp}/${need}`:"MAX"}</small></span>
       <span class="hi">${S.streak>0?`🔥 ${S.streak}연승`:S.streak<0?`💧 ${-S.streak}연패`:"연속 —"}</span><span class="hi">배치 <b data-ach="deploy">${fieldN}/${S.level}</b></span>
       <span class="hi odds" title="현재 레벨 상점 확률">${od.map((p,i)=>`<i class="tier${i+1}">${p}%</i>`).join("")}</span></div>`;
     const pve=AC.isPve(st), EU=pve?AC.monsters(st):st.ai.units;
-    const cell=(side,r,c)=>{ const U=side==="me"?S.units:EU, u=U.find(x=>x.loc==="f"+r+","+c); return `<div class="accell ${side}${r===0?" front":""}" ${side==="me"?`data-acloc="f${r},${c}"`:""}>${u?(side==="me"?AC.tokenHTML(u):u.mon?`<div class="actk mon foe" data-acmon title="몬스터 (${st.round}라운드)">${AC.monFace()}</div>`:`<div class="actk tier${AC.tierNo(u.no)} foe" title="${esc(AC.hero(u.no).name)} ${u.t}초월">${AC.face(u.no)}<span class="act">${u.t}</span>${AC.rbadge(u.no)}<span class="acnm">${esc(AC.hero(u.no).name)}</span></div>`):""}</div>`; };
+    const cell=(side,r,c)=>{ const U=side==="me"?S.units:EU, u=U.find(x=>x.loc==="f"+r+","+c); return `<div class="accell ${side}${r===0?" front":""}" ${side==="me"?`data-acloc="f${r},${c}"`:""}>${u?(side==="me"?AC.tokenHTML(u):u.mon?`<div class="actk mon foe" data-acmon title="몬스터 (${st.round}라운드)">${AC.monFace()}</div>`:`<div class="actk tier${AC.tierNo(u.no)} foe" data-acfoe="${u.uid}" title="${esc(AC.hero(u.no).name)} ${u.t}초월">${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}<span class="acnm">${esc(AC.hero(u.no).name)}</span></div>`):""}</div>`; };
     let grid=""; for(let R=0;R<C.rows*2;R++) for(let c=0;c<C.cols;c++) grid+=R<C.rows?cell("ai",C.rows-1-R,c):cell("me",R-C.rows,c);
     const bench=Array.from({length:C.bench},(_,i)=>{ const u=S.units.find(x=>x.loc==="b"+i); return `<div class="acbs" data-acloc="b${i}">${u?AC.tokenHTML(u):""}</div>`; }).join("");
     const shop=S.shop.map((no,i)=>{ if(no==null) return `<div class="acshop empty"></div>`; const h=AC.hero(no), tr=AC.tierNo(no), o=AC.owned(S,no), why=AC.canBuy(st,S,i);
-      return `<button type="button" class="acshop tier${tr}" data-acbuy="${i}"${why||!prep?" aria-disabled=\"true\"":""} title="${esc(h.name)} · ${C.tierName[tr]}${why?" · "+why:""}">${AC.face(no)}<span class="acnm">${esc(h.name)}</span><span class="accost">${AC.cost(no)}💰</span>${AC.rbadge(no)}${AC.ubadge(no)}${o?`<span class="acown">보유 ${o.t}→${Math.min(C.maxT,o.t+C.mergeT)}</span>`:""}</button>`; }).join("");
+      return `<button type="button" class="acshop tier${tr}" data-acbuy="${i}"${why||!prep?" aria-disabled=\"true\"":""} title="${esc(h.name)} · ${C.tierName[tr]}${why?" · "+why:""}">${AC.face(no)}<span class="acnm">${esc(h.name)}</span><span class="accost">${AC.cost(no)}💰</span>${AC.rbadge(no)}${AC.ubadge(no)}${o?`<span class="acown">보유 ${o.t}→${Math.min(C.maxT,o.t+C.mergeT)}</span>${AC.tbadge(o.t)}`:""}<span class="acib" role="button" tabindex="0" data-acshopinfo="${i}" title="스탯 보기" aria-label="스탯 보기">i</span></button>`; }).join("");
     const selU=AC.sel&&S.units.find(u=>u.uid===AC.sel);
     const ctl=`<div class="acctl"><button type="button" data-acdo="reroll"${prep?"":" disabled"}>새로고침 ${C.rerollCost}💰</button><button type="button" data-acdo="xp"${prep?"":" disabled"}>경험치 +${C.xpBuyAmount} (${C.xpBuyCost}💰)</button>
       <button type="button" data-acdo="lock" class="${S.locked?"on":""}"${prep?"":" disabled"}>${S.locked?"🔒 잠금":"🔓 잠금"}</button><button type="button" data-acdo="sell" data-acsell${selU&&prep?"":" disabled"}>판매${selU?` +${AC.cost(selU.no)*selU.copies}💰`:""}</button>
       <span style="flex:1"></span><button type="button" data-acdo="speed">${AC.speed}x</button>${st.phase==="battle"?`<button type="button" data-acdo="skip">건너뛰기</button>`:""}<button type="button" class="acgo" data-acdo="fight"${prep&&!(st.round===1&&!AC.field(S).length)?"":" disabled"}${st.round===1&&!AC.field(S).length?' title="영웅을 1명 이상 배치하세요"':""}>⚔ 전투 시작</button></div>`;
-    const L0=st.last, ov=st.phase==="result"&&L0?`<div class="acov" data-acov="result"><div class="acovb"><b class="${L0.won?"win":"lose"}">${L0.pve?(L0.won?"몬스터 처치!":"몬스터에게 패배"):L0.won?"승리":"패배"}</b><p>라운드 ${L0.round}${L0.won?"":` · ♥ −${L0.loss} (${L0.pve?"남은 몬스터":"상대 생존"} ${L0.survivors}${L0.pve?"마리":"명"})`} · ${L0.time}초</p>${L0.pve?`<div class="acdrop" data-acdrop>${L0.dropText.length?L0.dropText.map(t=>`<span>${esc(t)}</span>`).join(""):'<span class="muted">드롭 없음</span>'}<small>같은 드롭을 상대도 받음</small></div>`:""}<button type="button" class="acgo" data-acdo="next">다음 라운드</button></div></div>`
+    const L0=st.last, ov=st.phase==="result"&&L0?`<div class="acov" data-acov="result"><div class="acovb wide"><b class="${L0.won?"win":"lose"}">${L0.pve?(L0.won?"몬스터 처치!":"몬스터에게 패배"):L0.won?"승리":"패배"}</b><p>라운드 ${L0.round}${L0.won?"":` · ♥ −${L0.loss} (${L0.pve?"남은 몬스터":"상대 생존"} ${L0.survivors}${L0.pve?"마리":"명"})`} · ${L0.time}초</p>${L0.pve?`<div class="acdrop" data-acdrop>${L0.dropText.length?L0.dropText.map(t=>`<span>${esc(t)}</span>`).join(""):'<span class="muted">드롭 없음</span>'}<small>같은 드롭을 상대도 받음</small></div>`:""}${!L0.pve&&L0.won&&L0.aiLoss?`<p class="acailoss" data-acailoss>상대 🖤 −${L0.aiLoss} → ${L0.aiHp}</p>`:""}${AC.statsHTML(L0)}<div><button type="button" class="acgo" data-acdo="next">다음 라운드</button></div></div></div>`
+      :st.phase==="win"?(()=>{ const W=st.log.filter(x=>x.won).length, D=st.log.reduce((a,x)=>a+(x.stats||[]).filter(y=>y.side==="me").reduce((b,y)=>b+y.dealt,0),0), T=st.log.reduce((a,x)=>a+(x.stats||[]).filter(y=>y.side==="me").reduce((b,y)=>b+y.taken,0),0);
+        return `<div class="acov" data-acov="win"><div class="acovb wide"><b class="win">🏆 최종 승리!</b><p>${st.round}라운드에 상대 체력 0 · 남은 체력 ❤️ ${st.hp}</p><p data-acwinstats>전적 ${W}승 ${st.log.length-W}패 · 레벨 ${S.level} · 가한 피해 ${fmtN(D)} · 받은 피해 ${fmtN(T)}</p>${L0?AC.statsHTML(L0):""}<div><button type="button" data-acdo="hist">📊 라운드 통계</button><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div></div>`; })()
       :st.phase==="over"?`<div class="acov" data-acov="over"><div class="acovb"><b class="lose">게임 오버</b><p>${st.round}라운드에서 탈락 · 버틴 라운드 ${st.round-1}</p><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div>`:"";
     box.innerHTML=`${hud}<div class="acmain"><div class="acleft"><div class="acboard" id="acBoard"><div class="acgrid">${grid}</div><div class="aclayer" id="acLayer"></div><div class="acmid" aria-hidden="true"></div>${ov}</div>
       <div class="acbench" data-acsellzone>${bench}</div></div>
-      <div class="acright"><div class="acshops" data-acsellzone>${shop}</div>${ctl}<div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div>
+      <div class="acright"><div class="acshophead"><span class="ttl">상점</span><span class="acgold" data-acgold title="보유 골드"><span class="coin">G</span><b data-acgoldn>${S.gold}</b></span></div><div class="acshops" data-acsellzone>${shop}</div>${ctl}<div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div>
       ${AC.rosterHTML()}
-      <div class="acfoot"><button type="button" data-acdo="new">새 게임</button><span class="muted">탭 = 선택 → 칸/대기석 탭 = 이동 · 끌어다 놓기 · 상점으로 끌면 판매 · v1: 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격, 시너지 없음</span></div></div></div>`;
+      <div class="acfoot"><button type="button" data-acdo="new">새 게임</button><button type="button" data-acdo="hist">📊 라운드 통계</button><span class="muted">탭 = 선택(스탯 표시) → 칸/대기석 탭 = 이동 · 상점 ⓘ·상대·전투 중 유닛 탭 = 스탯 · 끌어다 놓기 · 상점으로 끌면 판매 · v1: 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격, 시너지 없음</span></div></div></div>`;
+    if(AC.histOpen) box.insertAdjacentHTML("beforeend",AC.histHTML()); if(AC.info) box.insertAdjacentHTML("beforeend",AC.infoHTML());
     if(st.phase==="battle"&&AC.anim) AC.drawBattle(AC.anim.B,[]); },
   rosterHTML(){ const C=AC_CONFIG, st=AC.st;
     return `<details class="acroster" data-acroster${AC.rosterOpen?" open":""}><summary>로스터 (티어별 영웅 · 남은 장 수)</summary>${[1,2,3,4,5].map(t=>{ const L=AC.heroes().filter(x=>x.tier===t);
@@ -5232,23 +5302,35 @@ const AC={
         return `<span class="acrw" data-acrhero="${esc(h.name)}" title="${esc(h.name)} · ${esc(h.trait)} · 사거리 ${AC.rangeOf(x.no)}">${AC.face(x.no)}<span>${esc(h.name)} ${AC.rbadge(x.no)}<small>${esc((h.trait||"").replace("형",""))} · ${st.pool[x.no]??"-"}장</small></span></span>`; }).join("")}</div></div>`; }).join("")}
       <p class="muted acrnote">초월 이정표 ${C.tMilestones.join("/")}: 이정표마다 공·생 +${C.milestonePct}% · 스킬 계수 +${C.milestoneSkill}%p · 방어는 증가분의 ${Math.round(C.defShare*100)}% · 로스터는 AC_CONFIG.roster 에서 고침</p></details>`; },
   /* 전투 그리기 */
-  startBattle(){ const st=AC.st; if(st.phase!=="prep") return; if(st.round===1&&!AC.field(st.me).length) return AC.msg("영웅을 1명 이상 배치하세요"); AC.save(); st.phase="battle"; AC.sel=null; const B=AC.battleInit(st); AC.anim={B,last:0,acc:0,raf:0}; AC.render();
+  startBattle(){ const st=AC.st; if(st.phase!=="prep") return; if(st.round===1&&!AC.field(st.me).length) return AC.msg("영웅을 1명 이상 배치하세요"); AC.save(); st.phase="battle"; AC.sel=null; AC.info=null; const B=AC.battleInit(st); AC.anim={B,last:0,acc:0,raf:0}; AC.render();
     if(B.done) return AC.finishBattle(); AC.anim.last=performance.now(); AC.anim.raf=requestAnimationFrame(AC.frame); },
   frame(now){ const A=AC.anim; if(!A) return; const dt=Math.min(0.1,(now-A.last)/1000)*AC.speed*AC_CONFIG.playRate; A.last=now; A.acc+=dt; const B=A.B; B.events=[];
     while(A.acc>=AC_CONFIG.dt&&!B.done){ AC.battleStep(B,AC_CONFIG.dt); A.acc-=AC_CONFIG.dt; }
     AC.drawBattle(B,B.events); if(B.done){ setTimeout(AC.finishBattle,450); return; } A.raf=requestAnimationFrame(AC.frame); },
   skip(){ const A=AC.anim; if(!A) return; cancelAnimationFrame(A.raf); A.B.events=[]; AC.battleRun(A.B); AC.drawBattle(A.B,[]); AC.finishBattle(); },
-  finishBattle(){ const A=AC.anim; if(!A||AC.st.phase!=="battle") return; cancelAnimationFrame(A.raf); AC.applyResult(AC.st,A.B); AC.anim=null; AC.save(); AC.render(); },
+  finishBattle(){ const A=AC.anim; if(!A||AC.st.phase!=="battle") return; cancelAnimationFrame(A.raf); AC.applyResult(AC.st,A.B); AC.anim=null; if(AC.info&&AC.info.bt) AC.info=null; AC.save(); AC.render(); },
   drawBattle(B,ev){ const L=$("acLayer"); if(!L) return; const C=AC_CONFIG; document.querySelectorAll("#acBoard .accell .actk").forEach(e=>e.remove());
     for(const u of B.units){ let el=L.querySelector(`[data-acb="${u.uid}"]`);
-      if(!el){ el=document.createElement("div"); el.className=`actk bt tier${u.mon?0:AC.tierNo(u.no)} ${u.side}${u.mon?" mon":""}`; el.dataset.acb=u.uid; el.innerHTML=u.mon?`${AC.monFace()}<i class="achp"><i></i></i>`:`${AC.face(u.no)}<span class="act">${u.t}</span>${AC.rbadge(u.no)}<i class="achp"><i></i></i>`; L.appendChild(el); }
+      if(!el){ el=document.createElement("div"); el.className=`actk bt tier${u.mon?0:AC.tierNo(u.no)} ${u.side}${u.mon?" mon":""}`; el.dataset.acb=u.uid; el.innerHTML=u.mon?`${AC.monFace()}<i class="achp"><i></i></i>`:`${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}<i class="achp"><i></i></i>`; L.appendChild(el); }
       el.style.left=(u.C/C.cols*100)+"%"; el.style.top=(u.R/(C.rows*2)*100)+"%"; el.querySelector(".achp>i").style.width=(u.hp/u.maxHp*100)+"%"; el.classList.toggle("dead",!u.alive); }
-    ev.filter(e=>e.k==="hit").slice(-12).forEach(e=>{ const t=B.units.find(u=>u.uid===e.b); if(!t) return; const d=document.createElement("span"); d.className="acdmg"+(e.crit?" crit":"")+(e.sk?" sk":"")+(t.side==="me"?" onme":"");
-      d.textContent=fmtN(e.d); d.style.left=((t.C+0.5)/C.cols*100)+"%"; d.style.top=(t.R/(C.rows*2)*100)+"%"; L.appendChild(d); setTimeout(()=>d.remove(),700); }); },
+    const W=L.clientWidth/C.cols, H=L.clientHeight/(C.rows*2), px=(r,c)=>[(c+0.5)*W,(r+0.5)*H], slow=1/Math.max(0.5,AC.speed);
+    const add=(cls,x,y,txt)=>{ const s=document.createElement("span"); s.className=cls; s.style.left=x+"px"; s.style.top=y+"px"; if(txt!=null) s.textContent=txt; L.appendChild(s); return s; };
+    ev.filter(e=>e.k==="hit").slice(-12).forEach(e=>{ const t=B.units.find(u=>u.uid===e.b), a=B.units.find(u=>u.uid===e.a); if(!t) return;
+      const [ax,ay]=px(e.aR??(a?a.R:t.R),e.aC??(a?a.C:t.C)), [bx,by]=px(e.bR??t.R,e.bC??t.C), dx=bx-ax, dy=by-ay, dl=Math.hypot(dx,dy)||1, side=a?a.side:"me";
+      const ae=a&&L.querySelector(`[data-acb="${a.uid}"] .acface`), te=L.querySelector(`[data-acb="${t.uid}"] .acface`);
+      if(ae&&ae.animate){ const k=Math.min(e.rg?0.12:0.35,0.35)*Math.min(W,H)/dl*(e.sk?1.5:1); ae.animate([{transform:"translate(0,0)",filter:"brightness(1)"},{transform:`translate(${dx*k}px,${dy*k}px) scale(${e.sk?1.15:1.05})`,filter:`brightness(${e.sk?2:1.5})`},{transform:"translate(0,0)",filter:"brightness(1)"}],{duration:240*slow,easing:"ease-out"}); }
+      const land=()=>{ if(te&&te.animate) te.animate([{filter:"brightness(1)"},{filter:`brightness(${e.sk?2.6:2}) saturate(.4)`,transform:`translate(${dx/dl*3}px,${dy/dl*3}px)`},{filter:"brightness(1)"}],{duration:220*slow});
+        const d=add("acdmg"+(e.crit?" crit":"")+(e.sk?" sk":"")+(t.side==="me"?" onme":""),bx,by-H*0.5,fmtN(e.d)); setTimeout(()=>d.remove(),700*slow);
+        if(e.sk){ const r=add("acburst",bx,by); setTimeout(()=>r.remove(),500*slow); const q=add("acsktx",bx,by-H*0.55,"강타!"); setTimeout(()=>q.remove(),800*slow); } };
+      if(e.rg){ const p=add("acproj "+side+(e.sk?" sk":""),ax,ay), ms=C.projMs*slow; if(p.animate){ p.animate([{transform:"translate(0,0)"},{transform:`translate(${dx}px,${dy}px)`}],{duration:ms,easing:"linear"}); } setTimeout(()=>{ p.remove(); land(); },ms); }
+      else { const sl=add("acslash"+(e.sk?" sk":""),bx,by), ang=Math.atan2(dy,dx)*180/Math.PI+90; if(sl.animate) sl.animate([{transform:`rotate(${ang}deg) scaleX(.2)`,opacity:1},{transform:`rotate(${ang}deg) scaleX(1.2)`,opacity:1},{transform:`rotate(${ang}deg) scaleX(1)`,opacity:0}],{duration:260*slow,easing:"ease-out"}); setTimeout(()=>sl.remove(),280*slow); land(); } });
+    if(AC.info&&AC.info.bt) AC.drawInfo(); },
   /* 입력 */
   onClick(e){ const st=AC.st, S=st.me, t=e.target; const prep=st.phase==="prep"; if(t.closest("[data-acroster] summary")){ setTimeout(()=>{ const d=document.querySelector("[data-acroster]"); AC.rosterOpen=!!(d&&d.open); }); return; } if(t.closest("[data-acroster]")) return;
     const d=t.closest("[data-acdo]"); if(d){ const k=d.dataset.acdo; let w="";
-      if(k==="new"){ if(st.phase!=="over"&&st.round>1&&!confirm("새 게임을 시작할까요? 지금 게임은 사라져요.")) return; if(AC.anim){ cancelAnimationFrame(AC.anim.raf); AC.anim=null; } AC.st=AC.newGame(); AC.sel=null; }
+      if(k==="iclose"){ AC.info=null; AC.sel=null; AC.render(); return; }
+      if(k==="hist"){ AC.histOpen=true; AC.histI=null; AC.render(); return; } if(k==="hclose"){ AC.histOpen=false; AC.render(); return; }
+      if(k==="new"){ AC.histOpen=false; AC.info=null; if(!["over","win"].includes(st.phase)&&st.round>1&&!confirm("새 게임을 시작할까요? 지금 게임은 사라져요.")) return; if(AC.anim){ cancelAnimationFrame(AC.anim.raf); AC.anim=null; } AC.st=AC.newGame(); AC.sel=null; }
       else if(k==="speed"){ AC.speed=AC.speed===1?2:1; d.textContent=AC.speed+"x"; return; }
       else if(k==="skip") return AC.skip();
       else if(k==="next"){ AC.nextRound(st); }
@@ -5257,12 +5339,19 @@ const AC={
       else if(k==="sell"&&AC.sel){ const g=AC.sell(st,S,AC.sel); AC.sel=null; AC.msg(`판매 +${g}골드`); }
       else if(k==="fight") return AC.startBattle();
       if(w) AC.msg(w); AC.save(); AC.render(); return; }
+    const hb=t.closest("[data-achist]"); if(hb){ AC.histI=+hb.dataset.achist; AC.render(); return; }
+    if(t.closest("[data-acmodal]")){ if(t.matches("[data-acmodal]")){ AC.histOpen=false; AC.render(); } return; }
+    if(t.closest("[data-acinfo]")) return;
+    const si=t.closest("[data-acshopinfo]"); if(si){ const no=S.shop[+si.dataset.acshopinfo]; if(no!=null){ const o=AC.owned(S,no); AC.info={no,t:o?o.t:AC_CONFIG.startT,shop:true}; AC.drawInfo(); } return; }
+    const bt=t.closest("[data-acb]"); if(bt){ AC.info={bt:bt.dataset.acb}; AC.drawInfo(); return; }
+    const fo=t.closest("[data-acfoe]"); if(fo){ const u=st.ai.units.find(x=>x.uid===+fo.dataset.acfoe); if(u){ AC.info={no:u.no,t:u.t,side:"ai"}; AC.drawInfo(); } return; }
+    if(t.closest("[data-acmon]")){ AC.info={mon:true,side:"ai"}; AC.drawInfo(); return; }
     if(!prep) return;
-    const b=t.closest("[data-acbuy]"); if(b){ const i=+b.dataset.acbuy, no=S.shop[i], w=AC.buy(st,S,i); if(w) AC.msg(w); else { const u=AC.owned(S,no); if(u&&u.copies>1) AC.msg(`${AC.hero(no).name} ${u.t}초월!`); } AC.save(); AC.render(); return; }
+    const b=t.closest("[data-acbuy]"); if(b){ const i=+b.dataset.acbuy, no=S.shop[i], w=AC.buy(st,S,i); if(w) AC.msg(w); else { const u=AC.owned(S,no); if(u&&u.copies>1){ AC.msg(`${AC.hero(no).name} ${u.t}초월!`); AC.pulse=u.uid; clearTimeout(AC.pulseT); AC.pulseT=setTimeout(()=>{ AC.pulse=null; },1500); } } AC.save(); AC.render(); return; }
     const tk=t.closest("[data-acu]"), lc=t.closest("[data-acloc]");
-    if(tk&&(!AC.sel||+tk.dataset.acu===AC.sel)){ const id=+tk.dataset.acu; AC.sel=AC.sel===id?null:id; AC.render(); return; }
-    if(AC.sel&&lc){ const w=AC.move(S,AC.sel,lc.dataset.acloc); if(w) AC.msg(w); AC.sel=null; AC.save(); AC.render(); return; }
-    if(AC.sel){ AC.sel=null; AC.render(); } },
+    if(tk&&(!AC.sel||+tk.dataset.acu===AC.sel)){ const id=+tk.dataset.acu; AC.sel=AC.sel===id?null:id; const u=S.units.find(x=>x.uid===id); AC.info=AC.sel&&u?{no:u.no,t:u.t,uid:id}:null; AC.render(); return; }
+    if(AC.sel&&lc){ const w=AC.move(S,AC.sel,lc.dataset.acloc); if(w) AC.msg(w); AC.sel=null; AC.info=null; AC.save(); AC.render(); return; }
+    if(AC.sel||AC.info){ AC.sel=null; AC.info=null; AC.render(); } },
   onDrag(e){ const st=AC.st; if(st.phase!=="prep") return; const tk=e.target.closest&&e.target.closest("[data-acu]");
     if(e.type==="dragstart"){ if(!tk) return; e.dataTransfer.setData("text/plain",tk.dataset.acu); e.dataTransfer.effectAllowed="move"; AC.dragId=+tk.dataset.acu; return; }
     const lc=e.target.closest&&e.target.closest("[data-acloc]"), sz=e.target.closest&&e.target.closest(".acshops");
