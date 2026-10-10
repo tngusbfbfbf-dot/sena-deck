@@ -1123,6 +1123,9 @@
   #acRoot .acstat:empty{display:none}
   .acpillar{opacity:.75;z-index:7} .acfx.rev{z-index:12;font-size:17px;color:#fff;-webkit-text-stroke:1px #a85b00;text-shadow:0 0 8px #ffb300,0 2px 3px #000}
   .acheal{font-size:13px}
+  @media (min-width:901px){ #acRoot .a-roster{position:relative;align-self:stretch;min-height:44px} #acRoot .a-roster>*{position:absolute;top:0;left:0;right:0;z-index:30;margin:0}
+    #acRoot .a-roster details[open]{background:var(--panel,#151a24);border-radius:10px;box-shadow:0 8px 28px #000c;max-height:70vh;overflow:auto} }
+
 </style>
 <script>document.documentElement.classList.add("intro");</script>
 </head>
@@ -1353,7 +1356,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.4v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.5v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5177,7 +5180,7 @@ const AC_CONFIG={
     s_roj:{name:"원거리 마법 하이퍼 딜러",short:"무덤",range:"ranged",dmg:"magic",atk:160,def:20,res:24,hp:800,aspd:1.6,crit:5},
     s_jur:{name:"원&근 복합 마법형",short:"대법",range:"mid",dmg:"magic",atk:126,def:40,res:42,hp:1150,aspd:1.6,crit:5},
     s_pai:{name:"근접 물리 하이퍼 딜러",short:"이그",range:"melee",dmg:"phys",atk:150,def:36,res:26,hp:1150,aspd:1.7,crit:15},
-    s_mil:{name:"원거리 탱커형 마법 메즈",short:"수정",range:"ranged",dmg:"magic",atk:92,def:52,res:60,hp:1400,aspd:1.55,crit:5}},
+    s_mil:{name:"원거리 탱커형 마법 메즈",short:"수정",range:"ranged",dmg:"magic",atk:80,def:48,res:55,hp:1250,aspd:1.55,crit:5}},
   heroRole:{
     rp:["풍연","블랙로즈","스니퍼","소이","비담","카일","콜트","팔라누스","오르카"],
     rm:["노호","조커","유리","리나","에스파다","파스칼","레긴레이프","바네사","린","동영","하연"],
@@ -5189,11 +5192,11 @@ const AC_CONFIG={
   // 0.5v 피해 = 공격력 × 100 ÷ (100 + 경감) × 계수% × 치명(×2) × (1+주는 피해%) × (1+받는 피해%−피해 감소%) × (1+연장전%) · 경감 = 물리 → 방어력 · 마법 → 마법 저항
   critDmg:200, mitBase:100,
   // 힘 배율 (툴 초월 스탯 위에 곱함): 비용별 기본 배율 · 초월 1마다 +% · 3/6/9/12초월 이정표 (+% · 스킬 계수 +%p) · 방어는 증가분의 defShare만
-  tierMult:{1:1.0,2:1.2,3:1.45,4:1.75,5:2.1}, tStepPct:{1:6.5,2:7.5,3:9,4:10.5,5:12.5},
+  tierMult:{1:1.0,2:1.2,3:1.45,4:1.5,5:2.1}, tStepPct:{1:6.5,2:7.5,3:9,4:10.5,5:12.5},
   tMilestones:[6,12], milestonePct:22, milestoneSkill:50, defShare:0.4,
   tierName:{1:"희귀",2:"전설",3:"전설 스페셜",4:"(구)세나",5:"각성"},
-  odds:[[100,0,0,0,0],[100,0,0,0,0],[75,25,0,0,0],[55,30,15,0,0],[45,33,20,2,0],[30,40,25,5,0],[19,30,35,15,1],[18,25,32,22,3],[10,20,25,35,10],[5,10,20,40,25]],
-  lossBase:2, lossPerUnit:2,
+  odds:[[100,0,0,0,0],[100,0,0,0,0],[75,25,0,0,0],[55,30,15,0,0],[45,33,20,2,0],[30,40,25,5,0],[19,32,39,9,1],[18,27,37,15,3],[10,22,32,25,11],[5,12,25,30,28]],
+  lossBase:1, lossPerUnit:1,
   startT:0, mergeT:1, maxT:12, usePotential:false,   // 초월 성장 (자리표시 규칙): 같은 영웅을 사면 +1초월
   // 사거리: 마법형·지원형 = 원거리 · 공격형·만능형·방어형 = 근거리 · 예외(활·총 쓰는 영웅) = heroRange (이름 → 'melee' | 'ranged' | 'mid', 고쳐도 됨)
   range:{"방어형":"melee","만능형":"melee","공격형":"melee","마법형":"ranged","지원형":"ranged"}, rangeCells:{melee:1,mid:2,ranged:3},
@@ -5210,27 +5213,27 @@ const AC_CONFIG={
   // 0.4v 시너지: 판에 올린 서로 다른 영웅 수로 단계 결정 · bp = 단계 인원 · hidden = 숨김 단계 (표시 안 함) · 숫자는 v (단계별 배열)
   syn:[
     {id:"marks",name:"지정사수",ico:"🎯",members:["스니퍼","블랙로즈","에스파다","콜트","오르카"],bp:[3,5],v:{distPct:[12,12],exec:[0,10]},desc:["지정사수: 적과 1칸 멀어질 때마다 피해 +12%", "+ 체력 10% 미만 적 즉시 처형"]},
-    {id:"fury",name:"전투광",ico:"🩸",members:["블랙로즈","지크","카일","칼헤론","브란즈&브란셀","실베스타"],bp:[2,4,6],v:{ls:[3,4,5],revive:[0,0,1.5]},desc:["전투광: 입힌 피해 3% 흡혈", "흡혈 4%", "흡혈 5% · 쓰러지면 1.5초 동안 되살아남"]},
+    {id:"fury",name:"전투광",ico:"🩸",members:["블랙로즈","지크","카일","칼헤론","브란즈&브란셀","실베스타","파이"],bp:[2,4,6],v:{ls:[3,4,5],revive:[0,0,1.5]},desc:["전투광: 입힌 피해 3% 흡혈", "흡혈 4%", "흡혈 5% · 쓰러지면 1.5초 동안 되살아남"]},
     {id:"sword",name:"검객",ico:"⚔️",members:["풍연","에반","챈슬러","지크","세인","태오","카마도 탄지로","아가츠마 젠이츠"],bp:[2,4,6,8,10],hidden:[10],v:{atk:[4,6,8,10,100],evade:[0,0,8,12,100],dbl:[0,0,0,10,100]},desc:["검객: 공격력 +4%", "공격력 +6%", "공격력 +8% · 회피 8%", "공격력 +10% · 회피 12% · 10% 확률로 2명 동시 공격", "공격력 +100% · 회피 100% · 항상 2명 동시 공격"]},
     {id:"van",name:"선봉장",ico:"🛡️",members:["에반","유진호","관우","룩","라드그리드","헬레니아"],bp:[2,3,4,5],v:{hpAll:[50,60,120,220],def:[5,7,15,20]},desc:["아군 전체 생명력 +50 · 선봉장 방어력 +5%","생명력 +60 · 방어력 +7%","생명력 +120 · 방어력 +15%","생명력 +220 · 방어력 +20%"]},
-    {id:"guard",name:"수호자",ico:"🧱",members:["아수라","라쿤","니아","아라곤","카르마","스파이크","트루드","클레미스","녹스","루디"],bp:[2,4,6],v:{dr:[10,20,30]},desc:["수호자: 받는 피해 −10%","−20%","−30%"]},
-    {id:"mage",name:"마법사",ico:"🔮",members:["노호","조커","유리","리나","파스칼","레긴레이프","바네사","린","동영","하연"],bp:[3,6,9],v:{sk:[30,50,80]},desc:["마법사: 스킬 피해 +30%", "+50%", "+80%"]},
+    {id:"guard",name:"수호자",ico:"🧱",members:["아수라","라쿤","니아","아라곤","카르마","스파이크","트루드","클레미스","녹스","루디","겔리두스"],bp:[2,4,6],v:{dr:[10,20,30]},desc:["수호자: 받는 피해 −10%","−20%","−30%"]},
+    {id:"mage",name:"마법사",ico:"🔮",members:["노호","유리","리나","파스칼","레긴레이프","린","동영","하연","카르마","밀리아"],bp:[3,6,9],v:{sk:[30,50,80]},desc:["마법사: 스킬 피해 +30%", "+50%", "+80%"]},
     {id:"brawl",name:"싸움꾼",ico:"👊",members:["샤오","레이","링링","유진호","차해인","데이지","관우","오공"],bp:[2,4,6],v:{hp:[8,15,25]},desc:["싸움꾼: 생명력 +8%", "+15%", "+25%"]},
     {id:"assn",name:"암살자",ico:"🗡️",members:["샤오","레이","차해인","미호","태오","아가츠마 젠이츠"],bp:[2,4,6],v:{crit:[5,10,15]},desc:["암살자: 전투 시작 때 적 후열로 도약 · 치명타 확률 +5%", "치명타 +10%", "치명타 +15%"]},
     {id:"snipe",name:"저격수",ico:"🏹",members:["풍연","스니퍼","비담","카일","팔라누스"],bp:[2,4],v:{range:[1,1],as:[10,25]},desc:["저격수: 사거리 +1 · 공격 속도 +10%","공격 속도 +25%"]},
     {id:"scout",name:"척후대",ico:"🦅",members:["소이","링링","비담","세인"],bp:[2,3,4],v:{as:[10,20,30],first:[2,2,2]},desc:["척후대: 공격 속도 +10% · 첫 공격 피해 2배","공격 속도 +20%","공격 속도 +30%"]},
     {id:"guer",name:"게릴라",ico:"🌀",members:["소이","콜트","팔라누스","오공"],bp:[2,4],v:{every:[3,3],evade:[50,50],dur:[1,1]},desc:["게릴라: 3번 공격마다 빈칸으로 이동 · 이동 뒤 1초 회피 50%","(4명) 모든 게릴라 영웅"]},
-    {id:"tuner",name:"조율자",ico:"🎼",members:["유리","데이지","니아","하연"],bp:[2,4],v:{chance:[50,100]},desc:["아군 전체: 스킬이 3타 대신 2타마다 (50% 확률)","항상 2타마다"]},
+    {id:"tuner",name:"조율자",ico:"🎼",members:["유리","데이지","니아","하연","쥬리"],bp:[2,4],v:{chance:[50,100]},desc:["아군 전체: 스킬이 3타 대신 2타마다 (50% 확률)","항상 2타마다"]},
     {id:"maes",name:"마에스트로",ico:"🎻",members:["리나","파스칼","동영"],bp:[2,3],v:{atk:[8,15]},desc:["아군 전체 공격력 +8%","+15%"]},
-    {id:"dream",name:"몽상가",ico:"💤",members:["노호","미호","린","클레미스"],bp:[2,4],v:{heal:[15,30]},desc:["몽상가: 적 처치 때 최대 체력 15% 회복","30% 회복"]},
+    {id:"dream",name:"몽상가",ico:"💤",members:["노호","미호","린","클레미스","로지"],bp:[2,4],v:{heal:[15,30]},desc:["몽상가: 적 처치 때 최대 체력 15% 회복","30% 회복"]},
     {id:"slayer",name:"귀살대",ico:"🔥",members:["카마도 탄지로","아가츠마 젠이츠"],bp:[2],v:{atk:[30]},desc:["귀살대 둘 다 공격력 +30%"]},
     {id:"aide",name:"조력자",ico:"🤝",members:["조커","에스파다","레긴레이프","바네사","룩","챈슬러","녹스"],bp:[2,4,6],v:{shield:[7,13,20]},desc:["조력자마다 가장 가까운 아군 1명에게 보호막 (그 아군 최대 체력 7%)", "13%", "20%"]},
     {id:"pion",name:"선구자",ico:"🚩",members:["오르카","브란즈&브란셀","칼헤론","라드그리드","루디","헬레니아"],bp:[2,4,6],v:{atk:[12,22,30],dur:[5,5,5]},desc:["선구자: 처음 5초 공격력 +12% · 처치하면 전투 끝까지 유지", "+22%", "+30%"]},
     {id:"family",name:"부자",ico:"👨‍👦",members:["에반","실베스타"],bp:[2],v:{lock:[3],revPct:[50],burn:[22],ls:[50]},desc:["에반이 처음 쓰러질 때: 실베스타 3초 체력 1 고정·무적, 에반 무력화 · 3초 안에 처치하면 에반 50% 부활 · 실베스타는 3초 동안 입힌 피해만큼 회복 / 실베스타가 먼저 쓰러지면: 에반의 현재 체력으로 부활 · 매초 22 고정 피해 · 흡혈 50% (전투당 1번)"]},
-    {id:"crys",name:"수정룡",ico:"💎",sena:1,members:["밀리아"],bp:[1],v:{shield:[15],stun:[1]},desc:["전투 시작 때 아군 전체에 최대 체력 15% 보호막 · 보호막이 깨지면 주변 적 1초 기절"]},
+    {id:"crys",name:"수정룡",ico:"💎",sena:1,members:["밀리아"],bp:[1],v:{shield:[10],stun:[1]},desc:["전투 시작 때 아군 전체에 최대 체력 10% 보호막 · 보호막이 깨지면 주변 적 1초 기절"]},
     {id:"yeti",name:"설인",ico:"❄️",sena:1,members:["겔리두스"],bp:[1],v:{stacks:[5],freeze:[2],amp:[30]},desc:["공격마다 냉기 1중첩 · 5중첩이면 2초 빙결 (빙결 중 받는 피해 +30%)"]},
     {id:"grave",name:"무덤지기",ico:"💀",sena:1,members:["로지"],bp:[1],v:{atk:[8],souls:[5],nova:[400]},desc:["적이 쓰러질 때마다 영혼 1 · 영혼당 공격력 +8% · 영혼 5개면 적 전체에 큰 마법 피해 (전투당 1번)"]},
-    {id:"judge",name:"대법관",ico:"⚖️",sena:1,members:["쥬리"],bp:[1],v:{dr:[25],sk:[40],cut:[20]},desc:["앞쪽 칸: 받는 피해 −25% · 뒤쪽 칸: 스킬 피해 +40% · 가장 강한 적 1명에게 '판결' (공격력 −20%)"]},
+    {id:"judge",name:"대법관",ico:"⚖️",sena:1,members:["쥬리"],bp:[1],v:{dr:[25],sk:[40],cut:[20],resCut:[30],near:[3]},desc:["앞쪽 칸: 근접 (사거리 1) · 받는 피해 −25% · 전투 시작 때 가까운 적 3명 마법 저항 −30% · 뒤쪽 칸: 원거리 · 스킬 피해 +40% · 가장 강한 적 1명에게 '판결' (공격력 −20%)"]},
     {id:"ignite",name:"이그니트",ico:"☄️",sena:1,members:["파이"],bp:[1],v:{burn:[10],dur:[3],as:[50]},desc:["공격마다 3초 화상 (매초 파이 공격력 10%) · 체력 50% 아래면 공격 속도 +50%"]}],
   furyReviveHp:15, guerMove:2,
  aiStartHp:100, projMs:280, // 0.3v: 상대 체력 · 원거리 투사체 시간(ms)
@@ -5372,7 +5375,7 @@ const AC={
         if(has(u,"pion")){ u.pion=v("pion","atk"); u.pionDur=v("pion","dur"); }
         if(has(u,"marks")){ u.distPct=v("marks","distPct"); u.exec=v("marks","exec"); }
         if(has(u,"yeti")) u.yeti=1; if(has(u,"grave")) u.grave=1; if(has(u,"ignite")) u.ignite=1;
-        if(has(u,"judge")){ if(u.row<=1) u.dr+=v("judge","dr"); else u.skAmp+=v("judge","sk"); u.judge=1; }
+        if(has(u,"judge")){ if(u.row<=1){ u.dr+=v("judge","dr"); u.range=1; u.judgeFront=1; } else u.skAmp+=v("judge","sk"); u.judge=1; }
         if(has(u,"family")) u.fam=u.name==="에반"?"son":"father";
         u.maxHp=Math.round(u.maxHp*(1+hpPct/100)+hpFlat); u.hp=u.maxHp; u.def=u.s.def*(1+defPct/100); u.res=(u.s.res||0)*(1+defPct/100); }
       if(hpFlat) AC.sstat(B,side,"van",hpFlat*U.length);
@@ -5381,7 +5384,8 @@ const AC={
       if(L.crys!=null){ U.forEach(u=>{ const n=u.maxHp*v("crys","shield")/100; u.shield+=n; u.crysSh=true; AC.sstat(B,side,"crys",n); }); }
     }
     B.units.forEach(u=>{ if(u.mon){ u.def=u.s.def; u.res=u.s.res||u.s.def; } });
-    for(const u of B.units.filter(x=>x.judge)){ const foes=B.units.filter(x=>x.side!==u.side); const tg=foes.sort((a,b)=>b.s.atk*(1+b.atkPct/100)-a.s.atk*(1+a.atkPct/100))[0]; if(tg){ tg.atkPct-=AC.sv(B,u.side,"judge","cut"); tg.judged=true; } }
+    for(const u of B.units.filter(x=>x.judge)){ const foes=B.units.filter(x=>x.side!==u.side); const tg=foes.sort((a,b)=>b.s.atk*(1+b.atkPct/100)-a.s.atk*(1+a.atkPct/100))[0]; if(tg){ tg.atkPct-=AC.sv(B,u.side,"judge","cut"); tg.judged=true; }
+      if(u.judgeFront){ const rc=AC.sv(B,u.side,"judge","resCut"); foes.filter(x=>!x.shred).sort((a,b)=>AC.dist(u,a)-AC.dist(u,b)).slice(0,AC.sv(B,u.side,"judge","near")).forEach(x=>{ x.res=(x.res||0)*(1-rc/100); x.shred=rc; }); } }
     for(const u of B.units.filter(x=>x.leap)){ const back=u.side==="me"?[0,1]:[C.rows*2-1,C.rows*2-2]; let best=null, bd=1e9;
       for(const R of back) for(let c=0;c<C.cols;c++){ if(B.units.some(x=>x!==u&&x.R===R&&x.C===c)) continue; const d=Math.abs(c-u.C)+(R===back[0]?0:0.5); if(d<bd){ bd=d; best=[R,c]; } }
       if(best){ u.R=best[0]; u.C=best[1]; } } },
@@ -5559,9 +5563,9 @@ const AC={
   finishBattle(){ const A=AC.anim; if(!A||AC.st.phase!=="battle") return; cancelAnimationFrame(A.raf); AC.applyResult(AC.st,A.B); AC.anim=null; if(AC.info&&AC.info.bt) AC.info=null; AC.save(); AC.render(); },
   drawBattle(B,ev){ const L=$("acLayer"); if(!L) return; const C=AC_CONFIG; document.querySelectorAll("#acBoard .accell .actk").forEach(e=>e.remove());
     for(const u of B.units){ let el=L.querySelector(`[data-acb="${u.uid}"]`);
-      if(!el){ el=document.createElement("div"); el.className=`actk bt tier${u.mon?0:AC.tierNo(u.no)} ${u.side}${u.mon?" mon":""}`; el.dataset.acb=u.uid; el.innerHTML=u.mon?`${AC.monFace()}<i class="achp"><i></i><b class="acshb"></b></i><span class="acstat"></span>`:`${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}<i class="achp"><i></i><b class="acshb"></b></i><span class="acstat" data-acstat></span>`; L.appendChild(el); }
+      if(!el){ el=document.createElement("div"); el.className=`actk bt tier${u.mon?0:AC.tierNo(u.no)} ${u.side}${u.mon?" mon":""}`; el.dataset.acb=u.uid; el.innerHTML=u.mon?`${AC.monFace()}<i class="achp"><i></i><b class="acshb"></b></i><span class="acstat" data-acstat></span>`:`${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}<i class="achp"><i></i><b class="acshb"></b></i><span class="acstat" data-acstat></span>`; L.appendChild(el); }
       el.style.left=(u.C/C.cols*100)+"%"; el.style.top=(u.R/(C.rows*2)*100)+"%"; const tot=Math.max(u.maxHp,u.hp+(u.shield||0)); el.querySelector(".achp>i").style.width=(u.hp/tot*100)+"%"; const sb=el.querySelector(".acshb"); sb.style.left=(u.hp/tot*100)+"%"; sb.style.width=((u.shield||0)/tot*100)+"%"; el.classList.toggle("dead",!u.alive); const T=B.t;
-      const ic=(u.frz&&T<u.frz?"❄️":"")+(u.burn&&T<u.burn.until?"🔥":"")+(u.stun&&T<u.stun?"💫":"")+(u.inv&&T<u.inv?"🛡️":"")+(u.disabled?"⛓️":"")+(u.judged?"⚖️":""), se=el.querySelector(".acstat"); if(se&&se.textContent!==ic) se.textContent=ic;
+      const ic=(u.frz&&T<u.frz?"❄️":"")+(u.burn&&T<u.burn.until?"🔥":"")+(u.stun&&T<u.stun?"💫":"")+(u.inv&&T<u.inv?"🛡️":"")+(u.disabled?"⛓️":"")+(u.judged?"⚖️":"")+(u.shred?"🔻":"")+(u.burnFix?"💔":""), se=el.querySelector(".acstat"); if(se&&se.textContent!==ic) se.textContent=ic;
       el.classList.toggle("shd",u.shield>0); el.classList.toggle("frz",!!(u.frz&&T<u.frz)); el.classList.toggle("brn",!!(u.burn&&T<u.burn.until)); el.classList.toggle("stn",!!(u.stun&&T<u.stun)); el.classList.toggle("inv",!!(u.inv&&T<u.inv)); el.classList.toggle("dis",!!u.disabled); el.classList.toggle("rvv",!!u.revEnd||!!u.burnFix); el.classList.toggle("jdg",!!u.judged); }
     const W=L.clientWidth/C.cols, H=L.clientHeight/(C.rows*2), px=(r,c)=>[(c+0.5)*W,(r+0.5)*H], slow=1/Math.max(0.5,AC.speed);
     const add=(cls,x,y,txt)=>{ const s=document.createElement("span"); s.className=cls; s.style.left=x+"px"; s.style.top=y+"px"; if(txt!=null) s.textContent=txt; L.appendChild(s); return s; };
