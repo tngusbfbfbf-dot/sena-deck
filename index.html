@@ -1126,6 +1126,8 @@
   @media (min-width:901px){ #acRoot .a-roster{position:relative;align-self:stretch;min-height:44px} #acRoot .a-roster>*{position:absolute;top:0;left:0;right:0;z-index:30;margin:0}
     #acRoot .a-roster details[open]{background:var(--panel,#151a24);border-radius:10px;box-shadow:0 8px 28px #000c;max-height:70vh;overflow:auto} }
 
+  @media (max-width:560px){ #acRoot .a-mact{order:6;display:flex;flex-wrap:wrap;gap:6px;align-items:stretch} #acRoot .a-mact .a-fight{flex:1 1 100%;display:flex;gap:6px} #acRoot .a-mact .a-fight .acgo{flex:1;min-height:44px;font-size:15px} #acRoot .a-mact .acbuyx{flex:1 1 100%;display:flex;gap:6px} #acRoot .a-mact .acbuyx button{flex:1;min-height:42px}
+    #acRoot .a-bar{order:7} #acRoot .a-shop{order:8} #acRoot .a-roster{order:9} }
   /* 0.6v 스킬 */
   .acsyd p{white-space:pre-line}
   #acRoot .acskslot{position:absolute;left:4px;top:4px;z-index:6;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:#0009;border:1px solid #fff3;overflow:hidden}
@@ -5613,7 +5615,8 @@ const AC={
   drawInfo(){ let el=document.querySelector("#acRoot [data-acinfo]"); const h=AC.infoHTML(); if(!h){ if(el) el.remove(); return; } const tmp=document.createElement("div"); tmp.innerHTML=h; const n=tmp.firstChild, key=JSON.stringify(AC.info); n.dataset.k=key;
     if(el&&el.dataset.k===key){ ["hp","def","atk","res","aspd"].forEach(k=>{ const q=el.querySelector(`[data-acst-${k}]`), r=n.querySelector(`[data-acst-${k}]`); if(q&&r&&q.textContent!==r.textContent) q.textContent=r.textContent; }); return; }
     if(el) el.replaceWith(n); else $("acRoot").appendChild(n); },
-  render(){ const st=AC.st, S=st.me, C=AC_CONFIG, box=$("acRoot"); if(!box) return;
+  mob(){ return !!(window.matchMedia&&matchMedia("(max-width:560px)").matches); },
+  render(){ AC._mob=AC.mob(); const st=AC.st, S=st.me, C=AC_CONFIG, box=$("acRoot"); if(!box) return;
     const need=AC.xpNeed(S.level), od=C.odds[S.level-1], fieldN=AC.field(S).length, prep=st.phase==="prep";
     const hRound=`<div class="achud a-round"><span class="hi">라운드 <b data-ach="round">${st.round}</b><i class="acmode ${AC.isPve(st)?"pve":"pvp"}" data-acmode>${AC.isPve(st)?"몬스터":"PVP"}</i></span></div>`;
     const hHp=`<span class="hi hp hpbig" data-achp="me" title="내 체력"><span class="hrt">❤️</span><b data-ach="hp">${st.hp}</b><i class="achpbar"><i style="width:${st.hp/C.startHp*100}%"></i></i></span><span class="hi hp hpbig foe" data-achp="ai" title="상대 체력">상대 <span class="hrt">🖤</span><b data-ach="aihp">${st.aiHp??C.aiStartHp}</b><i class="achpbar"><i style="width:${(st.aiHp??C.aiStartHp)/C.aiStartHp*100}%"></i></i></span>`;
@@ -5636,8 +5639,8 @@ const AC={
         return `<div class="acov" data-acov="win"><div class="acovb wide"><b class="win">🏆 최종 승리!</b><p>${st.round}라운드에 상대 체력 0 · 남은 체력 ❤️ ${st.hp}</p><p data-acwinstats>전적 ${W}승 ${st.log.length-W}패 · 레벨 ${S.level} · 가한 피해 ${fmtN(D)} · 받은 피해 ${fmtN(T)}</p>${L0?AC.statsHTML(L0):""}<div><button type="button" data-acdo="hist">📊 라운드 통계</button><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div></div>`; })()
       :st.phase==="over"?`<div class="acov" data-acov="over"><div class="acovb"><b class="lose">게임 오버</b><p>${st.round}라운드에서 탈락 · 버틴 라운드 ${st.round-1}</p><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div>`:"";
     box.innerHTML=`<div class="acL">${hRound}<div class="a-syn">${AC.synPanel()}</div><div class="a-board"><div class="acboard${prep&&fieldN<S.level?" acwarn":""}" id="acBoard" data-acempty="${prep?Math.max(0,S.level-fieldN):0}"><div class="acgrid">${grid}</div><div class="aclayer" id="acLayer"></div><div class="acmid" aria-hidden="true"></div>${ov}</div></div>
-      <div class="a-side"><div class="achud acside">${hHp}</div><div class="acfoot"><button type="button" data-acdo="new">새 게임</button><button type="button" data-acdo="hist">📊 라운드 통계</button></div>${bFight}</div>
-      <div class="a-ctl achud">${hLv}<div class="acctl acbuyx">${bBuy}</div></div>
+      <div class="a-side"><div class="achud acside">${hHp}</div><div class="acfoot"><button type="button" data-acdo="new">새 게임</button><button type="button" data-acdo="hist">📊 라운드 통계</button></div>${AC.mob()?"":bFight}</div>
+      <div class="a-ctl achud">${hLv}${AC.mob()?"":`<div class="acctl acbuyx">${bBuy}</div>`}</div>${AC.mob()?`<div class="a-mact" data-acmact>${bFight}<div class="acctl acbuyx">${bBuy}</div></div>`:""}
       <div class="a-bench"><div class="acbench" data-acsellzone>${bench}</div></div>
       <div class="a-bar achud"><div class="acctl aclock">${bLock}</div><div class="acshophead"><span class="ttl">상점</span><span class="acgold" data-acgold title="보유 골드"><span class="coin">G</span><b data-acgoldn data-ach="gold">${S.gold}</b></span>${hStreak}</div>${hOdds}</div>
       <div class="a-shop"><div class="acshops" data-acsellzone>${shop}</div><div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div><p class="muted achelp">탭 = 선택(스탯 표시) → 칸/대기석 탭 = 이동 · 상점 ⓘ·상대·전투 중 유닛 탭 = 스탯 · 끌어다 놓기 · 상점으로 끌면 판매 · 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격 · 시너지 = 판 위 서로 다른 영웅 수</p></div>
@@ -7010,6 +7013,8 @@ showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"
   els.forEach((e,i)=>{ e.classList.add("introel"); e.style.setProperty("--d",(200+Math.min(i,5)*100)+"ms"); });
   setTimeout(()=>{ de.classList.remove("intro"); els.forEach(e=>{ e.classList.remove("introel"); e.style.removeProperty("--d"); }); },1300);
 })();
+
+addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&AC.mob()!==AC._mob&&document.getElementById("acRoot")&&!AC.anim) AC.render(); }catch(e){} });
 </script>
 </body>
 </html>
