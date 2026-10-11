@@ -1200,6 +1200,18 @@
   @keyframes acrw{0%{filter:none}15%{filter:invert(1) hue-rotate(180deg) blur(2px)}40%{filter:sepia(1) brightness(1.4)}100%{filter:none}}
   .acrwtx{position:absolute;z-index:25;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:#fff;white-space:nowrap;text-shadow:0 0 12px #6bd0ff,0 2px 4px #000;pointer-events:none;animation:acfade 1.5s ease-in forwards}
   #acRoot .acstat{max-width:100%;overflow:hidden;white-space:nowrap}
+
+.acskill .acsktier{font-size:.72em;color:#9fb0c8;font-weight:600;margin-left:4px}
+.acabc{white-space:normal}.acabc i{font-style:normal;opacity:.5}.acabc b.on{color:#ffd36a;background:rgba(255,211,106,.16);border-radius:4px;padding:0 3px}
+.acfin{margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid #ffd36a;background:linear-gradient(135deg,rgba(255,211,106,.18),rgba(170,90,255,.16));box-shadow:0 0 14px rgba(255,211,106,.35)}
+.acfin b{color:#ffe9a8}.acfin p{margin:4px 0 0}
+.acreveal{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle,rgba(255,211,106,.35),rgba(0,0,0,.55) 70%);animation:acrvbg 3.2s ease forwards}
+.acrvc{display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 30px;border-radius:18px;background:rgba(20,16,36,.92);border:2px solid #ffd36a;box-shadow:0 0 40px #ffd36a,0 0 90px rgba(170,90,255,.6);animation:acrvpop .7s cubic-bezier(.2,1.6,.4,1)}
+.acrvc .acface,.acrvc img{width:84px;height:84px;border-radius:14px;animation:acrvspin 1.2s ease}
+.acrvc small{color:#cbb8ff;letter-spacing:.08em}.acrvc b{font-size:1.5em;color:#ffe9a8;text-shadow:0 0 12px #ffd36a}.acrvc p{margin:0;color:#fff}
+@keyframes acrvpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes acrvspin{from{transform:rotateY(180deg) scale(.6)}to{transform:none}}
+@keyframes acrvbg{0%{opacity:0}10%{opacity:1}80%{opacity:1}100%{opacity:0}}
 </style>
 <script>document.documentElement.classList.add("intro");</script>
 <script>/* Phaser 3.90.0 (MIT) — 오프라인 내장 */
@@ -1433,7 +1445,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.8v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.9v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5238,7 +5250,7 @@ const AC_CONFIG={
   streakBonus:[[6,3],[4,2],[2,1]],   // [연속 n 이상, +골드] (큰 것부터)
   winBonus:1, rerollCost:2, xpBuyCost:4, xpBuyAmount:4, xpPerRound:2,
   xpToNext:[2,2,6,10,20,36,56,80,100], // Lv1→2 … Lv9→10
-  tierCost:{1:1,2:2,3:3,4:4,5:5}, poolCopies:{1:48,2:34,3:23,4:20,5:8},
+  tierCost:{1:1,2:2,3:3,4:4,5:5}, poolCopies:{1:48,2:34,3:23,4:20,5:14},
   // 0.4v 로스터 (티어 = 이 목록 · 이름은 툴 영웅 이름 그대로)
   roster:{1:["풍연","블랙로즈","스니퍼","소이","노호","조커","유리","샤오","레이","링링","아수라","에반","라쿤","유진호"],
           2:["비담","리나","에스파다","파스칼","지크","세인","차해인","미호","데이지","니아","아라곤","관우","룩","챈슬러"],
@@ -5297,16 +5309,36 @@ const AC_CONFIG={
   skillEvery:3, skillCoef:250,
   // ===== 0.6v 5코 고유 스킬 (영웅 이름 → 수치) · 이 10명은 기본 '3번째 공격 250%' 대신 아래 스킬 =====
   skills5:{
-    "루디":{name:"영겁의 성채",ico:"🏰",every:6,shield:200,max:600,desc:"상시효과로 자신이 적에게 6회 피격될 때 마다 자신에게 200의 쉴드부여."},
-    "오르카":{name:"최후통첩",ico:"🎯",every:8,ammo:4,gap:2,coef:380,pierce:3,fall:30,desc:"적을 8회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. 2초에 1발씩 발사되며, 최대 3명까지 관통합니다. 데미지는 경감됩니다."},
-    "카마도 탄지로":{name:"사양전신",ico:"☀️",need:3,window:3,dur:8,execPct:10,burn:15,burnDur:3,hop:0.3,desc:"적 처치 관여 3회시, 8초간 다음의 효과를 얻습니다: 최대체력의 10%미만인 적에게 순간이동 후 즉시 처형합니다. 순간 이동시 붉은 궤적을 남기고, 궤적 위를 지나는 모든 적에게 화상을 입힙니다."},
-    "아가츠마 젠이츠":{name:"화뢰신",pathMs:400,fadeMs:1000,ico:"⚡",deaths:3,max:3,pause:3,coef:250,desc:"아군의 사망이 3회 발생 시 발동: 즉시 게임이 3초간 정지 되며, 젠이츠는 체력을 완전히 회복 후, 매우 빠른 속도로 이동해 모든 적에게 자신의 공격력 250%피해를 즉시 입힙니다."},
-    "클레미스":{name:"구원의 힘",ico:"⏳",amp:30,desc:"자신 제외 모든 아군 사망 시 발동: 클레미스가 차원을 조작해 시공간을 되돌립니다. 해당 라운드의 최초 전투 상태로 돌아갑니다. 아군에게 피해량 증폭 부여 및 스킬 사용 횟수 초기화. 체력이 40%이하로 떨어지면, 1초 간 무적 및 공격 대상 해제",low:40,invDur:1},
-    "하연":{name:"봉천문",ico:"⛩️",dur:8,desc:"아군에게 상태이상 발생 시 발동: 모든 상태이상을 즉시 해제하고 상대에게 부여된 버프를 제거 후, 8초간 상대 버프를 차단합니다. 아군에게는 8초간 모든 디버프& 상태이상면역을 부여"},
-    "녹스":{name:"심연의 검풍",ico:"🌑",sh:20,sh2:15,low:50,deaths:3,ls:15,fix:50,radius:1,desc:"전투 시작 시 발동: 녹스가 자신의 최대 생명력의 20%에 해당하는 보호막을 얻습니다.\n자신의 생명력이 50% 이하가 되면 녹스가 자신의 최대 생명력의 15%에 해당하는 보호막을 얻습니다.(전투당 1회 발동)\n적 또는 아군 3회 사망 시: 자신이 모든 피해 흡혈 15%를 얻고, 녹스 주변 1칸의 적에게 자신의 회복량에 비례한 고정피해를 입힙니다."},
-    "헬레니아":{name:"감내의 방패",ico:"🛡️",dur:4,red:80,share:50,dot:10,desc:"전투 시작 시 발동: 4초 간 모든 피해를 80% 경감하여 받습니다. 그리고 4초 간 받은 피해량의(경감되기 이전의 피해량) 절반을 회복으로 치환 후 현재 남은 아군 모두에게 동일하게 분배하여 생명령을 회복시킵니다. 남은 절반은 헬레니아가 10초에 걸쳐 피해를 입습니다."},
-    "실베스타":{name:"정화하는 어둠",ico:"🌘",every:4,coef:160,radius:1,heal:20,amp:30,desc:"자신의 4번째 공격마다 다음의 효과를 얻습니다:자신 주변 1칸 적 전체에게 공격력 160% 마법 피해를 주고, 입힌 피해의 20%만큼 회복합니다. 해당 피해로 적 처치시 피해량+30%"},
-    "동영":{name:"황천의 동행자",ico:"⚔️",sh:250,shDur:4,coef:380,depth:2,block:4,desc:"동영이 사망에 이르는 피해를 입을 경우 발동: 동영이 체력1로 1회 생존 후, 자신의 공격력의 250%에 해당하는 쉴드를 4초간 얻습니다. 동시에 거대한 검을 소환하여, 동영 앞쪽 가로 2칸 일직선의 적 전부에게 공격력 380%에 해당하는 피해를 입히고, 피해를 입은 적의 회복을 차단합니다."}},
+    // 0.9v: 배열 = [A 0–2초월, B 3–5초월, C 6+초월] · fin = 12초월 숨은 종결자 (전투당 1회) · desc 의 {키} = 현재 단계 값
+    "루디":{name:"영겁의 성채",ico:"🏰",every:6,shield:200,max:600,desc:"상시효과로 자신이 적에게 6회 피격될 때 마다 자신에게 200의 쉴드부여.",
+      fin:{name:"영광의 심판",hits:3,focus:1.5,desc:"적에게 3회 피격되면 1.5초간 집중한 뒤, 적 진영에 거대한 검을 떨어뜨려 모든 적을 처형합니다."}},
+    "오르카":{name:"최후통첩",ico:"🎯",every:[6,3,2],ammo:4,gap:[1.5,1,0.75],coef:380,pierce:[3,5,99],fall:[30,30,0],pierceTxt:["최대 3명까지","최대 5명까지","제한 없이"],fallTxt:["관통할 때마다 데미지는 30%씩 경감됩니다.","관통할 때마다 데미지는 30%씩 경감됩니다.","데미지는 경감되지 않습니다."],
+      desc:"적을 {every}회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. {gap}초에 1발씩 발사되며, {pierceTxt} 관통합니다. {fallTxt}",
+      fin:{name:"최후통첩: 종언",charge:3,coef:2500,desc:"전투 시작 시 3초간 충전한 뒤, 적 진영 전체를 관통하는 탄환 1발을 발사해 공격력 2500%의 피해를 입힙니다."}},
+    "카마도 탄지로":{name:"히노카미 카구라",ico:"☀️",need:[3,2,1],window:3,dur:6,execPct:[10,15,20],burn:15,burnDur:3,hop:0.3,
+      desc:"적 처치 관여 {need}회시, 6초간 다음의 효과를 얻습니다: 최대체력의 {execPct}% 이하인 적에게 순간이동 후 즉시 처형합니다. 순간 이동시 붉은 궤적을 남기고, 궤적 위를 지나는 모든 적에게 화상을 입힙니다.",
+      fin:{name:"히노카미 카구라:사양전신",delay:1.5,desc:"전투 시작 시 필드가 어두워지고 적 진영에 하얀 '틈의 실'이 나타납니다. 탄지로가 실을 따라 베어 모든 적 영웅을 처형합니다."}},
+    "아가츠마 젠이츠":{name:"벽력일섬",pathMs:400,fadeMs:1000,ico:"⚡",deaths:3,max:[3,4,5],pause:2,coef:[250,370,500],
+      desc:"아군의 사망이 3회 발생 시 발동 (전투당 최대 {max}회): 즉시 게임이 2초간 정지 되며, 젠이츠는 체력을 완전히 회복 후, 매우 빠른 속도로 이동해 모든 적에게 자신의 공격력 {coef}%피해를 즉시 입힙니다.",
+      fin:{name:"벽력일섬:화뢰신",delay:0.8,gap:0.3,desc:"아군이 1명 이상 사망하면 젠이츠가 번개가 되어 잔상과 함께 적 진영에 오망성을 그립니다. 오망성 안의 적은 모두 마비되고, 번개가 내리꽂혀 한 명씩 처형됩니다."}},
+    "클레미스":{name:"구원의 힘",ico:"⏳",amp:[30,50,100],low:40,invDur:[1,1.5,3],
+      desc:"자신 제외 모든 아군 사망 시 발동: 클레미스가 차원을 조작해 시공간을 되돌립니다. 해당 라운드의 최초 전투 상태로 돌아갑니다. 아군에게 피해량 증폭({amp}%) 부여 및 스킬 사용 횟수 초기화.\n차원의 유리된 조각: 체력이 40%이하로 떨어지면, {invDur}초 간 무적 및 공격 대상 해제",
+      fin:{name:"차원방랑자",hits:50,desc:"자신을 포함한 모든 아군이 사망하면, 필드가 바뀌며 모든 아군이 처음 위치에서 완전히 부활합니다. 부활한 아군은 전투가 끝날 때까지 불굴(피격 50회 후 사망)을 얻습니다."}},
+    "하연":{name:"봉천문",ico:"⛩️",dur:[4,6,10],ls:[7,9,10],
+      desc:"아군에게 상태이상 발생 시 발동: 모든 상태이상을 즉시 해제하고 상대에게 부여된 버프를 제거 후, {dur}초간 상대 버프와 회복을 차단합니다. 아군에게는 {dur}초간 모든 디버프& 상태이상면역과 흡혈 {ls}%를 부여",
+      fin:{name:"귀결박",dur:10,amp:2000,desc:"전투 시작 시 부적이 모든 적을 10초간 마비시킵니다. 마비된 적은 받는 피해가 2000% 증가합니다."}},
+    "녹스":{name:"심연의 검풍",ico:"🌑",sh:[15,20,35],low:50,deaths:3,ls:[10,15,30],fix:50,radius:[1,1,3],
+      desc:"전투 시작 시 발동: 녹스가 자신의 최대 생명력의 {sh}%에 해당하는 보호막을 얻습니다.\n자신의 생명력이 50% 이하가 되면 녹스가 자신의 최대 생명력의 {sh}%에 해당하는 보호막을 얻습니다.(전투당 1회 발동)\n적 또는 아군 3회 사망 시: 자신이 모든 피해 흡혈 {ls}%를 얻고, 녹스 주변 {radius}칸의 적에게 자신의 회복량에 비례한 고정피해를 입힙니다.",
+      fin:{name:"심연의 저주",cost:33,n:3,desc:"전투 시작 시 짙은 푸른 섬광이 적 진영을 휩쓸며 모든 적에게 즉사를 부여합니다. 즉사: 기본 공격을 할 때마다 자신의 최대 체력 33%의 고정피해를 받고, 3번째 기본 공격에 사망합니다."}},
+    "헬레니아":{name:"인내의 방패",ico:"🛡️",dur:5,red:[75,80,95],share:50,dot:[5,7,10],
+      desc:"전투 시작 시 발동: 5초 간 모든 피해를 {red}% 경감하여 받습니다. 그리고 5초 간 받은 피해량의(경감되기 이전의 피해량) 절반을 회복으로 치환 후 자신을 제외한 남은 아군 모두에게 동일하게 분배하여 생명력을 회복시킵니다. 남은 절반은 헬레니아가 {dot}초에 걸쳐 고정 피해로 입습니다.",
+      fin:{name:"발키리의 저력",dur:10,mult:2000,desc:"전투 시작 시 10초간 무적이 되며, 아군이 받는 모든 피해를 대신 받아 무효화합니다. 10초 후 대신 받은 피해량의 2000%에 해당하는 파동을 적 전체에 방출합니다."}},
+    "실베스타":{name:"정화하는 어둠",ico:"🌘",every:[4,4,2],coef:200,radius:1,heal:[30,30,50],amp:50,
+      desc:"자신의 {every}번째 공격마다 다음의 효과를 얻습니다:자신 주변 1칸 적 전체에게 공격력 200% 마법 피해를 주고, 입힌 피해의 {heal}%만큼 회복합니다. 해당 피해로 적 처치시 피해량+50%",
+      fin:{name:"재기의 일격",at:3,dur:3,desc:"자신의 3번째 공격 시, 불기둥이 3초간 모든 적을 휘감은 뒤 처형합니다."}},
+    "동영":{name:"황천의 동행자",ico:"⚔️",lives:[1,1,3],sh:[300,350,500],shDur:4,coef:[350,400,600],depth:2,block:[3,5,9999],blockTxt:["3초간","5초간","전투가 끝날 때까지"],
+      desc:"동영이 사망에 이르는 피해를 입을 경우 발동: 동영이 체력1로 생존 후(전투당 {lives}회), 자신의 공격력의 {sh}%에 해당하는 쉴드를 4초간 얻습니다. 동시에 거대한 검을 소환하여, 동영 앞쪽 가로 2칸 일직선의 적 전부에게 공격력 {coef}%에 해당하는 피해를 입히고, 피해를 입은 적의 회복을 {blockTxt} 차단합니다.",
+      fin:{name:"저승사자",hits:50,sh:2500,desc:"사망에 이르는 피해를 입으면 체력 1로 불굴(피격 50회 후 사망) 상태가 되고, 사망한 모든 아군을 부활시키며, 공격력 2500%의 보호막을 얻습니다."}}},
   genericSkill:{name:"강타",ico:"💥"}, // 5코 아닌 영웅: 3번째 공격 skillCoef%
   skillIcons:{}, synIcons:{}, // 이름 → 그림 data URL (비우면 이모지)
 
@@ -5511,7 +5543,7 @@ const AC={
     on.filter(u=>AC.rangeOf(u.no)<=1).forEach(u=>put(u,[0,1,2,3])); on.filter(u=>AC.rangeOf(u.no)>1).forEach(u=>put(u,[3,2,1,0]));
     off.forEach((u,i)=>{ if(i<C.bench) u.loc="b"+i; }); S.units=S.units.filter(u=>u.loc[0]!=="t"); },
   /* ---------- 전투 ---------- */
-  battleInit(st){ const C=AC_CONFIG, B={t:0,units:[],seed:(st.seed^0x9e3779b9)>>>0,done:false,winner:null,events:[],syn:{me:{},ai:{}},synStat:{me:{},ai:{}},fam:{},famUsed:{},once:{},block:{me:0,ai:0},immune:{me:0,ai:0},deaths:0,pause:0,zenN:{},t0:0};
+  battleInit(st){ const C=AC_CONFIG, B={t:0,units:[],seed:(st.seed^0x9e3779b9)>>>0,done:false,winner:null,events:[],syn:{me:{},ai:{}},synStat:{me:{},ai:{}},fam:{},famUsed:{},once:{},block:{me:0,ai:0},immune:{me:0,ai:0},deaths:0,pause:0,zenN:{},t0:0,finUsed:{},finQ:[],dyN:{},hblock:{me:0,ai:0},hyLs:{},valk:{}};
     const addL=(L,side)=>L.forEach(u=>{ const [r,c]=u.loc.slice(1).split(",").map(Number), s=u.mon?AC.monStats(st.round):AC.statsOf(u.no,u.t), hp=Math.round(s.hp*C.hpMult);
       B.units.push({uid:side+u.uid,side,no:u.no,t:u.t,mon:!!u.mon,name:u.mon?"몬스터":AC.hero(u.no).name,R:side==="me"?C.rows+r:C.rows-1-r,C:c,row:r,s,hp,maxHp:hp,range:u.mon?1:AC.rangeOf(u.no),cd:AC.rnd(B)*0.3,mv:0,atks:0,sc:0,need:C.skillEvery,alive:true,dealt:0,taken:0,
         atkPct:0,dr:0,evade:0,dbl:0,skAmp:0,ls:0,shield:0,crit:s.crit||0,asPct:0,first:1,mag:!u.mon&&s.dmg==="magic"}); });
@@ -5520,47 +5552,79 @@ const AC={
     AC.skInit(B); AC.applySynergies(B);
     B.units.forEach(u=>{ u.iv=1/(u.s.aspd*(1+u.asPct/100)); }); AC.skStart(B); B.events=[]; B.snap=JSON.stringify(B.units);
     if(!B.units.some(u=>u.side==="me")||!B.units.some(u=>u.side==="ai")) AC.battleEnd(B); return B; },
+  /* ---------- 0.9v 5코 초월 단계 · 12초월 종결자 ---------- */
+  skTier(t){ return t>=6?2:t>=3?1:0; },
+  skP(name,t){ const K=AC_CONFIG.skills5[name]; if(!K) return null; const i=AC.skTier(t||0), o={}; for(const k in K){ const v=K[k]; o[k]=Array.isArray(v)?v[Math.min(i,v.length-1)]:v; } o.tier=i; return o; },
+  skDesc(name,t,html){ const K=AC_CONFIG.skills5[name]; if(!K) return ""; const i=AC.skTier(t||0); return (html?esc(K.desc):K.desc).replace(/\{(\w+)\}/g,(m,k)=>{ const v=K[k]; if(!Array.isArray(v)) return v; if(!html) return v[i]; if(v.every(x=>x===v[0])) return esc(String(v[0])); return `<span class="acabc" data-acabc="${k}">(${v.map((x,j)=>j===i?`<b class="on">${esc(String(x))}</b>`:`<i>${esc(String(x))}</i>`).join("/")})</span>`; }); },
+  finPush(B,q){ B.finQ.push(q); },
+  finQ(B,u,at,id){ if(!u||!u.fin||B.finUsed[u.uid]) return false; B.finUsed[u.uid]=true; B.finQ.push({uid:u.uid,at,id}); return true; },
+  finEv(B,u,id,o){ B.events.push(Object.assign({k:"fin",id,a:u.uid,side:u.side,R:u.R,C:u.C,name:u.K.fin.name},o||{})); AC.sstat(B,u.side,"fin:"+u.K.fin.name,0); B.finLog=B.finLog||[]; B.finLog.push(id+"@"+B.t.toFixed(2)); },
+  foes(B,u){ return B.units.filter(x=>x.alive&&x.side!==u.side); },
+  execAll(B,u,L){ for(const t of L){ if(!t.alive||(t.inv&&B.t<t.inv)) continue; B.events.push({k:"fx",b:t.uid,txt:"처형!",cls:"exec"}); u.dealt+=Math.round(t.hp); AC.sstat(B,u.side,"fin:"+u.K.fin.name,t.hp); t.hp=0; AC.lethal(B,t,u); } },
+  finRun(B){ if(!B.finQ.length) return; const due=B.finQ.filter(q=>q.at<=B.t+1e-9); if(!due.length) return; B.finQ=B.finQ.filter(q=>!due.includes(q));
+    const U=uid=>B.units.find(x=>x.uid===uid), sp=u=>u?u.s.aspd*(1+(u.asPct||0)/100):0; due.forEach(q=>{ q.sp=sp(U(q.uid)); q.r=0; });
+    if(due.length>1){ due.forEach(q=>q.r=AC.rnd(B)); due.sort((a,b)=>(b.sp-a.sp)||(a.r-b.r)); }
+    for(const q of due){ const u=U(q.uid); if(!u||!u.alive) continue; const f=AC.FIN[q.id]; if(f) f(B,u,q); } },
+  FIN:{
+    orcaCharge(B,u){ AC.finEv(B,u,"orcaCharge",{dur:u.K.fin.charge}); AC.finPush(B,{uid:u.uid,at:B.t+u.K.fin.charge,id:"orcaFire"}); },
+    orcaFire(B,u){ AC.finEv(B,u,"orcaFire"); for(const e of AC.foes(B,u)){ const d=Math.max(1,Math.round(AC.calcHit(B,u,e,u.K.fin.coef,false,true))); B.events.push({k:"hit",a:u.uid,b:e.uid,d,crit:true,sk:true,rg:false,aR:u.R,aC:u.C,bR:e.R,bC:e.C}); AC.applyDmg(B,u,e,d,{id:"fin:"+u.K.fin.name}); } },
+    tanStart(B,u){ AC.finEv(B,u,"tanStart",{dur:u.K.fin.delay,tg:AC.foes(B,u).map(x=>x.uid)}); AC.finPush(B,{uid:u.uid,at:B.t+u.K.fin.delay,id:"tanExec"}); },
+    tanExec(B,u){ const L=AC.foes(B,u); AC.finEv(B,u,"tanExec",{tg:L.map(x=>x.uid)}); AC.execAll(B,u,L); },
+    zenStart(B,u){ const C=AC_CONFIG, F=u.K.fin, half=x=>u.side==="me"?x.R<C.rows:x.R>=C.rows, L=AC.foes(B,u).filter(half); AC.finEv(B,u,"zenStart",{dur:F.delay+F.gap*L.length,tg:L.map(x=>x.uid)});
+      const until=B.t+F.delay+F.gap*L.length+0.3; L.forEach((e,i)=>{ if(!(B.immune[e.side]>B.t)) e.stun=Math.max(e.stun||0,until); AC.finPush(B,{uid:u.uid,at:B.t+F.delay+F.gap*i,id:"zenBolt",tg:e.uid}); }); },
+    zenBolt(B,u,q){ const e=B.units.find(x=>x.uid===q.tg); if(!e||!e.alive) return; B.events.push({k:"fin",id:"zenBolt",a:u.uid,side:u.side,R:e.R,C:e.C,b:e.uid}); AC.execAll(B,u,[e]); },
+    hyeon(B,u){ const F=u.K.fin, L=AC.foes(B,u); AC.finEv(B,u,"hyeon",{dur:F.dur,tg:L.map(x=>x.uid)}); for(const e of L){ if(B.immune[e.side]>B.t) continue; e.hyPara=B.t+F.dur; e.paraAmp=F.amp; e.stun=Math.max(e.stun||0,e.hyPara); } if(L.length) AC.hayeon(B,L[0].side); },
+    nox(B,u){ const F=u.K.fin, L=AC.foes(B,u); AC.finEv(B,u,"nox",{tg:L.map(x=>x.uid)}); for(const e of L){ if(B.immune[e.side]>B.t) continue; e.curse={n:0,cost:F.cost,max:F.n}; } },
+    valk(B,u){ const F=u.K.fin; u.inv=Math.max(u.inv||0,B.t+F.dur); B.valk[u.side]={until:B.t+F.dur,sum:0,uid:u.uid}; AC.finEv(B,u,"valk",{dur:F.dur}); AC.finPush(B,{uid:u.uid,at:B.t+F.dur,id:"valkEnd"}); },
+    valkEnd(B,u){ const V=B.valk[u.side], amt=V?V.sum*u.K.fin.mult/100:0; AC.finEv(B,u,"valkEnd",{n:Math.round(amt)}); if(amt>=1) for(const e of AC.foes(B,u)){ B.events.push({k:"hit",a:u.uid,b:e.uid,d:Math.round(amt),crit:true,sk:true,rg:false,aR:u.R,aC:u.C,bR:e.R,bC:e.C}); AC.applyDmg(B,u,e,amt,{id:"fin:"+u.K.fin.name}); } },
+    sil(B,u){ const F=u.K.fin; AC.finEv(B,u,"sil",{dur:F.dur,tg:AC.foes(B,u).map(x=>x.uid)}); AC.finPush(B,{uid:u.uid,at:B.t+F.dur,id:"silExec"}); },
+    silExec(B,u){ const L=AC.foes(B,u); AC.finEv(B,u,"silExec",{tg:L.map(x=>x.uid)}); AC.execAll(B,u,L); },
+    rudi(B,u){ AC.finEv(B,u,"rudiFocus",{dur:u.K.fin.focus}); AC.finPush(B,{uid:u.uid,at:B.t+u.K.fin.focus,id:"rudiDrop"}); },
+    rudiDrop(B,u){ const L=AC.foes(B,u); AC.finEv(B,u,"rudiDrop",{tg:L.map(x=>x.uid)}); AC.execAll(B,u,L); } },
+  finStart(B){ for(const u of B.units){ if(!u.fin) continue; const id={"오르카":"orcaCharge","카마도 탄지로":"tanStart","하연":"hyeon","녹스":"nox","헬레니아":"valk"}[u.skId]; if(id) AC.finQ(B,u,B.t,id); } },
+  reviveSide(B,side,hits,home){ for(const x of B.units.filter(x=>x.side===side&&!x.alive)){ AC.cleanse(x); x.alive=true; x.hp=x.maxHp; x.disabled=false; x.burnFix=0; x.revEnd=0; x.hpLock=false; x.curse=null; x.hyPara=0; x.stun=0; if(home){ x.R=x.R0; x.C=x.C0; } if(hits) x.bulgul=hits; B.events.push({k:"fx",b:x.uid,txt:"부활!",cls:"rev"}); } },
   skillOf(no){ const h=AC.hero(no); return h&&AC_CONFIG.skills5[h.name]||null; },
   skIco(no){ const C=AC_CONFIG, h=AC.hero(no), k=AC.skillOf(no), im=h&&C.skillIcons[h.name]; return im?`<img src="${im}" alt="">`:(k?k.ico:C.genericSkill.ico); },
   synIco(s){ const im=AC_CONFIG.synIcons[s.name]; return im?`<img class="acsyimg" src="${im}" alt="">`:s.ico; },
-  skillLine(no){ const C=AC_CONFIG, k=AC.skillOf(no); return k?`<div class="acskill" data-acskill><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(k.name)}</b><p>${esc(k.desc)}</p></div></div>`:`<div class="acskill gen" data-acskill><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(C.genericSkill.name)}</b><p>${C.skillEvery}번째 공격마다 공격력 ${C.skillCoef}%</p></div></div>`; },
+  skillLine(no,t){ const C=AC_CONFIG, k=AC.skillOf(no), h=AC.hero(no); t=t||0; if(!k) return `<div class="acskill gen" data-acskill><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(C.genericSkill.name)}</b><p>${C.skillEvery}번째 공격마다 공격력 ${C.skillCoef}%</p></div></div>`; const ti=AC.skTier(t);
+    return `<div class="acskill" data-acskill data-sktier="${ti}"><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(k.name)}</b> <small class="acsktier" data-acsktier>${"ABC"[ti]}단계 · ${["0–2","3–5","6+"][ti]}초월</small><p>${AC.skDesc(h.name,t,true)}</p>${t>=12&&k.fin?`<div class="acfin" data-acfin><b>✦ 종결자 · ${esc(k.fin.name)}</b><p>${esc(k.fin.desc)}</p></div>`:""}</div></div>`; },
   addShield(B,u,n){ if(!u.alive||n<=0||(B.block[u.side]>B.t)) return 0; u.shield+=n; return n; },
   debuff(B,t,kind,fn){ if(!t.alive) return false; if(B.immune[t.side]>B.t){ B.events.push({k:"fx",b:t.uid,txt:"면역",cls:"imm"}); return false; } fn(); AC.hayeon(B,t.side); return true; },
-  cleanse(u){ u.frz=0; u.stun=0; u.burn=null; u.frost=0; if(u.judged){ u.atkPct+=u.judgedCut||0; u.judged=false; } if(u.shred){ u.res=u.res/(1-u.shred/100); u.shred=0; } u.healBlock=0; },
-  hayeon(B,side){ if(B.once["hy"+side]) return; const h=B.units.find(x=>x.alive&&x.side===side&&x.skId==="하연"); if(!h) return; B.once["hy"+side]=true; const K=AC_CONFIG.skills5["하연"], o=side==="me"?"ai":"me";
+  cleanse(u){ u.frz=0; u.stun=u.hyPara||0; u.burn=null; u.frost=0; if(u.judged){ u.atkPct+=u.judgedCut||0; u.judged=false; } if(u.shred){ u.res=u.res/(1-u.shred/100); u.shred=0; } u.healBlock=0; },
+  hayeon(B,side){ if(B.once["hy"+side]) return; const h=B.units.find(x=>x.alive&&x.side===side&&x.skId==="하연"); if(!h) return; B.once["hy"+side]=true; const K=h.K, o=side==="me"?"ai":"me"; B.hblock[o]=B.t+K.dur; B.hyLs[side]={until:B.t+K.dur,pct:K.ls};
     B.units.filter(x=>x.alive&&x.side===side).forEach(AC.cleanse); B.units.filter(x=>x.alive&&x.side===o).forEach(x=>{ x.shield=0; x.crysSh=false; x.pionDur=0; x.evUntil=0; if(x.tmpSh) x.tmpSh=null; });
     B.block[o]=B.t+K.dur; B.immune[side]=B.t+K.dur; B.events.push({k:"fx",b:h.uid,txt:K.name+"!",cls:"sk5"},{k:"gate",side}); AC.sstat(B,side,"sk:하연",1); },
-  skInit(B){ for(const u of B.units){ if(u.mon) continue; if(AC_CONFIG.skills5[u.name]){ u.skId=u.name; u.need=1e9; } } },
-  skStart(B){ const S=AC_CONFIG.skills5; for(const u of B.units){ if(u.skId==="녹스") u.shield+=u.maxHp*S["녹스"].sh/100; if(u.skId==="헬레니아"){ u.helUntil=S["헬레니아"].dur; u.helRec=0; } } },
+  skInit(B){ for(const u of B.units){ if(u.mon) continue; if(AC_CONFIG.skills5[u.name]){ u.skId=u.name; u.need=1e9; u.K=AC.skP(u.name,u.t); u.fin=u.t>=12&&!!u.K.fin; } u.R0=u.R; u.C0=u.C; } },
+  skStart(B){ for(const u of B.units){ if(u.skId==="녹스") u.shield+=u.maxHp*u.K.sh/100; if(u.skId==="헬레니아"){ u.helUntil=u.K.dur; u.helRec=0; } } AC.finStart(B); },
   snapKeys:["frz","stun","inv","evUntil","revEnd","pionDur","helUntil","sunUntil","healBlock","orcaNext","hopAt"],
-  rewind(B,k){ const C=AC_CONFIG, keep=new Map(B.units.map(u=>[u.uid,{dealt:u.dealt,taken:u.taken,tip:u.tip}])), amp=C.skills5["클레미스"].amp;
+  rewind(B,k){ const C=AC_CONFIG, keep=new Map(B.units.map(u=>[u.uid,{dealt:u.dealt,taken:u.taken,tip:u.tip}])), amp=k.K.amp;
     B.units=JSON.parse(B.snap).map(c=>{ Object.assign(c,keep.get(c.uid)); for(const q of AC.snapKeys) if(c[q]>0) c[q]+=B.t; return c; });
     B.fam={}; B.famUsed={}; B.pause=0; B.deaths=0; B.block={me:0,ai:0}; B.immune={me:0,ai:0}; B.t0=B.t;
     B.units.filter(u=>u.side===k.side).forEach(u=>{ u.ampAll=(u.ampAll||0)+amp; u.klAmp=amp; }); B.rewound=(B.rewound||0)+1;
     const kk=B.units.find(u=>u.uid===k.uid); B.events.push({k:"rewind",side:k.side},{k:"fx",b:kk.uid,txt:"구원의 힘!",cls:"sk5"}); AC.sstat(B,k.side,"sk:클레미스",1); },
-  zenDash(B){ const z=B.units.find(u=>u.uid===B.pauseBy); B.pauseBy=null; if(!z||!z.alive) return; const K=AC_CONFIG.skills5["아가츠마 젠이츠"]; AC.heal(B,z,z.maxHp,"sk:아가츠마 젠이츠");
+  zenDash(B){ const z=B.units.find(u=>u.uid===B.pauseBy); B.pauseBy=null; if(!z||!z.alive) return; const K=z.K; AC.heal(B,z,z.maxHp,"sk:아가츠마 젠이츠");
     B.events.push({k:"fx",b:z.uid,txt:"화뢰신!",cls:"sk5"},{k:"zap",b:z.uid});
     const left=B.units.filter(x=>x.alive&&x.side!==z.side&&!x.disabled&&!(x.untg&&B.t<x.untg)), ord=[]; let cur=z; while(left.length){ left.sort((a,b)=>AC.dist(cur,a)-AC.dist(cur,b)); cur=left.shift(); ord.push(cur); }
     const n=ord.length+1, seg=K.pathMs/Math.max(1,n); B.events.push({k:"zenpath",a:z.uid,pts:[[z.R,z.C],...ord.map(f=>[f.R,f.C]),[z.R,z.C]],seg,fade:K.fadeMs});
     ord.forEach((f,i)=>{ const d=Math.max(1,Math.round(AC.calcHit(B,z,f,K.coef,false,true))); B.events.push({k:"hit",a:z.uid,b:f.uid,d,crit:false,sk:true,rg:false,zen:true,dl:Math.round(seg*(i+1)),aR:z.R,aC:z.C,bR:f.R,bC:f.C}); AC.applyDmg(B,z,f,d,{id:"sk:아가츠마 젠이츠"}); }); },
-  orcaFire(B,u,tg){ const K=AC_CONFIG.skills5["오르카"], C=AC_CONFIG; u.ammo--; u.orcaNext=B.t+K.gap; const dR=tg.R-u.R, dC=tg.C-u.C, L=Math.hypot(dR,dC)||1, hit=[]; let R=u.R, Cc=u.C, eR=u.R, eC=u.C;
+  orcaFire(B,u,tg){ const K=u.K, C=AC_CONFIG; u.ammo--; u.orcaNext=B.t+K.gap; const dR=tg.R-u.R, dC=tg.C-u.C, L=Math.hypot(dR,dC)||1, hit=[]; let R=u.R, Cc=u.C, eR=u.R, eC=u.C;
     for(let i=0;i<80;i++){ R+=dR/L*0.25; Cc+=dC/L*0.25; const r=Math.round(R), c=Math.round(Cc); if(r<0||r>=C.rows*2||c<0||c>=C.cols) break; eR=R; eC=Cc; const v=B.units.find(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&x.R===r&&x.C===c); if(v&&!hit.includes(v)){ hit.push(v); if(hit.length>=K.pierce) break; } }
     B.events.push({k:"shot",a:u.uid,aR:u.R,aC:u.C,bR:eR,bC:eC});
     hit.forEach((v,i)=>{ const d=Math.max(1,Math.round(AC.calcHit(B,u,v,K.coef*Math.pow(1-K.fall/100,i),false,true))); B.events.push({k:"hit",a:u.uid,b:v.uid,d,crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:v.R,bC:v.C}); AC.applyDmg(B,u,v,d,{id:"sk:오르카"}); }); },
-  tanHop(B,u){ const K=AC_CONFIG.skills5["카마도 탄지로"], C=AC_CONFIG; const t=B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&!(x.inv&&B.t<x.inv)&&x.hp<x.maxHp*K.execPct/100).sort((a,b)=>AC.dist(u,a)-AC.dist(u,b))[0]; if(!t) return false;
+  tanHop(B,u){ const K=u.K, C=AC_CONFIG; const t=B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&!(x.inv&&B.t<x.inv)&&x.hp<=x.maxHp*K.execPct/100).sort((a,b)=>AC.dist(u,a)-AC.dist(u,b))[0]; if(!t) return false;
     let dest=null, bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const R=t.R+dr, c=t.C+dc; if((!dr&&!dc)||R<0||R>=C.rows*2||c<0||c>=C.cols) continue; if(B.units.some(x=>x.alive&&x!==u&&x.R===R&&x.C===c)) continue; const v=Math.hypot(R-u.R,c-u.C); if(v<bd){ bd=v; dest=[R,c]; } }
     if(!dest) dest=[u.R,u.C]; const n=Math.max(Math.abs(dest[0]-u.R),Math.abs(dest[1]-u.C)), cells=new Set();
     for(let i=1;i<n;i++) cells.add(Math.round(u.R+(dest[0]-u.R)*i/n)+","+Math.round(u.C+(dest[1]-u.C)*i/n));
     B.units.filter(x=>x.alive&&x.side!==u.side&&x!==t&&cells.has(x.R+","+x.C)).forEach(x=>AC.debuff(B,x,"burn",()=>{ x.burn={until:B.t+K.burnDur,dps:AC.atkNow(B,u)*K.burn/100,src:u,acc:0}; }));
     B.events.push({k:"trail",a:u.uid,aR:u.R,aC:u.C,bR:dest[0],bC:dest[1]}); u.R=dest[0]; u.C=dest[1]; u.hopAt=B.t+K.hop;
     B.events.push({k:"fx",b:t.uid,txt:"처형!",cls:"exec"}); u.dealt+=Math.round(t.hp); AC.sstat(B,u.side,"sk:카마도 탄지로",t.hp); t.hp=0; AC.lethal(B,t,u); return true; },
-  skStep(B,dt){ const S=AC_CONFIG.skills5;
+  skStep(B,dt){ AC.finRun(B);
     for(const u of B.units){ if(!u.alive) continue;
       if(u.tmpSh&&B.t>=u.tmpSh.until){ u.shield=Math.max(0,u.shield-u.tmpSh.n); u.tmpSh=null; }
-      if(u.skId==="헬레니아"&&u.helUntil&&B.t>=u.helUntil&&!u.helDone){ u.helDone=true; const K=S["헬레니아"], half=u.helRec*K.share/100, al=B.units.filter(x=>x.alive&&x.side===u.side&&x!==u&&!x.disabled);
+      if(u.skId==="헬레니아"&&u.helUntil&&B.t>=u.helUntil&&!u.helDone){ u.helDone=true; const K=u.K, half=u.helRec*K.share/100, al=B.units.filter(x=>x.alive&&x.side===u.side&&x!==u&&!x.disabled);
         al.forEach(x=>AC.heal(B,x,half/al.length,"sk:헬레니아")); u.helDot={per:(u.helRec-half)/K.dot,left:K.dot,acc:0}; B.events.push({k:"fx",b:u.uid,txt:K.name,cls:"sk5"}); }
       if(u.helDot&&u.helDot.left>0){ u.helDot.acc+=dt; while(u.helDot.acc>=1&&u.helDot.left>0&&u.alive){ u.helDot.acc-=1; u.helDot.left--; if(u.helDot.per>=1) AC.applyDmg(B,null,u,u.helDot.per); } }
-      if(u.skId==="녹스"){ const K=S["녹스"]; if(!u.noxAwake&&B.deaths>=K.deaths&&!(B.block[u.side]>B.t)){ u.noxAwake=true; u.ls+=K.ls; u.noxAcc=0; u.noxHealed=0; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); }
+      if(u.skId==="녹스"){ const K=u.K; if(!u.noxAwake&&B.deaths>=K.deaths&&!(B.block[u.side]>B.t)){ u.noxAwake=true; u.ls+=K.ls; u.noxAcc=0; u.noxHealed=0; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); }
         if(u.noxAwake){ u.noxAcc+=dt; if(u.noxAcc>=1){ u.noxAcc-=1; const amt=u.noxHealed*K.fix/100; u.noxHealed=0; if(amt>=1) for(const e of B.units.filter(x=>x.alive&&x.side!==u.side&&AC.dist(x,u)<=K.radius)){ B.events.push({k:"hit",a:u.uid,b:e.uid,d:Math.round(amt),crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:e.R,bC:e.C}); AC.applyDmg(B,u,e,amt,{id:"sk:녹스"}); } } } } }
     for(const side of ["me","ai"]){ const k=B.units.find(x=>x.alive&&x.side===side&&x.skId==="클레미스"), o=side==="me"?"ai":"me";
       if(k&&!B.once["kl"+side]&&B.units.some(x=>x.side===side&&x!==k)&&!B.units.some(x=>x.alive&&x.side===side&&x!==k)&&B.units.some(x=>x.alive&&x.side===o)){ B.once["kl"+side]=true; AC.rewind(B,k); } } },
@@ -5601,21 +5665,23 @@ const AC={
       for(const R of back) for(let c=0;c<C.cols;c++){ if(B.units.some(x=>x!==u&&x.R===R&&x.C===c)) continue; const d=Math.abs(c-u.C)+(R===back[0]?0:0.5); if(d<bd){ bd=d; best=[R,c]; } }
       if(best){ u.R=best[0]; u.C=best[1]; } } },
   atkNow(B,u){ let p=u.atkPct; if(u.pion&&(B.t<u.pionDur||u.pionKeep)) p+=u.pion; if(u.souls) p+=u.souls*AC.sv(B,u.side,"grave","atk"); return Math.max(0,u.s.atk*(1+p/100)); },
-  heal(B,u,n,id){ if(!u.alive||u.hpLock||n<=0||(u.healBlock&&B.t<u.healBlock)) return; const h=Math.min(n,u.maxHp-u.hp); if(h<=0) return; u.hp+=h; if(u.noxAwake) u.noxHealed+=h; B.events.push({k:"heal",b:u.uid,n:h}); if(id) AC.sstat(B,u.side,id,h); },
+  heal(B,u,n,id){ if(!u.alive||u.hpLock||n<=0||(u.healBlock&&B.t<u.healBlock)||(B.hblock&&B.hblock[u.side]>B.t)) return; const h=Math.min(n,u.maxHp-u.hp); if(h<=0) return; u.hp+=h; if(u.noxAwake) u.noxHealed+=h; B.events.push({k:"heal",b:u.uid,n:h}); if(id) AC.sstat(B,u.side,id,h); },
   // 피해 넣기 (보호막 → 체력 · 흡혈 · 처형 · 치명상 처리) · 반환 = 들어간 피해
-  applyDmg(B,a,t,d,o){ o=o||{}; if(!t.alive||t.disabled||(t.inv&&B.t<t.inv)) return 0; if(t.helUntil&&B.t<t.helUntil){ t.helRec+=d; d=d*(1-AC_CONFIG.skills5["헬레니아"].red/100); } d=Math.max(1,Math.round(d)); if(a){ t.hitLog=t.hitLog||{}; t.hitLog[a.uid]=B.t; }
+  applyDmg(B,a,t,d,o){ o=o||{}; if(!t.alive||t.disabled) return 0; const V=B.valk&&B.valk[t.side]; if(V&&B.t<V.until&&t.uid!==V.uid){ V.sum+=d; return 0; } if(t.inv&&B.t<t.inv) return 0; if(t.hyPara&&B.t<t.hyPara) d*=1+t.paraAmp/100; if(t.helUntil&&B.t<t.helUntil){ t.helRec+=d; d=d*(1-t.K.red/100); } d=Math.max(1,Math.round(d)); if(a){ t.hitLog=t.hitLog||{}; t.hitLog[a.uid]=B.t; }
     let rest=d; if(t.shield>0){ const ab=Math.min(t.shield,rest); t.shield-=ab; rest-=ab; if(t.shield<=0.5){ t.shield=0; if(t.crysSh){ t.crysSh=false; const sd=AC.sv(B,t.side,"crys","stun"); B.units.filter(x=>x.alive&&x.side!==t.side&&AC.dist(x,t)<=1).forEach(x=>AC.debuff(B,x,"stun",()=>{ x.stun=Math.max(x.stun||0,B.t+sd); B.events.push({k:"fx",b:x.uid,txt:"기절",cls:"stn"}); })); B.events.push({k:"fx",b:t.uid,txt:"💎",cls:"shbreak"}); } } }
-    t.hp-=rest;
+    t.hp-=rest; if(t.bulgul>0){ t.bulgul--; if(t.bulgul===0){ t.hp=0; t.taken+=d; B.events.push({k:"fx",b:t.uid,txt:"불굴 끝",cls:"exec"}); AC.kill(B,t,a); return d; } if(t.hp<1) t.hp=1; }
     if(a){ a.dealt+=d; if(a.fam==="father"&&B.fam[a.side]&&B.fam[a.side].on) B.fam[a.side].dealt+=d;
-      if(a.ls&&a.alive){ const h=d*a.ls/100; AC.heal(B,a,h,a.burnFix?"family":"fury"); } }
+      const hl=B.hyLs&&B.hyLs[a.side]&&B.t<B.hyLs[a.side].until?B.hyLs[a.side].pct:0, ls=(a.ls||0)+hl; if(ls&&a.alive){ const h=d*ls/100; AC.heal(B,a,h,a.burnFix?"family":"fury"); } }
     t.taken+=d; if(o.id&&a) AC.sstat(B,a.side,o.id,d);
-    if(t.skId==="클레미스"&&!t.clemLow&&t.hp>0&&t.hp<=t.maxHp*AC_CONFIG.skills5["클레미스"].low/100){ t.clemLow=true; const K=AC_CONFIG.skills5["클레미스"]; t.inv=Math.max(t.inv||0,B.t+K.invDur); t.untg=B.t+K.invDur; B.events.push({k:"fx",b:t.uid,txt:"🛡️ 무적",cls:"inv"}); }
-    if(t.skId==="녹스"&&!t.noxLow&&t.hp>0&&t.hp<=t.maxHp*AC_CONFIG.skills5["녹스"].low/100){ t.noxLow=true; if(AC.addShield(B,t,t.maxHp*AC_CONFIG.skills5["녹스"].sh2/100)) B.events.push({k:"fx",b:t.uid,txt:"🌑 보호막",cls:"sk5"}); }
+    if(t.skId==="클레미스"&&!t.clemLow&&t.hp>0&&t.hp<=t.maxHp*t.K.low/100){ t.clemLow=true; const K=t.K; t.inv=Math.max(t.inv||0,B.t+K.invDur); t.untg=B.t+K.invDur; B.events.push({k:"fx",b:t.uid,txt:"🛡️ 무적",cls:"inv"}); }
+    if(t.skId==="녹스"&&!t.noxLow&&t.hp>0&&t.hp<=t.maxHp*t.K.low/100){ t.noxLow=true; if(AC.addShield(B,t,t.maxHp*t.K.sh/100)) B.events.push({k:"fx",b:t.uid,txt:"🌑 보호막",cls:"sk5"}); }
     if(t.hp<=0){ t.hp=0; AC.lethal(B,t,a); }
     else if(a&&a.exec&&t.hp<t.maxHp*a.exec/100){ B.events.push({k:"fx",b:t.uid,txt:"처형!",cls:"exec"}); AC.sstat(B,a.side,"marks",t.hp); t.hp=0; AC.lethal(B,t,a,true); }
     return d; },
   lethal(B,t,a){ const side=t.side, F=B.units.filter(x=>x.side===side&&x.alive&&x!==t);
-    if(t.skId==="동영"&&!B.once["dy"+t.uid]){ B.once["dy"+t.uid]=true; const K=AC_CONFIG.skills5["동영"]; t.hp=1; const sh=AC.addShield(B,t,AC.atkNow(B,t)*K.sh/100); if(sh) t.tmpSh={n:sh,until:B.t+K.shDur}; const dir=side==="me"?-1:1, E=B.units.filter(x=>x.alive&&x.side!==side); let r0=t.R+dir; while(r0>=0&&r0<AC_CONFIG.rows*2&&!E.some(x=>x.R===r0)) r0+=dir; if(r0<0||r0>=AC_CONFIG.rows*2) r0=t.R+dir; const rows=Array.from({length:K.depth},(_,i)=>r0+dir*i);
+    if(t.bulgul>0){ t.hp=1; return; }
+    if(t.skId==="동영"&&t.fin&&!B.finUsed[t.uid]){ B.finUsed[t.uid]=true; const F2=t.K.fin; t.hp=1; t.bulgul=F2.hits; AC.addShield(B,t,AC.atkNow(B,t)*F2.sh/100); AC.finEv(B,t,"dong"); AC.reviveSide(B,side,0,false); return; }
+    if(t.skId==="동영"&&(B.dyN[t.uid]||0)<t.K.lives){ B.dyN[t.uid]=(B.dyN[t.uid]||0)+1; const K=t.K; t.hp=1; const sh=AC.addShield(B,t,AC.atkNow(B,t)*K.sh/100); if(sh) t.tmpSh={n:sh,until:B.t+K.shDur}; const dir=side==="me"?-1:1, E=B.units.filter(x=>x.alive&&x.side!==side); let r0=t.R+dir; while(r0>=0&&r0<AC_CONFIG.rows*2&&!E.some(x=>x.R===r0)) r0+=dir; if(r0<0||r0>=AC_CONFIG.rows*2) r0=t.R+dir; const rows=Array.from({length:K.depth},(_,i)=>r0+dir*i);
       B.events.push({k:"fx",b:t.uid,txt:K.name+"!",cls:"sk5"},{k:"sword",side,rows});
       for(const e of B.units.filter(x=>x.alive&&x.side!==side&&rows.includes(x.R))){ const d=Math.max(1,Math.round(AC.calcHit(B,t,e,K.coef,false,true))); B.events.push({k:"hit",a:t.uid,b:e.uid,d,crit:false,sk:true,rg:true,aR:t.R,aC:t.C,bR:e.R,bC:e.C}); AC.applyDmg(B,t,e,d,{id:"sk:동영"}); AC.debuff(B,e,"healBlock",()=>{ e.healBlock=B.t+K.block; }); }
       return; }
@@ -5627,10 +5693,11 @@ const AC={
         B.events.push({k:"fx",b:t.uid,txt:"부활!",cls:"rev"},{k:"fx",b:t.uid,txt:"광폭화!",cls:"rage"}); AC.sstat(B,side,"family",t.hp); return; } }
     if(t.furyRev&&!t.revived){ t.revived=true; t.hp=Math.max(1,Math.round(t.maxHp*AC_CONFIG.furyReviveHp/100)); t.revEnd=B.t+t.furyRev; B.events.push({k:"fx",b:t.uid,txt:"부활!",cls:"rev"}); AC.sstat(B,side,"fury",t.hp); return; }
     AC.kill(B,t,a); },
-  kill(B,t,a){ t.hp=0; t.alive=false; t.disabled=false; B.events.push({k:"die",b:t.uid}); B.deaths++; const S5=AC_CONFIG.skills5;
-    for(const u of B.units.filter(x=>x.alive&&x.side!==t.side&&x.skId==="카마도 탄지로")){ const K=S5["카마도 탄지로"]; if(a===u||(t.hitLog&&t.hitLog[u.uid]>=B.t-K.window)){ u.part=(u.part||0)+1; if(u.part>=K.need&&!(u.sunUntil>B.t)){ u.part-=K.need; u.sunUntil=B.t+K.dur; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); AC.sstat(B,u.side,"sk:카마도 탄지로",0); } } }
-    for(const z of B.units.filter(x=>x.alive&&x.side===t.side&&x.skId==="아가츠마 젠이츠")){ const K=S5["아가츠마 젠이츠"]; z.allyD=(z.allyD||0)+1; if(z.allyD%K.deaths===0&&(B.zenN[z.uid]||0)<K.max&&!B.pause){ B.zenN[z.uid]=(B.zenN[z.uid]||0)+1; B.pause=K.pause; B.pauseBy=z.uid; B.events.push({k:"fx",b:z.uid,txt:"⚡ 화뢰신",cls:"sk5"}); } }
-    if(a&&a.alive&&a.silAoe&&!a.silKill&&!(B.block[a.side]>B.t)){ a.silKill=true; a.ampAll=(a.ampAll||0)+AC_CONFIG.skills5["실베스타"].amp; B.events.push({k:"fx",b:a.uid,txt:"어둠 +"+AC_CONFIG.skills5["실베스타"].amp+"%",cls:"sk5"}); }
+  kill(B,t,a){ t.hp=0; t.alive=false; t.disabled=false; B.events.push({k:"die",b:t.uid}); B.deaths++;
+    for(const u of B.units.filter(x=>x.alive&&x.side!==t.side&&x.skId==="카마도 탄지로")){ const K=u.K; if(a===u||(t.hitLog&&t.hitLog[u.uid]>=B.t-K.window)){ u.part=(u.part||0)+1; if(u.part>=K.need&&!(u.sunUntil>B.t)){ u.part-=K.need; u.sunUntil=B.t+K.dur; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); AC.sstat(B,u.side,"sk:카마도 탄지로",0); } } }
+    for(const z of B.units.filter(x=>x.alive&&x.side===t.side&&x.skId==="아가츠마 젠이츠")){ const K=z.K; if(z.fin) AC.finQ(B,z,B.t,"zenStart"); z.allyD=(z.allyD||0)+1; if(z.allyD%K.deaths===0&&(B.zenN[z.uid]||0)<K.max&&!B.pause){ B.zenN[z.uid]=(B.zenN[z.uid]||0)+1; B.pause=K.pause; B.pauseBy=z.uid; B.events.push({k:"fx",b:z.uid,txt:"⚡ 화뢰신",cls:"sk5"}); } }
+    if(a&&a.alive&&a.silAoe&&!a.silKill&&!(B.block[a.side]>B.t)){ a.silKill=true; a.ampAll=(a.ampAll||0)+a.K.amp; B.events.push({k:"fx",b:a.uid,txt:"어둠 +"+a.K.amp+"%",cls:"sk5"}); }
+    if(!B.units.some(x=>x.alive&&x.side===t.side)){ const k=B.units.find(x=>x.side===t.side&&x.skId==="클레미스"&&x.fin&&!B.finUsed[x.uid]); if(k){ B.finUsed[k.uid]=true; AC.reviveSide(B,t.side,k.K.fin.hits,true); AC.finEv(B,k,"clem"); } }
     if(a&&a.alive){ if(a.dream){ const h=a.maxHp*a.dream/100; AC.heal(B,a,h,"dream"); } if(a.pion) a.pionKeep=true;
       const fm=B.fam[a.side]; if(fm&&fm.on&&a===fm.father) fm.kill=true; }
     for(const g of B.units.filter(x=>x.grave&&x.alive&&x.side!==t.side)){ g.souls=(g.souls||0)+1; B.events.push({k:"fx",b:g.uid,txt:"💀+1",cls:"soul"});
@@ -5659,8 +5726,9 @@ const AC={
       let tg=foes[0], bd=1e9; for(const f of foes){ const d=Math.hypot(f.R-u.R,f.C-u.C); if(d<bd){ bd=d; tg=f; } }
       u.cd=Math.max(-C.dt,u.cd-dt); if(u.ammo>0&&!(u.orcaNext>B.t)) AC.orcaFire(B,u,tg); if(!u.alive) continue;
       if(AC.dist(u,tg)<=u.range){ if(u.cd<=0){ const fast=u.ignite&&u.hp<u.maxHp*0.5?1+AC.sv(B,u.side,"ignite","as")/100:1; u.cd+=u.iv/fast; u.atks++; u.sc++;
-          if(u.skId==='오르카'&&u.atks%AC_CONFIG.skills5['오르카'].every===0){ u.ammo=(u.ammo||0)+AC_CONFIG.skills5['오르카'].ammo; B.events.push({k:'fx',b:u.uid,txt:'최후통첩 장전',cls:'sk5'}); }
-          if(u.skId==='실베스타'&&u.atks%AC_CONFIG.skills5['실베스타'].every===0){ const K=AC_CONFIG.skills5['실베스타']; let sum=0; B.events.push({k:'fx',b:u.uid,txt:K.name,cls:'sk5'},{k:'ring',b:u.uid}); u.silAoe=true;
+          if(u.fin&&u.skId==='실베스타'&&u.atks===u.K.fin.at) AC.finQ(B,u,B.t,'sil');
+          if(u.skId==='오르카'&&u.atks%u.K.every===0){ u.ammo=(u.ammo||0)+u.K.ammo; B.events.push({k:'fx',b:u.uid,txt:'최후통첩 장전',cls:'sk5'}); }
+          if(u.skId==='실베스타'&&u.atks%u.K.every===0){ const K=u.K; let sum=0; B.events.push({k:'fx',b:u.uid,txt:K.name,cls:'sk5'},{k:'ring',b:u.uid}); u.silAoe=true;
             for(const f of B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&AC.dist(x,u)<=K.radius)){ const d=Math.max(1,Math.round(AC.calcHit(B,u,f,K.coef,AC.rnd(B)*100<u.crit,true))); B.events.push({k:'hit',a:u.uid,b:f.uid,d,crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:f.R,bC:f.C}); sum+=AC.applyDmg(B,u,f,d,{id:'sk:실베스타'}); }
             u.silAoe=false; AC.heal(B,u,sum*K.heal/100,'sk:실베스타'); continue; }
           let sk=false; if(u.sc>=u.need){ sk=true; u.sc=0; u.need=u.tuner>=100?2:u.tuner>0&&AC.rnd(B)*100<u.tuner?2:C.skillEvery; }
@@ -5671,9 +5739,10 @@ const AC={
             d=Math.max(1,Math.round(d)); if(t.disabled||(t.inv&&B.t<t.inv)) d=0;
             B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit,sk,rg:u.range>1,dodge,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
             if(d) AC.applyDmg(B,u,t,d,{id:sk&&u.skAmp?(u.judge&&u.row>1?"judge":"mage"):null});
-            if(t.skId==='루디'&&t.alive){ const K=AC_CONFIG.skills5['루디']; t.hitN=(t.hitN||0)+1; if(t.hitN%K.every===0){ const g=AC.addShield(B,t,Math.max(0,Math.min(K.shield,K.max-t.shield))); if(g) B.events.push({k:'fx',b:t.uid,txt:'🏰 +'+Math.round(g),cls:'sk5'}); } }
+            if(t.skId==='루디'&&t.alive){ const K=t.K; t.hitN=(t.hitN||0)+1; if(t.fin&&t.hitN===K.fin.hits) AC.finQ(B,t,B.t,'rudi'); if(t.hitN%K.every===0){ const g=AC.addShield(B,t,Math.max(0,Math.min(K.shield,K.max-t.shield))); if(g) B.events.push({k:'fx',b:t.uid,txt:'🏰 +'+Math.round(g),cls:'sk5'}); } }
             if(u.ignite&&t.alive){ AC.debuff(B,t,"burn",()=>{ t.burn={until:B.t+AC.sv(B,u.side,"ignite","dur"),dps:AC.atkNow(B,u)*AC.sv(B,u.side,"ignite","burn")/100,src:u,acc:0}; }); }
             if(u.yeti&&t.alive){ t.frost=(t.frost||0)+1; if(t.frost>=AC.sv(B,u.side,"yeti","stacks")){ t.frost=0; AC.debuff(B,t,"freeze",()=>{ t.frz=B.t+AC.sv(B,u.side,"yeti","freeze"); B.events.push({k:"fx",b:t.uid,txt:"빙결!",cls:"frz"}); }); } } }
+          if(u.curse&&u.alive){ u.curse.n++; if(u.curse.n>=u.curse.max){ B.events.push({k:'fx',b:u.uid,txt:'즉사',cls:'exec'}); u.hp=0; AC.lethal(B,u,null); continue; } AC.applyDmg(B,null,u,u.maxHp*u.curse.cost/100); if(!u.alive) continue; }
           if(u.guer&&u.atks%u.guer===0){ const cand=[]; for(let R=0;R<C.rows*2;R++) for(let c=0;c<C.cols;c++){ if(Math.max(Math.abs(R-u.R),Math.abs(c-u.C))>C.guerMove||(R===u.R&&c===u.C)) continue; if(!B.units.some(x=>x.alive&&x.R===R&&x.C===c)) cand.push([R,c]); }
             if(cand.length){ const p=cand[Math.floor(AC.rnd(B)*cand.length)]; u.R=p[0]; u.C=p[1]; u.evUntil=B.t+AC.sv(B,u.side,"guer","dur"); u.guerEv=AC.sv(B,u.side,"guer","evade"); B.events.push({k:"fx",b:u.uid,txt:"회피↑",cls:"guer"}); } } } }
       else { u.mv-=dt; if(u.mv<=0){ u.mv=C.moveTime; let best=null, bv=Math.hypot(tg.R-u.R,tg.C-u.C);
@@ -5741,7 +5810,7 @@ const AC={
     else { const x=AC.infoStats(no,t); mhp=x.hp; def=x.def; res=x.res; atk=x.atk; aspd=x.aspd; }
     const h=mon?null:AC.hero(no), tr=mon?0:AC.tierNo(no), k=mon?"melee":AC.rangeKind(no);
     return `<div class="acinfo tier${tr}" data-acinfo>${mon?AC.monFace():AC.face(no)}<div><div class="nm">${mon?"몬스터":esc(h.name)}<small>${mon?`${AC.st.round}라운드`:`${C.tierName[tr]} ${AC.cost(no)}코 · ${t}초월 · <span data-acrole>${esc((AC.role(no)||{}).name||"")}</span>`}${side==="ai"?" · 상대":""}</small></div>
-      <dl><div><dt>체력</dt><dd class="hp" data-acst-hp>${hp!=null?`${fmtN(hp)} / ${fmtN(mhp)}`:fmtN(mhp)}</dd></div><div><dt>공격력</dt><dd class="at" data-acst-atk>${fmtN(atk)}</dd></div><div><dt>방어력</dt><dd class="df" data-acst-def>${fmtN(def)}</dd></div><div><dt>마법 저항</dt><dd class="rs" data-acst-res>${fmtN(res)}</dd></div><div><dt>공격 속도</dt><dd class="as" data-acst-aspd>${aspd}/초</dd></div></dl>${mon?"":`<div class="acitags" data-acitags>${AC.synTags(no)}</div>${AC.skillLine(no)}`}</div><button type="button" class="x" data-acdo="iclose" aria-label="닫기">✕</button></div>`; },
+      <dl><div><dt>체력</dt><dd class="hp" data-acst-hp>${hp!=null?`${fmtN(hp)} / ${fmtN(mhp)}`:fmtN(mhp)}</dd></div><div><dt>공격력</dt><dd class="at" data-acst-atk>${fmtN(atk)}</dd></div><div><dt>방어력</dt><dd class="df" data-acst-def>${fmtN(def)}</dd></div><div><dt>마법 저항</dt><dd class="rs" data-acst-res>${fmtN(res)}</dd></div><div><dt>공격 속도</dt><dd class="as" data-acst-aspd>${aspd}/초</dd></div></dl>${mon?"":`<div class="acitags" data-acitags>${AC.synTags(no)}</div>${AC.skillLine(no,t)}`}</div><button type="button" class="x" data-acdo="iclose" aria-label="닫기">✕</button></div>`; },
   drawInfo(){ let el=document.querySelector("#acRoot [data-acinfo]"); const h=AC.infoHTML(); if(!h){ if(el) el.remove(); return; } const tmp=document.createElement("div"); tmp.innerHTML=h; const n=tmp.firstChild, key=JSON.stringify(AC.info); n.dataset.k=key;
     if(el&&el.dataset.k===key){ ["hp","def","atk","res","aspd"].forEach(k=>{ const q=el.querySelector(`[data-acst-${k}]`), r=n.querySelector(`[data-acst-${k}]`); if(q&&r&&q.textContent!==r.textContent) q.textContent=r.textContent; }); return; }
     if(el) el.replaceWith(n); else $("acRoot").appendChild(n); },
@@ -5758,7 +5827,7 @@ const AC={
     let grid=""; for(let R=0;R<C.rows*2;R++) for(let c=0;c<C.cols;c++) grid+=R<C.rows?cell("ai",C.rows-1-R,c):cell("me",R-C.rows,c);
     const bench=Array.from({length:C.bench},(_,i)=>{ const u=S.units.find(x=>x.loc==="b"+i); return `<div class="acbs" data-acloc="b${i}">${u?AC.tokenHTML(u):""}</div>`; }).join("");
     const shop=S.shop.map((no,i)=>{ if(no==null) return `<div class="acshop empty"></div>`; const h=AC.hero(no), tr=AC.tierNo(no), o=AC.owned(S,no), why=AC.canBuy(st,S,i);
-      return `<button type="button" class="acshop tier${tr}${AC.shopFx&&tr>=4?" enter":""}" data-acbuy="${i}"${why||!prep?" aria-disabled=\"true\"":""} title="${esc(h.name)} · ${C.tierName[tr]}${why?" · "+why:""}">${AC.face(no)}<span class="acnm">${esc(h.name)}</span><span class="accost">${AC.cost(no)}💰</span>${AC.rbadge(no)}${AC.ubadge(no)}<span class="acskslot${AC.skillOf(no)?" u":""}" data-acskslot title="${esc((AC.skillOf(no)||AC_CONFIG.genericSkill).name)}${AC.skillOf(no)?": "+esc(AC.skillOf(no).desc):""}">${AC.skIco(no)}</span>${AC.skillOf(no)?`<span class="acsknm">${esc(AC.skillOf(no).name)}</span>`:""}<span class="acsytags">${AC.synTags(no)}</span>${o?`<span class="acown">보유 ${o.t}→${Math.min(C.maxT,o.t+C.mergeT)}</span>${AC.tbadge(o.t)}`:""}<span class="acib" role="button" tabindex="0" data-acshopinfo="${i}" title="스탯 보기" aria-label="스탯 보기">i</span></button>`; }).join("");
+      return `<button type="button" class="acshop tier${tr}${AC.shopFx&&tr>=4?" enter":""}" data-acbuy="${i}"${why||!prep?" aria-disabled=\"true\"":""} title="${esc(h.name)} · ${C.tierName[tr]}${why?" · "+why:""}">${AC.face(no)}<span class="acnm">${esc(h.name)}</span><span class="accost">${AC.cost(no)}💰</span>${AC.rbadge(no)}${AC.ubadge(no)}<span class="acskslot${AC.skillOf(no)?" u":""}" data-acskslot title="${esc((AC.skillOf(no)||AC_CONFIG.genericSkill).name)}${AC.skillOf(no)?": "+esc(AC.skDesc(h.name,o?o.t:0)):""}">${AC.skIco(no)}</span>${AC.skillOf(no)?`<span class="acsknm">${esc(AC.skillOf(no).name)}</span>`:""}<span class="acsytags">${AC.synTags(no)}</span>${o?`<span class="acown">보유 ${o.t}→${Math.min(C.maxT,o.t+C.mergeT)}</span>${AC.tbadge(o.t)}`:""}<span class="acib" role="button" tabindex="0" data-acshopinfo="${i}" title="스탯 보기" aria-label="스탯 보기">i</span></button>`; }).join("");
     AC.shopFx=false; const selU=AC.sel&&S.units.find(u=>u.uid===AC.sel);
     const pr=prep?"":" disabled";
     const bBuy=`<button type="button" data-acdo="xp"${pr}>경험치 +${C.xpBuyAmount} (${C.xpBuyCost}💰)</button><button type="button" data-acdo="reroll"${pr}>새로고침 ${C.rerollCost}💰</button>`;
@@ -5775,7 +5844,8 @@ const AC={
       <div class="a-bar achud"><div class="acctl aclock">${bLock}</div><div class="acshophead"><span class="ttl">상점</span><span class="acgold" data-acgold title="보유 골드"><span class="coin">G</span><b data-acgoldn data-ach="gold">${S.gold}</b></span>${hStreak}</div>${hOdds}</div>
       <div class="a-shop"><div class="acshops" data-acsellzone>${shop}</div><div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div><p class="muted achelp">탭 = 선택(스탯 표시) → 칸/대기석 탭 = 이동 · 상점 ⓘ·상대·전투 중 유닛 탭 = 스탯 · 끌어다 놓기 · 상점으로 끌면 판매 · 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격 · 시너지 = 판 위 서로 다른 영웅 수</p></div>
       <div class="a-roster">${AC.rosterHTML()}</div></div>`;
-    if(AC.histOpen) box.insertAdjacentHTML("beforeend",AC.histHTML()); if(AC.info) box.insertAdjacentHTML("beforeend",AC.infoHTML()); if(AC.deckView!=null) box.insertAdjacentHTML("beforeend",AC.deckHTML());
+    if(AC.histOpen) box.insertAdjacentHTML("beforeend",AC.histHTML()); if(AC.info) box.insertAdjacentHTML("beforeend",AC.infoHTML()); if(AC.deckView!=null) box.insertAdjacentHTML("beforeend",AC.deckHTML()); { const S=st.me; S.finSeen=S.finSeen||[]; for(const u of S.units){ const k=AC.skillOf(u.no); if(k&&k.fin&&u.t>=12&&!S.finSeen.includes(u.no)){ S.finSeen.push(u.no); AC.revealQ={no:u.no,until:Date.now()+3200}; } }
+      if(AC.revealQ&&Date.now()<AC.revealQ.until){ const k=AC.skillOf(AC.revealQ.no), h=AC.hero(AC.revealQ.no); box.insertAdjacentHTML("beforeend",`<div class="acreveal" data-acreveal><div class="acrvc">${AC.face(AC.revealQ.no)}<small>12초월 달성 · 숨겨진 종결자 해금</small><b>✦ ${esc(k.fin.name)}</b><p>${esc(h.name)}</p></div></div>`); clearTimeout(AC.revealT); AC.revealT=setTimeout(()=>{ const el=document.querySelector("[data-acreveal]"); if(el) el.remove(); },Math.max(0,AC.revealQ.until-Date.now())); } }
     box.classList.toggle("aclight",!!AC.light); box.classList.toggle("aclow",AC.PX.low()); AC.PX.tok=1; if(AC.PX.on()&&!(st.phase==="battle"&&AC.anim)) AC.PX.sleep();
     if(st.phase==="battle"&&AC.anim) AC.drawBattle(AC.anim.B,[]); },
   msel(){ if(!AC._ms){ const p=AC.prog(); AC._ms={mode:"ffa",bots:AC_CONFIG.maxBots,diff:p.unlocked}; } return AC._ms; },
@@ -5928,7 +5998,7 @@ AC.PX={ game:null, scene:null, host:null, ready:false, units:{}, model:{}, cnt:{
   hit(cx,cy){ const L=$("acLayer"); if(!L||!AC.anim) return null; const r=L.getBoundingClientRect(), C=AC_CONFIG, c=Math.floor((cx-r.left)/(r.width/C.cols)), R=Math.floor((cy-r.top)/(r.height/(C.rows*2)));
     const u=AC.anim.B.units.filter(x=>x.alive&&x.R===R&&x.C===c)[0]||AC.anim.B.units.filter(x=>x.R===R&&x.C===c)[0]; return u?u.uid:null; },
   /* 모델 (동기 계산) */
-  icons(B,u){ const T=B.t; return (u.frz&&T<u.frz?"❄️":"")+(u.burn&&T<u.burn.until?"🔥":"")+(u.stun&&T<u.stun?"💫":"")+(u.inv&&T<u.inv?"🛡️":"")+(u.disabled?"⛓️":"")+(u.judged?"⚖️":"")+(u.shred?"🔻":"")+(u.burnFix?"💢":"")+(u.healBlock&&T<u.healBlock?"❌":"")+(B.immune[u.side]>T?"✨":"")+(B.block[u.side]>T?"🚫":"")+(u.helUntil&&T<u.helUntil?"🪨":"")+(u.sunUntil>T?"☀️":"")+(u.noxAwake?"🌑":"")+(u.silKill?"🌘":"")+(u.klAmp?"⏳":"")+(u.ammo>0?"🎯"+u.ammo:""); },
+  icons(B,u){ const T=B.t; return (u.frz&&T<u.frz?"❄️":"")+(u.burn&&T<u.burn.until?"🔥":"")+(u.stun&&T<u.stun?"💫":"")+(u.inv&&T<u.inv?"🛡️":"")+(u.disabled?"⛓️":"")+(u.judged?"⚖️":"")+(u.shred?"🔻":"")+(u.burnFix?"💢":"")+(u.healBlock&&T<u.healBlock?"❌":"")+(B.immune[u.side]>T?"✨":"")+(B.block[u.side]>T?"🚫":"")+(u.helUntil&&T<u.helUntil?"🪨":"")+(u.sunUntil>T?"☀️":"")+(u.noxAwake?"🌑":"")+(u.silKill?"🌘":"")+(u.klAmp?"⏳":"")+(u.ammo>0?"🎯"+u.ammo:"")+(u.hyPara&&T<u.hyPara?"📜":"")+(u.curse?"☠️"+(u.curse.max-u.curse.n):"")+(u.bulgul>0?"🔱"+u.bulgul:"")+(B.valk&&B.valk[u.side]&&T<B.valk[u.side].until?"🪽":""); },
   draw(B,ev){ if(!this.mount()) return; const T=B.t; if(this.lastB!==B){ this.clear(); this.reset(); this.lastB=B; }
     for(const u of B.units){ const tot=Math.max(u.maxHp,u.hp+(u.shield||0)); this.model[u.uid]={uid:u.uid,side:u.side,R:u.R,C:u.C,alive:u.alive,hp:u.hp/tot,sh:(u.shield||0)/tot,icons:this.icons(B,u),frz:!!(u.frz&&T<u.frz),stn:!!(u.stun&&T<u.stun),inv:!!(u.inv&&T<u.inv),dis:!!u.disabled,rvv:!!u.revEnd||!!u.burnFix,tier:u.mon?0:AC.tierNo(u.no),t:u.t,mon:u.mon,no:u.no}; }
     this.paused=!!B.paused; this.B=B; const q=[]; const slow=1/Math.max(0.5,AC.speed);
@@ -5943,6 +6013,7 @@ AC.PX={ game:null, scene:null, host:null, ready:false, units:{}, model:{}, cnt:{
       else if(e.k==="ring"){ c.ring++; const t=B.units.find(u=>u.uid===e.b); S&&t&&this.ring(t.R,t.C,700*slow); }
       else if(e.k==="zap"){ c.zap++; S&&this.full(0xfff27a,0.55,700*slow); }
       else if(e.k==="gate"){ c.gate++; S&&this.full(0xffd36a,0.3,1200*slow,e.side); }
+      else if(e.k==="fin"){ c.fin=(c.fin||0)+1; c["fin_"+e.id]=(c["fin_"+e.id]||0)+1; this.scene&&!AC.headless&&this.fin(B,e,slow); }
       else if(e.k==="rewind"){ c.rewind++; if(S){ this.full(0x6fb8ff,0.45,1500*slow); this.text(this.w/2,this.h/2,"⏳ 구원의 힘 — 시간 역행",{size:16,color:"#cfe6ff",dur:1500*slow,rise:0,force:true}); } } }
     ev.filter(e=>e.k==="fx").slice(-10).forEach(e=>{ const t=B.units.find(u=>u.uid===e.b); if(!t) return; c.fx++; L.fx.push(e.txt); const [x,y]=this.px(t.R,t.C), H=this.cell().H;
       if(e.cls==="rev"){ c.pillar++; L.rev.push(e.txt); S&&this.pillar(x,y,1200*slow); }
@@ -5979,6 +6050,31 @@ AC.PX={ game:null, scene:null, host:null, ready:false, units:{}, model:{}, cnt:{
     this.scene.tweens.add({targets:g,scaleX:1.2,alpha:0,duration:ms,ease:"Quad.easeOut",onComplete:()=>this.done(g)}); },
   proj(ax,ay,bx,by,side,sk,ms,cb){ const g=this.get("pj",()=>this.scene.add.graphics().setDepth(33)); g.clear().fillStyle(sk?0xe0a0ff:side==="me"?0x7fc8ff:0xff7f7f,1).fillCircle(0,0,sk?6:4).fillStyle(0xffffff,0.9).fillCircle(0,0,sk?2.5:1.6).setPosition(ax,ay);
     this.scene.tweens.add({targets:g,x:bx,y:by,duration:ms,ease:"Linear",onComplete:()=>{ this.done(g); cb(); }}); },
+  fin(B,e,slow){ const {W,H}=this.cell(), w=this.w, h=this.h, sc=this.scene, en=e.side==="me"?"ai":"me", y0=en==="ai"?0:h/2, cx=w/2, cy=y0+h/4, m=Math.min(W,H), sl=slow||1,
+      P=uid=>{ const t=B.units.find(u=>u.uid===uid); return t?this.px(t.R,t.C):null; }, ban=(s,col)=>this.text(w/2,h/2,"✦ "+s,{size:Math.max(16,Math.round(m*0.32)),color:col,dur:1900*sl,rise:0,force:true}),
+      G=d=>this.gfx().clear().setPosition(0,0).setAlpha(1).setScale(1).setDepth(d||38), fade=(o,ms,dl)=>sc.tweens.add({targets:o,alpha:0,delay:dl||0,duration:ms,onComplete:()=>this.done(o)}), dur=(e.dur||1)*1000*sl, tg=(e.tg||[]).map(P).filter(Boolean);
+    const [ux,uy]=this.px(e.R,e.C);
+    switch(e.id){
+      case "orcaCharge": { const o=G(); o.fillStyle(0xff8a2a,0.18).fillCircle(ux,uy,m*0.8).lineStyle(4,0xffa040,1).strokeCircle(ux,uy,m*0.8).lineStyle(2,0xfff0c0,1).strokeCircle(ux,uy,m*0.45); sc.tweens.add({targets:o,alpha:0.35,yoyo:true,repeat:-1,duration:220*sl}); sc.time.delayedCall(dur,()=>{ sc.tweens.killTweensOf(o); this.done(o); }); ban(e.name+" · 충전","#ffb070"); break; }
+      case "orcaFire": { const o=G(39); o.fillStyle(0xff7a1a,0.35).fillRect(0,y0,w,h/2).fillStyle(0xffe0a0,0.9).fillRect(ux-m*0.22,y0,m*0.44,h/2).fillStyle(0xffffff,1).fillRect(ux-m*0.07,y0,m*0.14,h/2); fade(o,900*sl); this.full(0xffd090,0.5,500*sl); break; }
+      case "tanStart": { const o=G(37); o.fillStyle(0x000000,0.78).fillRect(0,0,w,h); const t=G(39); tg.forEach(([x,y],j)=>{ for(let i=0;i<3;i++){ const an=(j*37+i*60)*Math.PI/180, L=m*1.3; t.lineStyle(4,0xffffff,0.18).lineBetween(x-Math.cos(an)*L,y-Math.sin(an)*L,x+Math.cos(an)*L,y+Math.sin(an)*L).lineStyle(1.5,0xffffff,0.95).lineBetween(x-Math.cos(an)*L,y-Math.sin(an)*L,x+Math.cos(an)*L,y+Math.sin(an)*L); } t.fillStyle(0xffffff,0.9).fillCircle(x,y,m*0.06); });
+        t.setAlpha(0); sc.tweens.add({targets:t,alpha:1,duration:400*sl}); fade(o,500*sl,dur); fade(t,400*sl,dur); ban(e.name,"#ffffff"); break; }
+      case "tanExec": { const o=G(40); tg.forEach(([x,y])=>{ o.lineStyle(6,0xff3030,1).lineBetween(x-m*0.6,y-m*0.6,x+m*0.6,y+m*0.6).lineStyle(3,0xffffff,1).lineBetween(x+m*0.6,y-m*0.6,x-m*0.6,y+m*0.6); }); fade(o,900*sl); this.full(0xff3030,0.35,700*sl,en); break; }
+      case "zenStart": { const o=G(39), r=Math.min(w,h/2)*0.42, pts=[0,2,4,1,3,0].map(k=>{ const a=-Math.PI/2+k*2*Math.PI/5; return [cx+r*Math.cos(a),cy+r*Math.sin(a)]; }); o.fillStyle(0xfff27a,0.12).fillCircle(cx,cy,r); o.lineStyle(10,0xffc400,0.3).strokeCircle(cx,cy,r);
+        for(let i=0;i<5;i++){ o.lineStyle(9,0xffc400,0.3).lineBetween(...pts[i],...pts[i+1]).lineStyle(3,0xfff7b0,1).lineBetween(...pts[i],...pts[i+1]); }
+        const ai=G(38); pts.slice(0,5).forEach(([x,y],i)=>{ ai.fillStyle(0xffe14a,0.25).fillCircle(x,y,m*0.32).fillStyle(0xffe14a,0.12).fillCircle(x-(i-2)*m*0.08,y+m*0.1,m*0.28); }); fade(o,600*sl,dur); fade(ai,800*sl,400*sl); this.full(0xfff27a,0.4,500*sl); ban(e.name,"#fff27a"); break; }
+      case "zenBolt": { const [x,y]=this.px(e.R,e.C), o=G(41); let px=x, py=Math.max(0,y0-10); o.lineStyle(5,0xfff7b0,1); for(let i=0;i<6;i++){ const ny=py+(y-py)/(6-i), nx=x+(i<5?(i%2?1:-1)*m*0.18:0); o.lineBetween(px,py,nx,ny); px=nx; py=ny; } fade(o,500*sl); this.flash(e.R,e.C,450*sl); break; }
+      case "hyeon": { this.full(0xffd36a,0.35,900*sl,en); tg.forEach(([x,y],i)=>{ const o=G(39); o.fillStyle(0xf3e3b0,0.95).fillRect(x-m*0.2,y-m*0.38,m*0.4,m*0.76).lineStyle(2,0xc0392b,1).strokeRect(x-m*0.2,y-m*0.38,m*0.4,m*0.76); fade(o,500*sl,Math.min(dur,2500*sl)); this.text(x,y,"封",{size:Math.round(m*0.3),color:"#c0392b",dur:Math.min(dur,2500*sl),rise:0,force:true}); }); ban(e.name,"#ffd36a"); break; }
+      case "nox": { const o=G(39); o.fillStyle(0x1b3cff,0.55).fillRect(0,y0,w*0.35,h/2).fillStyle(0x9fb4ff,0.8).fillRect(w*0.33,y0,w*0.02,h/2); o.x=-w*0.4; sc.tweens.add({targets:o,x:w,duration:900*sl,ease:"Quad.easeInOut",onComplete:()=>this.done(o)}); this.full(0x0a1a66,0.5,1000*sl,en); tg.forEach(([x,y])=>this.text(x,y-m*0.3,"☠",{size:Math.round(m*0.3),color:"#9fb4ff",dur:1500*sl,rise:m*0.2,force:true})); ban(e.name,"#9fb4ff"); break; }
+      case "valk": { const o=G(37), my=e.side==="me"?h/2:0; o.fillStyle(0xffe28a,0.12).fillRect(0,my,w,h/2).lineStyle(4,0xffe28a,0.9).strokeRect(3,my+3,w-6,h/2-6); sc.tweens.add({targets:o,alpha:0.5,yoyo:true,repeat:-1,duration:600*sl}); sc.time.delayedCall(dur,()=>{ sc.tweens.killTweensOf(o); this.done(o); }); ban(e.name,"#ffe28a"); break; }
+      case "valkEnd": { const o=G(40); o.fillStyle(0xffe28a,0.6).fillRect(0,y0,w,h/2); o.setScale(1,0.05); o.y=cy*0.95; sc.tweens.add({targets:o,scaleY:1,y:0,duration:400*sl}); fade(o,700*sl,400*sl); this.text(cx,cy,(e.n||0).toLocaleString(),{size:Math.round(m*0.4),color:"#fff3c0",dur:1500*sl,rise:m*0.3,force:true}); break; }
+      case "sil": { tg.forEach(([x,y])=>{ const o=G(38); for(let i=0;i<5;i++) o.fillStyle([0xff3b1a,0xff6a1a,0xff9a2a,0xffc04a,0xffe9a0][i],0.25+i*0.1).fillRect(x-m*0.4+i*m*0.08,y-m*1.6,m*0.8-i*m*0.16,m*2); sc.tweens.add({targets:o,alpha:0.55,yoyo:true,repeat:-1,duration:180*sl}); sc.time.delayedCall(dur,()=>{ sc.tweens.killTweensOf(o); this.done(o); }); }); this.full(0xff4a1a,0.3,900*sl,en); ban(e.name,"#ff9a5a"); break; }
+      case "silExec": this.full(0xff2a00,0.55,800*sl,en); break;
+      case "rudiFocus": { const o=G(39); o.lineStyle(4,0x9fe0ff,1).strokeCircle(ux,uy,m*0.6).lineStyle(2,0xffffff,1).strokeCircle(ux,uy,m*0.9); sc.tweens.add({targets:o,alpha:0.3,yoyo:true,repeat:-1,duration:200*sl}); sc.time.delayedCall(dur,()=>{ sc.tweens.killTweensOf(o); this.done(o); }); ban(e.name,"#cfefff"); break; }
+      case "rudiDrop": { const o=G(41), bw=Math.min(w*0.16,m*1.2), bl=h*0.45; o.fillStyle(0xe8f4ff,1).fillTriangle(-bw/2,bl*0.85,bw/2,bl*0.85,0,bl).fillRect(-bw/2,0,bw,bl*0.85).fillStyle(0xffd36a,1).fillRect(-bw*1.6,-bw*0.25,bw*3.2,bw*0.5).fillRect(-bw*0.25,-bw*1.4,bw*0.5,bw*1.2).lineStyle(2,0x6fb8ff,1).strokeRect(-bw/2,0,bw,bl*0.85);
+        o.setPosition(cx,y0-bl); sc.tweens.add({targets:o,y:cy-bl*0.6,duration:260*sl,ease:"Quad.easeIn",onComplete:()=>{ this.full(0xffffff,0.75,700*sl,en); fade(o,700*sl,500*sl); }}); break; }
+      case "clem": { this.full(0x8a5cff,0.7,1800*sl); const o=G(37); for(let i=0;i<9;i++) o.lineStyle(2,0xd6c0ff,0.6).strokeCircle(cx,h/2,(i+1)*Math.max(w,h)/14); fade(o,1600*sl); ban(e.name+" — 전원 부활","#d6c0ff"); break; }
+      case "dong": { this.full(0x3a0a5a,0.65,1500*sl); ban(e.name,"#d6a0ff"); break; } } },
   zen(e,slow){ const P=e.pts.map(([r,c])=>this.px(r,c)), {W,H}=this.cell(), amp=Math.min(W,H)*0.18;
     for(let i=0;i+1<P.length;i++){ const [ax,ay]=P[i],[bx,by]=P[i+1], dx=bx-ax, dy=by-ay, len=Math.hypot(dx,dy)||1, nx=-dy/len, ny=dx/len, k=Math.max(3,Math.round(len/(Math.min(W,H)*0.35))); const pts=[[ax,ay]];
       for(let j=1;j<k;j++){ const t=j/k, o=(j%2?1:-1)*amp; pts.push([ax+dx*t+nx*o,ay+dy*t+ny*o]); } pts.push([bx,by]);
