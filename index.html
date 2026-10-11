@@ -1132,7 +1132,7 @@
   #acRoot .acskslot.u{border-color:#ffd36a;box-shadow:0 0 6px #ffb30088} #acRoot .acskslot img,.acskico img,.acsyimg{width:100%;height:100%;object-fit:cover}
   #acRoot .acshop .acsknm{display:block;font-size:10px;font-weight:800;color:#ffd36a;line-height:1.1;margin-top:1px;text-align:center}
   .acskill{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:6px 8px;border-radius:8px;background:#ffffff0d;border:1px solid #ffd36a44;max-width:420px}
-  .acskill.gen{border-color:#ffffff22} .acskill b{font-size:13px;color:#ffd36a} .acskill p{margin:2px 0 0;font-size:12px;line-height:1.35;color:var(--text,#ddd);white-space:normal}
+  .acskill.gen{border-color:#ffffff22} .acskill b{font-size:13px;color:#ffd36a} .acskill p{margin:2px 0 0;font-size:12px;line-height:1.35;color:var(--text,#ddd);white-space:pre-line}
   .acskico{flex:0 0 28px;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-size:17px;background:#0008;border:1px solid #ffd36a66;overflow:hidden}
   .acfx.sk5{font-size:14px;color:#ffe48a;-webkit-text-stroke:.6px #6a4300;text-shadow:0 0 6px #ff9d00,0 1px 2px #000;z-index:12;white-space:nowrap}
   .acfx.rage{color:#ff6262;font-size:14px;text-shadow:0 0 6px #f00,0 1px 2px #000} .acfx.imm{color:#c8f5ff}
@@ -1381,7 +1381,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.6v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.6.1v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5237,16 +5237,16 @@ const AC_CONFIG={
   skillEvery:3, skillCoef:250,
   // ===== 0.6v 5코 고유 스킬 (영웅 이름 → 수치) · 이 10명은 기본 '3번째 공격 250%' 대신 아래 스킬 =====
   skills5:{
-    "루디":{name:"영겁의 성채",ico:"🏰",every:6,shield:200,max:600,desc:"지속: 적에게 6번 맞을 때마다 보호막 200 (중첩 · 최대 600)"},
-    "오르카":{name:"최후통첩",ico:"🎯",every:10,ammo:4,gap:2,coef:300,pierce:3,fall:30,desc:"10번 공격마다 대구경탄 4발 장전 · 2초마다 1발 (일반 공격과 별도) · 현재 대상 방향 직선 · 공격력 300% 물리 · 최대 3명 관통 (100/70/49%)"},
-    "카마도 탄지로":{name:"사양전신",ico:"☀️",need:3,window:3,dur:8,execPct:10,burn:15,burnDur:3,hop:0.3,desc:"처치 관여 3번 (마지막 일격 또는 죽기 전 3초 안에 피해) → 8초 동안 체력 10% 미만 적에게 순간이동해 즉시 처형 · 지나간 칸의 적은 3초 화상 (초당 공격력 15%) · 다시 3번 관여하면 재발동"},
-    "아가츠마 젠이츠":{name:"화뢰신",ico:"⚡",deaths:3,max:3,pause:3,coef:250,desc:"아군 3명이 쓰러질 때마다 (전투당 최대 3번) 3초 동안 전장 정지 → 체력 전부 회복 후 돌진해 모든 적에게 공격력 250%"},
-    "클레미스":{name:"구원의 힘",ico:"⏳",amp:30,desc:"클레미스 말고 아군이 모두 쓰러지면 (전투당 1번) 시간을 되돌려 양쪽 모두 전투 시작 상태로 · 이후 아군 피해량 +30%"},
-    "하연":{name:"봉천문",ico:"⛩️",dur:8,desc:"아군이 처음 상태 이상·약화에 걸리면 (전투당 1번) 아군 상태 이상·약화 모두 해제 · 적 강화 제거 + 8초 강화 봉인 · 아군 8초 상태 이상·약화 면역"},
-    "녹스":{name:"심연의 검풍",ico:"🌑",sh:35,low:50,deaths:3,ls:40,fix:50,radius:1,desc:"전투 시작 때 최대 체력 35% 보호막 · 처음 체력 50% 이하가 되면 35% 보호막 한 번 더 · 양쪽 합쳐 3명 쓰러지면: 흡혈 40% · 매초 그 1초 동안 회복한 양의 50%를 주변 1칸 적에게 고정 피해"},
-    "헬레니아":{name:"감내의 방패",ico:"🛡️",dur:5,red:95,share:50,dot:10,desc:"전투 시작 5초 동안 받는 피해 −95% · 5초 동안 받을 뻔한 피해의 절반은 다른 아군에게 나눠 회복 · 나머지 절반은 10초에 걸쳐 헬레니아가 받음"},
-    "실베스타":{name:"정화하는 어둠",ico:"🌘",every:4,coef:200,radius:1,heal:30,amp:50,desc:"4번째 공격마다 주변 1칸 모든 적에게 공격력 200% 마법 피해 · 준 피해의 30% 회복 · 이 피해로 적을 처치하면 남은 전투 동안 피해 +50% (1번만)"},
-    "동영":{name:"황천의 동행자",ico:"⚔️",sh:150,shDur:4,coef:220,depth:2,block:4,desc:"전투당 1번, 죽을 피해를 받으면 체력 1로 버티고 4초 동안 공격력 150% 보호막 · 거대한 검을 소환해 앞쪽 적이 있는 첫 줄부터 2줄 (가로 전체) 적에게 공격력 220% · 4초 회복 불가"}},
+    "루디":{name:"영겁의 성채",ico:"🏰",every:6,shield:200,max:600,desc:"상시효과로 자신이 적에게 6회 피격될 때 마다 자신에게 200의 쉴드부여."},
+    "오르카":{name:"최후통첩",ico:"🎯",every:8,ammo:4,gap:2,coef:380,pierce:3,fall:30,desc:"적을 8회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. 2초에 1발씩 발사되며, 최대 3명까지 관통합니다. 데미지는 경감됩니다."},
+    "카마도 탄지로":{name:"사양전신",ico:"☀️",need:3,window:3,dur:8,execPct:10,burn:15,burnDur:3,hop:0.3,desc:"적 처치 관여 3회시, 8초간 다음의 효과를 얻습니다: 최대체력의 10%미만인 적에게 순간이동 후 즉시 처형합니다. 순간 이동시 붉은 궤적을 남기고, 궤적 위를 지나는 모든 적에게 화상을 입힙니다."},
+    "아가츠마 젠이츠":{name:"화뢰신",ico:"⚡",deaths:3,max:3,pause:3,coef:250,desc:"아군의 사망이 3회 발생 시 발동: 즉시 게임이 3초간 정지 되며, 젠이츠는 체력을 완전히 회복 후, 매우 빠른 속도로 이동해 모든 적에게 자신의 공격력 250%피해를 즉시 입힙니다."},
+    "클레미스":{name:"구원의 힘",ico:"⏳",amp:30,desc:"자신 제외 모든 아군 사망 시 발동: 클레미스가 차원을 조작해 시공간을 되돌립니다. 해당 라운드의 최초 전투 상태로 돌아갑니다. 아군에게 피해량 증폭 부여 및 스킬 사용 횟수 초기화."},
+    "하연":{name:"봉천문",ico:"⛩️",dur:8,desc:"아군에게 상태이상 발생 시 발동: 모든 상태이상을 즉시 해제하고 상대에게 부여된 버프를 제거 후, 8초간 상대 버프를 차단합니다. 아군에게는 8초간 모든 디버프& 상태이상면역을 부여"},
+    "녹스":{name:"심연의 검풍",ico:"🌑",sh:20,sh2:15,low:50,deaths:3,ls:25,fix:50,radius:1,desc:"전투 시작 시 발동: 녹스가 자신의 최대 생명력의 20%에 해당하는 보호막을 얻습니다.\n자신의 생명력이 50% 이하가 되면 녹스가 자신의 최대 생명력의 15%에 해당하는 보호막을 얻습니다.(전투당 1회 발동)\n적 또는 아군 3회 사망 시: 자신이 모든 피해 흡혈 25%를 얻고, 녹스 주변 1칸의 적에게 자신의 회복량에 비례한 고정피해를 입힙니다."},
+    "헬레니아":{name:"감내의 방패",ico:"🛡️",dur:4,red:80,share:50,dot:10,desc:"전투 시작 시 발동: 4초 간 모든 피해를 80% 경감하여 받습니다. 그리고 4초 간 받은 피해량의(경감되기 이전의 피해량) 절반을 회복으로 치환 후 현재 남은 아군 모두에게 동일하게 분배하여 생명령을 회복시킵니다. 남은 절반은 헬레니아가 10초에 걸쳐 피해를 입습니다."},
+    "실베스타":{name:"정화하는 어둠",ico:"🌘",every:4,coef:160,radius:1,heal:20,amp:30,desc:"자신의 4번째 공격마다 다음의 효과를 얻습니다:자신 주변 1칸 적 전체에게 공격력 160% 마법 피해를 주고, 입힌 피해의 20%만큼 회복합니다. 해당 피해로 적 처치시 피해량+30%"},
+    "동영":{name:"황천의 동행자",ico:"⚔️",sh:250,shDur:4,coef:300,depth:2,block:4,desc:"동영이 사망에 이르는 피해를 입을 경우 발동: 동영이 체력1로 1회 생존 후, 자신의 공격력의 250%에 해당하는 쉴드를 4초간 얻습니다. 동시에 거대한 검을 소환하여, 동영 앞쪽 가로 2칸 일직선의 적 전부에게 공격력 300%에 해당하는 피해를 입히고, 피해를 입은 적의 회복을 차단합니다."}},
   genericSkill:{name:"강타",ico:"💥"}, // 5코 아닌 영웅: 3번째 공격 skillCoef%
   skillIcons:{}, synIcons:{}, // 이름 → 그림 data URL (비우면 이모지)
 
@@ -5480,7 +5480,7 @@ const AC={
     if(a){ a.dealt+=d; if(a.fam==="father"&&B.fam[a.side]&&B.fam[a.side].on) B.fam[a.side].dealt+=d;
       if(a.ls&&a.alive){ const h=d*a.ls/100; AC.heal(B,a,h,a.burnFix?"family":"fury"); } }
     t.taken+=d; if(o.id&&a) AC.sstat(B,a.side,o.id,d);
-    if(t.skId==="녹스"&&!t.noxLow&&t.hp>0&&t.hp<=t.maxHp*AC_CONFIG.skills5["녹스"].low/100){ t.noxLow=true; if(AC.addShield(B,t,t.maxHp*AC_CONFIG.skills5["녹스"].sh/100)) B.events.push({k:"fx",b:t.uid,txt:"🌑 보호막",cls:"sk5"}); }
+    if(t.skId==="녹스"&&!t.noxLow&&t.hp>0&&t.hp<=t.maxHp*AC_CONFIG.skills5["녹스"].low/100){ t.noxLow=true; if(AC.addShield(B,t,t.maxHp*AC_CONFIG.skills5["녹스"].sh2/100)) B.events.push({k:"fx",b:t.uid,txt:"🌑 보호막",cls:"sk5"}); }
     if(t.hp<=0){ t.hp=0; AC.lethal(B,t,a); }
     else if(a&&a.exec&&t.hp<t.maxHp*a.exec/100){ B.events.push({k:"fx",b:t.uid,txt:"처형!",cls:"exec"}); AC.sstat(B,a.side,"marks",t.hp); t.hp=0; AC.lethal(B,t,a,true); }
     return d; },
@@ -5500,7 +5500,7 @@ const AC={
   kill(B,t,a){ t.hp=0; t.alive=false; t.disabled=false; B.events.push({k:"die",b:t.uid}); B.deaths++; const S5=AC_CONFIG.skills5;
     for(const u of B.units.filter(x=>x.alive&&x.side!==t.side&&x.skId==="카마도 탄지로")){ const K=S5["카마도 탄지로"]; if(a===u||(t.hitLog&&t.hitLog[u.uid]>=B.t-K.window)){ u.part=(u.part||0)+1; if(u.part>=K.need&&!(u.sunUntil>B.t)){ u.part-=K.need; u.sunUntil=B.t+K.dur; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); AC.sstat(B,u.side,"sk:카마도 탄지로",0); } } }
     for(const z of B.units.filter(x=>x.alive&&x.side===t.side&&x.skId==="아가츠마 젠이츠")){ const K=S5["아가츠마 젠이츠"]; z.allyD=(z.allyD||0)+1; if(z.allyD%K.deaths===0&&(B.zenN[z.uid]||0)<K.max&&!B.pause){ B.zenN[z.uid]=(B.zenN[z.uid]||0)+1; B.pause=K.pause; B.pauseBy=z.uid; B.events.push({k:"fx",b:z.uid,txt:"⚡ 화뢰신",cls:"sk5"}); } }
-    if(a&&a.alive&&a.silAoe&&!a.silKill&&!(B.block[a.side]>B.t)){ a.silKill=true; a.ampAll=(a.ampAll||0)+AC_CONFIG.skills5["실베스타"].amp; B.events.push({k:"fx",b:a.uid,txt:"어둠 +50%",cls:"sk5"}); }
+    if(a&&a.alive&&a.silAoe&&!a.silKill&&!(B.block[a.side]>B.t)){ a.silKill=true; a.ampAll=(a.ampAll||0)+AC_CONFIG.skills5["실베스타"].amp; B.events.push({k:"fx",b:a.uid,txt:"어둠 +"+AC_CONFIG.skills5["실베스타"].amp+"%",cls:"sk5"}); }
     if(a&&a.alive){ if(a.dream){ const h=a.maxHp*a.dream/100; AC.heal(B,a,h,"dream"); } if(a.pion) a.pionKeep=true;
       const fm=B.fam[a.side]; if(fm&&fm.on&&a===fm.father) fm.kill=true; }
     for(const g of B.units.filter(x=>x.grave&&x.alive&&x.side!==t.side)){ g.souls=(g.souls||0)+1; B.events.push({k:"fx",b:g.uid,txt:"💀+1",cls:"soul"});
