@@ -5265,7 +5265,7 @@ const AC_CONFIG={
     {id:"hard",name:"어려움",gold:0,smart:true,rolls:4,lvAhead:0,eco:30,ecoFrom:5,panicHp:35,wDup:30,wSyn:6,minVal:12},
     {id:"nightmare",name:"악몽",gold:1,smart:true,rolls:6,lvAhead:1,eco:50,ecoFrom:4,panicHp:40,wDup:35,wSyn:8,minVal:14},
     {id:"hell",name:"지옥",gold:2,statPct:5,smart:true,rolls:8,lvAhead:1,eco:50,ecoFrom:4,panicHp:45,wDup:40,wSyn:9,minVal:14}],
-  endlessDiff:1, renderer:"phaser", pxType:"canvas" /* "dom" = 예전 DOM 전투 화면 */, fxNumCap:24, fxNumCapLight:8, ffaLossBase:3, ffaLossPerUnit:2, botNames:["봇 아일린","봇 루디","봇 레이첼","봇 델론즈","봇 스파이크","봇 제이브","봇 크리스"], maxBots:7,
+  endlessDiff:1, aiSpendAbove:50, aiStratA:{cap:6,until:15,rollFrom:5,extra:3}, aiStratB:{from:6,ahead:1}, renderer:"phaser", pxType:"canvas" /* "dom" = 예전 DOM 전투 화면 */, fxNumCap:24, fxNumCapLight:8, ffaLossBase:3, ffaLossPerUnit:2, botNames:["봇 아일린","봇 루디","봇 레이첼","봇 델론즈","봇 스파이크","봇 제이브","봇 크리스"], maxBots:7,
   roles:{
     rp:{name:"원거리 물리 딜러",short:"원물",range:"ranged",dmg:"phys",atk:92,def:18,res:14,hp:700,aspd:1.65,crit:10},
     rm:{name:"원거리 마법 딜러",short:"원마",range:"ranged",dmg:"magic",atk:96,def:14,res:20,hp:650,aspd:1.6,crit:5},
@@ -5312,11 +5312,11 @@ const AC_CONFIG={
     // 0.9v: 배열 = [A 0–2초월, B 3–5초월, C 6+초월] · fin = 12초월 숨은 종결자 (전투당 1회) · desc 의 {키} = 현재 단계 값
     "루디":{name:"영겁의 성채",ico:"🏰",every:6,shield:200,max:600,desc:"상시효과로 자신이 적에게 6회 피격될 때 마다 자신에게 200의 쉴드부여.",
       fin:{name:"영광의 심판",hits:3,focus:1.5,desc:"자신이 3회 피격 시 발동: 1.5초간 정신을 집중하고, 이후 적 진영에 거대한 검을 소환하여 떨어트립니다. 적 진영에 놓인 모든 영웅을 즉시 처형."}},
-    "오르카":{name:"최후통첩",ico:"🎯",every:[6,3,2],ammo:4,gap:[1.5,1,0.75],coef:380,pierce:[3,5,99],fall:[30,30,0],pierceTxt:["최대 3명까지","최대 5명까지","제한 없이"],fallTxt:["관통할 때마다 데미지는 30%씩 경감됩니다.","관통할 때마다 데미지는 30%씩 경감됩니다.","데미지는 경감되지 않습니다."],
-      desc:"적을 (6/3/2)회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. (1.5/1/0.75)초에 1발씩 발사되며, 최대 (3/5/경감 없음)명까지 관통합니다. 데미지는 경감됩니다.",
+    "오르카":{name:"최후통첩",ico:"🎯",every:[6,4,3],ammo:4,gap:[1.5,1.2,0.9],coef:380,pierce:[3,5,99],fall:[30,30,0],pierceTxt:["최대 3명까지","최대 5명까지","제한 없이"],fallTxt:["관통할 때마다 데미지는 30%씩 경감됩니다.","관통할 때마다 데미지는 30%씩 경감됩니다.","데미지는 경감되지 않습니다."],
+      desc:"적을 (6/4/3)회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. (1.5/1.2/0.9)초에 1발씩 발사되며, 최대 (3/5/경감 없음)명까지 관통합니다. 데미지는 경감됩니다.",
       fin:{name:"",charge:3,coef:2500,desc:"전투 시작 시, 상대 진영 전체를 관통하는 매우 강력한 탄환 1발(자신의 공격력의 2500%)을 3초 간 장전하고, 발사합니다. "}},
-    "카마도 탄지로":{name:"히노카미 카구라",ico:"☀️",need:[3,2,1],window:3,dur:6,execPct:[10,15,20],burn:15,burnDur:3,hop:0.3,
-      desc:"적 처치 관여 (3/2/1)회시, 6초간 다음의 효과를 얻습니다: 최대체력의 (10/15/20)% 적에게 순간이동 후 즉시 처형합니다. 순간 이동시 붉은 궤적을 남기고, 궤적 위를 지나는 모든 적에게 화상을 입힙니다.",
+    "카마도 탄지로":{name:"히노카미 카구라",ico:"☀️",need:[3,2,1],window:3,dur:6,execPct:[15,20,30],burn:15,burnDur:3,hop:0.3,
+      desc:"적 처치 관여 (3/2/1)회시, 6초간 다음의 효과를 얻습니다: 최대체력의 (15/20/30)% 적에게 순간이동 후 즉시 처형합니다. 순간 이동시 붉은 궤적을 남기고, 궤적 위를 지나는 모든 적에게 화상을 입힙니다.",
       fin:{name:"히노카미 카구라:사양전신",delay:1.5,desc:"전투 시작 시, 필드가 암전됩니다. 이후 하얀색 빈틈의 실이 적 진영에 생기고, 탄지로가 그곳을 향해 검을 휘둘러 적 영웅 전체를 즉시 처형합니다."}},
     "아가츠마 젠이츠":{name:"벽력일섬",pathMs:400,fadeMs:1000,ico:"⚡",deaths:3,max:[3,4,5],pause:2,coef:[250,370,500],
       desc:"아군 사망 3회 발생 시 발동: 즉시 게임이 2초간 정지 되며, 젤이츠는 체력을 완전히 회복 후, 매우 빠른 속도로 이동해 모든 적에게 자신의 공격력(250/370/500)%피해를 즉시 입힙니다. (전투당 최대3/4/5회)",
@@ -5510,24 +5510,27 @@ const AC={
   aiBasic(st,S,D){ const C=AC_CONFIG, tl=C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel;
     if(st.round>1) S.gold+=D.gold;
     if(D.buyXp) while(S.level<tl&&S.gold>=C.xpBuyCost+C.aiReserve) AC.buyXp(S);
+    while(S.gold>C.aiSpendAbove&&S.level<C.maxLevel) AC.buyXp(S); /* 0.9.1v: 골드 쌓아두기 방지 */
     for(let r=0;r<=D.rolls;r++){ S.shop=AC.roll(st,S.level);
       const order=S.shop.map((no,i)=>({no,i})).filter(x=>x.no!=null).sort((a,b)=>D.random?AC.rnd(st)-0.5:(AC.owned(S,b.no)?10:0)+AC.tierNo(b.no)-((AC.owned(S,a.no)?10:0)+AC.tierNo(a.no)));
       for(const x of order){ if(AC.canBuy(st,S,x.i)==="대기석 가득"){ const w=S.units.filter(u=>u.loc[0]==="b").sort((a,b)=>AC.score(a)-AC.score(b))[0]; if(w&&AC.score(w)<AC.tierNo(x.no)*20) AC.sell(st,S,w.uid); }
         if(!AC.canBuy(st,S,x.i)&&(!D.random||AC.rnd(st)<0.7)) AC.buy(st,S,x.i); }
-      if(r>=D.rolls||S.gold<C.rerollCost+C.aiReserve+2) break; S.gold-=C.rerollCost; }
+      const short=S.units.length<S.level&&S.gold>=C.rerollCost+1, rich=S.gold>C.aiSpendAbove; if(!short&&!rich&&(r>=D.rolls||S.gold<C.rerollCost+C.aiReserve+2)) break; if(r>=D.rolls+6) break; S.gold-=C.rerollCost; }
     AC.autoPlace(S); },
   synCount(S,no,nos){ let n=0; for(const s of AC.synOf(no)) for(const m of nos) if(m!==no&&s.members.includes(AC.hero(m).name)) n++; return n; },
-  aiSmart(st,S,D,foe,hp){ const C=AC_CONFIG, tl=Math.min(C.maxLevel,(C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel)+D.lvAhead);
+  aiSmart(st,S,D,foe,hp){ const C=AC_CONFIG, SG=S.strat||(S.strat=AC.rnd(st)<0.5?"A":"B"), base=(C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel)+D.lvAhead, tl=Math.min(C.maxLevel,SG==="A"?(st.round<C.aiStratA.until?Math.min(base,C.aiStratA.cap):base):base+(st.round>=C.aiStratB.from?C.aiStratB.ahead:0));
+    /* 0.9.1v 전략: A = 초반 저코스트 고초월(리롤) · B = 초반 아끼고 레벨업 → 후반 고코스트 */
     if(st.round>1) S.gold+=D.gold;
     const reserve=()=>hp<=D.panicHp?0:st.round>=D.ecoFrom?D.eco:Math.min(D.eco,10); const nos=()=>S.units.map(u=>u.no);
     while(S.level<tl&&S.gold-C.xpBuyCost>=Math.min(reserve(),S.gold-C.xpBuyCost)&&S.gold>=C.xpBuyCost&&(S.gold-C.xpBuyCost>=reserve()||S.level<tl-1)) AC.buyXp(S);
-    const val=no=>{ const o=AC.owned(S,no); return (o?D.wDup+(o.t<C.maxT?0:-99):0)+AC.synCount(S,no,nos())*D.wSyn+AC.tierNo(no)*5+(AC.roleKey(no)[0]==="t"&&S.units.filter(u=>AC.roleKey(u.no)[0]==="t").length<2?8:0); };
-    for(let r=0;r<=D.rolls;r++){ if(r>0||!S.shop||!S.shop.length) S.shop=AC.roll(st,S.level);
+    const val=no=>{ const o=AC.owned(S,no); return (o?D.wDup+(o.t<C.maxT?0:-99):0)+AC.synCount(S,no,nos())*D.wSyn+AC.tierNo(no)*5+(SG==="A"?(AC.tierNo(no)<=2?(o?D.wDup*0.6:6):0)-AC.tierNo(no)*2:AC.tierNo(no)*4-(AC.tierNo(no)<=2&&st.round>=C.aiStratB.from&&!o?10:0))+(AC.roleKey(no)[0]==="t"&&S.units.filter(u=>AC.roleKey(u.no)[0]==="t").length<2?8:0); };
+    const rolls=D.rolls+(SG==="A"&&st.round>=C.aiStratA.rollFrom?C.aiStratA.extra:0);
+    for(let r=0;r<=rolls;r++){ if(r>0||!S.shop||!S.shop.length) S.shop=AC.roll(st,S.level);
       const order=S.shop.map((no,i)=>({no,i,v:no==null?-1:val(no)})).filter(x=>x.no!=null).sort((a,b)=>b.v-a.v);
-      for(const x of order){ const own=AC.owned(S,x.no); if(x.v<D.minVal&&!own) continue; if(S.gold-AC.cost(x.no)<(own?Math.max(0,reserve()-10):reserve())) continue;
+      for(const x of order){ const own=AC.owned(S,x.no), fill=!own&&S.units.length<S.level; if(!fill&&x.v<D.minVal&&!own) continue; if(!fill&&S.gold-AC.cost(x.no)<(own?Math.max(0,reserve()-10):reserve())) continue;
         if(AC.canBuy(st,S,x.i)==="대기석 가득"){ const w=S.units.filter(u=>u.loc[0]==="b"&&u.copies<2).sort((a,b)=>val(a.no)-val(b.no))[0]; if(w&&val(w.no)<x.v) AC.sell(st,S,w.uid); }
         if(!AC.canBuy(st,S,x.i)) AC.buy(st,S,x.i); }
-      if(r>=D.rolls||S.gold-C.rerollCost<reserve()+2) break; S.gold-=C.rerollCost; }
+      const short=S.units.length<S.level&&S.gold>=C.rerollCost+1; if(!short&&(r>=rolls||S.gold-C.rerollCost<reserve()+2)) break; if(r>=rolls+4) break; S.gold-=C.rerollCost; }
     AC.smartPlace(S,foe); },
   smartPlace(S,foe){ const C=AC_CONFIG; S.units.forEach((u,i)=>u.loc="t"+i); const nos=S.units.map(u=>u.no);
     const sc=u=>AC.score(u)+AC.synCount(S,u.no,nos)*4; const best=[...S.units].sort((a,b)=>sc(b)-sc(a)); let uq=0; const ok=best.filter(u=>!AC.isUnique(u.no)||!uq++), on=ok.slice(0,S.level), off=best.filter(u=>!on.includes(u));
@@ -5594,7 +5597,7 @@ const AC={
   hayeon(B,side){ if(B.once["hy"+side]) return; const h=B.units.find(x=>x.alive&&x.side===side&&x.skId==="하연"); if(!h) return; B.once["hy"+side]=true; const K=h.K, o=side==="me"?"ai":"me"; B.hblock[o]=B.t+K.dur; B.hyLs[side]={until:B.t+K.dur,pct:K.ls};
     B.units.filter(x=>x.alive&&x.side===side).forEach(AC.cleanse); B.units.filter(x=>x.alive&&x.side===o).forEach(x=>{ x.shield=0; x.crysSh=false; x.pionDur=0; x.evUntil=0; if(x.tmpSh) x.tmpSh=null; });
     B.block[o]=B.t+K.dur; B.immune[side]=B.t+K.dur; B.events.push({k:"fx",b:h.uid,txt:K.name+"!",cls:"sk5"},{k:"gate",side}); AC.sstat(B,side,"sk:하연",1); },
-  skInit(B){ for(const u of B.units){ if(u.mon) continue; if(AC_CONFIG.skills5[u.name]){ u.skId=u.name; u.need=1e9; u.K=AC.skP(u.name,u.t); u.fin=u.t>=12&&!!u.K.fin; } u.R0=u.R; u.C0=u.C; } },
+  skInit(B){ for(const u of B.units){ if(u.mon) continue; if(AC_CONFIG.skills5[u.name]){ u.skId=u.name; u.need=1e9; u.K=AC.skP(u.name,u.t); u.fin=u.t>=12&&!!u.K.fin; if(u.name==="카마도 탄지로") u.need=AC_CONFIG.skillEvery; } u.R0=u.R; u.C0=u.C; } },
   skStart(B){ for(const u of B.units){ if(u.skId==="녹스") u.shield+=u.maxHp*u.K.sh/100; if(u.skId==="헬레니아"){ u.helUntil=u.K.dur; u.helRec=0; } } AC.finStart(B); },
   snapKeys:["frz","stun","inv","evUntil","revEnd","pionDur","helUntil","sunUntil","healBlock","orcaNext","hopAt"],
   rewind(B,k){ const C=AC_CONFIG, keep=new Map(B.units.map(u=>[u.uid,{dealt:u.dealt,taken:u.taken,tip:u.tip}])), amp=k.K.amp;
@@ -5694,7 +5697,7 @@ const AC={
     if(t.furyRev&&!t.revived){ t.revived=true; t.hp=Math.max(1,Math.round(t.maxHp*AC_CONFIG.furyReviveHp/100)); t.revEnd=B.t+t.furyRev; B.events.push({k:"fx",b:t.uid,txt:"부활!",cls:"rev"}); AC.sstat(B,side,"fury",t.hp); return; }
     AC.kill(B,t,a); },
   kill(B,t,a){ t.hp=0; t.alive=false; t.disabled=false; B.events.push({k:"die",b:t.uid}); B.deaths++;
-    for(const u of B.units.filter(x=>x.alive&&x.side!==t.side&&x.skId==="카마도 탄지로")){ const K=u.K; if(a===u||(t.hitLog&&t.hitLog[u.uid]>=B.t-K.window)){ u.part=(u.part||0)+1; if(u.part>=K.need&&!(u.sunUntil>B.t)){ u.part-=K.need; u.sunUntil=B.t+K.dur; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); AC.sstat(B,u.side,"sk:카마도 탄지로",0); } } }
+    for(const u of B.units.filter(x=>x.alive&&x.side!==t.side&&x.skId==="카마도 탄지로")){ const K=u.K; if(a===u||(t.hitLog&&t.hitLog[u.uid]>=B.t-K.window)){ u.part=(u.part||0)+1; if(u.part>=K.need&&!(u.sunUntil>B.t)){ u.part-=K.need; u.sunUntil=B.t+K.dur; u.need=1e9; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); AC.sstat(B,u.side,"sk:카마도 탄지로",0); } } }
     for(const z of B.units.filter(x=>x.alive&&x.side===t.side&&x.skId==="아가츠마 젠이츠")){ const K=z.K; if(z.fin) AC.finQ(B,z,B.t,"zenStart"); z.allyD=(z.allyD||0)+1; if(z.allyD%K.deaths===0&&(B.zenN[z.uid]||0)<K.max&&!B.pause){ B.zenN[z.uid]=(B.zenN[z.uid]||0)+1; B.pause=K.pause; B.pauseBy=z.uid; B.events.push({k:"fx",b:z.uid,txt:"⚡ 화뢰신",cls:"sk5"}); } }
     if(a&&a.alive&&a.silAoe&&!a.silKill&&!(B.block[a.side]>B.t)){ a.silKill=true; a.ampAll=(a.ampAll||0)+a.K.amp; B.events.push({k:"fx",b:a.uid,txt:"어둠 +"+a.K.amp+"%",cls:"sk5"}); }
     if(!B.units.some(x=>x.alive&&x.side===t.side)){ const k=B.units.find(x=>x.side===t.side&&x.skId==="클레미스"&&x.fin&&!B.finUsed[x.uid]); if(k){ B.finUsed[k.uid]=true; AC.reviveSide(B,t.side,k.K.fin.hits,true); AC.finEv(B,k,"clem"); } }
