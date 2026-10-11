@@ -1119,6 +1119,19 @@
   #acRoot .acrank li{display:grid;grid-template-columns:26px 1fr auto;gap:6px;padding:4px 8px;border-radius:6px;align-items:center}
   #acRoot .acrank li.me{background:rgba(80,160,255,.22);font-weight:700}
   #acRoot .acrank small{opacity:.7}
+  #acRoot .acdeck{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
+  #acRoot .acdeck .acpopb{position:relative;width:min(94vw,520px);max-height:88vh;overflow:auto;padding:12px 14px;border:1px solid var(--gold);border-radius:12px;background:linear-gradient(180deg,#2a241b,#15130f);box-sizing:border-box}
+  #acRoot .acdeck .acpopb>b{font-size:17px} #acRoot .acdeck .acx{position:absolute;right:8px;top:8px}
+  #acRoot .acdkg{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px;margin:6px 0}
+  #acRoot .acdku{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden}
+  #acRoot .acdku .acface{width:100%;height:100%}
+  #acRoot .acdkg.bench .acdku{opacity:.75}
+  #acRoot .acdkbt{margin:4px 0 0;font-size:11px}
+  #acRoot .acdksy{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  #acRoot .acdks{font-size:12px;padding:3px 7px;border-radius:7px;background:#232838;opacity:.7}
+  #acRoot .acdks.on{opacity:1;background:#3a3218;color:#ffe08a}
+  #acRoot .acdks small i{font-style:normal;margin-left:3px;opacity:.5} #acRoot .acdks small i.on{opacity:1;font-weight:700}
+  #acRoot [data-achp=ai],#acRoot [data-acpid]{cursor:pointer}
   #acRoot [data-acov=rank] .acovb{max-height:94%;overflow:auto;padding-top:10px;padding-bottom:10px}
   #acRoot .acrank li{padding:2px 8px} #acRoot .acrank li b{font-size:14px;display:inline} #acRoot .acovb b[data-acunlock]{font-size:13px;display:inline;color:#ffe08a}
   @media (max-width:560px){ #acRoot .acmodes{grid-template-columns:1fr 1fr} #acRoot .acmrow button{min-width:30px;padding:5px 6px} #acRoot .acmodeov .acovb{max-width:96%} }
@@ -1409,7 +1422,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.7v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.7.1v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5229,7 +5242,7 @@ const AC_CONFIG={
     {id:"hard",name:"어려움",gold:0,smart:true,rolls:4,lvAhead:0,eco:30,ecoFrom:5,panicHp:35,wDup:30,wSyn:6,minVal:12},
     {id:"nightmare",name:"악몽",gold:1,smart:true,rolls:6,lvAhead:1,eco:50,ecoFrom:4,panicHp:40,wDup:35,wSyn:8,minVal:14},
     {id:"hell",name:"지옥",gold:2,statPct:5,smart:true,rolls:8,lvAhead:1,eco:50,ecoFrom:4,panicHp:45,wDup:40,wSyn:9,minVal:14}],
-  endlessDiff:1, botNames:["봇 아일린","봇 루디","봇 레이첼","봇 델론즈","봇 스파이크","봇 제이브","봇 크리스"], maxBots:7,
+  endlessDiff:1, ffaLossBase:3, ffaLossPerUnit:2, botNames:["봇 아일린","봇 루디","봇 레이첼","봇 델론즈","봇 스파이크","봇 제이브","봇 크리스"], maxBots:7,
   roles:{
     rp:{name:"원거리 물리 딜러",short:"원물",range:"ranged",dmg:"phys",atk:92,def:18,res:14,hp:700,aspd:1.65,crit:10},
     rm:{name:"원거리 마법 딜러",short:"원마",range:"ranged",dmg:"magic",atk:96,def:14,res:20,hp:650,aspd:1.6,crit:5},
@@ -5238,10 +5251,10 @@ const AC_CONFIG={
     tm:{name:"근접 마법 탱커",short:"마탱",range:"melee",dmg:"magic",atk:46,def:50,res:58,hp:1300,aspd:1.5,crit:5},
     tp:{name:"근접 물리 탱커",short:"물탱",range:"melee",dmg:"phys",atk:44,def:60,res:48,hp:1350,aspd:1.5,crit:5},
     s_gel:{name:"근접 탱커형 물리 메즈",short:"설인",range:"melee",dmg:"phys",atk:90,def:70,res:60,hp:1550,aspd:1.55,crit:5},
-    s_roj:{name:"원거리 마법 하이퍼 딜러",short:"무덤",range:"ranged",dmg:"magic",atk:160,def:20,res:24,hp:800,aspd:1.6,crit:5},
+    s_roj:{name:"원거리 마법 하이퍼 딜러",short:"무덤",range:"ranged",dmg:"magic",atk:150,def:20,res:24,hp:800,aspd:1.6,crit:5},
     s_jur:{name:"원&근 복합 마법형",short:"대법",range:"mid",dmg:"magic",atk:126,def:40,res:42,hp:1150,aspd:1.6,crit:5},
     s_pai:{name:"근접 물리 하이퍼 딜러",short:"이그",range:"melee",dmg:"phys",atk:150,def:36,res:26,hp:1150,aspd:1.7,crit:15},
-    s_mil:{name:"원거리 탱커형 마법 메즈",short:"수정",range:"ranged",dmg:"magic",atk:80,def:48,res:55,hp:1250,aspd:1.55,crit:5}},
+    s_mil:{name:"원거리 탱커형 마법 메즈",short:"수정",range:"ranged",dmg:"magic",atk:80,def:48,res:55,hp:1200,aspd:1.55,crit:5}},
   heroRole:{
     rp:["풍연","블랙로즈","스니퍼","소이","비담","카일","콜트","팔라누스","오르카"],
     rm:["노호","조커","유리","리나","에스파다","파스칼","레긴레이프","바네사","린","동영","하연"],
@@ -5277,7 +5290,7 @@ const AC_CONFIG={
     "오르카":{name:"최후통첩",ico:"🎯",every:8,ammo:4,gap:2,coef:380,pierce:3,fall:30,desc:"적을 8회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. 2초에 1발씩 발사되며, 최대 3명까지 관통합니다. 데미지는 경감됩니다."},
     "카마도 탄지로":{name:"사양전신",ico:"☀️",need:3,window:3,dur:8,execPct:10,burn:15,burnDur:3,hop:0.3,desc:"적 처치 관여 3회시, 8초간 다음의 효과를 얻습니다: 최대체력의 10%미만인 적에게 순간이동 후 즉시 처형합니다. 순간 이동시 붉은 궤적을 남기고, 궤적 위를 지나는 모든 적에게 화상을 입힙니다."},
     "아가츠마 젠이츠":{name:"화뢰신",ico:"⚡",deaths:3,max:3,pause:3,coef:250,desc:"아군의 사망이 3회 발생 시 발동: 즉시 게임이 3초간 정지 되며, 젠이츠는 체력을 완전히 회복 후, 매우 빠른 속도로 이동해 모든 적에게 자신의 공격력 250%피해를 즉시 입힙니다."},
-    "클레미스":{name:"구원의 힘",ico:"⏳",amp:30,desc:"자신 제외 모든 아군 사망 시 발동: 클레미스가 차원을 조작해 시공간을 되돌립니다. 해당 라운드의 최초 전투 상태로 돌아갑니다. 아군에게 피해량 증폭 부여 및 스킬 사용 횟수 초기화."},
+    "클레미스":{name:"구원의 힘",ico:"⏳",amp:30,desc:"자신 제외 모든 아군 사망 시 발동: 클레미스가 차원을 조작해 시공간을 되돌립니다. 해당 라운드의 최초 전투 상태로 돌아갑니다. 아군에게 피해량 증폭 부여 및 스킬 사용 횟수 초기화. 체력이 40%이하로 떨어지면, 1초 간 무적 및 공격 대상 해제",low:40,invDur:1},
     "하연":{name:"봉천문",ico:"⛩️",dur:8,desc:"아군에게 상태이상 발생 시 발동: 모든 상태이상을 즉시 해제하고 상대에게 부여된 버프를 제거 후, 8초간 상대 버프를 차단합니다. 아군에게는 8초간 모든 디버프& 상태이상면역을 부여"},
     "녹스":{name:"심연의 검풍",ico:"🌑",sh:20,sh2:15,low:50,deaths:3,ls:15,fix:50,radius:1,desc:"전투 시작 시 발동: 녹스가 자신의 최대 생명력의 20%에 해당하는 보호막을 얻습니다.\n자신의 생명력이 50% 이하가 되면 녹스가 자신의 최대 생명력의 15%에 해당하는 보호막을 얻습니다.(전투당 1회 발동)\n적 또는 아군 3회 사망 시: 자신이 모든 피해 흡혈 15%를 얻고, 녹스 주변 1칸의 적에게 자신의 회복량에 비례한 고정피해를 입힙니다."},
     "헬레니아":{name:"감내의 방패",ico:"🛡️",dur:4,red:80,share:50,dot:10,desc:"전투 시작 시 발동: 4초 간 모든 피해를 80% 경감하여 받습니다. 그리고 4초 간 받은 피해량의(경감되기 이전의 피해량) 절반을 회복으로 치환 후 현재 남은 아군 모두에게 동일하게 분배하여 생명령을 회복시킵니다. 남은 절반은 헬레니아가 10초에 걸쳐 피해를 입습니다."},
@@ -5289,7 +5302,7 @@ const AC_CONFIG={
   // 0.4v 시너지: 판에 올린 서로 다른 영웅 수로 단계 결정 · bp = 단계 인원 · hidden = 숨김 단계 (표시 안 함) · 숫자는 v (단계별 배열)
   syn:[
     {id:"marks",name:"지정사수",ico:"🎯",members:["스니퍼","블랙로즈","에스파다","콜트","오르카"],bp:[3,5],v:{distPct:[12,12],exec:[0,10]},desc:["지정사수: 적과 1칸 멀어질 때마다 피해 +12%", "+ 체력 10% 미만 적 즉시 처형"]},
-    {id:"fury",name:"전투광",ico:"🩸",members:["블랙로즈","지크","카일","칼헤론","브란즈&브란셀","실베스타","파이"],bp:[2,4,6],v:{ls:[3,4,5],revive:[0,0,1.5]},desc:["전투광: 입힌 피해 3% 흡혈", "흡혈 4%", "흡혈 5% · 쓰러지면 1.5초 동안 되살아남"]},
+    {id:"fury",name:"전투광",ico:"🩸",members:["블랙로즈","지크","카일","칼헤론","브란즈&브란셀","실베스타","파이"],bp:[2,4,6],v:{ls:[3,4,5],revive:[0,0,1.5]},desc:["전투광: 입힌 피해 3% 흡혈", "흡혈 4%", "흡혈 5% · 쓰러지면 1.5초 동안 되살아남 (체력 15%)"]},
     {id:"sword",name:"검객",ico:"⚔️",members:["풍연","에반","챈슬러","지크","세인","태오","카마도 탄지로","아가츠마 젠이츠"],bp:[2,4,6,8,10],hidden:[10],v:{atk:[4,6,8,10,100],evade:[0,0,8,12,100],dbl:[0,0,0,10,100]},desc:["검객: 공격력 +4%", "공격력 +6%", "공격력 +8% · 회피 8%", "공격력 +10% · 회피 12% · 10% 확률로 2명 동시 공격", "공격력 +100% · 회피 100% · 항상 2명 동시 공격"]},
     {id:"van",name:"선봉장",ico:"🛡️",members:["에반","유진호","관우","룩","라드그리드","헬레니아"],bp:[2,3,4,5],v:{hpAll:[50,60,120,220],def:[5,7,15,20]},desc:["아군 전체 생명력 +50 · 선봉장 방어력 +5%","생명력 +60 · 방어력 +7%","생명력 +120 · 방어력 +15%","생명력 +220 · 방어력 +20%"]},
     {id:"guard",name:"수호자",ico:"🧱",members:["아수라","라쿤","니아","아라곤","카르마","스파이크","트루드","클레미스","녹스","루디","겔리두스"],bp:[2,4,6],v:{dr:[10,20,30]},desc:["수호자: 받는 피해 −10%","−20%","−30%"]},
@@ -5306,9 +5319,9 @@ const AC_CONFIG={
     {id:"aide",name:"조력자",ico:"🤝",members:["조커","에스파다","레긴레이프","바네사","룩","챈슬러","녹스"],bp:[2,4,6],v:{shield:[7,13,20]},desc:["조력자마다 가장 가까운 아군 1명에게 보호막 (그 아군 최대 체력 7%)", "13%", "20%"]},
     {id:"pion",name:"선구자",ico:"🚩",members:["오르카","브란즈&브란셀","칼헤론","라드그리드","루디","헬레니아"],bp:[2,4,6],v:{atk:[12,22,30],dur:[5,5,5]},desc:["선구자: 처음 5초 공격력 +12% · 처치하면 전투 끝까지 유지", "+22%", "+30%"]},
     {id:"family",name:"부자",ico:"👨‍👦",members:["에반","실베스타"],bp:[2],v:{lock:[3],revPct:[50],burn:[22],ls:[50]},desc:["에반과 실베스타가 필드 위에 동시에 놓여진 상태에서 전투 돌입 시, 경우에 따라 다음의 효과를 얻습니다.\n\n실베스타가 생존한 상태에서 아군 에반이 사망에 이르는 피해를 입었을 경우: 에반은 즉시 사망하지 않고 무력화 상태에 돌입합니다. (무력화: 적의 공격대상으로 지정되지 않으나 자신 또한 공격할 수 없는 상태) 동시에 실베스타의 체력이 3초 간 1로 고정되며, 이때 실베스타가 적을 처치할 경우 에반은 즉시 자신의 최대체력의 50%로 부활합니다. 실베스타는 이전 3초 간 자신이 가한 피해량만큼 회복합니다.\n\n에반이 생존한 상태에서 아군 실베스타가 사망에 이르는 피해를 입었을 경우: 실베스타가 에반의 현재 체력으로 즉시 부활하며, 광폭화 상태에 돌입합니다.(전투당 1회)(광폭화: 매초 22의 고정피해를 입지만, 피해 흡혈을 50% 얻습니다.)"]},
-    {id:"crys",name:"수정룡",ico:"💎",sena:1,members:["밀리아"],bp:[1],v:{shield:[10],stun:[1]},desc:["전투 시작 때 아군 전체에 최대 체력 10% 보호막 · 보호막이 깨지면 주변 적 1초 기절"]},
+    {id:"crys",name:"수정룡",ico:"💎",sena:1,members:["밀리아"],bp:[1],v:{shield:[7],stun:[0.5]},desc:["전투 시작 때 아군 전체에 최대 체력 7% 보호막 · 보호막이 깨지면 주변 적 0.5초 기절"]},
     {id:"yeti",name:"설인",ico:"❄️",sena:1,members:["겔리두스"],bp:[1],v:{stacks:[5],freeze:[2],amp:[30]},desc:["공격마다 냉기 1중첩 · 5중첩이면 2초 빙결 (빙결 중 받는 피해 +30%)"]},
-    {id:"grave",name:"무덤지기",ico:"💀",sena:1,members:["로지"],bp:[1],v:{atk:[8],souls:[5],nova:[400]},desc:["적이 쓰러질 때마다 영혼 1 · 영혼당 공격력 +8% · 영혼 5개면 적 전체에 큰 마법 피해 (전투당 1번)"]},
+    {id:"grave",name:"무덤지기",ico:"💀",sena:1,members:["로지"],bp:[1],v:{atk:[5],souls:[5],nova:[300]},desc:["적이 쓰러질 때마다 영혼 1 · 영혼당 공격력 +5% · 영혼 5개면 적 전체에 큰 마법 피해 (전투당 1번)"]},
     {id:"judge",name:"대법관",ico:"⚖️",sena:1,members:["쥬리"],bp:[1],v:{dr:[25],sk:[40],cut:[20],resCut:[30],near:[3]},desc:["앞쪽 칸: 근접 (사거리 1) · 받는 피해 −25% · 전투 시작 때 가까운 적 3명 마법 저항 −30% · 뒤쪽 칸: 원거리 · 스킬 피해 +40% · 가장 강한 적 1명에게 '판결' (공격력 −20%)"]},
     {id:"ignite",name:"이그니트",ico:"☄️",sena:1,members:["파이"],bp:[1],v:{burn:[10],dur:[3],as:[50]},desc:["공격마다 3초 화상 (매초 파이 공격력 10%) · 체력 50% 아래면 공격 속도 +50%"]}],
   furyReviveHp:15, guerMove:2,
@@ -5427,7 +5440,7 @@ const AC={
     for(let i=1;i<=o.bots;i++){ const S=AC.side(); st.players.push({id:i,name:C.botNames[i-1]||("봇 "+i),hp:C.startHp,alive:true,rank:null,S}); }
     st.ai=st.players[1].S; st.players.slice(1).forEach(p=>AC.aiPrep(st,p.S,st.diff,null,p.hp)); AC.ffaPair(st); },
   ffaBattle(st,SA,SB,salt){ const B=AC.battleInit({seed:(st.seed^(st.round*7919+salt*104729))>>>0,round:st.round,me:SA,ai:SB||AC.side()}); return AC.battleRun(B); },
-  dmgOf(B){ const C=AC_CONFIG; return C.lossBase+C.lossPerUnit*B.survivors; },
+  dmgOf(B){ const C=AC_CONFIG; return C.ffaLossBase+C.ffaLossPerUnit*B.survivors; },
   ffaResolve(st,myB){ const C=AC_CONFIG, P=st.players, res=[]; const hit=(p,n)=>{ p.hp-=n; };
     const sk=(S,w)=>{ S.streak=w?(S.streak>0?S.streak+1:1):(S.streak<0?S.streak-1:-1); S.lastWin=w; };
     if(AC.isPve(st)){ const d=AC.rollDrops(st); let myTxt=[];
@@ -5516,12 +5529,12 @@ const AC={
     const kk=B.units.find(u=>u.uid===k.uid); B.events.push({k:"rewind",side:k.side},{k:"fx",b:kk.uid,txt:"구원의 힘!",cls:"sk5"}); AC.sstat(B,k.side,"sk:클레미스",1); },
   zenDash(B){ const z=B.units.find(u=>u.uid===B.pauseBy); B.pauseBy=null; if(!z||!z.alive) return; const K=AC_CONFIG.skills5["아가츠마 젠이츠"]; AC.heal(B,z,z.maxHp,"sk:아가츠마 젠이츠");
     B.events.push({k:"fx",b:z.uid,txt:"화뢰신!",cls:"sk5"},{k:"zap",b:z.uid});
-    for(const f of B.units.filter(x=>x.alive&&x.side!==z.side&&!x.disabled)){ const d=Math.max(1,Math.round(AC.calcHit(B,z,f,K.coef,false,true))); B.events.push({k:"hit",a:z.uid,b:f.uid,d,crit:false,sk:true,rg:false,aR:z.R,aC:z.C,bR:f.R,bC:f.C}); AC.applyDmg(B,z,f,d,{id:"sk:아가츠마 젠이츠"}); } },
+    for(const f of B.units.filter(x=>x.alive&&x.side!==z.side&&!x.disabled&&!(x.untg&&B.t<x.untg))){ const d=Math.max(1,Math.round(AC.calcHit(B,z,f,K.coef,false,true))); B.events.push({k:"hit",a:z.uid,b:f.uid,d,crit:false,sk:true,rg:false,aR:z.R,aC:z.C,bR:f.R,bC:f.C}); AC.applyDmg(B,z,f,d,{id:"sk:아가츠마 젠이츠"}); } },
   orcaFire(B,u,tg){ const K=AC_CONFIG.skills5["오르카"], C=AC_CONFIG; u.ammo--; u.orcaNext=B.t+K.gap; const dR=tg.R-u.R, dC=tg.C-u.C, L=Math.hypot(dR,dC)||1, hit=[]; let R=u.R, Cc=u.C, eR=u.R, eC=u.C;
-    for(let i=0;i<80;i++){ R+=dR/L*0.25; Cc+=dC/L*0.25; const r=Math.round(R), c=Math.round(Cc); if(r<0||r>=C.rows*2||c<0||c>=C.cols) break; eR=R; eC=Cc; const v=B.units.find(x=>x.alive&&x.side!==u.side&&!x.disabled&&x.R===r&&x.C===c); if(v&&!hit.includes(v)){ hit.push(v); if(hit.length>=K.pierce) break; } }
+    for(let i=0;i<80;i++){ R+=dR/L*0.25; Cc+=dC/L*0.25; const r=Math.round(R), c=Math.round(Cc); if(r<0||r>=C.rows*2||c<0||c>=C.cols) break; eR=R; eC=Cc; const v=B.units.find(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&x.R===r&&x.C===c); if(v&&!hit.includes(v)){ hit.push(v); if(hit.length>=K.pierce) break; } }
     B.events.push({k:"shot",a:u.uid,aR:u.R,aC:u.C,bR:eR,bC:eC});
     hit.forEach((v,i)=>{ const d=Math.max(1,Math.round(AC.calcHit(B,u,v,K.coef*Math.pow(1-K.fall/100,i),false,true))); B.events.push({k:"hit",a:u.uid,b:v.uid,d,crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:v.R,bC:v.C}); AC.applyDmg(B,u,v,d,{id:"sk:오르카"}); }); },
-  tanHop(B,u){ const K=AC_CONFIG.skills5["카마도 탄지로"], C=AC_CONFIG; const t=B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.inv&&B.t<x.inv)&&x.hp<x.maxHp*K.execPct/100).sort((a,b)=>AC.dist(u,a)-AC.dist(u,b))[0]; if(!t) return false;
+  tanHop(B,u){ const K=AC_CONFIG.skills5["카마도 탄지로"], C=AC_CONFIG; const t=B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&!(x.inv&&B.t<x.inv)&&x.hp<x.maxHp*K.execPct/100).sort((a,b)=>AC.dist(u,a)-AC.dist(u,b))[0]; if(!t) return false;
     let dest=null, bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const R=t.R+dr, c=t.C+dc; if((!dr&&!dc)||R<0||R>=C.rows*2||c<0||c>=C.cols) continue; if(B.units.some(x=>x.alive&&x!==u&&x.R===R&&x.C===c)) continue; const v=Math.hypot(R-u.R,c-u.C); if(v<bd){ bd=v; dest=[R,c]; } }
     if(!dest) dest=[u.R,u.C]; const n=Math.max(Math.abs(dest[0]-u.R),Math.abs(dest[1]-u.C)), cells=new Set();
     for(let i=1;i<n;i++) cells.add(Math.round(u.R+(dest[0]-u.R)*i/n)+","+Math.round(u.C+(dest[1]-u.C)*i/n));
@@ -5583,6 +5596,7 @@ const AC={
     if(a){ a.dealt+=d; if(a.fam==="father"&&B.fam[a.side]&&B.fam[a.side].on) B.fam[a.side].dealt+=d;
       if(a.ls&&a.alive){ const h=d*a.ls/100; AC.heal(B,a,h,a.burnFix?"family":"fury"); } }
     t.taken+=d; if(o.id&&a) AC.sstat(B,a.side,o.id,d);
+    if(t.skId==="클레미스"&&!t.clemLow&&t.hp>0&&t.hp<=t.maxHp*AC_CONFIG.skills5["클레미스"].low/100){ t.clemLow=true; const K=AC_CONFIG.skills5["클레미스"]; t.inv=Math.max(t.inv||0,B.t+K.invDur); t.untg=B.t+K.invDur; B.events.push({k:"fx",b:t.uid,txt:"🛡️ 무적",cls:"inv"}); }
     if(t.skId==="녹스"&&!t.noxLow&&t.hp>0&&t.hp<=t.maxHp*AC_CONFIG.skills5["녹스"].low/100){ t.noxLow=true; if(AC.addShield(B,t,t.maxHp*AC_CONFIG.skills5["녹스"].sh2/100)) B.events.push({k:"fx",b:t.uid,txt:"🌑 보호막",cls:"sk5"}); }
     if(t.hp<=0){ t.hp=0; AC.lethal(B,t,a); }
     else if(a&&a.exec&&t.hp<t.maxHp*a.exec/100){ B.events.push({k:"fx",b:t.uid,txt:"처형!",cls:"exec"}); AC.sstat(B,a.side,"marks",t.hp); t.hp=0; AC.lethal(B,t,a,true); }
@@ -5627,14 +5641,14 @@ const AC={
       if(u.burn&&B.t<u.burn.until){ u.burn.acc+=dt; while(u.burn.acc>=1&&u.alive){ u.burn.acc-=1; AC.applyDmg(B,u.burn.src,u,u.burn.dps,{id:"ignite"}); } } }
     const ord=B.units.slice(); for(let i=ord.length-1;i>0;i--){ const j=Math.floor(AC.rnd(B)*(i+1)); [ord[i],ord[j]]=[ord[j],ord[i]]; } // 매 틱 순서 섞기 (선공 유리 없앰)
     for(const u of ord){ if(!u.alive||u.disabled) continue; if((u.stun&&B.t<u.stun)||(u.frz&&B.t<u.frz)) continue;
-      let foes=B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled); if(!foes.length) continue;
+      let foes=B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)); if(!foes.length) continue;
       if(u.sunUntil>B.t&&!(u.hopAt>B.t)&&AC.tanHop(B,u)) continue;
       let tg=foes[0], bd=1e9; for(const f of foes){ const d=Math.hypot(f.R-u.R,f.C-u.C); if(d<bd){ bd=d; tg=f; } }
       u.cd=Math.max(-C.dt,u.cd-dt); if(u.ammo>0&&!(u.orcaNext>B.t)) AC.orcaFire(B,u,tg); if(!u.alive) continue;
       if(AC.dist(u,tg)<=u.range){ if(u.cd<=0){ const fast=u.ignite&&u.hp<u.maxHp*0.5?1+AC.sv(B,u.side,"ignite","as")/100:1; u.cd+=u.iv/fast; u.atks++; u.sc++;
           if(u.skId==='오르카'&&u.atks%AC_CONFIG.skills5['오르카'].every===0){ u.ammo=(u.ammo||0)+AC_CONFIG.skills5['오르카'].ammo; B.events.push({k:'fx',b:u.uid,txt:'최후통첩 장전',cls:'sk5'}); }
           if(u.skId==='실베스타'&&u.atks%AC_CONFIG.skills5['실베스타'].every===0){ const K=AC_CONFIG.skills5['실베스타']; let sum=0; B.events.push({k:'fx',b:u.uid,txt:K.name,cls:'sk5'},{k:'ring',b:u.uid}); u.silAoe=true;
-            for(const f of B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&AC.dist(x,u)<=K.radius)){ const d=Math.max(1,Math.round(AC.calcHit(B,u,f,K.coef,AC.rnd(B)*100<u.crit,true))); B.events.push({k:'hit',a:u.uid,b:f.uid,d,crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:f.R,bC:f.C}); sum+=AC.applyDmg(B,u,f,d,{id:'sk:실베스타'}); }
+            for(const f of B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&AC.dist(x,u)<=K.radius)){ const d=Math.max(1,Math.round(AC.calcHit(B,u,f,K.coef,AC.rnd(B)*100<u.crit,true))); B.events.push({k:'hit',a:u.uid,b:f.uid,d,crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:f.R,bC:f.C}); sum+=AC.applyDmg(B,u,f,d,{id:'sk:실베스타'}); }
             u.silAoe=false; AC.heal(B,u,sum*K.heal/100,'sk:실베스타'); continue; }
           let sk=false; if(u.sc>=u.need){ sk=true; u.sc=0; u.need=u.tuner>=100?2:u.tuner>0&&AC.rnd(B)*100<u.tuner?2:C.skillEvery; }
           const tgs=[tg]; if(u.dbl&&AC.rnd(B)*100<u.dbl){ const t2=foes.filter(x=>x!==tg).sort((a,b)=>Math.hypot(a.R-u.R,a.C-u.C)-Math.hypot(b.R-u.R,b.C-u.C))[0]; if(t2) tgs.push(t2); }
@@ -5748,7 +5762,7 @@ const AC={
       <div class="a-bar achud"><div class="acctl aclock">${bLock}</div><div class="acshophead"><span class="ttl">상점</span><span class="acgold" data-acgold title="보유 골드"><span class="coin">G</span><b data-acgoldn data-ach="gold">${S.gold}</b></span>${hStreak}</div>${hOdds}</div>
       <div class="a-shop"><div class="acshops" data-acsellzone>${shop}</div><div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div><p class="muted achelp">탭 = 선택(스탯 표시) → 칸/대기석 탭 = 이동 · 상점 ⓘ·상대·전투 중 유닛 탭 = 스탯 · 끌어다 놓기 · 상점으로 끌면 판매 · 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격 · 시너지 = 판 위 서로 다른 영웅 수</p></div>
       <div class="a-roster">${AC.rosterHTML()}</div></div>`;
-    if(AC.histOpen) box.insertAdjacentHTML("beforeend",AC.histHTML()); if(AC.info) box.insertAdjacentHTML("beforeend",AC.infoHTML());
+    if(AC.histOpen) box.insertAdjacentHTML("beforeend",AC.histHTML()); if(AC.info) box.insertAdjacentHTML("beforeend",AC.infoHTML()); if(AC.deckView!=null) box.insertAdjacentHTML("beforeend",AC.deckHTML());
     if(st.phase==="battle"&&AC.anim) AC.drawBattle(AC.anim.B,[]); },
   msel(){ if(!AC._ms){ const p=AC.prog(); AC._ms={mode:"ffa",bots:AC_CONFIG.maxBots,diff:p.unlocked}; } return AC._ms; },
   modeHTML(){ const C=AC_CONFIG, m=AC.msel(), p=AC.prog();
@@ -5764,6 +5778,14 @@ const AC={
     return `<div class="acov" data-acov="rank"><div class="acovb wide"><b class="${me.rank===1?"win":"lose"}">${me.rank===1?"🏆 1위!":me.rank+"위"}</b><p>${AC.dif(st).name} · ${P.length}인 개인전${st.newUnlock!=null?` · <b data-acunlock>🔓 ${AC_CONFIG.difficulty[st.newUnlock].name} 열림</b>`:""}</p>
       <ol class="acrank" data-acrank>${P.map(p=>`<li class="${p.me?"me":""}"><b>${p.rank}</b><span>${esc(p.name)}</span><small>${p.rank===1?"생존":p.out+"R 탈락"} · Lv${p.S.level}</small></li>`).join("")}</ol>
       <div><button type="button" data-acdo="hist">📊 라운드 통계</button><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div></div>`; },
+  deckOf(st,id){ if(id==="ai") return {name:st.mode==="endless"?"상대 ∞":"상대",hp:st.mode==="endless"?"∞":(st.aiHp??AC_CONFIG.aiStartHp),S:st.ai,alive:true};
+    const p=st.players[id]; if(!p) return null; const S=id===st.opp&&st.oppGhost?st.ai:p.S; return {name:p.name+(id===st.opp&&st.oppGhost?" 👻":""),hp:Math.max(0,p.hp),S,alive:p.alive,rank:p.rank}; },
+  deckHTML(){ const st=AC.st, C=AC_CONFIG, D=AC.deckOf(st,AC.deckView); if(!D) return ""; const S=D.S, F=AC.field(S).sort((a,b)=>a.loc<b.loc?-1:1), Bn=S.units.filter(u=>u.loc[0]==="b");
+    const card=u=>{ const h=AC.hero(u.no); return `<div class="acdku tier${AC.tierNo(u.no)}" data-acdku>${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}<span class="acnm">${esc(h.name)}</span></div>`; };
+    const sy=AC.synLevels(F.map(u=>u.no)).sort((a,b)=>(b.lv-a.lv)||(b.n-a.n)).map(x=>`<span class="acdks${x.lv>=0?" on":""}" data-acdks="${x.s.id}">${x.s.ico} ${esc(x.s.name)} <b>${x.n}</b><small>${x.vis.map(b=>`<i class="${x.n>=b?"on":""}">${b}</i>`).join("")}</small></span>`).join("");
+    return `<div class="acpop acdeck" data-acdeck><div class="acpopb"><button type="button" class="acx" data-acdo="dclose" aria-label="닫기">✕</button><b>${esc(D.name)}</b><p class="muted">❤${D.hp} · Lv${S.level} · 💰${S.gold}${S.streak?` · ${S.streak>0?"🔥"+S.streak+"연승":"💧"+(-S.streak)+"연패"}`:""}${D.alive===false?` · ${D.rank}위 탈락`:""} · 배치 ${F.length}</p>
+      <div class="acdkg">${F.map(card).join("")||'<span class="muted">배치 없음</span>'}</div>${Bn.length?`<p class="muted acdkbt">대기석</p><div class="acdkg bench">${Bn.map(card).join("")}</div>`:""}
+      <div class="acdksy" data-acdksy>${sy||'<span class="muted">시너지 없음</span>'}</div></div></div>`; },
   rosterHTML(){ const C=AC_CONFIG, st=AC.st;
     return `<details class="acroster" data-acroster${AC.rosterOpen?" open":""}><summary>로스터 (티어별 영웅 · 남은 장 수)</summary>${[1,2,3,4,5].map(t=>{ const L=AC.heroes().filter(x=>x.tier===t);
       return `<div class="acrt tier${t}" data-acrtier="${t}"><b class="acrh">${t}코 ${C.tierName[t]} <small>${L.length}명 · 각 ${C.poolCopies[t]}장 · ×${C.tierMult[t]} · 초월당 +${C.tStepPct[t]}%</small></b><div class="acrl">${L.map(x=>{ const h=AC.hero(x.no);
@@ -5808,6 +5830,8 @@ const AC={
     if(AC.info&&AC.info.bt) AC.drawInfo(); },
   /* 입력 */
   onClick(e){ const st=AC.st, S=st.me, t=e.target; const prep=st.phase==="prep"; if(t.closest("[data-acroster] summary")){ setTimeout(()=>{ const d=document.querySelector("[data-acroster]"); AC.rosterOpen=!!(d&&d.open); }); return; } if(t.closest("[data-acroster]")) return;
+    if(AC.deckView!=null&&(t.closest("[data-acdo=dclose]")||!t.closest(".acpopb"))&&t.closest("[data-acdeck]")){ AC.deckView=null; AC.render(); return; } if(t.closest("[data-acdeck]")) return;
+    const dv=t.closest("[data-achp=ai],[data-acpid]"); if(dv&&!AC.modeOpen){ AC.deckView=dv.dataset.acpid!=null?+dv.dataset.acpid:(AC.isFfa(st)&&st.opp!=null?st.opp:"ai"); AC.render(); return; }
     const pk=t.closest("[data-acpick],[data-acbots],[data-acdiff]"); if(pk){ const m=AC.msel(); if(pk.dataset.acpick) m.mode=pk.dataset.acpick; if(pk.dataset.acbots) m.bots=+pk.dataset.acbots; if(pk.dataset.acdiff!=null&&!pk.disabled) m.diff=+pk.dataset.acdiff; AC.render(); return; }
     const d=t.closest("[data-acdo]"); if(d){ const k=d.dataset.acdo; let w="";
       if(k==="iclose"){ AC.info=null; AC.sel=null; AC.render(); return; }
