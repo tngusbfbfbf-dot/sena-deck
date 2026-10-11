@@ -1457,7 +1457,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.9.2v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.9.3v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5322,7 +5322,7 @@ const AC_CONFIG={
   // ===== 0.6v 5코 고유 스킬 (영웅 이름 → 수치) · 이 10명은 기본 '3번째 공격 250%' 대신 아래 스킬 =====
   skills5:{
     // 0.9v: 배열 = [A 0–2초월, B 3–5초월, C 6+초월] · fin = 12초월 숨은 종결자 (전투당 1회) · desc 의 {키} = 현재 단계 값
-    "루디":{name:"영겁의 성채",ico:"🏰",every:6,shield:200,max:600,desc:"상시효과로 자신이 적에게 6회 피격될 때 마다 자신에게 200의 쉴드부여.",
+    "루디":{name:"영겁의 성채",ico:"🏰",every:[6,5,3],shield:[200,300,600],max:[600,1000,2000],desc:"상시효과로 자신이 적에게 (6/5/3)회 피격될 때 마다 자신에게 (200/300/600)의 쉴드부여, 쉴드는 최대(600/1000/2000)까지 중첩",
       fin:{name:"영광의 심판",hits:3,focus:1.5,desc:"자신이 3회 피격 시 발동: 1.5초간 정신을 집중하고, 이후 적 진영에 거대한 검을 소환하여 떨어트립니다. 적 진영에 놓인 모든 영웅을 즉시 처형."}},
     "오르카":{name:"최후통첩",ico:"🎯",every:[6,4,3],ammo:4,gap:[1.5,1.2,0.9],coef:380,pierce:[3,5,99],fall:[30,30,0],pierceTxt:["최대 3명까지","최대 5명까지","제한 없이"],fallTxt:["관통할 때마다 데미지는 30%씩 경감됩니다.","관통할 때마다 데미지는 30%씩 경감됩니다.","데미지는 경감되지 않습니다."],
       desc:"적을 (6/4/3)회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. (1.5/1.2/0.9)초에 1발씩 발사되며, 최대 (3/5/경감 없음)명까지 관통합니다. 데미지는 경감됩니다.",
@@ -5356,15 +5356,16 @@ const AC_CONFIG={
 
   // 0.4v 시너지: 판에 올린 서로 다른 영웅 수로 단계 결정 · bp = 단계 인원 · hidden = 숨김 단계 (표시 안 함) · 숫자는 v (단계별 배열)
   syn:[
-    {id:"marks",name:"지정사수",ico:"🎯",members:["스니퍼","블랙로즈","에스파다","콜트","오르카"],bp:[3,5],v:{distPct:[12,12],exec:[0,10]},desc:["지정사수: 적과 1칸 멀어질 때마다 피해 +12%", "+ 체력 10% 미만 적 즉시 처형"]},
+    {id:"marks",name:"지정사수",ico:"🎯",members:["스니퍼","블랙로즈","에스파다","콜트","오르카"],bp:[3,5],v:{giant:[1,1],coef:[150,150],maxHp:[4,4],exec:[0,5]},desc:["지정사수는 특별한 스킬을 지닙니다. (기존 강타는 제거) 거인학살자: 3번째 공격마다 공격력 150% + 대상 최대 체력 4% 피해", "+ 체력 5% 미만 적 즉시 처형"]},
     {id:"fury",name:"전투광",ico:"🩸",members:["블랙로즈","지크","카일","칼헤론","브란즈&브란셀","실베스타","파이"],bp:[2,4,6],v:{ls:[3,4,5],revive:[0,0,1.5]},desc:["전투광: 입힌 피해 3% 흡혈", "흡혈 4%", "흡혈 5% · 쓰러지면 1.5초 동안 되살아남 (체력 15%)"]},
-    {id:"sword",name:"검객",ico:"⚔️",members:["풍연","에반","챈슬러","지크","세인","태오","카마도 탄지로","아가츠마 젠이츠"],bp:[2,4,6,8,10],hidden:[10],v:{atk:[4,6,8,10,100],evade:[0,0,8,12,100],dbl:[0,0,0,10,100]},desc:["검객: 공격력 +4%", "공격력 +6%", "공격력 +8% · 회피 8%", "공격력 +10% · 회피 12% · 10% 확률로 2명 동시 공격", "공격력 +100% · 회피 100% · 항상 2명 동시 공격"]},
+    {id:"sword",name:"검객",ico:"⚔️",members:["풍연","에반","챈슬러","지크","세인","태오","카마도 탄지로","아가츠마 젠이츠"],bp:[2,4,6,8,10],hidden:[10],v:{atk:[4,6,8,10,100],evade:[0,0,8,12,100],dbl:[0,0,0,10,100]},desc:["검객: 공격력 +4% · 적 처치 시 해당 검객 영웅 공격력 +3% (최대 5중첩)", "공격력 +6%", "공격력 +8% · 회피 8%", "공격력 +10% · 회피 12% · 10% 확률로 2명 동시 공격", "공격력 +100% · 회피 100% · 항상 2명 동시 공격"]},
     {id:"van",name:"선봉장",ico:"🛡️",members:["에반","유진호","관우","룩","라드그리드","헬레니아"],bp:[2,3,4,5],v:{hpAll:[50,60,120,220],def:[5,7,15,20]},desc:["아군 전체 생명력 +50 · 선봉장 방어력 +5%","생명력 +60 · 방어력 +7%","생명력 +120 · 방어력 +15%","생명력 +220 · 방어력 +20%"]},
-    {id:"guard",name:"수호자",ico:"🧱",members:["아수라","라쿤","니아","아라곤","카르마","스파이크","트루드","클레미스","녹스","루디","겔리두스"],bp:[2,4,6],v:{dr:[10,20,30]},desc:["수호자: 받는 피해 −10%","−20%","−30%"]},
+    {id:"guard",name:"수호자",ico:"🧱",members:["아수라","라쿤","니아","아라곤","카르마","스파이크","트루드","클레미스","녹스","루디","겔리두스"],bp:[2,4,6],v:{dr:[10,20,30]},desc:["수호자: 받는 피해 −10% · 체력 50% 미만 첫 도달 시 최대 체력 10% 회복 (전투당 1회)","−20%","−30%"]},
     {id:"mage",name:"마법사",ico:"🔮",members:["노호","유리","리나","파스칼","레긴레이프","린","동영","하연","카르마","밀리아"],bp:[3,6,9],v:{sk:[30,50,80]},desc:["마법사: 스킬 피해 +30%", "+50%", "+80%"]},
     {id:"brawl",name:"싸움꾼",ico:"👊",members:["샤오","레이","링링","유진호","차해인","데이지","관우","오공"],bp:[2,4,6],v:{hp:[8,15,25]},desc:["싸움꾼: 생명력 +8%", "+15%", "+25%"]},
     {id:"assn",name:"암살자",ico:"🗡️",members:["샤오","레이","차해인","미호","태오","아가츠마 젠이츠"],bp:[2,4,6],v:{crit:[4.25,8.5,12.75]},desc:["암살자: 전투 시작 때 적 후열로 도약 · 치명타 확률 +4.25%", "치명타 +8.5%", "치명타 +12.75%"]},
-    {id:"snipe",name:"저격수",ico:"🏹",members:["풍연","스니퍼","비담","카일","팔라누스"],bp:[2,4],v:{range:[1,1],as:[10,25]},desc:["저격수: 사거리 +1 · 공격 속도 +10%","공격 속도 +25%"]},
+    {id:"snipe",name:"저격수",ico:"🏹",members:["풍연","스니퍼","비담","카일","팔라누스"],bp:[2,3,4,5],v:{range:[1,1,2,3],distPct:[8,10,10,12]},desc:["저격수: 전투 시작 시 저격수 영웅은 대상과의 거리 1칸당 피해 +8% · 사거리 +1","거리 1칸당 피해 +10%","사거리 +2","사거리 +3 · 거리 1칸당 피해 +12%"]},
+    {id:"gyeol",name:"결사대",ico:"🪖",members:["라쿤","아라곤","스파이크","트루드","아수라","관우"],bp:[2,4,6],v:{flat:[5,10,20]},desc:["결사대: 결사대 영웅 방어력·마법저항 +5","방어력·마법저항 +10","방어력·마법저항 +20"]},
     {id:"scout",name:"척후대",ico:"🦅",members:["소이","링링","비담","세인"],bp:[2,3,4],v:{as:[10,20,30],first:[2,2,2]},desc:["척후대: 공격 속도 +10% · 첫 공격 피해 2배","공격 속도 +20%","공격 속도 +30%"]},
     {id:"guer",name:"게릴라",ico:"🌀",members:["소이","콜트","팔라누스","오공"],bp:[2,4],v:{every:[3,3],evade:[50,50],dur:[1,1]},desc:["게릴라: 3번 공격마다 빈칸으로 이동 · 이동 뒤 1초 회피 50%","(4명) 모든 게릴라 영웅"]},
     {id:"illu",name:"환술사",ico:"🎭",members:["조커","바네사","리나","파스칼"],bp:[2,4],v:{n:[2,2],dur:[1.5,1.5],every:[0,2]},desc:["환술사: 전투 시작 시 가장 가까운 적 2명 1.5초 혼란 (혼란: 자기 편을 공격)","+ 환술사 영웅: 스킬이 2타마다"]},
@@ -5655,25 +5656,26 @@ const AC={
       const has=(u,id)=>L[id]!=null&&AC.synById(id).members.includes(u.name), v=(id,k)=>AC.sv(B,side,id,k);
       let hpFlat=v("van","hpAll"); const teamAtk=v("maes","atk"), tun=v("tuner","chance");
       for(const u of U){ let hpPct=0, defPct=0; u.atkPct+=teamAtk; u.tuner=tun; if(tun) u.need=tun>=100||AC.rnd(B)*100<tun?2:C.skillEvery;
-        if(has(u,"sword")){ u.atkPct+=v("sword","atk"); u.evade=v("sword","evade"); u.dbl=v("sword","dbl"); }
+        if(has(u,"sword")){ u.swKill=1; u.swStk=0; u.atkPct+=v("sword","atk"); u.evade=v("sword","evade"); u.dbl=v("sword","dbl"); }
         if(has(u,"van")) defPct+=v("van","def");
-        if(has(u,"guard")) u.dr+=v("guard","dr");
+        if(has(u,"guard")){ u.dr+=v("guard","dr"); u.guardHeal=10; }
+        let flat=has(u,"gyeol")?v("gyeol","flat"):0; u.gyF=flat;
         if(has(u,"mage")) u.skAmp+=v("mage","sk");
         if(has(u,"brawl")) hpPct+=v("brawl","hp");
         if(has(u,"assn")){ u.crit+=v("assn","crit"); u.leap=true; }
         if(has(u,"illu")&&v("illu","every")){ u.tuner=100; u.need=Math.min(u.need,v("illu","every")); }
-        if(has(u,"snipe")){ u.range+=v("snipe","range"); u.asPct+=v("snipe","as"); }
+        if(has(u,"snipe")){ u.range+=v("snipe","range"); u.distPct=Math.max(u.distPct||0,v("snipe","distPct")); }
         if(has(u,"scout")){ u.asPct+=v("scout","as"); u.first=v("scout","first"); }
         if(has(u,"guer")) u.guer=v("guer","every");
         if(has(u,"dream")) u.dream=v("dream","heal");
         if(has(u,"slayer")) u.atkPct+=v("slayer","atk");
         if(has(u,"fury")){ u.ls+=v("fury","ls"); u.furyRev=v("fury","revive"); u.furyLs=v("fury","ls"); }
         if(has(u,"pion")){ u.pion=v("pion","atk"); u.pionDur=v("pion","dur"); }
-        if(has(u,"marks")){ u.distPct=v("marks","distPct"); u.exec=v("marks","exec"); }
+        if(has(u,"marks")){ u.exec=v("marks","exec"); if(!AC_CONFIG.skills5[u.name]){ u.giant=v("marks","coef"); u.giantHp=v("marks","maxHp"); } }
         if(has(u,"yeti")) u.yeti=1; if(has(u,"grave")) u.grave=1; if(has(u,"ignite")) u.ignite=1;
         if(has(u,"judge")){ if(u.row<=1){ u.dr+=v("judge","dr"); u.range=1; u.judgeFront=1; } else u.skAmp+=v("judge","sk"); u.judge=1; }
         if(has(u,"family")) u.fam=u.name==="에반"?"son":"father";
-        u.maxHp=Math.round(u.maxHp*(1+hpPct/100)+hpFlat); u.hp=u.maxHp; u.def=u.s.def*(1+defPct/100); u.res=(u.s.res||0)*(1+defPct/100); }
+        u.maxHp=Math.round(u.maxHp*(1+hpPct/100)+hpFlat); u.hp=u.maxHp; u.def=u.s.def*(1+defPct/100)+flat; u.res=(u.s.res||0)*(1+defPct/100)+flat; }
       if(hpFlat) AC.sstat(B,side,"van",hpFlat*U.length);
       const ally=u=>U.filter(x=>x!==u).sort((a,b)=>Math.hypot(a.R-u.R,a.C-u.C)-Math.hypot(b.R-u.R,b.C-u.C))[0];
       if(L.aide!=null) U.filter(u=>has(u,"aide")).forEach(u=>{ const a=ally(u)||u, n=a.maxHp*v("aide","shield")/100; a.shield+=n; AC.sstat(B,side,"aide",n); });
@@ -5696,6 +5698,7 @@ const AC={
     t.taken+=d; if(o.id&&a) AC.sstat(B,a.side,o.id,d);
     if(t.skId==="클레미스"&&!t.clemLow&&t.hp>0&&t.hp<=t.maxHp*t.K.low/100){ t.clemLow=true; const K=t.K; t.inv=Math.max(t.inv||0,B.t+K.invDur); t.untg=B.t+K.invDur; B.events.push({k:"fx",b:t.uid,txt:"🛡️ 무적",cls:"inv"}); }
     if(t.skId==="녹스"&&!t.noxLow&&t.hp>0&&t.hp<=t.maxHp*t.K.low/100){ t.noxLow=true; if(AC.addShield(B,t,t.maxHp*t.K.sh/100)) B.events.push({k:"fx",b:t.uid,txt:"🌑 보호막",cls:"sk5"}); }
+    if(t.guardHeal&&!t.ghDone&&t.hp>0&&t.hp<t.maxHp*0.5){ t.ghDone=1; AC.heal(B,t,t.maxHp*t.guardHeal/100,"guard"); B.events.push({k:"fx",b:t.uid,txt:"🧱 회복",cls:"heal"}); }
     if(t.hp<=0){ t.hp=0; AC.lethal(B,t,a); }
     else if(a&&a.exec&&t.hp<t.maxHp*a.exec/100){ B.events.push({k:"fx",b:t.uid,txt:"처형!",cls:"exec"}); AC.sstat(B,a.side,"marks",t.hp); t.hp=0; AC.lethal(B,t,a,true); }
     return d; },
@@ -5714,7 +5717,7 @@ const AC={
         B.events.push({k:"fx",b:t.uid,txt:"부활!",cls:"rev"},{k:"fx",b:t.uid,txt:"광폭화!",cls:"rage"}); AC.sstat(B,side,"family",t.hp); return; } }
     if(t.furyRev&&!t.revived){ t.revived=true; t.hp=Math.max(1,Math.round(t.maxHp*AC_CONFIG.furyReviveHp/100)); t.revEnd=B.t+t.furyRev; B.events.push({k:"fx",b:t.uid,txt:"부활!",cls:"rev"}); AC.sstat(B,side,"fury",t.hp); return; }
     AC.kill(B,t,a); },
-  kill(B,t,a){ t.hp=0; t.alive=false; t.disabled=false; B.events.push({k:"die",b:t.uid}); B.deaths++;
+  kill(B,t,a){ t.hp=0; t.alive=false; t.disabled=false; B.events.push({k:"die",b:t.uid}); B.deaths++; if(a&&a.swKill&&a.alive&&a.swStk<5&&a.side!==t.side){ a.swStk++; a.atkPct+=3; B.events.push({k:"fx",b:a.uid,txt:"⚔️+3%",cls:"sk5"}); }
     for(const u of B.units.filter(x=>x.alive&&x.side!==t.side&&x.skId==="카마도 탄지로")){ const K=u.K; if(a===u||(t.hitLog&&t.hitLog[u.uid]>=B.t-K.window)){ u.part=(u.part||0)+1; if(u.part>=K.need&&!(u.sunUntil>B.t)){ u.part-=K.need; u.sunUntil=B.t+K.dur; u.need=1e9; B.events.push({k:"fx",b:u.uid,txt:K.name+"!",cls:"sk5"}); AC.sstat(B,u.side,"sk:카마도 탄지로",0); } } }
     for(const z of B.units.filter(x=>x.alive&&x.side===t.side&&x.skId==="아가츠마 젠이츠")){ const K=z.K; if(z.fin) AC.finQ(B,z,B.t,"zenStart"); z.allyD=(z.allyD||0)+1; if(z.allyD%K.deaths===0&&(B.zenN[z.uid]||0)<K.max&&!B.pause){ B.zenN[z.uid]=(B.zenN[z.uid]||0)+1; B.pause=K.pause; B.pauseBy=z.uid; B.events.push({k:"fx",b:z.uid,txt:"⚡ 화뢰신",cls:"sk5"}); } }
     if(a&&a.alive&&a.silAoe&&!a.silKill&&!(B.block[a.side]>B.t)){ a.silKill=true; a.ampAll=(a.ampAll||0)+a.K.amp; B.events.push({k:"fx",b:a.uid,txt:"어둠 +"+a.K.amp+"%",cls:"sk5"}); }
@@ -5754,8 +5757,8 @@ const AC={
             u.silAoe=false; AC.heal(B,u,sum*K.heal/100,'sk:실베스타'); continue; }
           let sk=false; if(u.sc>=u.need){ sk=true; u.sc=0; u.need=u.tuner>=100?2:u.tuner>0&&AC.rnd(B)*100<u.tuner?2:C.skillEvery; }
           const tgs=[tg]; if(u.dbl&&AC.rnd(B)*100<u.dbl){ const t2=foes.filter(x=>x!==tg).sort((a,b)=>Math.hypot(a.R-u.R,a.C-u.C)-Math.hypot(b.R-u.R,b.C-u.C))[0]; if(t2) tgs.push(t2); }
-          for(const t of tgs){ const crit=AC.rnd(B)*100<u.crit, coef=sk?C.skillCoef+(u.s.skill||0):100;
-            let d=AC.calcHit(B,u,t,coef,crit,sk); if(u.first>1&&u.atks===1) d*=u.first;
+          for(const t of tgs){ const crit=AC.rnd(B)*100<u.crit, coef=sk?(u.giant?u.giant:C.skillCoef+(u.s.skill||0)):100;
+            let d=AC.calcHit(B,u,t,coef,crit,sk); if(sk&&u.giant) d+=t.maxHp*u.giantHp/100; if(u.first>1&&u.atks===1) d*=u.first;
             const ev=Math.max(t.evade||0,t.evUntil&&B.t<t.evUntil?t.guerEv:0), dodge=ev>0&&AC.rnd(B)*100<ev; if(dodge) d*=0.25;
             d=Math.max(1,Math.round(d)); if(t.disabled||(t.inv&&B.t<t.inv)) d=0;
             B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit,sk,rg:u.range>1,dodge,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
