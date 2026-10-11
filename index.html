@@ -1217,6 +1217,33 @@
 @keyframes acmsring{from{transform:scale(.4);opacity:1}to{transform:scale(2.6);opacity:0}}
 @keyframes acmsban{0%{opacity:0;transform:translate(-50%,8px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.05)}80%{opacity:1}100%{opacity:0}}
 #acRoot.aclight .acmsring{display:none}#acRoot.aclight .acms .acstars{animation:none}
+
+#acRoot .acitems{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;padding:4px 6px;border:1px solid #3a3020;border-radius:10px;background:rgba(20,16,10,.5)}
+#acRoot .acitems .ttl{font-size:11px;color:#c9b07a;margin-right:2px}
+#acRoot .acitem{position:relative;min-width:40px;height:34px;border-radius:8px;border:1px solid #6b5a2e;background:#221a0e;color:#ffe9a8;cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:0 6px}
+#acRoot .acitem b{font-size:17px}#acRoot .acitem small{font-weight:800}#acRoot .acitem.none{opacity:.4}#acRoot .acitem.on{outline:2px solid #ffd36a;box-shadow:0 0 10px rgba(255,211,106,.7)}
+#acRoot .acbuf{font-style:normal;font-size:12px;padding:3px 7px;border-radius:999px;background:#2a2212;border:1px solid #8a6a2a;color:#ffe2a0}
+#acRoot.acitemsel [data-acu]{outline:2px dashed #ffd36a;outline-offset:-2px;cursor:copy}
+#acRoot .acmode.boss{background:#5a1020;color:#ffd0d8}#acRoot .acnext{font-style:normal;font-size:11px;margin-left:6px;padding:1px 7px;border-radius:999px;background:#1d2a1d;color:#bfe6b0}#acRoot .acnext.boss{background:#3a0f18;color:#ffb3c0}
+#acRoot .actk.mon.boss{transform:scale(1.15);box-shadow:0 0 14px rgba(255,60,90,.7)}#acRoot .acface.mon.boss b{font-size:30px}
+.acrwd.pve{pointer-events:none;align-items:flex-start;padding-top:12vh;background:none;animation:acrwfade 3s ease forwards}.acrwd.pve .acrwb{padding:10px 16px}
+@keyframes acrwfade{0%,80%{opacity:1}100%{opacity:0;visibility:hidden}}
+.acrwd{position:fixed;inset:0;z-index:7500;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
+.acrwb{min-width:260px;max-width:92vw;padding:18px 20px;border-radius:16px;background:#17130c;border:1px solid #6b5a2e;text-align:center;color:#f3e6c4;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.acrwd.gold .acrwb{border-color:#ffd36a;box-shadow:0 0 30px rgba(255,211,106,.45)}.acrwd.plat .acrwb{border-color:#bfe7ff;background:linear-gradient(160deg,#1a2230,#11161f);box-shadow:0 0 34px rgba(170,220,255,.5)}
+.acrwt{display:block;font-size:18px;margin:6px 0}.acrwd.gold .acrwt{color:#ffd36a}.acrwd.plat .acrwt{color:#d8f1ff}
+.acrwl{display:flex;flex-direction:column;gap:4px;margin:10px 0}.acrwl span{padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.06);animation:acrwin .4s ease both}
+.acrwl span:nth-child(2){animation-delay:.1s}.acrwl span:nth-child(3){animation-delay:.2s}.acrwd.gold .acrwl span,.acrwd.plat .acrwl span{animation-delay:1s}
+.acrwfr{font-size:12px;color:#ffb3a0;margin:2px 0}.acrwch p{font-size:13px}.acrwch button,.acrwb>button{margin:4px}
+.acbox{position:relative;width:96px;height:80px;margin:4px auto 8px;animation:acboxshake .9s ease}
+.acbox .body{position:absolute;left:8px;right:8px;bottom:0;height:50px;border-radius:6px;background:linear-gradient(#e0a83a,#9a6a12);border:2px solid #ffe28a}
+.acbox .lid{position:absolute;left:2px;right:2px;top:12px;height:20px;border-radius:6px;background:linear-gradient(#ffd36a,#c08a22);border:2px solid #fff0b0;transform-origin:10% 100%;animation:acboxlid .5s .8s ease forwards}
+.acbox .glow{position:absolute;left:50%;top:30px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#fff6c8;box-shadow:0 0 30px 18px rgba(255,230,140,.8);opacity:0;animation:acboxglow .9s .8s ease forwards}
+.acbox.plat .body{background:linear-gradient(#d8ecff,#6b8fb0);border-color:#f0faff}.acbox.plat .lid{background:linear-gradient(#f4fbff,#9cc3e6);border-color:#fff}.acbox.plat .glow{background:#eaf7ff;box-shadow:0 0 34px 22px rgba(190,230,255,.85)}
+@keyframes acboxshake{0%,100%{transform:none}20%{transform:rotate(-6deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(3deg)}}
+@keyframes acboxlid{to{transform:translateY(-14px) rotate(-28deg)}}@keyframes acboxglow{0%{opacity:0}40%{opacity:1}100%{opacity:.5}}@keyframes acrwin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.acrwd.lite .acbox,.acrwd.lite .acbox *{animation:none!important}.acrwd.lite .acbox .lid{transform:translateY(-14px) rotate(-28deg)}.acrwd.lite .acrwl span{animation:none}
+@media (max-width:560px){.acrwb{padding:14px}.acbox{width:80px;height:66px}#acRoot .acitem{min-width:36px;height:32px}}
 .acreveal{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle,rgba(255,211,106,.35),rgba(0,0,0,.55) 70%);animation:acrvbg 3.2s ease forwards}
 .acrvc{display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 30px;border-radius:18px;background:rgba(20,16,36,.92);border:2px solid #ffd36a;box-shadow:0 0 40px #ffd36a,0 0 90px rgba(170,90,255,.6);animation:acrvpop .7s cubic-bezier(.2,1.6,.4,1)}
 .acrvc .acface,.acrvc img{width:84px;height:84px;border-radius:14px;animation:acrvspin 1.2s ease}
@@ -1457,7 +1484,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.9.4v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.10.0v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5465,7 +5492,7 @@ const AC={
     if(u){ u.t=Math.min(AC_CONFIG.maxT,u.t+AC_CONFIG.mergeT); u.copies++; } else S.units.push({uid:st.uid++,no,t:AC_CONFIG.startT,copies:1,loc:"b"+AC.benchFree(S)});
     return ""; },
   sell(st,S,uid){ const u=S.units.find(x=>x.uid===uid); if(!u) return 0; const g=AC.cost(u.no)*u.copies; S.gold+=g; st.pool[u.no]+=u.copies; S.units.splice(S.units.indexOf(u),1); return g; },
-  reroll(st,S){ if(S.gold<AC_CONFIG.rerollCost) return "골드 부족"; S.gold-=AC_CONFIG.rerollCost; S.shop=AC.roll(st,S.level); return ""; },
+  reroll(st,S){ const fr=AC.buf(S).free>0; if(!fr&&S.gold<AC_CONFIG.rerollCost) return "골드 부족"; AC.payRoll(S); S.shop=AC.roll(st,S.level); return ""; },
   buyXp(S){ if(S.level>=AC_CONFIG.maxLevel) return "최대 레벨"; if(S.gold<AC_CONFIG.xpBuyCost) return "골드 부족"; S.gold-=AC_CONFIG.xpBuyCost; AC.addXp(S,AC_CONFIG.xpBuyAmount); return ""; },
   move(S,uid,loc){ const u=S.units.find(x=>x.uid===uid); if(!u||u.loc===loc) return "";
     const o=S.units.find(x=>x.loc===loc);
@@ -5500,12 +5527,12 @@ const AC={
   dmgOf(B,st){ const C=AC_CONFIG, r=st&&st.round||99, k=r<=C.ffaEarly.until?C.ffaEarly.mult:1; return Math.max(1,Math.round((C.ffaLossBase+C.ffaLossPerUnit*B.survivors)*k)); },
   ffaResolve(st,myB){ const C=AC_CONFIG, P=st.players, res=[]; const hit=(p,n)=>{ p.hp-=n; };
     const sk=(S,w)=>{ S.streak=w?(S.streak>0?S.streak+1:1):(S.streak<0?S.streak-1:-1); S.lastWin=w; };
-    if(AC.isPve(st)){ const d=AC.rollDrops(st); let myTxt=[];
+    if(AC.isPve(st)){ const d=null; let myTxt=[];
       for(const p of P.filter(x=>x.alive)){ const B=p.me&&myB?myB:AC.ffaBattle(st,p.S,null,p.id); const won=B.winner==="me"||(C.pveSafeRounds.includes(st.round)&&B.units.some(u=>u.alive&&u.side==="me")), left=won?0:B.units.filter(u=>u.alive&&u.side==="ai").length, loss=won?0:C.pveLossBase+C.pveLossPerMon*left;
-        hit(p,loss); p.S.lastWin=null; const tx=AC.applyDrops(st,p.S,d); if(p.me){ myTxt=tx; st.last={round:st.round,pve:true,won,loss,survivors:left,time:+B.t.toFixed(1),drops:d,dropText:tx,aiDropText:[],stats:AC.roundStats(B),syn:B.synStat||null}; } } }
+        hit(p,loss); p.S.lastWin=null; const tx=AC.pveReward(st,p.S,B,!p.me); if(p.me){ myTxt=tx; st.last={round:st.round,pve:true,won,loss,survivors:left,time:+B.t.toFixed(1),drops:d,dropText:tx,aiDropText:[],stats:AC.roundStats(B),syn:B.synStat||null}; } } }
     else for(const pr of st.pairs){ const A=P[pr.a], Bp=P[pr.b]; if(!A.alive) continue; const mine=pr.a===0||(pr.b===0&&!pr.ghost);
       let R, aWon; if(mine&&myB){ R=myB; aWon=pr.a===0?myB.winner==="me":myB.winner!=="me"; } else { R=AC.ffaBattle(st,A.S,pr.ghost?JSON.parse(JSON.stringify(Bp.S)):Bp.S,pr.a*31+pr.b); aWon=R.winner==="me"; }
-      const n=AC.dmgOf(R,st); if(aWon){ if(!pr.ghost) hit(Bp,n); } else hit(A,n); sk(A.S,aWon); if(!pr.ghost) sk(Bp.S,!aWon);
+      const kA=R.units.filter(u=>u.side==="ai"&&!u.alive&&!u.mon).length, kB=R.units.filter(u=>u.side==="me"&&!u.alive).length; const bgA=AC.bounty(A.S,kA); if(!pr.ghost) AC.bounty(Bp.S,kB); const n=AC.dmgOf(R,st); if(aWon){ if(!pr.ghost) hit(Bp,n); } else hit(A,n); sk(A.S,aWon); if(!pr.ghost) sk(Bp.S,!aWon);
       res.push({a:pr.a,b:pr.b,ghost:!!pr.ghost,win:aWon?pr.a:pr.b,dmg:n});
       if(mine){ const meWon=pr.a===0?aWon:!aWon, oppId=pr.a===0?pr.b:pr.a; st.last={round:st.round,won:meWon,loss:meWon?0:n,aiLoss:meWon&&!pr.ghost?n:0,aiHp:Math.max(0,P[oppId].hp),opp:oppId,ghost:!!pr.ghost,survivors:R.survivors,time:+R.t.toFixed(1),stats:AC.roundStats(R),syn:R.synStat||null}; } }
     st.lastPairs=res; AC.ffaElim(st); if(st.last){ st.log.push(st.last); if(st.log.length>60) st.log.shift(); }
@@ -5515,12 +5542,12 @@ const AC={
     dead.sort((a,b)=>b.hp-a.hp).forEach((p,i)=>{ p.alive=false; p.rank=left+i+1; p.out=st.round; p.S.units.forEach(u=>{ st.pool[u.no]=(st.pool[u.no]||0)+u.copies; }); p.S.units=[]; p.S.shop=[]; });
     if(left===1){ const w=P.find(p=>p.alive); w.rank=1; } },
   ffaNext(st){ const C=AC_CONFIG; for(const p of st.players.filter(x=>x.alive)){ p.S.gold+=AC.income(p.S.gold,p.S.streak,p.S.lastWin); AC.addXp(p.S,C.xpPerRound); }
-    st.round++; const S=st.me; if(S.locked){ S.locked=false; } else S.shop=AC.roll(st,S.level);
+    st.round++; if(!AC.isPve(st)) st.players.filter(x=>x.alive).forEach(p=>AC.xpTick(p.S)); const S=st.me; if(S.locked){ S.locked=false; } else S.shop=AC.roll(st,S.level);
     if(!AC.isPve(st)) AC.ffaPair(st); else { st.pairs=null; st.opp=null; }
     for(const p of st.players.filter(x=>x.alive&&!x.me)){ const pr=st.pairs&&st.pairs.find(q=>q.a===p.id||q.b===p.id), foe=pr?st.players[pr.a===p.id?pr.b:pr.a].S:null; AC.aiPrep(st,p.S,st.diff,foe,p.hp); }
     if(st.pairs) AC.linkOpp(st); st.phase="prep"; },
   /* 난이도별 AI */
-  aiPrep(st,S,diff,foe,hp){ const D=AC_CONFIG.difficulty[diff==null?1:diff]; S.bonus=D.statPct?{pct:D.statPct}:null; if(D.smart) return AC.aiSmart(st,S,D,foe,hp==null?100:hp); return AC.aiBasic(st,S,D); },
+  aiPrep(st,S,diff,foe,hp){ AC.botItems(st,S); const D=AC_CONFIG.difficulty[diff==null?1:diff]; S.bonus=D.statPct?{pct:D.statPct}:null; if(D.smart) return AC.aiSmart(st,S,D,foe,hp==null?100:hp); return AC.aiBasic(st,S,D); },
   aiBasic(st,S,D){ const C=AC_CONFIG, tl=C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel;
     if(st.round>1) S.gold+=D.gold;
     if(D.buyXp) while(S.level<tl&&S.gold>=C.xpBuyCost+C.aiReserve) AC.buyXp(S);
@@ -5529,7 +5556,7 @@ const AC={
       const order=S.shop.map((no,i)=>({no,i})).filter(x=>x.no!=null).sort((a,b)=>D.random?AC.rnd(st)-0.5:(AC.owned(S,b.no)?10:0)+AC.tierNo(b.no)-((AC.owned(S,a.no)?10:0)+AC.tierNo(a.no)));
       for(const x of order){ if(AC.canBuy(st,S,x.i)==="대기석 가득"){ const w=S.units.filter(u=>u.loc[0]==="b").sort((a,b)=>AC.score(a)-AC.score(b))[0]; if(w&&AC.score(w)<AC.tierNo(x.no)*20) AC.sell(st,S,w.uid); }
         if(!AC.canBuy(st,S,x.i)&&(!D.random||AC.rnd(st)<0.7)) AC.buy(st,S,x.i); }
-      const short=S.units.length<S.level&&S.gold>=C.rerollCost+1, rich=S.gold>C.aiSpendAbove; if(!short&&!rich&&(r>=D.rolls||S.gold<C.rerollCost+C.aiReserve+2)) break; if(r>=D.rolls+6) break; S.gold-=C.rerollCost; }
+      const short=S.units.length<S.level&&S.gold>=C.rerollCost+1, rich=S.gold>C.aiSpendAbove; if(!short&&!rich&&(r>=D.rolls||S.gold<C.rerollCost+C.aiReserve+2)) break; if(r>=D.rolls+6) break; AC.payRoll(S); }
     AC.autoPlace(S); },
   synCount(S,no,nos){ let n=0; for(const s of AC.synOf(no)) for(const m of nos) if(m!==no&&s.members.includes(AC.hero(m).name)) n++; return n; },
   aiSmart(st,S,D,foe,hp){ const C=AC_CONFIG, SG=S.strat||(S.strat=AC.rnd(st)<0.5?"A":"B"), base=(C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel)+D.lvAhead, tl=Math.min(C.maxLevel,SG==="A"?(st.round<C.aiStratA.until?Math.min(base,C.aiStratA.cap):base):base+(st.round>=C.aiStratB.from?C.aiStratB.ahead:0));
@@ -5544,7 +5571,7 @@ const AC={
       for(const x of order){ const own=AC.owned(S,x.no), fill=!own&&S.units.length<S.level; if(!fill&&x.v<D.minVal&&!own) continue; if(!fill&&S.gold-AC.cost(x.no)<(own?Math.max(0,reserve()-10):reserve())) continue;
         if(AC.canBuy(st,S,x.i)==="대기석 가득"){ const w=S.units.filter(u=>u.loc[0]==="b"&&u.copies<2).sort((a,b)=>val(a.no)-val(b.no))[0]; if(w&&val(w.no)<x.v) AC.sell(st,S,w.uid); }
         if(!AC.canBuy(st,S,x.i)) AC.buy(st,S,x.i); }
-      const short=S.units.length<S.level&&S.gold>=C.rerollCost+1; if(!short&&(r>=rolls||S.gold-C.rerollCost<reserve()+2)) break; if(r>=rolls+4) break; S.gold-=C.rerollCost; }
+      const short=S.units.length<S.level&&S.gold>=C.rerollCost+1; if(!short&&(r>=rolls||S.gold-C.rerollCost<reserve()+2)) break; if(r>=rolls+4) break; AC.payRoll(S); }
     while(S.gold>=C.aiSpendAbove+10&&S.level<C.maxLevel) AC.buyXp(S);
     AC.smartPlace(S,foe); },
   smartPlace(S,foe){ const C=AC_CONFIG; S.units.forEach((u,i)=>u.loc="t"+i); const nos=S.units.map(u=>u.no);
@@ -5562,8 +5589,8 @@ const AC={
     off.forEach((u,i)=>{ if(i<C.bench) u.loc="b"+i; }); S.units=S.units.filter(u=>u.loc[0]!=="t"); },
   /* ---------- 전투 ---------- */
   battleInit(st){ const C=AC_CONFIG, B={t:0,units:[],seed:(st.seed^0x9e3779b9)>>>0,done:false,winner:null,events:[],syn:{me:{},ai:{}},synStat:{me:{},ai:{}},fam:{},famUsed:{},once:{},block:{me:0,ai:0},immune:{me:0,ai:0},deaths:0,pause:0,zenN:{},t0:0,finUsed:{},finQ:[],dyN:{},hblock:{me:0,ai:0},hyLs:{},valk:{}};
-    const addL=(L,side)=>L.forEach(u=>{ const [r,c]=u.loc.slice(1).split(",").map(Number), s=u.mon?AC.monStats(st.round):AC.statsOf(u.no,u.t), hp=Math.round(s.hp*C.hpMult);
-      B.units.push({uid:side+u.uid,side,no:u.no,t:u.t,mon:!!u.mon,name:u.mon?"몬스터":AC.hero(u.no).name,R:side==="me"?C.rows+r:C.rows-1-r,C:c,row:r,s,hp,maxHp:hp,range:u.mon?1:AC.rangeOf(u.no),cd:AC.rnd(B)*0.3,mv:0,atks:0,sc:0,need:C.skillEvery,alive:true,dealt:0,taken:0,
+    const addL=(L,side)=>L.forEach(u=>{ const [r,c]=u.loc.slice(1).split(",").map(Number), s=u.mon?AC.monStats(st.round,u.boss):AC.statsOf(u.no,u.t), hp=Math.round(s.hp*C.hpMult);
+      B.units.push({uid:side+u.uid,side,no:u.no,t:u.t,mon:!!u.mon,boss:!!u.boss,name:u.boss?"보스":u.mon?"몬스터":AC.hero(u.no).name,R:side==="me"?C.rows+r:C.rows-1-r,C:c,row:r,s,hp,maxHp:hp,range:u.mon?1:AC.rangeOf(u.no),cd:AC.rnd(B)*0.3,mv:0,atks:0,sc:0,need:C.skillEvery,alive:true,dealt:0,taken:0,
         atkPct:0,dr:0,evade:0,dbl:0,skAmp:0,ls:0,shield:0,crit:s.crit||0,asPct:0,first:1,mag:!u.mon&&s.dmg==="magic"}); });
     const add=(S,side)=>{ addL(AC.field(S),side); if(S.bonus&&S.bonus.pct) B.units.filter(u=>u.side===side).forEach(u=>{ u.hp=u.maxHp=Math.round(u.hp*(1+S.bonus.pct/100)); u.atkPct+=S.bonus.pct; }); };
     add(st.me,"me"); if(st.round&&AC.isPve(st)) addL(AC.monsters(st),"ai"); else add(st.ai,"ai");
@@ -5781,19 +5808,20 @@ const AC={
   /* ---------- 라운드 ---------- */
   roundStats(B){ return (B&&B.units||[]).map(u=>({side:u.side,no:u.no,t:u.t,mon:u.mon,name:u.name,dealt:u.dealt||0,taken:u.taken||0,alive:u.alive,tip:u.tip||""})); },
   applyResult(st,B){ if(AC.isFfa(st)){ AC.ffaResolve(st,B); if(st.phase==="over") AC.ffaFinish(st); return; } if(AC.isPve(st)) return AC.applyPve(st,B); const won=B.winner==="me", C=AC_CONFIG, loss=won?0:C.lossBase+C.lossPerUnit*B.survivors, aiLoss=won&&st.mode!=="endless"?C.lossBase+C.lossPerUnit*B.survivors:0;
+    if(B.units){ AC.bounty(st.me,B.units.filter(u=>u.side==="ai"&&!u.alive).length); AC.bounty(st.ai,B.units.filter(u=>u.side==="me"&&!u.alive).length); }
     st.hp=Math.max(0,st.hp-loss); if(st.aiHp==null) st.aiHp=C.aiStartHp; st.aiHp=Math.max(0,st.aiHp-aiLoss); const sk=(S,w)=>{ S.streak=w?(S.streak>0?S.streak+1:1):(S.streak<0?S.streak-1:-1); S.lastWin=w; }; sk(st.me,won); sk(st.ai,!won);
     st.last={round:st.round,won,loss,aiLoss,aiHp:st.aiHp,survivors:B.survivors,time:+B.t.toFixed(1),stats:AC.roundStats(B),syn:B.synStat||null}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
     st.phase=st.hp<=0?"over":st.aiHp<=0?"win":"result"; AC.after(st); },
   applyPve(st,B){ const C=AC_CONFIG, won=B.winner==="me"||(C.pveSafeRounds.includes(st.round)&&!!(B.units&&B.units.some(u=>u.alive&&u.side==="me"))), left=won?0:B.units?B.units.filter(u=>u.alive&&u.side==="ai").length:(B.survivors||0), loss=won?0:C.pveLossBase+C.pveLossPerMon*left;
     st.hp=Math.max(0,st.hp-loss); st.me.lastWin=null; st.ai.lastWin=null; // PVE: 연승/연패 그대로 · 승리 보너스 없음
-    const d=AC.rollDrops(st), me=AC.applyDrops(st,st.me,d), ai=AC.applyDrops(st,st.ai,d);
+    const d=null, me=AC.pveReward(st,st.me,B,false), ai=AC.pveReward(st,st.ai,B,true);
     st.last={round:st.round,pve:true,won,loss,survivors:left,time:+B.t.toFixed(1),drops:d,dropText:me,aiDropText:ai,stats:AC.roundStats(B),syn:B.synStat||null}; st.log.push(st.last); if(st.log.length>60) st.log.shift();
     st.phase=st.hp<=0?"over":"result"; AC.after(st); },
   after(st){ if(st.phase==="win") AC.onWin(st); if(st.phase==="over"&&st.mode==="endless") AC.onEndlessOver(st); },
   ffaFinish(st){ const r0=st.round, L=st.last, g0=st.log.length; let g=0; while(AC.aliveIds(st).length>1&&g++<80){ st.phase="result"; AC.ffaNext(st); st.last=null; AC.ffaResolve(st,null); } st.log.length=g0; st.last=L; st.round=r0; st.phase="over"; st.hp=0; },
   nextRound(st){ if(st.phase!=="result") return; const C=AC_CONFIG; if(AC.isFfa(st)) return AC.ffaNext(st);
     for(const S of [st.me,st.ai]){ S.gold+=AC.income(S.gold,S.streak,S.lastWin); AC.addXp(S,C.xpPerRound); }
-    st.round++; if(st.me.locked){ st.me.locked=false; st.me.shop=st.me.shop.map(n=>n); } else st.me.shop=AC.roll(st,st.me.level);
+    st.round++; if(!AC.isPve(st)){ AC.xpTick(st.me); AC.xpTick(st.ai); } if(st.me.locked){ st.me.locked=false; st.me.shop=st.me.shop.map(n=>n); } else st.me.shop=AC.roll(st,st.me.level);
     AC.aiPrepare(st); st.phase="prep"; },
   /* ---------- 밸런스 모의 (시드 고정) ---------- */
   duel(seed,A,B){ const r={seed}; const pickT=(t,n)=>{ const c=AC.heroes().filter(x=>x.tier===t).map(x=>x.no); const out=[]; while(out.length<n&&c.length) out.push(c.splice(Math.floor(AC.rnd(r)*c.length),1)[0]); return out; };
@@ -5841,33 +5869,34 @@ const AC={
   mob(){ return !!(window.matchMedia&&matchMedia("(max-width:560px)").matches); },
   render(){ AC._mob=AC.mob(); const st=AC.st, S=st.me, C=AC_CONFIG, box=$("acRoot"); if(!box) return;
     const need=AC.xpNeed(S.level), od=C.odds[S.level-1], fieldN=AC.field(S).length, prep=st.phase==="prep";
-    const hRound=`<div class="achud a-round"><span class="hi">라운드 <b data-ach="round">${st.round}</b><i class="acmode ${AC.isPve(st)?"pve":"pvp"}" data-acmode>${AC.isPve(st)?"몬스터":"PVP"}</i>${AC.modeTag(st)}</span></div>`;
+    const hRound=`<div class="achud a-round"><span class="hi">라운드 <b data-ach="round">${st.round}</b><i class="acmode ${AC.isBoss(st)?"boss":AC.isPve(st)?"pve":"pvp"}" data-acmode>${AC.isBoss(st)?"보스":AC.isPve(st)?"몬스터":"PVP"}</i>${(n=>n?`<i class="acnext${n.boss?" boss":""}" data-acnext title="다음 ${n.boss?"보스":"PVE"} 라운드">${n.boss?"👹 BOSS":"👾 PVE"} R${n.r}</i>`:"")(AC.isPve(st)&&!AC.isBoss(st)&&st.round>3?AC.nextPve(st.round):AC.nextPve(st.round))}${AC.modeTag(st)}</span></div>`;
     const hHp=`<span class="hi hp hpbig" data-achp="me" title="내 체력"><span class="hrt">❤️</span><b data-ach="hp">${st.hp}</b><i class="achpbar"><i style="width:${st.hp/C.startHp*100}%"></i></i></span><span class="hi hp hpbig foe" data-achp="ai" title="상대 체력">${st.mode==="endless"?"상대 ∞":AC.isFfa(st)&&st.opp!=null?esc(st.players[st.opp].name.replace("봇 ",""))+(st.oppGhost?"👻":""):"상대"} <span class="hrt">🖤</span><b data-ach="aihp">${st.mode==="endless"?"∞":st.aiHp??C.aiStartHp}</b><i class="achpbar"><i style="width:${(st.aiHp??C.aiStartHp)/C.aiStartHp*100}%"></i></i></span>`;
     const hLv=`<span class="hi dep${prep&&fieldN<S.level?" warn":""}" data-acdep>배치 <b data-ach="deploy">${fieldN}/${S.level}</b></span><span class="hi lv">Lv <b data-ach="level">${S.level}</b><i class="acxp"><i style="width:${need?S.xp/need*100:100}%"></i></i><small data-ach="xp">${need?`${S.xp}/${need}`:"MAX"}</small></span>`;
     const hStreak=`<span class="hi acstreak" data-acstreak>${S.streak>0?`🔥 ${S.streak}연승`:S.streak<0?`💧 ${-S.streak}연패`:"연속 —"}</span>`;
     const hOdds=`<span class="hi odds" title="현재 레벨 상점 확률">${od.map((p,i)=>`<i class="tier${i+1}">${p}%</i>`).join("")}</span>`;
     const pve=AC.isPve(st), EU=pve?AC.monsters(st):st.ai.units;
-    const cell=(side,r,c)=>{ const U=side==="me"?S.units:EU, u=U.find(x=>x.loc==="f"+r+","+c); return `<div class="accell ${side}${r===0?" front":""}" ${side==="me"?`data-acloc="f${r},${c}"`:""}>${u?(side==="me"?AC.tokenHTML(u):u.mon?`<div class="actk mon foe" data-acmon title="몬스터 (${st.round}라운드)">${AC.monFace()}</div>`:`<div class="actk tier${AC.tierNo(u.no)} foe" data-acfoe="${u.uid}" title="${esc(AC.hero(u.no).name)} ${u.t}초월">${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}<span class="acnm">${esc(AC.hero(u.no).name)}</span></div>`):""}</div>`; };
+    const cell=(side,r,c)=>{ const U=side==="me"?S.units:EU, u=U.find(x=>x.loc==="f"+r+","+c); return `<div class="accell ${side}${r===0?" front":""}" ${side==="me"?`data-acloc="f${r},${c}"`:""}>${u?(side==="me"?AC.tokenHTML(u):u.mon?`<div class="actk mon foe${u.boss?" boss":""}" data-acmon title="${u.boss?"보스":"몬스터"} (${st.round}라운드)">${AC.monFace(u.boss)}</div>`:`<div class="actk tier${AC.tierNo(u.no)} foe" data-acfoe="${u.uid}" title="${esc(AC.hero(u.no).name)} ${u.t}초월">${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}<span class="acnm">${esc(AC.hero(u.no).name)}</span></div>`):""}</div>`; };
     let grid=""; for(let R=0;R<C.rows*2;R++) for(let c=0;c<C.cols;c++) grid+=R<C.rows?cell("ai",C.rows-1-R,c):cell("me",R-C.rows,c);
     const bench=Array.from({length:C.bench},(_,i)=>{ const u=S.units.find(x=>x.loc==="b"+i); return `<div class="acbs" data-acloc="b${i}">${u?AC.tokenHTML(u):""}</div>`; }).join("");
     const shop=S.shop.map((no,i)=>{ if(no==null) return `<div class="acshop empty"></div>`; const h=AC.hero(no), tr=AC.tierNo(no), o=AC.owned(S,no), why=AC.canBuy(st,S,i);
       return `<button type="button" class="acshop tier${tr}${AC.shopFx&&tr>=4?" enter":""}" data-acbuy="${i}"${why||!prep?" aria-disabled=\"true\"":""} title="${esc(h.name)} · ${C.tierName[tr]}${why?" · "+why:""}">${AC.face(no)}<span class="acnm">${esc(h.name)}</span><span class="accost">${AC.cost(no)}💰</span>${AC.rbadge(no)}${AC.ubadge(no)}<span class="acskslot${AC.skillOf(no)?" u":""}" data-acskslot title="${esc((AC.skillOf(no)||AC_CONFIG.genericSkill).name)}${AC.skillOf(no)?": "+esc(AC.skDesc(h.name,o?o.t:0)):""}">${AC.skIco(no)}</span>${AC.skillOf(no)?`<span class="acsknm">${esc(AC.skillOf(no).name)}</span>`:""}<span class="acsytags">${AC.synTags(no)}</span>${o?`<span class="acown">보유 ${o.t}→${Math.min(C.maxT,o.t+C.mergeT)}</span>${AC.tbadge(o.t)}`:""}<span class="acib" role="button" tabindex="0" data-acshopinfo="${i}" title="스탯 보기" aria-label="스탯 보기">i</span></button>`; }).join("");
     AC.shopFx=false; const selU=AC.sel&&S.units.find(u=>u.uid===AC.sel);
     const pr=prep?"":" disabled";
-    const bBuy=`<button type="button" data-acdo="xp"${pr}>경험치 +${C.xpBuyAmount} (${C.xpBuyCost}💰)</button><button type="button" data-acdo="reroll"${pr}>새로고침 ${C.rerollCost}💰</button>`;
+    const bBuy=`<button type="button" data-acdo="xp"${pr}>경험치 +${C.xpBuyAmount} (${C.xpBuyCost}💰)</button><button type="button" data-acdo="reroll"${pr}>${AC.buf(S).free>0?`새로고침 무료 ${AC.buf(S).free}`:`새로고침 ${C.rerollCost}💰`}</button>`;
     const bLock=`<button type="button" data-acdo="lock" class="${S.locked?"on":""}"${pr}>${S.locked?"🔒 잠금":"🔓 잠금"}</button><button type="button" data-acdo="sell" data-acsell${selU&&prep?"":" disabled"}>판매${selU?` +${AC.cost(selU.no)*selU.copies}💰`:""}</button>`;
     const bFight=`<div class="acctl a-fight"><button type="button" data-acdo="light" data-aclight class="${AC.light?"on":""}" title="효과 줄이기 (저장됨)">🍃 가벼운 연출</button><button type="button" data-acdo="speed">${AC.speed}x</button>${st.phase==="battle"?`<button type="button" data-acdo="skip">건너뛰기</button>`:""}<button type="button" class="acgo" data-acdo="fight"${prep&&!(st.round===1&&!AC.field(S).length)?"":" disabled"}${st.round===1&&!AC.field(S).length?' title="영웅을 1명 이상 배치하세요"':""}>⚔ 전투 시작</button></div>`;
-    const L0=st.last, ov=AC.modeOpen?AC.modeHTML():AC.isFfa(st)&&["over","win"].includes(st.phase)?AC.rankHTML(st):st.phase==="result"&&L0?`<div class="acov" data-acov="result"><div class="acovb wide"><b class="${L0.won?"win":"lose"}">${L0.pve?(L0.won?"몬스터 처치!":"몬스터에게 패배"):L0.won?"승리":"패배"}</b><p>라운드 ${L0.round}${L0.won?"":` · ♥ −${L0.loss} (${L0.pve?"남은 몬스터":"상대 생존"} ${L0.survivors}${L0.pve?"마리":"명"})`} · ${L0.time}초</p>${L0.pve?`<div class="acdrop" data-acdrop>${L0.dropText.length?L0.dropText.map(t=>`<span>${esc(t)}</span>`).join(""):'<span class="muted">드롭 없음</span>'}<small>같은 드롭을 모두 받음</small></div>`:""}${!L0.pve&&L0.won&&L0.aiLoss?`<p class="acailoss" data-acailoss>상대 🖤 −${L0.aiLoss} → ${L0.aiHp}</p>`:""}${!L0.pve&&L0.ghost?`<p class="muted">👻 유령전: 상대 체력은 그대로</p>`:""}${AC.statsHTML(L0)}<div><button type="button" class="acgo" data-acdo="next">다음 라운드</button></div></div></div>`
+    const L0=st.last, ov=AC.modeOpen?AC.modeHTML():AC.isFfa(st)&&["over","win"].includes(st.phase)?AC.rankHTML(st):st.phase==="result"&&L0?`<div class="acov" data-acov="result"><div class="acovb wide"><b class="${L0.won?"win":"lose"}">${L0.pve?(L0.won?"몬스터 처치!":"몬스터에게 패배"):L0.won?"승리":"패배"}</b><p>라운드 ${L0.round}${L0.won?"":` · ♥ −${L0.loss} (${L0.pve?"남은 몬스터":"상대 생존"} ${L0.survivors}${L0.pve?"마리":"명"})`} · ${L0.time}초</p>${L0.pve?`<div class="acdrop" data-acdrop>${L0.dropText.length?L0.dropText.map(t=>`<span>${esc(t)}</span>`).join(""):'<span class="muted">드롭 없음</span>'}<small>플레이어마다 따로 굴림 (같은 가치)</small></div>`:""}${!L0.pve&&L0.won&&L0.aiLoss?`<p class="acailoss" data-acailoss>상대 🖤 −${L0.aiLoss} → ${L0.aiHp}</p>`:""}${!L0.pve&&L0.ghost?`<p class="muted">👻 유령전: 상대 체력은 그대로</p>`:""}${AC.statsHTML(L0)}<div><button type="button" class="acgo" data-acdo="next">다음 라운드</button></div></div></div>`
       :st.phase==="win"?(()=>{ const W=st.log.filter(x=>x.won).length, D=st.log.reduce((a,x)=>a+(x.stats||[]).filter(y=>y.side==="me").reduce((b,y)=>b+y.dealt,0),0), T=st.log.reduce((a,x)=>a+(x.stats||[]).filter(y=>y.side==="me").reduce((b,y)=>b+y.taken,0),0);
         return `<div class="acov" data-acov="win"><div class="acovb wide"><b class="win">🏆 최종 승리!</b><p>${st.round}라운드에 상대 체력 0 · 남은 체력 ❤️ ${st.hp}</p><p data-acwinstats>전적 ${W}승 ${st.log.length-W}패 · 레벨 ${S.level} · 가한 피해 ${fmtN(D)} · 받은 피해 ${fmtN(T)}</p>${L0?AC.statsHTML(L0):""}<div><button type="button" data-acdo="hist">📊 라운드 통계</button><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div></div>`; })()
       :st.phase==="over"?`<div class="acov" data-acov="over"><div class="acovb"><b class="lose">게임 오버</b><p>${st.round}라운드에서 탈락 · 버틴 라운드 <b data-acrec>${st.round-1}</b>${st.mode==="endless"?` · 최고 ${AC.prog().endlessBest}${st.endlessNew?" 🎉 신기록":""}`:""}</p><button type="button" class="acgo" data-acdo="new">새 게임</button></div></div>`:"";
     box.innerHTML=`<div class="acL">${hRound}<div class="a-syn">${AC.synPanel()}</div><div class="a-board"><div class="acboard${prep&&fieldN<S.level?" acwarn":""}" id="acBoard" data-acempty="${prep?Math.max(0,S.level-fieldN):0}"><div class="acgrid">${grid}</div><div class="aclayer" id="acLayer"></div><div class="acmid" aria-hidden="true"></div>${ov}</div></div>
       <div class="a-side"><div class="achud acside">${hHp}</div>${AC.plHTML(st)}<div class="acfoot"><button type="button" data-acdo="new">새 게임</button><button type="button" data-acdo="hist">📊 라운드 통계</button></div>${AC.mob()?"":bFight}</div>
       <div class="a-ctl achud">${hLv}${AC.mob()?"":`<div class="acctl acbuyx">${bBuy}</div>`}</div>${AC.mob()?`<div class="a-mact" data-acmact>${bFight}<div class="acctl acbuyx">${bBuy}</div></div>`:""}
-      <div class="a-bench"><div class="acbench" data-acsellzone>${bench}</div></div>
+      <div class="a-bench"><div class="acbench" data-acsellzone>${bench}</div>${AC.itemsHTML(st,S)}</div>
       <div class="a-bar achud"><div class="acctl aclock">${bLock}</div><div class="acshophead"><span class="ttl">상점</span><span class="acgold" data-acgold title="보유 골드"><span class="coin">G</span><b data-acgoldn data-ach="gold">${S.gold}</b></span>${hStreak}</div>${hOdds}</div>
       <div class="a-shop"><div class="acshops" data-acsellzone>${shop}</div><div class="acmsg" id="acMsg" aria-live="polite">${esc(AC._m||"")}</div><p class="muted achelp">탭 = 선택(스탯 표시) → 칸/대기석 탭 = 이동 · 상점 ⓘ·상대·전투 중 유닛 탭 = 스탯 · 끌어다 놓기 · 상점으로 끌면 판매 · 스킬 = ${C.skillEvery}번째 공격마다 ${C.skillCoef}% 일격 · 시너지 = 판 위 서로 다른 영웅 수</p></div>
       <div class="a-roster">${AC.rosterHTML()}</div></div>`;
+    { const rw=AC.rwHTML(st); if(rw){ box.insertAdjacentHTML("beforeend",rw); if(st.me.rwPop.R.kind!=="boss") st.me.rwPop.seen=true; } } if(AC.itemSel) box.classList.add("acitemsel"); else box.classList.remove("acitemsel");
     if(AC.histOpen) box.insertAdjacentHTML("beforeend",AC.histHTML()); if(AC.info) box.insertAdjacentHTML("beforeend",AC.infoHTML()); if(AC.deckView!=null) box.insertAdjacentHTML("beforeend",AC.deckHTML()); { const S=st.me; S.finSeen=S.finSeen||[]; for(const u of S.units){ const k=AC.skillOf(u.no); if(k&&k.fin&&u.t>=12&&!S.finSeen.includes(u.no)){ S.finSeen.push(u.no); AC.revealQ={no:u.no,until:Date.now()+3200}; } }
       { AC.lastT=AC.lastT||{}; const ms=u=>AC.tierNo(u.no)===5?[3,6,12]:[6,12], now=Date.now(); if(AC.lastTst!==st){ AC.lastTst=st; AC.lastT={}; S.units.forEach(u=>AC.lastT[u.uid]=u.t); }
         for(const u of S.units){ const p=AC.lastT[u.uid]; if(p!=null&&u.t>p){ const m=ms(u).filter(x=>x>p&&x<=u.t).pop(); if(m){ AC.msFx={uid:u.uid,t:m,until:now+1800}; AC.msNew=AC.msNew||[]; AC.msNew.push({no:u.no,t:m}); } } AC.lastT[u.uid]=u.t; }
@@ -5962,7 +5991,9 @@ const AC={
       else if(k==="light"){ AC.light=!AC.light; try{ localStorage.setItem("7kr_ac_light",AC.light?"1":"0"); }catch{} AC.PX.layoutAll=true; }
       else if(k==="speed"){ AC.speed=AC.speed===1?2:1; d.textContent=AC.speed+"x"; return; }
       else if(k==="skip") return AC.skip();
-      else if(k==="next"){ AC.nextRound(st); AC.shopFx=true; }
+      else if(k==="next"){ if(S.chaosPend) AC.chaosPick(st,S,false); if(S.rwPop) S.rwPop.seen=true; AC.nextRound(st); AC.shopFx=true; }
+      else if(k==="rwok"){ if(S.rwPop) S.rwPop.seen=true; }
+      else if(k==="chaosY"||k==="chaosN"){ const n=AC.chaosPick(st,S,k==="chaosY"); if(n) AC.msg(n); }
       else if(!prep) return;
       else if(k==="reroll"){ w=AC.reroll(st,S); if(!w) AC.shopFx=true; } else if(k==="xp") w=AC.buyXp(S); else if(k==="lock") S.locked=!S.locked;
       else if(k==="sell"&&AC.sel){ const g=AC.sell(st,S,AC.sel); AC.sel=null; AC.msg(`판매 +${g}골드`); }
@@ -5979,11 +6010,17 @@ const AC={
     if(t.closest("[data-acmon]")){ AC.info={mon:true,side:"ai"}; AC.drawInfo(); return; }
     if(!prep) return;
     const b=t.closest("[data-acbuy]"); if(b){ const i=+b.dataset.acbuy, no=S.shop[i], w=AC.buy(st,S,i); if(w) AC.msg(w); else { const u=AC.owned(S,no); if(u){ AC.enter=AC.enter||{}; AC.enter[u.uid]=Date.now(); } if(u&&u.copies>1){ AC.msg(`${AC.hero(no).name} ${u.t}초월!`); AC.pulse=u.uid; clearTimeout(AC.pulseT); AC.pulseT=setTimeout(()=>{ AC.pulse=null; },1500); } } AC.save(); AC.render(); return; }
+    const itb=t.closest("[data-acitem]"); if(itb){ const k=itb.dataset.acitem; AC.itemSel=AC.itemSel===k||!(AC.items(S)[k]>0)?null:k; if(AC.itemSel) AC.msg(`${AC_CONFIG.ac010.items[k].name}: 사용할 영웅을 누르세요`); AC.render(); return; }
     const tk=t.closest("[data-acu]"), lc=t.closest("[data-acloc]");
+    if(AC.itemSel&&tk){ const k=AC.itemSel; AC.itemSel=null; const w=AC.useItem(st,S,k,+tk.dataset.acu); AC.msg(w||AC.itemMsg(k)); AC.sel=null; AC.info=null; AC.save(); AC.render(); return; }
+    if(AC.itemSel){ AC.itemSel=null; AC.render(); return; }
     if(tk&&(!AC.sel||+tk.dataset.acu===AC.sel)){ const id=+tk.dataset.acu; AC.sel=AC.sel===id?null:id; const u=S.units.find(x=>x.uid===id); AC.info=AC.sel&&u?{no:u.no,t:u.t,uid:id}:null; AC.render(); return; }
     if(AC.sel&&lc){ if(lc.dataset.acloc[0]==="f"){ AC.enter=AC.enter||{}; AC.enter[AC.sel]=Date.now(); } const w=AC.move(S,AC.sel,lc.dataset.acloc); if(w) AC.msg(w); AC.sel=null; AC.info=null; AC.save(); AC.render(); return; }
     if(AC.sel||AC.info){ AC.sel=null; AC.info=null; AC.render(); } },
-  onDrag(e){ const st=AC.st; if(st.phase!=="prep") return; const tk=e.target.closest&&e.target.closest("[data-acu]");
+  onDrag(e){ const st=AC.st; if(st.phase!=="prep") return; const tk=e.target.closest&&e.target.closest("[data-acu]"), itd=e.target.closest&&e.target.closest("[data-acitem]");
+    if(e.type==="dragstart"&&itd){ AC.dragItem=itd.dataset.acitem; AC.dragId=null; e.dataTransfer.setData("text/plain","item"); e.dataTransfer.effectAllowed="copy"; return; }
+    if(AC.dragItem&&(e.type==="dragover"||e.type==="drop")){ if(e.type==="dragover"){ if(tk) e.preventDefault(); return; } e.preventDefault(); const k=AC.dragItem; AC.dragItem=null; if(tk){ const w=AC.useItem(st,st.me,k,+tk.dataset.acu); AC.msg(w||AC.itemMsg(k)); AC.save(); AC.render(); } return; }
+    if(e.type==="dragend"){ AC.dragItem=null; }
     if(e.type==="dragstart"){ if(!tk) return; e.dataTransfer.setData("text/plain",tk.dataset.acu); e.dataTransfer.effectAllowed="move"; AC.dragId=+tk.dataset.acu; return; }
     const lc=e.target.closest&&e.target.closest("[data-acloc]"), sz=e.target.closest&&e.target.closest(".acshops");
     if(e.type==="dragover"){ if(lc||sz){ e.preventDefault(); } return; }
@@ -5991,6 +6028,88 @@ const AC={
       if(sz){ const g=AC.sell(st,st.me,id); AC.msg(`판매 +${g}골드`); } else if(lc){ const w=AC.move(st.me,id,lc.dataset.acloc); if(w) AC.msg(w); }
       AC.sel=null; AC.save(); AC.render(); } },
 };
+
+/* ===== 0.10.0v: 아이템 · PVE/보스 라운드 · 보상 ===== */
+AC_CONFIG.ac010={ earlyPve:[1,2,3], every:6, bossEvery:3, dupChance:30, noDupGold:2,
+  lateMon:{base:2.05,perK:0.4,count0:3,countMax:7}, boss:{hp:10,atk:2.5,def:1.5,minions:2},
+  goldBox:85, items:{lo:{ico:"🧬",name:"하급 영웅 복제기",tip:"1–3코 영웅 1장 복제 (+1초월)"},hi:{ico:"💠",name:"고급 영웅 복제기",tip:"모든 코스트 영웅 1장 복제 (+1초월)"},reset:{ico:"🎲",name:"영웅 재설정기",tip:"같은 코스트의 다른 영웅으로 바뀜 · 초월 유지"}},
+  plat:{feast:{name:"골드 대잔치",gold:35},chaos:{name:"완전한 혼돈",decline:30},shadow:{name:"그림자 분신술",lo:3,hi:3},bounty:{name:"현상금 사냥",rounds:4,gold:4},reroll:{name:"원하는게 나올 때 까지",free:30,gold:8},xp:{name:"초고속 성장",rounds:4,xp:4}} };
+Object.assign(AC,{
+  pveK(r){ const A=AC_CONFIG.ac010; if(A.earlyPve.includes(r)) return 0; const n=r-A.earlyPve[A.earlyPve.length-1]; return n>0&&n%(A.every+1)===0?n/(A.every+1):-1; },
+  isPve(st){ return AC.pveK(st.round)>=0; },
+  isBossR(r){ const k=AC.pveK(r); return k>0&&k%AC_CONFIG.ac010.bossEvery===0; },
+  isBoss(st){ return AC.isBossR(st.round); },
+  nextPve(r){ for(let x=r+1;x<r+30;x++) if(AC.pveK(x)>=0) return {r:x,boss:AC.isBossR(x)}; return null; },
+  monsters(st){ const C=AC_CONFIG, A=C.ac010, k=AC.pveK(st.round); if(k<=0){ const n=C.pveCount[st.round]||2; return Array.from({length:n},(_,i)=>({uid:i+1,mon:true,no:0,t:0,loc:`f${i<4?0:1},${C.colOrder[i%4+1]}`})); }
+    if(AC.isBossR(st.round)){ const L=[{uid:1,mon:true,boss:true,no:0,t:0,loc:"f0,3"}]; for(let i=0;i<A.boss.minions;i++) L.push({uid:i+2,mon:true,no:0,t:0,loc:`f1,${[2,4][i%2]}`}); return L; }
+    const n=Math.min(A.lateMon.countMax,A.lateMon.count0+k); return Array.from({length:n},(_,i)=>({uid:i+1,mon:true,no:0,t:0,loc:`f${i<4?0:1},${C.colOrder[i%4+1]}`})); },
+  monStats(round,boss){ const C=AC_CONFIG, A=C.ac010, k=AC.pveK(round), M=C.pveMon; const W=C.pveWeak[round]; if(W) return {atk:W.atk,def:W.def,res:W.def,hp:W.hp,aspd:M.aspd,crit:0,cdmg:100,weak:0,block:0,dmgRed:0,skill:0};
+    const s=k>0?A.lateMon.base*(1+A.lateMon.perK*k):(C.pveScale[round]||1), b=boss?A.boss:{hp:1,atk:1,def:1};
+    return {atk:M.atk*s*b.atk,def:M.def*s*b.def,res:M.res*s*b.def,hp:M.hp*s*b.hp,aspd:M.aspd,crit:M.crit,cdmg:M.cdmg,weak:M.weak,block:M.block,dmgRed:M.dmgRed,skill:0}; },
+  monFace(boss){ return boss?`<span class="acface mon boss"><b>👹</b></span>`:`<span class="acface mon"><b>👾</b></span>`; },
+  /* 영웅 얻기 (풀에서 먼저 차감 · 0이면 그래도 얻음) */
+  gainHero(st,S,no,copies,txt){ const C=AC_CONFIG; copies=copies||1; st.pool[no]=Math.max(0,(st.pool[no]||0)-copies); const u=AC.owned(S,no), nm=AC.hero(no).name;
+    if(u){ u.copies+=copies; u.t=Math.min(C.maxT,u.t+copies*C.mergeT); txt&&txt.push(`${nm} +${copies}장 (${u.t}초월)`); return u; }
+    const f=AC.benchFree(S); if(f>=0){ const n={uid:st.uid++,no,t:Math.min(C.maxT,C.startT+(copies-1)*C.mergeT),copies,loc:"b"+f}; S.units.push(n); txt&&txt.push(`${nm} 획득${copies>1?` (${n.t}초월)`:""}`); return n; }
+    st.pool[no]+=copies; const g=AC.cost(no)*copies; S.gold+=g; txt&&txt.push(`${nm} → 대기석 가득, 자동 판매 +${g} 골드`); return null; },
+  pickHero(st,tier,ex){ const c=AC.heroes().filter(x=>x.tier===tier&&!(ex||[]).includes(x.no)); if(!c.length) return null; const w=c.map(x=>Math.max(0,st.pool[x.no]||0)), tot=w.reduce((a,b)=>a+b,0); if(!tot) return c[Math.floor(AC.rnd(st)*c.length)].no; let q=AC.rnd(st)*tot; for(let i=0;i<c.length;i++){ q-=w[i]; if(q<0) return c[i].no; } return c[c.length-1].no; },
+  items(S){ return S.items=S.items||{lo:0,hi:0,reset:0}; }, buf(S){ return S.buf=S.buf||{bounty:0,xpR:0,free:0}; },
+  /* 아이템 사용 */
+  useItem(st,S,kind,uid){ const C=AC_CONFIG, I=AC.items(S), u=S.units.find(x=>x.uid===uid); if(!u) return "영웅을 고르세요"; if(!(I[kind]>0)) return "아이템 없음"; const tr=AC.tierNo(u.no), nm=AC.hero(u.no).name;
+    if(kind==="lo"||kind==="hi"){ if(kind==="lo"&&tr>3) return "하급 복제기는 1–3코만"; if(u.t>=C.maxT) return "최대 초월";
+      st.pool[u.no]=Math.max(0,(st.pool[u.no]||0)-1); u.copies++; u.t=Math.min(C.maxT,u.t+C.mergeT); I[kind]--; return ""; }
+    if(kind==="reset"){ const nn=AC.pickHero(st,tr,[u.no]); if(nn==null) return "바꿀 영웅 없음"; st.pool[u.no]=(st.pool[u.no]||0)+u.copies; st.pool[nn]=Math.max(0,(st.pool[nn]||0)-u.copies); I.reset--;
+      const o=S.units.find(x=>x!==u&&x.no===nn); if(o){ o.copies+=u.copies; o.t=Math.min(C.maxT,o.t+u.copies*C.mergeT); if(u.loc[0]==="f"&&o.loc[0]!=="f"){ o.loc=u.loc; } S.units.splice(S.units.indexOf(u),1); AC.lastRes={from:nm,to:AC.hero(nn).name,uid:o.uid}; return ""; }
+      u.no=nn; AC.lastRes={from:nm,to:AC.hero(nn).name,uid:u.uid}; return ""; } return "?"; },
+  /* 완전한 혼돈 */
+  chaos(st,S){ const C=AC_CONFIG, F=AC.field(S); let has4=false; const notes=[];
+    for(const u of [...F].sort((a,b)=>AC.score(b)-AC.score(a))){ if(!S.units.includes(u)) continue; const tr=AC.tierNo(u.no); if(tr>=5) continue; let nt=tr+1; if(nt===4&&has4){ nt=tr; notes.push(`${AC.hero(u.no).name}: (구)세나 1명 제한 → 같은 코스트 다른 영웅`); }
+      let nn=AC.pickHero(st,nt,[u.no]); if(nn==null) continue; if(nt===4) has4=true;
+      st.pool[u.no]=(st.pool[u.no]||0)+u.copies; st.pool[nn]=Math.max(0,(st.pool[nn]||0)-u.copies); const o=S.units.find(x=>x!==u&&x.no===nn);
+      if(o){ u.copies+=o.copies; u.t=Math.min(C.maxT,u.t+o.copies*C.mergeT); S.units.splice(S.units.indexOf(o),1); } u.no=nn; u.done=true; }
+    S.units.forEach(u=>delete u.done); return notes; },
+  chaosGain(S){ return AC.field(S).reduce((a,u)=>{ const tr=AC.tierNo(u.no); return a+(tr<5?(AC_CONFIG.tierCost[tr+1]-AC_CONFIG.tierCost[tr])*u.copies:0); },0); },
+  /* 보상 */
+  rwShared(st){ const A=AC_CONFIG.ac010, k=AC.pveK(st.round); if(st.rwR&&st.rwR.round===st.round) return st.rwR;
+    const v=k===0?1+Math.floor(AC.rnd(st)*3):4+Math.floor(AC.rnd(st)*3); return st.rwR={round:st.round,v,box:AC.rnd(st)*100<A.goldBox?"gold":"plat"}; },
+  heroGold(st,v){ const out={gold:0,heroes:[]}; let rem=v; while(rem>0){ const p=1+Math.floor(AC.rnd(st)*Math.min(3,rem)); rem-=p; if(AC.rnd(st)<0.5){ const no=AC.pickHero(st,p); if(no!=null&&(st.pool[no]||0)>0){ out.heroes.push({no,c:1}); continue; } } out.gold+=p; } return out; },
+  rollReward(st,bossFrac){ const A=AC_CONFIG.ac010, k=AC.pveK(st.round), sh=AC.rwShared(st), R={kind:k===0?"early":AC.isBossR(st.round)?"boss":"late",gold:0,heroes:[],items:{lo:0,hi:0,reset:0},title:"",frac:1};
+    if(R.kind!=="boss"){ const h=AC.heroGold(st,sh.v); R.gold=h.gold; R.heroes=h.heroes; R.value=sh.v; if(AC.rnd(st)*100<A.dupChance) R.items.lo=1; else { R.gold+=A.noDupGold; R.noDup=true; } R.title=R.kind==="early"?"몬스터 보상":"PVE 보상"; return R; }
+    R.box=sh.box; R.frac=bossFrac; const pick=n=>Math.floor(AC.rnd(st)*n);
+    if(R.box==="gold"){ const o=pick(5)+1; R.opt=o; R.title="황금 박스";
+      if(o===1){ R.gold=7+pick(4); R.items.lo=1; } else if(o===2){ for(let i=0;i<3;i++){ const no=AC.pickHero(st,3); if(no!=null) R.heroes.push({no,c:1}); } R.items.lo=1; }
+      else if(o===3){ R.gold=5; const no=AC.pickHero(st,3); if(no!=null) R.heroes.push({no,c:1}); R.items.reset=1; } else if(o===4){ R.items.lo=3; R.items.reset=1; }
+      else { const no=AC.pickHero(st,2); if(no!=null) R.heroes.push({no,c:4}); } }
+    else { const keys=Object.keys(A.plat), key=keys[pick(keys.length)], P=A.plat[key]; R.plat=key; R.title="플래티넘 박스 · "+P.name;
+      if(key==="feast") R.gold=P.gold; else if(key==="shadow"){ R.items.lo=P.lo; R.items.hi=P.hi; } else if(key==="bounty") R.bounty=P.rounds; else if(key==="reroll"){ R.free=P.free; R.gold=P.gold; } else if(key==="xp") R.xpR=P.rounds; else if(key==="chaos") R.chaos=true; }
+    if(bossFrac<1){ const f=bossFrac, fl=x=>Math.floor((x||0)*f); R.gold=fl(R.gold); for(const k of ["lo","hi","reset"]) R.items[k]=fl(R.items[k]);
+      const hs=[]; if(R.heroes.length===1&&R.heroes[0].c>1){ const c=fl(R.heroes[0].c); if(c>0) hs.push({no:R.heroes[0].no,c}); } else { const n=fl(R.heroes.length); hs.push(...R.heroes.slice(0,n)); } R.heroes=hs;
+      if(R.bounty) R.bounty=fl(R.bounty); if(R.xpR) R.xpR=fl(R.xpR); if(R.free) R.free=fl(R.free); if(R.chaos){ R.chaos=false; R.chaosLost=true; R.gold=fl(A.plat.chaos.decline); } }
+    return R; },
+  applyReward(st,S,R,isBot){ const A=AC_CONFIG.ac010, I=AC.items(S), Bf=AC.buf(S), txt=[]; if(R.gold){ S.gold+=R.gold; txt.push(`+${R.gold} 골드`); }
+    R.heroes.forEach(h=>AC.gainHero(st,S,h.no,h.c,txt)); for(const k of ["lo","hi","reset"]) if(R.items[k]){ I[k]+=R.items[k]; txt.push(`${A.items[k].ico} ${A.items[k].name} ×${R.items[k]}`); }
+    if(R.bounty){ Bf.bounty+=R.bounty; txt.push(`💰 현상금 사냥 ${R.bounty}라운드`); } if(R.xpR){ Bf.xpR+=R.xpR; txt.push(`⚡ 초고속 성장 ${R.xpR}라운드`); } if(R.free){ Bf.free+=R.free; txt.push(`🎲 무료 새로고침 ${R.free}회`); }
+    if(R.chaos){ if(isBot){ const ok=AC.chaosGain(S)>A.plat.chaos.decline; if(ok){ AC.chaos(st,S); txt.push("완전한 혼돈 수락"); } else { S.gold+=A.plat.chaos.decline; txt.push(`완전한 혼돈 거절 +${A.plat.chaos.decline} 골드`); } } else { S.chaosPend=true; txt.push("완전한 혼돈: 선택 대기"); } }
+    if(R.chaosLost) txt.push("완전한 혼돈 대신 골드 (보스 미처치)");
+    if(!txt.length) txt.push("보상 없음"); if(!isBot) S.rwPop={round:st.round,R,txt,seen:false}; return txt; },
+  itemMsg(k){ const L=AC.lastRes; if(k==="reset"&&L){ AC.lastRes=null; return `🎲 ${L.from} → ${L.to}`; } return `${AC_CONFIG.ac010.items[k].ico} ${AC_CONFIG.ac010.items[k].name} 사용`; },
+  bossFrac(B){ if(!B||!B.units) return 1; const b=B.units.find(u=>u.boss); if(!b) return 1; if(B.winner==="me") return 1; return Math.max(0,Math.min(1,1-Math.max(0,b.hp)/b.maxHp)); },
+  pveReward(st,S,B,isBot){ return AC.applyReward(st,S,AC.rollReward(st,AC.bossFrac(B)),isBot); },
+  chaosPick(st,S,yes){ if(!S.chaosPend) return ""; S.chaosPend=false; if(yes){ const n=AC.chaos(st,S); if(S.rwPop) S.rwPop.txt.push("완전한 혼돈 수락"+(n.length?" · "+n.join(" · "):"")); return n.join(" · "); } S.gold+=AC_CONFIG.ac010.plat.chaos.decline; if(S.rwPop) S.rwPop.txt.push(`완전한 혼돈 거절 +${AC_CONFIG.ac010.plat.chaos.decline} 골드`); return ""; },
+  payRoll(S){ const b=AC.buf(S); if(b.free>0){ b.free--; return; } S.gold-=AC_CONFIG.rerollCost; },
+  bounty(S,kills){ const b=AC.buf(S); if(!(b.bounty>0)) return 0; b.bounty--; const g=kills*AC_CONFIG.ac010.plat.bounty.gold; S.gold+=g; S.bountyLast=g; return g; },
+  xpTick(S){ const b=AC.buf(S); if(b.xpR>0){ b.xpR--; AC.addXp(S,AC_CONFIG.ac010.plat.xp.xp); } },
+  botItems(st,S){ const I=AC.items(S), C=AC_CONFIG; for(const k of ["hi","lo"]) while(I[k]>0){ const c=S.units.filter(u=>u.t<C.maxT&&(k==="hi"||AC.tierNo(u.no)<=3)).sort((a,b)=>(b.loc[0]==="f")-(a.loc[0]==="f")||AC.score(b)-AC.score(a))[0]; if(!c||AC.useItem(st,S,k,c.uid)) break; }
+    while(I.reset>0){ const c=[...S.units].sort((a,b)=>AC.score(a)-AC.score(b))[0]; if(!c||AC.useItem(st,S,"reset",c.uid)) break; } },
+  itemsHTML(st,S){ const A=AC_CONFIG.ac010, I=AC.items(S), b=AC.buf(S), prep=st.phase==="prep";
+    const its=["lo","hi","reset"].map(k=>`<button type="button" class="acitem${AC.itemSel===k?" on":""}${I[k]?"":" none"}" data-acitem="${k}" draggable="${prep&&I[k]?"true":"false"}" title="${esc(A.items[k].name)}: ${esc(A.items[k].tip)} · 영웅에 끌어 놓거나, 누른 뒤 영웅을 누르세요"><b>${A.items[k].ico}</b><small>${I[k]}</small></button>`).join("");
+    const bf=[b.bounty>0?`<i class="acbuf" data-acbuf="bounty" title="현상금 사냥: 처치한 적 영웅 1명당 +${A.plat.bounty.gold} 골드">💰 ${b.bounty}R</i>`:"",b.xpR>0?`<i class="acbuf" data-acbuf="xp" title="초고속 성장: 라운드마다 경험치 +${A.plat.xp.xp}">⚡ ${b.xpR}R</i>`:"",b.free>0?`<i class="acbuf" data-acbuf="free" title="무료 새로고침">🎲 ${b.free}</i>`:""].join("");
+    return `<div class="acitems" data-acitems><span class="ttl">아이템</span>${its}${bf}</div>`; },
+  rwHTML(st){ const S=st.me, P=S.rwPop; if(!P||P.seen||st.phase!=="result") return ""; const R=P.R, boss=R.kind==="boss", cls=boss?(R.box==="plat"?"plat":"gold"):"pve";
+    const fr=boss&&R.frac<1?`<p class="acrwfr" data-acrwfr>보스에게 준 피해 ${Math.round(R.frac*100)}% → 보상 ×${Math.round(R.frac*100)}% (내림)</p>`:"";
+    const ch=S.chaosPend?`<div class="acrwch"><p>판 위 모든 영웅이 한 단계 높은 코스트의 무작위 영웅으로 바뀝니다 (초월 유지 · 5코는 그대로)</p><button type="button" class="acgo" data-acdo="chaosY">수락</button><button type="button" data-acdo="chaosN">거절 (+${AC_CONFIG.ac010.plat.chaos.decline} 골드)</button></div>`:boss?`<button type="button" class="acgo" data-acdo="rwok">확인</button>`:"";
+    return `<div class="acrwd ${cls}${AC.light?" lite":""}" data-acrw="${cls}"><div class="acrwb">${boss?`<div class="acbox ${cls}"><i class="lid"></i><i class="body"></i><i class="glow"></i></div>`:""}<b class="acrwt">${esc(R.title)}</b>${fr}<div class="acrwl">${P.txt.map(t=>`<span>${esc(t)}</span>`).join("")}</div>${ch}</div></div>`; }
+});
 
 /* ===================== 오토체스 0.8v: Phaser 전투 화면 ===================== */
 AC.PX={ game:null, scene:null, host:null, ready:false, units:{}, model:{}, cnt:{}, last:{}, pool:{}, live:{num:0}, atlas:null, frames:{},
@@ -7422,7 +7541,7 @@ $("oppPanel").addEventListener("click",e=>{ if(e.target.closest("[data-opp]")) g
 $("tNotice").addEventListener("click",e=>{ if(e.target.closest("[data-tnclose]")) showTNotice(null); });
 showTNotice(migrateDeckTTypes());
 refreshList(); renderAll();
-AC.init(); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
+AC.init(); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop","dragend"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
 showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"||t==="raid"||t==="ac"?t:"deck"; }catch{ return "deck"; } })());
 (function intro(){ const de=document.documentElement; if(!de.classList.contains("intro")) return;
   if(reduceMotion()){ de.classList.remove("intro"); return; }
