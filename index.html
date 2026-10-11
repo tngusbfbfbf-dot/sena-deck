@@ -1178,6 +1178,10 @@
   .acfx.sk5{font-size:14px;color:#ffe48a;-webkit-text-stroke:.6px #6a4300;text-shadow:0 0 6px #ff9d00,0 1px 2px #000;z-index:12;white-space:nowrap}
   .acfx.rage{color:#ff6262;font-size:14px;text-shadow:0 0 6px #f00,0 1px 2px #000} .acfx.imm{color:#c8f5ff}
   .acbeam{position:absolute;z-index:8;height:6px;margin-top:-3px;transform-origin:0 50%;background:linear-gradient(90deg,#fff,#ffcf5a 30%,#ff8a00);border-radius:3px;box-shadow:0 0 10px #ffb300;pointer-events:none;animation:acfade .6s ease-out forwards}
+  .aczen{position:absolute;left:0;top:0;z-index:9;pointer-events:none;overflow:visible;animation:aczfade 1s ease-out forwards}
+  .aczs{fill:none;stroke:#ffe14a;stroke-width:4;stroke-linejoin:miter;filter:drop-shadow(0 0 4px #fff27a) drop-shadow(0 0 10px #ffc400);stroke-dasharray:2000;stroke-dashoffset:2000;animation:aczdraw .12s linear forwards,aczin .01s linear forwards;opacity:0}
+  @keyframes aczdraw{to{stroke-dashoffset:0}} @keyframes aczin{to{opacity:1}} @keyframes aczfade{from{opacity:1}to{opacity:0}}
+  .aczflash{position:absolute;z-index:8;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fffbd0 0,#ffe14acc 35%,#ffc40000 70%);animation:acfade .45s ease-out forwards}
   .actrail{position:absolute;z-index:7;height:8px;margin-top:-4px;transform-origin:0 50%;background:linear-gradient(90deg,#ff2a2a00,#ff2a2a,#ff8a3a);border-radius:4px;box-shadow:0 0 12px #ff2a2a;pointer-events:none;animation:acfade 1.1s ease-out forwards}
   .acswordrow{position:absolute;z-index:7;background:linear-gradient(90deg,#9ad7ff00,#bfe6ffcc,#9ad7ff00);box-shadow:0 0 18px #7fd0ff;pointer-events:none;animation:acfade .9s ease-out forwards}
   .acring{position:absolute;z-index:7;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #b46bff;box-shadow:0 0 18px #8a3bff,inset 0 0 18px #8a3bff;pointer-events:none;animation:acring .7s ease-out forwards}
@@ -1422,7 +1426,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.7.1v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.7.2v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5289,7 +5293,7 @@ const AC_CONFIG={
     "루디":{name:"영겁의 성채",ico:"🏰",every:6,shield:200,max:600,desc:"상시효과로 자신이 적에게 6회 피격될 때 마다 자신에게 200의 쉴드부여."},
     "오르카":{name:"최후통첩",ico:"🎯",every:8,ammo:4,gap:2,coef:380,pierce:3,fall:30,desc:"적을 8회 타격할 때 마다 적을 관통하는 강력한 대구경 탄환 4발을 장착합니다. 2초에 1발씩 발사되며, 최대 3명까지 관통합니다. 데미지는 경감됩니다."},
     "카마도 탄지로":{name:"사양전신",ico:"☀️",need:3,window:3,dur:8,execPct:10,burn:15,burnDur:3,hop:0.3,desc:"적 처치 관여 3회시, 8초간 다음의 효과를 얻습니다: 최대체력의 10%미만인 적에게 순간이동 후 즉시 처형합니다. 순간 이동시 붉은 궤적을 남기고, 궤적 위를 지나는 모든 적에게 화상을 입힙니다."},
-    "아가츠마 젠이츠":{name:"화뢰신",ico:"⚡",deaths:3,max:3,pause:3,coef:250,desc:"아군의 사망이 3회 발생 시 발동: 즉시 게임이 3초간 정지 되며, 젠이츠는 체력을 완전히 회복 후, 매우 빠른 속도로 이동해 모든 적에게 자신의 공격력 250%피해를 즉시 입힙니다."},
+    "아가츠마 젠이츠":{name:"화뢰신",pathMs:400,fadeMs:1000,ico:"⚡",deaths:3,max:3,pause:3,coef:250,desc:"아군의 사망이 3회 발생 시 발동: 즉시 게임이 3초간 정지 되며, 젠이츠는 체력을 완전히 회복 후, 매우 빠른 속도로 이동해 모든 적에게 자신의 공격력 250%피해를 즉시 입힙니다."},
     "클레미스":{name:"구원의 힘",ico:"⏳",amp:30,desc:"자신 제외 모든 아군 사망 시 발동: 클레미스가 차원을 조작해 시공간을 되돌립니다. 해당 라운드의 최초 전투 상태로 돌아갑니다. 아군에게 피해량 증폭 부여 및 스킬 사용 횟수 초기화. 체력이 40%이하로 떨어지면, 1초 간 무적 및 공격 대상 해제",low:40,invDur:1},
     "하연":{name:"봉천문",ico:"⛩️",dur:8,desc:"아군에게 상태이상 발생 시 발동: 모든 상태이상을 즉시 해제하고 상대에게 부여된 버프를 제거 후, 8초간 상대 버프를 차단합니다. 아군에게는 8초간 모든 디버프& 상태이상면역을 부여"},
     "녹스":{name:"심연의 검풍",ico:"🌑",sh:20,sh2:15,low:50,deaths:3,ls:15,fix:50,radius:1,desc:"전투 시작 시 발동: 녹스가 자신의 최대 생명력의 20%에 해당하는 보호막을 얻습니다.\n자신의 생명력이 50% 이하가 되면 녹스가 자신의 최대 생명력의 15%에 해당하는 보호막을 얻습니다.(전투당 1회 발동)\n적 또는 아군 3회 사망 시: 자신이 모든 피해 흡혈 15%를 얻고, 녹스 주변 1칸의 적에게 자신의 회복량에 비례한 고정피해를 입힙니다."},
@@ -5529,7 +5533,9 @@ const AC={
     const kk=B.units.find(u=>u.uid===k.uid); B.events.push({k:"rewind",side:k.side},{k:"fx",b:kk.uid,txt:"구원의 힘!",cls:"sk5"}); AC.sstat(B,k.side,"sk:클레미스",1); },
   zenDash(B){ const z=B.units.find(u=>u.uid===B.pauseBy); B.pauseBy=null; if(!z||!z.alive) return; const K=AC_CONFIG.skills5["아가츠마 젠이츠"]; AC.heal(B,z,z.maxHp,"sk:아가츠마 젠이츠");
     B.events.push({k:"fx",b:z.uid,txt:"화뢰신!",cls:"sk5"},{k:"zap",b:z.uid});
-    for(const f of B.units.filter(x=>x.alive&&x.side!==z.side&&!x.disabled&&!(x.untg&&B.t<x.untg))){ const d=Math.max(1,Math.round(AC.calcHit(B,z,f,K.coef,false,true))); B.events.push({k:"hit",a:z.uid,b:f.uid,d,crit:false,sk:true,rg:false,aR:z.R,aC:z.C,bR:f.R,bC:f.C}); AC.applyDmg(B,z,f,d,{id:"sk:아가츠마 젠이츠"}); } },
+    const left=B.units.filter(x=>x.alive&&x.side!==z.side&&!x.disabled&&!(x.untg&&B.t<x.untg)), ord=[]; let cur=z; while(left.length){ left.sort((a,b)=>AC.dist(cur,a)-AC.dist(cur,b)); cur=left.shift(); ord.push(cur); }
+    const n=ord.length+1, seg=K.pathMs/Math.max(1,n); B.events.push({k:"zenpath",a:z.uid,pts:[[z.R,z.C],...ord.map(f=>[f.R,f.C]),[z.R,z.C]],seg,fade:K.fadeMs});
+    ord.forEach((f,i)=>{ const d=Math.max(1,Math.round(AC.calcHit(B,z,f,K.coef,false,true))); B.events.push({k:"hit",a:z.uid,b:f.uid,d,crit:false,sk:true,rg:false,zen:true,dl:Math.round(seg*(i+1)),aR:z.R,aC:z.C,bR:f.R,bC:f.C}); AC.applyDmg(B,z,f,d,{id:"sk:아가츠마 젠이츠"}); }); },
   orcaFire(B,u,tg){ const K=AC_CONFIG.skills5["오르카"], C=AC_CONFIG; u.ammo--; u.orcaNext=B.t+K.gap; const dR=tg.R-u.R, dC=tg.C-u.C, L=Math.hypot(dR,dC)||1, hit=[]; let R=u.R, Cc=u.C, eR=u.R, eC=u.C;
     for(let i=0;i<80;i++){ R+=dR/L*0.25; Cc+=dC/L*0.25; const r=Math.round(R), c=Math.round(Cc); if(r<0||r>=C.rows*2||c<0||c>=C.cols) break; eR=R; eC=Cc; const v=B.units.find(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&x.R===r&&x.C===c); if(v&&!hit.includes(v)){ hit.push(v); if(hit.length>=K.pierce) break; } }
     B.events.push({k:"shot",a:u.uid,aR:u.R,aC:u.C,bR:eR,bC:eC});
@@ -5809,7 +5815,14 @@ const AC={
     const add=(cls,x,y,txt)=>{ const s=document.createElement("span"); s.className=cls; s.style.left=x+"px"; s.style.top=y+"px"; if(txt!=null) s.textContent=txt; L.appendChild(s); return s; };
     const bd=$("acBoard"); if(bd){ bd.classList.toggle("acpause",!!B.paused); }
     const line=(cls,e,ms)=>{ const [ax,ay]=px(e.aR,e.aC), [bx,by]=px(e.bR,e.bC), l=add(cls,ax,ay); l.style.width=Math.hypot(bx-ax,by-ay)+"px"; l.style.transform=`rotate(${Math.atan2(by-ay,bx-ax)}rad)`; setTimeout(()=>l.remove(),ms*slow); };
-    ev.forEach(e=>{ if(e.k==="shot") line("acbeam",e,600); else if(e.k==="trail") line("actrail",e,1100);
+    ev.forEach(e=>{ if(e.dl&&!e._d){ e._d=1; setTimeout(()=>{ if(AC.anim) AC.drawBattle(B,[e]); },e.dl*slow); return; }
+      if(e.zen&&e.k==="hit"){ const [x,y]=px(e.bR,e.bC), q=add("aczflash",x,y); q.style.width=q.style.height=(Math.min(W,H)*1.1)+"px"; setTimeout(()=>q.remove(),450*slow); }
+      if(e.k==="zenpath"){ const ns="http://www.w3.org/2000/svg", sv=document.createElementNS(ns,"svg"); sv.setAttribute("class","aczen"); sv.setAttribute("data-aczen",""); sv.setAttribute("width",L.clientWidth); sv.setAttribute("height",L.clientHeight); L.appendChild(sv);
+        const P=e.pts.map(([r,c])=>px(r,c)), amp=Math.min(W,H)*0.18; for(let i=0;i+1<P.length;i++){ const [ax,ay]=P[i],[bx,by]=P[i+1], dx=bx-ax, dy=by-ay, len=Math.hypot(dx,dy)||1, nx=-dy/len, ny=dx/len, k=Math.max(3,Math.round(len/(Math.min(W,H)*0.35))); let d=`M${ax},${ay}`;
+          for(let j=1;j<k;j++){ const t=j/k, o=(j%2?1:-1)*amp; d+=` L${ax+dx*t+nx*o},${ay+dy*t+ny*o}`; } d+=` L${bx},${by}`;
+          const p=document.createElementNS(ns,"path"); p.setAttribute("d",d); p.setAttribute("class","aczs"); p.setAttribute("data-aczseg",i); p.style.animationDelay=(e.seg*i*slow)+"ms,"+(e.seg*i*slow)+"ms"; sv.appendChild(p); }
+        sv.style.animationDuration=(e.fade*slow)+"ms"; sv.style.animationDelay=(e.seg*(P.length-1)*slow)+"ms"; setTimeout(()=>sv.remove(),(e.seg*(P.length-1)+e.fade+100)*slow); return; }
+      if(e.k==="shot") line("acbeam",e,600); else if(e.k==="trail") line("actrail",e,1100);
       else if(e.k==="sword"){ e.rows.filter(r=>r>=0&&r<C.rows*2).forEach(r=>{ const q=add("acswordrow",0,r*H); q.style.width=L.clientWidth+"px"; q.style.height=H+"px"; setTimeout(()=>q.remove(),900*slow); }); }
       else if(e.k==="ring"){ const t=B.units.find(u=>u.uid===e.b); if(t){ const [x,y]=px(t.R,t.C), q=add("acring",x,y); q.style.width=q.style.height=(Math.min(W,H)*3)+"px"; setTimeout(()=>q.remove(),700*slow); } }
       else if(e.k==="zap"){ const q=add("aczap",0,0); setTimeout(()=>q.remove(),700*slow); }
