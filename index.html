@@ -5838,7 +5838,7 @@ const AC={
   sk3Init(B,u){ const K=u.K; if(u.name==="카일"||u.name==="태오") u.asPct+=K.as; if(u.name==="브란즈&브란셀") u.asPct-=K.slow; if(u.name==="트루드"){ u.dr+=K.red; u.trCut=K.red; } },
   sk3Start(B){ const C=AC_CONFIG; for(const u of B.units.slice()){ if(!u.s3||!u.alive) continue; const K=u.K;
       if(u.skId==="라드그리드"){ u.def*=1+K.pct/100; u.res=(u.res||0)*(1+K.pct/100); }
-      if(u.skId==="스파이크") B.units.filter(x=>x.alive&&x.side===u.side&&x.C===u.C).forEach(x=>{ x.burnImm=Math.max(x.burnImm||0,B.t+K.imm); });
+      if(u.skId==="스파이크") B.units.filter(x=>x.alive&&x.side===u.side&&x.R===u.R).forEach(x=>{ x.burnImm=Math.max(x.burnImm||0,B.t+K.imm); });
       if(u.skId==="오공"){ const p=K.pct/100, rows=u.side==="me"?[C.rows,C.rows*2]:[0,C.rows]; let best=null, bd=1e9;
         for(let R=rows[0];R<rows[1];R++) for(let c=0;c<C.cols;c++){ if(B.units.some(x=>x.alive&&x.R===R&&x.C===c)) continue; const d=Math.hypot(R-u.R,c-u.C); if(d<bd){ bd=d; best=[R,c]; } }
         if(!best) continue; const K0=u.K; u.K=null; const c=JSON.parse(JSON.stringify(u)); u.K=K0;
