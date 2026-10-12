@@ -1484,7 +1484,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.10.0v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.10.1v</span></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5297,14 +5297,15 @@ const AC_CONFIG={
           4:["겔리두스","파이","로지","밀리아","쥬리"],
           5:["오르카","동영","하연","카마도 탄지로","아가츠마 젠이츠","실베스타","클레미스","녹스","루디","헬레니아"]},
   // 역할군: range = 사거리 종류 · dmg = 물리(phys)/마법(magic) · 스탯 틀 (1코 0초월 기준, 비용 배율·초월 성장 곱함)
-  // 0.7v 난이도 (봇): gold = 라운드마다 추가 골드 · statPct = 공·생 보너스% · smart = 경제(이자 eco 골드 유지)·새로고침·중복 보관·시너지 구매·배치
+  // 0.10.1v 난이도 (봇): 운영 판단만 다름 · smart = 경제·초월/시너지 가중·A/B 전략 · plan = 목표 시너지 · adapt/allIn/contest = 상대 대응 · simPlace = 배치 모의 전투
+  // 0.10.1v: 난이도 = 운영 판단만 (보너스 골드 · 능력치 · 새로고침 한도 차이 없음)
   difficulty:[
-    {id:"easy",name:"쉬움",gold:0,rolls:0,buyXp:false,random:true},
-    {id:"normal",name:"보통",gold:0,rolls:3,buyXp:true},
-    {id:"hard",name:"어려움",gold:0,smart:true,rolls:4,lvAhead:0,eco:30,ecoFrom:5,panicHp:35,wDup:30,wSyn:6,minVal:12},
-    {id:"nightmare",name:"악몽",gold:1,smart:true,rolls:6,lvAhead:1,eco:50,ecoFrom:4,panicHp:40,wDup:35,wSyn:8,minVal:14},
-    {id:"hell",name:"지옥",gold:2,statPct:5,smart:true,rolls:8,lvAhead:1,eco:50,ecoFrom:4,panicHp:45,wDup:40,wSyn:9,minVal:14}],
-  endlessDiff:1, aiSpendAbove:50, aiStratA:{cap:6,until:15,rollFrom:5,extra:3}, aiStratB:{from:6,ahead:0,rollFrom:11}, renderer:"phaser", pxType:"canvas" /* "dom" = 예전 DOM 전투 화면 */, fxNumCap:24, fxNumCapLight:8, ffaLossBase:3, ffaLossPerUnit:2, ffaEarly:{until:10,mult:0.5} /* 0.9.2v: 초반(10라운드까지) 패배 피해 절반 */, botNames:["봇 아일린","봇 루디","봇 레이첼","봇 델론즈","봇 스파이크","봇 제이브","봇 크리스"], maxBots:7,
+    {id:"easy",name:"쉬움",rolls:3,buyXp:true,desc:"기본 운영: 좋은 카드·겹치는 카드부터 사고 경험치를 삽니다."},
+    {id:"normal",name:"보통",smart:true,rolls:6,lvAhead:1,eco:50,ecoFrom:4,panicHp:45,wDup:40,wSyn:9,minVal:14,desc:"이자·초월·시너지를 따지는 운영 · 초반 저코스트(A)/후반 고코스트(B) 전략 · 체력이 낮으면 올인."},
+    {id:"hard",name:"어려움",smart:true,rolls:6,lvAhead:1,eco:50,ecoFrom:4,panicHp:45,wDup:40,wSyn:9,minVal:14,plan:true,itemsSmart:true,desc:"보통 + 목표 시너지 덱을 미리 정해 그쪽으로 사고, 막히면 갈아탐 · 아이템은 곧 이정표 초월이 될 영웅에."},
+    {id:"nightmare",name:"악몽",smart:true,rolls:6,lvAhead:1,eco:50,ecoFrom:4,panicHp:45,wDup:40,wSyn:9,minVal:14,plan:true,itemsSmart:true,adapt:true,allIn:true,contest:true,desc:"어려움 + 상대 덱에 맞춘 배치 · 체력·순위에 따른 올인 시점 · 다른 플레이어와 겹치는 영웅 피하기."},
+    {id:"hell",name:"지옥",smart:true,rolls:6,lvAhead:1,eco:50,ecoFrom:4,panicHp:45,wDup:40,wSyn:9,minVal:14,plan:true,itemsSmart:true,adapt:true,allIn:true,contest:true,simPlace:true,desc:"악몽 + 매 준비 단계마다 배치 후보를 상대와 미리 모의 전투해 가장 좋은 배치를 고름."}],
+  endlessDiff:1, aiSimBudget:10, aiPlanW:24, aiContestW:12, aiSimSeeds:2, aiSimMargin:15, aiRoundBudget:25, aiSpendAbove:50, aiStratA:{cap:6,until:15,rollFrom:5,extra:3}, aiStratB:{from:6,ahead:0,rollFrom:11}, renderer:"phaser", pxType:"canvas" /* "dom" = 예전 DOM 전투 화면 */, fxNumCap:24, fxNumCapLight:8, ffaLossBase:3, ffaLossPerUnit:2, ffaEarly:{until:10,mult:0.5} /* 0.9.2v: 초반(10라운드까지) 패배 피해 절반 */, botNames:["봇 아일린","봇 루디","봇 레이첼","봇 델론즈","봇 스파이크","봇 제이브","봇 크리스"], maxBots:7,
   roles:{
     rp:{name:"원거리 물리 딜러",short:"원물",range:"ranged",dmg:"phys",atk:92,def:18,res:14,hp:700,aspd:1.65,crit:10},
     rm:{name:"원거리 마법 딜러",short:"원마",range:"ranged",dmg:"magic",atk:96,def:14,res:20,hp:650,aspd:1.6,crit:5},
@@ -5544,12 +5545,11 @@ const AC={
   ffaNext(st){ const C=AC_CONFIG; for(const p of st.players.filter(x=>x.alive)){ p.S.gold+=AC.income(p.S.gold,p.S.streak,p.S.lastWin); AC.addXp(p.S,C.xpPerRound); }
     st.round++; if(!AC.isPve(st)) st.players.filter(x=>x.alive).forEach(p=>AC.xpTick(p.S)); const S=st.me; if(S.locked){ S.locked=false; } else S.shop=AC.roll(st,S.level);
     if(!AC.isPve(st)) AC.ffaPair(st); else { st.pairs=null; st.opp=null; }
-    for(const p of st.players.filter(x=>x.alive&&!x.me)){ const pr=st.pairs&&st.pairs.find(q=>q.a===p.id||q.b===p.id), foe=pr?st.players[pr.a===p.id?pr.b:pr.a].S:null; AC.aiPrep(st,p.S,st.diff,foe,p.hp); }
+    for(const p of st.players.filter(x=>x.alive&&!x.me)){ const pr=st.pairs&&st.pairs.find(q=>q.a===p.id||q.b===p.id), foe=pr?st.players[pr.a===p.id?pr.b:pr.a].S:null; AC.aiPrep(st,p.S,p.diff??st.diff,foe,p.hp); }
     if(st.pairs) AC.linkOpp(st); st.phase="prep"; },
   /* 난이도별 AI */
-  aiPrep(st,S,diff,foe,hp){ AC.botItems(st,S); const D=AC_CONFIG.difficulty[diff==null?1:diff]; S.bonus=D.statPct?{pct:D.statPct}:null; if(D.smart) return AC.aiSmart(st,S,D,foe,hp==null?100:hp); return AC.aiBasic(st,S,D); },
+  aiPrep(st,S,diff,foe,hp){ const D=AC_CONFIG.difficulty[diff==null?1:diff]; if(D.itemsSmart) AC.botItemsSmart(st,S); else AC.botItems(st,S); S.bonus=null; if(D.smart) return AC.aiSmart(st,S,D,foe,hp==null?100:hp); return AC.aiBasic(st,S,D); },
   aiBasic(st,S,D){ const C=AC_CONFIG, tl=C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel;
-    if(st.round>1) S.gold+=D.gold;
     if(D.buyXp) while(S.level<tl&&S.gold>=C.xpBuyCost+C.aiReserve) AC.buyXp(S);
     while(S.gold>C.aiSpendAbove&&S.level<C.maxLevel) AC.buyXp(S); /* 0.9.1v: 골드 쌓아두기 방지 */
     for(let r=0;r<=D.rolls;r++){ S.shop=AC.roll(st,S.level);
@@ -5561,10 +5561,9 @@ const AC={
   synCount(S,no,nos){ let n=0; for(const s of AC.synOf(no)) for(const m of nos) if(m!==no&&s.members.includes(AC.hero(m).name)) n++; return n; },
   aiSmart(st,S,D,foe,hp){ const C=AC_CONFIG, SG=S.strat||(S.strat=AC.rnd(st)<0.5?"A":"B"), base=(C.aiLevelByRound[Math.min(st.round,C.aiLevelByRound.length)-1]||C.maxLevel)+D.lvAhead, tl=Math.min(C.maxLevel,SG==="A"?(st.round<C.aiStratA.until?Math.min(base,C.aiStratA.cap):base):base+(st.round>=C.aiStratB.from?C.aiStratB.ahead:0));
     /* 0.9.1v 전략: A = 초반 저코스트 고초월(리롤) · B = 초반 아끼고 레벨업 → 후반 고코스트 */
-    if(st.round>1) S.gold+=D.gold;
-    const reserve=()=>hp<=D.panicHp?0:SG==="B"&&st.round>=C.aiStratB.rollFrom?10:st.round>=D.ecoFrom?D.eco:Math.min(D.eco,10); const nos=()=>S.units.map(u=>u.no);
+    if(D.plan) AC.aiPlan(st,S,D); const allIn=D.allIn&&AC.allIn(st,S,hp); const reserve=()=>hp<=D.panicHp||allIn?0:SG==="B"&&st.round>=C.aiStratB.rollFrom?10:st.round>=D.ecoFrom?D.eco:Math.min(D.eco,10); const nos=()=>S.units.map(u=>u.no);
     while(S.level<tl&&S.gold-C.xpBuyCost>=Math.min(reserve(),S.gold-C.xpBuyCost)&&S.gold>=C.xpBuyCost&&(S.gold-C.xpBuyCost>=reserve()||(SG!=="B"&&S.level<tl-1))) AC.buyXp(S);
-    const val=no=>{ const o=AC.owned(S,no); return (o?D.wDup+(o.t<C.maxT?0:-99):0)+AC.synCount(S,no,nos())*D.wSyn+AC.tierNo(no)*5+(SG==="A"?(AC.tierNo(no)<=2?(o?D.wDup*0.6:6):0)-AC.tierNo(no)*2:AC.tierNo(no)*4-(AC.tierNo(no)<=2&&st.round>=C.aiStratB.from&&!o?10:0))+(AC.roleKey(no)[0]==="t"&&S.units.filter(u=>AC.roleKey(u.no)[0]==="t").length<2?8:0); };
+    const val=no=>{ const o=AC.owned(S,no); return (o?D.wDup+(o.t<C.maxT?0:-99):0)+AC.synCount(S,no,nos())*D.wSyn+AC.tierNo(no)*5+(SG==="A"?(AC.tierNo(no)<=2?(o?D.wDup*0.6:6):0)-AC.tierNo(no)*2:AC.tierNo(no)*4-(AC.tierNo(no)<=2&&st.round>=C.aiStratB.from&&!o?10:0))+(AC.roleKey(no)[0]==="t"&&S.units.filter(u=>AC.roleKey(u.no)[0]==="t").length<2?8:0)+(D.plan&&S.plan&&AC.synById(S.plan).members.includes(AC.hero(no).name)?AC_CONFIG.aiPlanW:0)-(D.contest&&!o?AC.contest(st,S,no)*AC_CONFIG.aiContestW:0); };
     const rolls=SG==="A"?D.rolls+(st.round>=C.aiStratA.rollFrom?C.aiStratA.extra:0):(st.round<C.aiStratB.rollFrom?0:D.rolls);
     for(let r=0;r<=rolls+4;r++){ if(r>0||!S.shop||!S.shop.length) S.shop=AC.roll(st,S.level);
       const order=S.shop.map((no,i)=>({no,i,v:no==null?-1:val(no)})).filter(x=>x.no!=null).sort((a,b)=>b.v-a.v);
@@ -5573,13 +5572,13 @@ const AC={
         if(!AC.canBuy(st,S,x.i)) AC.buy(st,S,x.i); }
       const short=S.units.length<S.level&&S.gold>=C.rerollCost+1; if(!short&&(r>=rolls||S.gold-C.rerollCost<reserve()+2)) break; if(r>=rolls+4) break; AC.payRoll(S); }
     while(S.gold>=C.aiSpendAbove+10&&S.level<C.maxLevel) AC.buyXp(S);
-    AC.smartPlace(S,foe); },
-  smartPlace(S,foe){ const C=AC_CONFIG; S.units.forEach((u,i)=>u.loc="t"+i); const nos=S.units.map(u=>u.no);
-    const sc=u=>AC.score(u)+AC.synCount(S,u.no,nos)*4; const best=[...S.units].sort((a,b)=>sc(b)-sc(a)); let uq=0; const ok=best.filter(u=>!AC.isUnique(u.no)||!uq++), on=ok.slice(0,S.level), off=best.filter(u=>!on.includes(u));
+    if(D.itemsSmart) AC.botItemsSmart(st,S); if(D.simPlace&&foe) AC.simPlace(st,S,foe,D); else AC.smartPlace(S,D.adapt?foe:null,{plan:S.plan}); },
+  smartPlace(S,foe,opt){ const C=AC_CONFIG; S.units.forEach((u,i)=>u.loc="t"+i); const nos=S.units.map(u=>u.no);
+    opt=opt||{}; const pm=opt.plan?AC.synById(opt.plan).members:[]; const sc=u=>AC.score(u)+AC.synCount(S,u.no,nos)*(opt.alt===2?0:4)+(pm.includes(AC.hero(u.no).name)?6:0); const best=[...S.units].sort((a,b)=>sc(b)-sc(a)); let uq=0; const ok=best.filter(u=>!AC.isUnique(u.no)||!uq++), on=ok.slice(0,S.level), off=best.filter(u=>!on.includes(u));
     const used=new Set(), put=(u,rows)=>{ for(const r of rows) for(const c of C.colOrder){ const k="f"+r+","+c; if(!used.has(k)){ used.add(k); u.loc=k; return; } } };
-    const assn=foe?AC.field(foe).filter(u=>AC.synOf(u.no).some(s=>s.id==="assn")).length:0, rk=u=>AC.roleKey(u.no)||"";
+    const assn=foe?AC.field(foe).filter(u=>AC.synOf(u.no).some(s=>s.id==="assn")).length+(opt.alt===1?2:0):(opt.alt===1?2:0), foeRng=foe?AC.field(foe).filter(u=>AC.rangeOf(u.no)>1).length:0, rk=u=>AC.roleKey(u.no)||"";
     const tanks=on.filter(u=>rk(u)[0]==="t"&&AC.rangeOf(u.no)<=1), mel=on.filter(u=>!tanks.includes(u)&&AC.rangeOf(u.no)<=1), rng=on.filter(u=>AC.rangeOf(u.no)>1);
-    if(assn>=2&&tanks.length>=2){ put(tanks.pop(),[3]); } tanks.forEach(u=>put(u,[0,1])); mel.forEach(u=>put(u,[0,1,2])); rng.forEach(u=>put(u,assn>=2?[2,3,1]:[3,2,1]));
+    if(assn>=2&&tanks.length>=2){ put(tanks.pop(),[3]); } tanks.forEach(u=>put(u,[0,1])); mel.forEach(u=>put(u,foeRng>=4?[0,1]:[0,1,2])); rng.forEach(u=>put(u,assn>=2?[2,3,1]:[3,2,1]));
     off.forEach((u,i)=>{ if(i<C.bench) u.loc="b"+i; }); S.units=S.units.filter(u=>u.loc[0]!=="t"); },
   aiPrepare(st){ AC.aiPrep(st,st.ai,st.diff==null?1:st.diff,st.me,st.aiHp); },
   score(u){ return AC.tierNo(u.no)*20+u.t*3; },
@@ -5908,7 +5907,7 @@ const AC={
   modeHTML(){ const C=AC_CONFIG, m=AC.msel(), p=AC.prog();
     return `<div class="acov acmodeov" data-acov="mode"><div class="acovb wide"><b>게임 모드</b><div class="acmodes"><button type="button" data-acpick="ffa" class="${m.mode==="ffa"?"on":""}">👑 개인전<small>최대 8인 · 마지막 1인 생존</small></button><button type="button" data-acpick="endless" class="${m.mode==="endless"?"on":""}">♾ 무한 모드<small>상대는 죽지 않음 · 최고 ${p.endlessBest}라운드</small></button></div>
       ${m.mode==="ffa"?`<div class="acmrow"><span>봇</span>${Array.from({length:C.maxBots},(_,i)=>`<button type="button" data-acbots="${i+1}" class="${m.bots===i+1?"on":""}">${i+1}</button>`).join("")}</div>
-      <div class="acmrow" data-acdiffs><span>난이도</span>${C.difficulty.map((d,i)=>`<button type="button" data-acdiff="${i}" class="${m.diff===i?"on":""}"${i>p.unlocked?" disabled title=\"이전 난이도 1위로 열림\"":""}>${i>p.unlocked?"🔒":""}${d.name}${p.wins[i]?" ✓":""}</button>`).join("")}</div>`:`<p class="muted">최고 기록 <b data-acbest>${p.endlessBest}</b>라운드 · 상대 보통 AI</p>`}
+      <div class="acmrow" data-acdiffs><span>난이도</span>${C.difficulty.map((d,i)=>`<button type="button" data-acdiff="${i}" class="${m.diff===i?"on":""}"${i>p.unlocked?" disabled title=\"이전 난이도 1위로 열림\"":""}>${i>p.unlocked?"🔒":""}${d.name}${p.wins[i]?" ✓":""}</button>`).join("")}</div><p class="muted acdiffdesc" data-acdiffdesc>${esc(C.difficulty[m.diff].desc||"")}</p>`:`<p class="muted">최고 기록 <b data-acbest>${p.endlessBest}</b>라운드 · 상대 보통 AI</p>`}
       <div><button type="button" class="acgo" data-acdo="mstart">시작</button>${AC.st&&AC.st.round>1&&!["over","win"].includes(AC.st.phase)?`<button type="button" data-acdo="mclose">계속하기</button>`:""}</div></div></div>`; },
   modeTag(st){ const C=AC_CONFIG; return st.mode==="endless"?`<i class="acmtag" data-acmtag>♾ 최고 ${AC.prog().endlessBest}</i>`:`<i class="acmtag" data-acmtag>${st.bots>1?`개인전 ${st.bots+1}인`:"1:1"} · ${AC.dif(st).name}</i>`; },
   plHTML(st){ if(!AC.isFfa(st)) return ""; const P=st.players, open=AC.plOpen!=null?AC.plOpen:!AC.mob(); const al=P.filter(p=>p.alive).length;
@@ -6029,6 +6028,32 @@ const AC={
       AC.sel=null; AC.save(); AC.render(); } },
 };
 
+
+/* ===== 0.10.1v: 난이도별 운영 판단 ===== */
+Object.assign(AC,{
+  others(st,S){ return AC.isFfa(st)?st.players.filter(p=>p.alive&&p.S!==S).map(p=>p.S):[st.me,st.ai].filter(x=>x&&x!==S); },
+  contest(st,S,no){ let n=0; for(const O of AC.others(st,S)) if(O.units.some(u=>u.no===no)) n++; return n; },
+  planScore(st,S,s,D){ const C=AC_CONFIG; let v=0; for(const m of s.members){ const h=AC.heroes().find(x=>AC.hero(x.no).name===m); if(!h) continue; const o=AC.owned(S,h.no); if(o) v+=4+o.t; if((S.shop||[]).includes(h.no)) v+=2; v+=Math.max(0,st.pool[h.no]||0)/C.poolCopies[h.tier]; if(D.contest&&!o) v-=AC.contest(st,S,h.no)*1.5; if(h.tier>=4&&S.level<7) v-=0.5; } return v; },
+  aiPlan(st,S,D){ const L=AC_CONFIG.syn.filter(s=>!s.sena&&s.members.length>=4&&!s.exact); if(!L.length) return; const sc=L.map(s=>[s.id,AC.planScore(st,S,s,D)]).sort((a,b)=>b[1]-a[1]);
+    if(!S.plan){ S.plan=sc[0][0]; S.planAt=st.round; return; } const cur=(sc.find(x=>x[0]===S.plan)||[0,0])[1]; if(st.round-(S.planAt||0)>=3&&sc[0][0]!==S.plan&&sc[0][1]>cur*1.4+2){ S.plan=sc[0][0]; S.planAt=st.round; S.pivots=(S.pivots||0)+1; } },
+  allIn(st,S,hp){ if(!AC.isFfa(st)) return hp<=55; const A=st.players.filter(p=>p.alive), me=A.find(p=>p.S===S); if(!me) return false; const rank=1+A.filter(p=>p.hp>me.hp).length; return (rank>=A.length-1&&hp<=65)||(A.length<=3&&st.round>=14); },
+  msNext(u){ const m=AC.tierNo(u.no)===5?[3,6,12]:[6,12]; return m.find(x=>x>u.t)-u.t; },
+  botItemsSmart(st,S){ const I=AC.items(S), C=AC_CONFIG, pm=S.plan?AC.synById(S.plan).members:[];
+    const pri=u=>(u.loc[0]==="f"?20:0)-AC.msNext(u)*5+AC.score(u)/4+(pm.includes(AC.hero(u.no).name)?8:0);
+    for(const k of ["hi","lo"]) while(I[k]>0){ const c=S.units.filter(u=>u.t<C.maxT&&(k==="hi"||AC.tierNo(u.no)<=3)).sort((a,b)=>pri(b)-pri(a))[0]; if(!c||AC.useItem(st,S,k,c.uid)) break; }
+    while(I.reset>0){ const c=S.units.filter(u=>!pm.includes(AC.hero(u.no).name)).sort((a,b)=>AC.score(a)-AC.score(b))[0]; if(!c||AC.useItem(st,S,"reset",c.uid)) break; } },
+  simPlace(st,S,foe,D){ const t0=performance.now(), B0=AC_CONFIG.aiSimBudget, units0=S.units.map(u=>Object.assign({},u)), cands=[];
+    for(const opt of [{plan:S.plan},{plan:S.plan,alt:1},{plan:S.plan,alt:2},{}]){ S.units=units0.map(u=>Object.assign({},u)); AC.smartPlace(S,opt.alt||opt.plan?foe:null,opt); const key=S.units.map(u=>u.uid+":"+u.loc).join(); if(!cands.some(c=>c.key===key)) cands.push({key,units:S.units.map(u=>Object.assign({},u))}); }
+    { const base=cands[0].units, F=base.filter(u=>u.loc[0]==="f"), Bn=base.filter(u=>u.loc[0]==="b").sort((x,y)=>AC.score(y)-AC.score(x)).slice(0,2);
+      for(const bu of Bn){ const fw=[...F].sort((x,y)=>AC.score(x)-AC.score(y)).find(fu=>!(AC.isUnique(bu.no)&&F.some(z=>z!==fu&&AC.isUnique(z.no)))); if(!fw) continue; const U=base.map(u=>Object.assign({},u)); const a1=U.find(u=>u.uid===bu.uid), a2=U.find(u=>u.uid===fw.uid); [a1.loc,a2.loc]=[a2.loc,a1.loc];
+        const T={level:S.level,units:U}; const keep=new Set(U.filter(u=>u.loc[0]==="f").map(u=>u.uid)); T.units.forEach(u=>{ u._k=keep.has(u.uid); }); const key=U.map(u=>u.uid+":"+u.loc).join(); if(!cands.some(c=>c.key===key)) cands.push({key,units:U}); } }
+    if(!AC.field(foe).length||cands.length<2){ S.units=cands[0].units; return; } let best=cands[0], bv=-1e9;
+    const C=AC_CONFIG; AC.simSpent=AC.simSpentR===st.round?AC.simSpent||0:0; AC.simSpentR=st.round;
+    for(const c of cands){ if(c!==cands[0]&&(performance.now()-t0>B0||AC.simSpent>C.aiRoundBudget)) break; const t1=performance.now(); let v=0; S.units=c.units.map(u=>Object.assign({},u));
+      for(let k=0;k<C.aiSimSeeds;k++){ const B=AC.battleRun(AC.battleInit({seed:(st.seed^(st.round*131+k*977))>>>0,round:st.round,me:S,ai:foe})); v+=(B.winner==="me"?100:0)+B.units.filter(u=>u.side==="me"&&u.alive).length*5-B.units.filter(u=>u.side==="ai"&&u.alive).length*5; }
+      c.v=v/C.aiSimSeeds+(c===cands[0]?C.aiSimMargin:0); AC.simSpent+=performance.now()-t1; if(c.v>bv){ bv=c.v; best=c; } }
+    S.units=best.units; S.simTried=cands.filter(c=>c.v!=null).length; }
+});
 /* ===== 0.10.0v: 아이템 · PVE/보스 라운드 · 보상 ===== */
 AC_CONFIG.ac010={ earlyPve:[1,2,3], every:6, bossEvery:3, dupChance:30, noDupGold:2,
   lateMon:{base:2.05,perK:0.4,count0:3,countMax:7}, boss:{hp:10,atk:2.5,def:1.5,minions:2},
