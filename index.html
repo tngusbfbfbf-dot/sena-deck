@@ -5381,7 +5381,7 @@ const AC_CONFIG={
       fin:{name:"저승사자",hits:50,sh:2500,desc:"동영이 사망에 이르는 피해를 입을 경우 발동: 동영이 체력 1로 불굴상태에 돌입합니다.(불굴: 적에게 50회 타격을 받으면 사망합니다) 이때 사망한 아군을 되살리고, 동영의 공격력 2500%에 해당하는 보호막을 얻습니다."}}},
   // ===== 0.10.3v 3코 고유 스킬 · 배열 = [0–5초월, 6–11초월, 12초월] · desc = 사용자 원문 =====
   skills3:{
-    "카일":{name:"고유 스킬",ico:"⛓️",as:[15,22,33],every:5,coef:[110,150,200],near:2,desc:"상시: 자신의 공격속도 +(15/22/33)% \n자신의 기본 공격 5회 마다: 대상 적 및 대상 적과 가장 가까이 있는 적 영웅 2명에게 자신의 공격력 (110/150/200)%에 해당하는 고정피해를 입힙니다. (철쇄 3개가 각각 머리 위에서 떨어져 꽂히는 연출)"},
+    "카일":{name:"고유 스킬",ico:"⛓️",as:[15,22,33],every:5,coef:[110,150,200],near:2,desc:"상시: 자신의 공격속도 +(15/22/33)% \n자신의 기본 공격 5회 마다: 대상 적 및 대상 적과 가장 가까이 있는 적 영웅 2명에게 자신의 공격력 (110/150/200)%에 해당하는 피해를 입힙니다. (철쇄 3개가 각각 머리 위에서 떨어져 꽂히는 연출)"},
     "콜트":{name:"고유 스킬",ico:"💣",stack:5,stun:[0.75,1,1.5],coef:[55,75,150],radius:1,as:15,desc:"자신의 기본 공격 1회 마다: 대상 적에게 폭탄 1개를 심습니다. 폭탄이 5개 중첩된 대상은 폭탄이 터지면서 (0.75/1/1.5)초간 기절합니다. 또한 대상 주위 1칸 범위에 공격력의 (55/75/150)%에 해당하는 피해를 입힙니다.\n폭탄을 1번 터트릴 때 마다: 자신의 공격 속도+15%"},
     "팔라누스":{name:"고유 스킬",ico:"🔴",every:[5,4,3],width:[1,1,3],heal:100,desc:"자신의 기본 공격 (5/4/3)회 마다: 자신의 시야 일직선으로 (1/1/3)칸 넓이의 붉은 빛 레이저를 발사합니다. 해당 레이저에 피격된 적 영웅 1명당 자신의 공격력의 100%만큼 회복합니다."},
     "레긴레이프":{name:"고유 스킬",ico:"🔵",every:5,size:[2,3,4],coef:[50,60,70],desc:"자신의 기본 공격 5회마다: (2*2/3*3/4*4)크기의 푸른 색 구를 현재 체력이 가장 낮은 아군에게 떨어트립니다. 해당 구에 맞은 아군은 레긴레이프 공격력의 (50/60/70)%만큼 회복하고, 적의 경우 피해를 입습니다. (복수 타격 가능)"},
@@ -5413,7 +5413,7 @@ const AC_CONFIG={
     {id:"scout",name:"척후대",ico:"🦅",members:["소이","링링","비담","세인"],bp:[2,3,4],v:{as:[10,20,30],first:[2,2,2]},desc:["척후대: 공격 속도 +10% · 첫 공격 피해 2배","공격 속도 +20%","공격 속도 +30%"]},
     {id:"guer",name:"게릴라",ico:"🌀",members:["소이","콜트","팔라누스","오공"],bp:[2,4],v:{every:[3,3],evade:[50,50],dur:[1,1]},desc:["게릴라: 3번 공격마다 빈칸으로 이동 · 이동 뒤 1초 회피 50%","(4명) 모든 게릴라 영웅"]},
     {id:"illu",name:"환술사",ico:"🎭",members:["조커","바네사","리나","파스칼"],bp:[2,4],v:{n:[2,2],dur:[1.5,1.5],every:[0,2]},desc:["환술사: 전투 시작 시 가장 가까운 적 2명 1.5초 혼란 (혼란: 자기 편을 공격)","+ 환술사 영웅: 스킬이 2타마다"]},
-    {id:"tuner",name:"조율자",ico:"🎼",members:["유리","데이지","니아","하연","쥬리"],bp:[1,5],exact:true,v:{chance:[50,50],self:[1,0]},desc:["정확히 1명: 그 영웅만 스킬이 3타 대신 2타마다 (50% 확률)","정확히 5명: 아군 전체 스킬이 3타 대신 2타마다 (50% 확률) · 2–4명이면 꺼짐"]},
+    {id:"tuner",name:"조율자",ico:"🎼",members:["유리","데이지","니아","하연","쥬리"],bp:[2,5],v:{up:[25,25],down:[0,10]},desc:["아군 전체의 회복 및 쉴드 효과가 25% 상승","이전 효과에 더해, 적 영웅 전체의 회복 및 쉴드 효과가 10% 감소합니다."]},
     {id:"maes",name:"마에스트로",ico:"🎻",members:["리나","파스칼","동영"],bp:[2,3],v:{atk:[8,15]},desc:["아군 전체 공격력 +8%","+15%"]},
     {id:"dream",name:"몽상가",ico:"💤",members:["노호","미호","린","클레미스","로지"],bp:[2,4],v:{heal:[15,30]},desc:["몽상가: 적 처치 때 최대 체력 15% 회복","30% 회복"]},
     {id:"slayer",name:"귀살대",ico:"🔥",members:["카마도 탄지로","아가츠마 젠이츠"],bp:[2],v:{atk:[30]},desc:["귀살대 둘 다 공격력 +30%"]},
@@ -5654,14 +5654,15 @@ const AC={
   synIco(s){ const im=AC_CONFIG.synIcons[s.name]; return im?`<img class="acsyimg" src="${im}" alt="">`:s.ico; },
   skillLine(no,t){ const C=AC_CONFIG, k=AC.skillOf(no), h=AC.hero(no); t=t||0; if(!k) return `<div class="acskill gen" data-acskill><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(C.genericSkill.name)}</b><p>고유 스킬 없음 · 기본 공격만</p></div></div>`; const ti=AC.skTi(h.name,t), s3=!!AC_CONFIG.skills3[h.name];
     return `<div class="acskill" data-acskill data-sktier="${ti}"><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(k.name)}</b> <small class="acsktier" data-acsktier>${"ABC"[ti]}단계 · ${(s3?["0–5","6–11","12"]:["0–2","3–5","6+"])[ti]}초월</small><p>${AC.skDesc(h.name,t,true)}</p>${t>=12&&k.fin?`<div class="acfin" data-acfin><b>✦ 12초월 히든 종결자 효과${k.fin.name?"-"+esc(k.fin.name):""}</b><p>${esc(k.fin.desc)}</p></div>`:""}</div></div>`; },
-  addShield(B,u,n){ if(!u.alive||n<=0||(B.block[u.side]>B.t)) return 0; u.shield+=n; return n; },
+  hsMul(B,side){ const o=side==="me"?"ai":"me"; return Math.max(0,1+(AC.sv(B,side,"tuner","up")-AC.sv(B,o,"tuner","down"))/100); }, // 0.10.3v 조율자: 회복·쉴드 배율
+  addShield(B,u,n){ if(!u.alive||n<=0||(B.block[u.side]>B.t)) return 0; n*=AC.hsMul(B,u.side); u.shield+=n; return n; },
   debuff(B,t,kind,fn){ if(!t.alive) return false; if(B.immune[t.side]>B.t||(kind==="burn"&&t.burnImm>B.t)){ B.events.push({k:"fx",b:t.uid,txt:"면역",cls:"imm"}); return false; } fn(); AC.hayeon(B,t.side); return true; },
   cleanse(u){ u.conf=0; u.frz=0; u.stun=u.hyPara||0; u.burn=null; u.frost=0; if(u.judged){ u.atkPct+=u.judgedCut||0; u.judged=false; } if(u.shred){ u.res=u.res/(1-u.shred/100); u.shred=0; } u.healBlock=0; },
   hayeon(B,side){ if(B.once["hy"+side]) return; const h=B.units.find(x=>x.alive&&x.side===side&&x.skId==="하연"); if(!h) return; B.once["hy"+side]=true; const K=h.K, o=side==="me"?"ai":"me"; B.hblock[o]=B.t+K.dur; B.hyLs[side]={until:B.t+K.allyDur,pct:K.ls};
     B.units.filter(x=>x.alive&&x.side===side).forEach(AC.cleanse); B.units.filter(x=>x.alive&&x.side===o).forEach(x=>{ x.shield=0; x.crysSh=false; x.pionDur=0; x.evUntil=0; if(x.tmpSh) x.tmpSh=null; });
     B.block[o]=B.t+K.dur; B.immune[side]=B.t+K.allyDur; B.events.push({k:"fx",b:h.uid,txt:K.name+"!",cls:"sk5"},{k:"gate",side}); AC.sstat(B,side,"sk:하연",1); },
   skInit(B){ for(const u of B.units){ if(u.mon) continue; if(AC_CONFIG.skills5[u.name]){ u.skId=u.name; u.need=1e9; u.K=AC.skP(u.name,u.t); u.fin=u.t>=12&&!!u.K.fin; if(u.name==="카마도 탄지로"){ u.need=u.K.every; u.asPct+=u.K.as; u.tanEnh=true; } } else if(AC_CONFIG.skills3[u.name]){ u.skId=u.name; u.s3=true; u.K=AC.skP(u.name,u.t); AC.sk3Init(B,u); } u.R0=u.R; u.C0=u.C; } },
-  skStart(B){ for(const u of B.units){ if(u.skId==="녹스") u.shield+=u.maxHp*u.K.sh/100; if(u.skId==="헬레니아"){ u.helUntil=u.K.dur; u.helRec=0; } } AC.sk3Start(B); AC.illuStart(B); AC.finStart(B); },
+  skStart(B){ for(const u of B.units){ if(u.skId==="녹스") u.shield+=u.maxHp*u.K.sh/100*AC.hsMul(B,u.side); if(u.skId==="헬레니아"){ u.helUntil=u.K.dur; u.helRec=0; } } AC.sk3Start(B); AC.illuStart(B); AC.finStart(B); },
   snapKeys:["frz","stun","inv","evUntil","revEnd","pionDur","helUntil","sunUntil","healBlock","orcaNext","hopAt"],
   rewind(B,k){ const C=AC_CONFIG, keep=new Map(B.units.map(u=>[u.uid,{dealt:u.dealt,taken:u.taken,tip:u.tip}])), amp=k.K.amp;
     B.units=JSON.parse(B.snap).map(c=>{ Object.assign(c,keep.get(c.uid)); for(const q of AC.snapKeys) if(c[q]>0) c[q]+=B.t; return c; });
@@ -5697,9 +5698,10 @@ const AC={
   sv(B,side,id,key){ const L=B.syn[side][id]; return L==null?0:AC.synById(id).v[key][L]; },
   sstat(B,side,id,n){ if(!n) return; const o=B.synStat[side]; o[id]=(o[id]||0)+Math.round(n); },
   applySynergies(B){ const C=AC_CONFIG;
+    for(const side of ["me","ai"]){ const L={}; AC.synLevels(B.units.filter(u=>u.side===side&&!u.mon).map(u=>u.no)).forEach(x=>{ if(x.lv>=0) L[x.s.id]=x.lv; }); B.syn[side]=L; }
     for(const side of ["me","ai"]){ const U=B.units.filter(u=>u.side===side&&!u.mon); const L={}; AC.synLevels(U.map(u=>u.no)).forEach(x=>{ if(x.lv>=0) L[x.s.id]=x.lv; }); B.syn[side]=L;
       const has=(u,id)=>L[id]!=null&&AC.synById(id).members.includes(u.name), v=(id,k)=>AC.sv(B,side,id,k);
-      let hpFlat=v("van","hpAll"); const teamAtk=v("maes","atk"), tun0=v("tuner","chance"), tSelf=v("tuner","self");
+      let hpFlat=v("van","hpAll"); const teamAtk=v("maes","atk"), tun0=0, tSelf=0;
       for(const u of U){ let hpPct=0, defPct=0; u.atkPct+=teamAtk; const tun=tSelf&&!has(u,"tuner")?0:tun0; u.tuner=tun; if(tun&&(!u.skId||u.giant)) u.need=tun>=100||AC.rnd(B)*100<tun?2:C.skillEvery;
         if(has(u,"sword")){ u.swKill=1; u.swStk=0; u.atkPct+=v("sword","atk"); u.evade=v("sword","evade"); u.dbl=v("sword","dbl"); }
         if(has(u,"van")) defPct+=v("van","def");
@@ -5723,8 +5725,8 @@ const AC={
         u.maxHp=Math.round(u.maxHp*(1+hpPct/100)+hpFlat); u.hp=u.maxHp; u.def=u.s.def*(1+defPct/100)+flat; u.res=(u.s.res||0)*(1+defPct/100)+flat; }
       if(hpFlat) AC.sstat(B,side,"van",hpFlat*U.length);
       const ally=u=>U.filter(x=>x!==u).sort((a,b)=>Math.hypot(a.R-u.R,a.C-u.C)-Math.hypot(b.R-u.R,b.C-u.C))[0];
-      if(L.aide!=null) U.filter(u=>has(u,"aide")).forEach(u=>{ const a=ally(u)||u, n=a.maxHp*v("aide","shield")/100; a.shield+=n; AC.sstat(B,side,"aide",n); });
-      if(L.crys!=null){ U.forEach(u=>{ const n=u.maxHp*v("crys","shield")/100; u.shield+=n; u.crysSh=true; AC.sstat(B,side,"crys",n); }); }
+      if(L.aide!=null) U.filter(u=>has(u,"aide")).forEach(u=>{ const a=ally(u)||u, n=a.maxHp*v("aide","shield")/100*AC.hsMul(B,side); a.shield+=n; AC.sstat(B,side,"aide",n); });
+      if(L.crys!=null){ U.forEach(u=>{ const n=u.maxHp*v("crys","shield")/100*AC.hsMul(B,side); u.shield+=n; u.crysSh=true; AC.sstat(B,side,"crys",n); }); }
     }
     B.units.forEach(u=>{ if(u.mon){ u.def=u.s.def; u.res=u.s.res||u.s.def; } });
     for(const u of B.units.filter(x=>x.judge)){ const foes=B.units.filter(x=>x.side!==u.side); const tg=foes.sort((a,b)=>b.s.atk*(1+b.atkPct/100)-a.s.atk*(1+a.atkPct/100))[0]; if(tg){ const ct=AC.sv(B,u.side,"judge","cut"); AC.debuff(B,tg,"judge",()=>{ tg.atkPct-=ct; tg.judged=true; tg.judgedCut=ct; }); }
@@ -5733,7 +5735,7 @@ const AC={
       for(const R of back) for(let c=0;c<C.cols;c++){ if(B.units.some(x=>x!==u&&x.R===R&&x.C===c)) continue; const d=Math.abs(c-u.C)+(R===back[0]?0:0.5); if(d<bd){ bd=d; best=[R,c]; } }
       if(best){ u.R=best[0]; u.C=best[1]; } } },
   atkNow(B,u){ let p=u.atkPct; if(u.pion&&(B.t<u.pionDur||u.pionKeep)) p+=u.pion; if(u.souls) p+=u.souls*AC.sv(B,u.side,"grave","atk"); return Math.max(0,u.s.atk*(1+p/100)+(u.yeo||0)); },
-  heal(B,u,n,id){ if(!u.alive||u.hpLock||n<=0||(u.healBlock&&B.t<u.healBlock)||(B.hblock&&B.hblock[u.side]>B.t)) return; const h=Math.min(n,u.maxHp-u.hp); if(h<=0) return; u.hp+=h; if(u.noxAwake) u.noxHealed+=h; B.events.push({k:"heal",b:u.uid,n:h}); if(id) AC.sstat(B,u.side,id,h); },
+  heal(B,u,n,id){ if(!u.alive||u.hpLock||n<=0||(u.healBlock&&B.t<u.healBlock)||(B.hblock&&B.hblock[u.side]>B.t)) return; n*=AC.hsMul(B,u.side); const h=Math.min(n,u.maxHp-u.hp); if(h<=0) return; u.hp+=h; if(u.noxAwake) u.noxHealed+=h; B.events.push({k:"heal",b:u.uid,n:h}); if(id) AC.sstat(B,u.side,id,h); },
   // 피해 넣기 (보호막 → 체력 · 흡혈 · 처형 · 치명상 처리) · 반환 = 들어간 피해
   applyDmg(B,a,t,d,o){ o=o||{}; if(!t.alive||t.disabled) return 0; const V=B.valk&&B.valk[t.side]; if(V&&B.t<V.until&&t.uid!==V.uid){ V.sum+=d; return 0; } if(t.inv&&B.t<t.inv) return 0; if(t.hyPara&&B.t<t.hyPara) d*=1+t.paraAmp/100; if(t.helUntil&&B.t<t.helUntil){ t.helRec+=d; d=d*(1-t.K.red/100); } d=Math.max(1,Math.round(d)); if(a){ t.hitLog=t.hitLog||{}; t.hitLog[a.uid]=B.t; }
     let rest=d; if(t.shield>0){ const ab=Math.min(t.shield,rest); t.shield-=ab; rest-=ab; if(t.shield<=0.5){ t.shield=0; if(t.crysSh){ t.crysSh=false; const sd=AC.sv(B,t.side,"crys","stun"); B.units.filter(x=>x.alive&&x.side!==t.side&&AC.dist(x,t)<=1).forEach(x=>AC.debuff(B,x,"stun",()=>{ x.stun=Math.max(x.stun||0,B.t+sd); B.events.push({k:"fx",b:x.uid,txt:"기절",cls:"stn"}); })); B.events.push({k:"fx",b:t.uid,txt:"💎",cls:"shbreak"}); } } }
@@ -5853,7 +5855,7 @@ const AC={
     B.events.push({k:"sk3",id:"mark",b:t.uid,R:t.R,C:t.C},{k:"sk3",id:"leap",a:u.uid,aR:u.R,aC:u.C,bR:dest[0],bC:dest[1]}); u.R=dest[0]; u.C=dest[1]; u.brMark={uid:t.uid,bonus:tiles*K.per}; u.brLeaps=(u.brLeaps||0)+1; },
   sk3Atk(B,u,tg){ const K=u.K, n=u.atks, T=AC.sk3T(B,u);
     switch(u.skId){
-    case "카일": if(n%K.every===0){ const L=tg.alive?[tg]:[]; AC.near(B,tg,T.filter(x=>x!==tg)).slice(0,K.near).forEach(x=>L.push(x)); B.events.push({k:"sk3",id:"chain",a:u.uid,tg:L.map(x=>[x.R,x.C])}); L.forEach(x=>AC.fixHit(B,u,x,K.coef)); } break;
+    case "카일": if(n%K.every===0){ const L=tg.alive?[tg]:[]; AC.near(B,tg,T.filter(x=>x!==tg)).slice(0,K.near).forEach(x=>L.push(x)); B.events.push({k:"sk3",id:"chain",a:u.uid,tg:L.map(x=>[x.R,x.C])}); L.forEach(x=>AC.skHit(B,u,x,K.coef)); } break;
     case "콜트": if(tg.alive){ tg.bomb=tg.bomb||{}; tg.bomb[u.uid]=(tg.bomb[u.uid]||0)+1; if(tg.bomb[u.uid]>=K.stack){ tg.bomb[u.uid]=0; const R=tg.R, Cc=tg.C; B.events.push({k:"sk3",id:"boom",a:u.uid,R,C:Cc});
         AC.debuff(B,tg,"stun",()=>{ tg.stun=Math.max(tg.stun||0,B.t+K.stun); B.events.push({k:"fx",b:tg.uid,txt:"기절",cls:"stn"}); }); T.filter(x=>Math.max(Math.abs(x.R-R),Math.abs(x.C-Cc))<=K.radius).forEach(x=>AC.skHit(B,u,x,K.coef)); u.asPct+=K.as; AC.reIv(u); u.boomN=(u.boomN||0)+1; } } break;
     case "팔라누스": if(n%K.every===0){ const C=AC_CONFIG, dR=tg.R-u.R, dC=tg.C-u.C, L=Math.hypot(dR,dC)||1, ux=dR/L, uy=dC/L, hw=(K.width-1)/2+0.5;
