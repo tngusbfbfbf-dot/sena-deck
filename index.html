@@ -5398,7 +5398,7 @@ const AC_CONFIG={
     "브란즈&브란셀":{name:"고유 스킬",ico:"✖️",coef:55,hits:2,slow:[10,5,0],every:[5,4,3],per:50,exec:[10,12,15],chain:[1,3,9999],desc:"상시: 기본 공격 강화: 자신의 공격력 55%만큼 2회 피해. (판정은 기본 공격 1회)\n자신의 공격 속도 -(10/5/0)%\n자신의 기본 공격 (5/4/3)회 시: 현재 자신과 가장 멀리 떨어져있는 적에게 표식을 남기고(X표시 크게), 해당 적에게 날아갑니다. 다음 기본 공격 1회에 날아간 칸 1개 당 50% 증가한 피해를 입히고, 피해를 입힌 체력이 (10/12/15)% 이하일 경우 즉시 처형 합니다. 해당 공격으로 적 처치 시 해당 스킬이 연속 발동합니다.(최대 (1/3/제한없음)회 연속 발동)(연속 발동 시, 거리 당 증가량은 초기화 됩니다"}},
   // ===== 0.10.4v 2코 고유 스킬 · 배열 = [0–5초월, 6–11초월, 12초월] · desc = 사용자 원문 =====
   skills2:{
-    "비담":{name:"고유 스킬",ico:"🏹",every:3,as:3,coef:[55,60,75],lost:30,desc:"자신의 기본 공격 3회 당: 공격 속도 +3%(중첩 가능)/ 자신의 기본 공격 3회 마다 해당 기본공격이 다음과 같이 변경됩니다: 자신의 공격력의 (55/60/75)%+대상 적 영웅이 잃은 생명력의 30%에 해당하는 피해"},
+    "비담":{name:"고유 스킬",ico:"🏹",every:3,as:3,coef:[55,60,75],lost:15,desc:"자신의 기본 공격 3회 당: 공격 속도 +3%(중첩 가능)/ 자신의 기본 공격 3회 마다 해당 기본공격이 다음과 같이 변경됩니다: 자신의 공격력의 (55/60/75)%+대상 적 영웅이 잃은 생명력의 15%에 해당하는 피해"},
     "리나":{name:"고유 스킬",ico:"🎵",dur:[3,4,5],def:3,every:4,coef:[70,80,100],desc:"전열 첫번째 가로줄: 전투 시작 후 (3/4/5)초간 방어력 및 마법 저항 3상승\n자신의 기본 공격 4회 당: 현재 체력이 가장 낮은 아군 1명: 공격력 (70/80/100)%만큼 회복"},
     "에스파다":{name:"고유 스킬",ico:"🎯",every:3,fix:50,dur:1.5,as:[50,75,100],desc:"자신의 기본 공격 3회 마다: 50의 추가 고정마법 피해\n후열 마지막 가로 줄: 전투 시작 후 1.5초간 공격 속도 +(50/75/100)%"},
     "파스칼":{name:"고유 스킬",ico:"🔴",every:[10,8,6],max:[1,2,3],coef:250,desc:"배치 시: 스킬이 사용될 적 진영 가로줄 중 한 곳을 선택. 미선택시 무작위로 선택 후 사용\n자신의 기본 공격 (10/8/6)회 시: 선택한 적 진영의 가로줄 전체에 붉은 레이저를 쁩니다. 공격력의 250% 고정 피해. (전투 당 (1/2/3)번)"},
@@ -5857,7 +5857,7 @@ const AC={
   fixHit(B,u,t,coef,id){ if(!t.alive) return 0; const C=AC_CONFIG, bt=B.t-(B.t0||0), ot=bt>C.overtimeAt?(bt-C.overtimeAt)*C.overtimeAmp:0;
     const d=Math.max(1,Math.round(AC.atkNow(B,u)*coef/100*Math.max(0,1+((u.skAmp||0)+(u.ampAll||0)-(u.trCut||0))/100)*(1+ot/100)*(t.skId==="룩"?1-t.K.fixRed/100:1))); B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit:false,sk:true,rg:true,fix:true,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:id||"sk:"+u.skId}); },
   skHit(B,u,t,coef){ if(!t.alive) return 0; const d=Math.max(1,Math.round(AC.calcHit(B,u,t,coef,false,true))); B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit:false,sk:true,rg:true,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+u.skId}); },
-  sk3Init(B,u){ const K=u.K; if(u.name==="카일"||u.name==="태오") u.asPct+=K.as; if(u.name==="브란즈&브란셀") u.asPct-=K.slow; if(u.name==="트루드"){ u.dr+=K.red; u.trCut=K.red; } if(u.name==="지크") u.asPct+=K.as; if(u.name==="세인") u.cdAdd=K.cd; if(u.name==="에스파다"&&u.row===AC_CONFIG.rows-1){ u.asPct+=K.as; u.espEnd=K.dur; } },
+  sk3Init(B,u){ const K=u.K; if(u.name==="카일"||u.name==="태오") u.asPct+=K.as; if(u.name==="브란즈&브란셀") u.asPct-=K.slow; if(u.name==="트루드"){ u.dr+=K.red; u.trCut=K.red; } if(u.name==="지크") u.asPct+=K.as; if(u.name==="세인") u.cdAdd=K.cd; if(u.name==="에스파다") B.units.filter(x=>x.side===u.side&&!x.mon&&x.row===AC_CONFIG.rows-1).forEach(x=>{ x.asPct+=K.as; x.espV=(x.espV||0)+K.as; x.espEnd=K.dur; }); },
   sk3Start(B){ const C=AC_CONFIG; for(const u of B.units.slice()){ if(!u.s3||!u.alive) continue; const K=u.K; if(AC_CONFIG.skills2[u.skId]){ AC.sk2Start(B,u); continue; }
       if(u.skId==="라드그리드"){ u.def*=1+K.pct/100; u.res=(u.res||0)*(1+K.pct/100); }
       if(u.skId==="스파이크") B.units.filter(x=>x.alive&&x.side===u.side&&x.R===u.R).forEach(x=>{ x.burnImm=Math.max(x.burnImm||0,B.t+K.imm); });
@@ -5912,17 +5912,17 @@ const AC={
     for(const p of B.units.filter(x=>x.skId==="파스칼")){ const ref=B.refs[p.uid]; let r=ref&&ref.prow!=null?ref.prow:Math.floor(AC.rnd(B)*C.rows); p.prowR=p.side==="me"?C.rows-1-r:C.rows+r; p.prow=r; } },
   sk2Start(B,u){ const K=u.K, C=AC_CONFIG;
     if(u.skId==="룩"){ u.def*=1+K.def/100; B.units.filter(x=>x.alive&&x.side===u.side&&x.R===u.R).forEach(x=>AC.tShield(B,x,u.def*K.sh/100,K.dur)); B.events.push({k:"sk3",id:"rowsh",R:u.R,side:u.side}); }
-    if(u.skId==="리나"&&u.row===0){ u.def+=K.def; u.res=(u.res||0)+K.def; u.linaEnd=B.t+K.dur; }
+    if(u.skId==="리나") B.units.filter(x=>x.alive&&x.side===u.side&&!x.mon&&x.row===0).forEach(x=>{ x.def+=K.def; x.res=(x.res||0)+K.def; x.linaV=(x.linaV||0)+K.def; x.linaEnd=B.t+K.dur; });
     if(u.skId==="차해인") AC.tShield(B,u,AC.atkNow(B,u)*K.sh/100,K.dur);
     if(u.skId==="미호") B.units.filter(x=>x.side===u.side).forEach(x=>{ x.mihoFirst=K.amp; });
     if(u.skId==="아라곤") u.argAt=B.t+K.at;
     if(u.skId==="관우") u.gyAt=B.t+K.at; },
   sk2Step(B){ for(const u of B.units){ if(!u.alive) continue;
       if(u.tsh&&u.tsh.length){ u.tsh=u.tsh.filter(e=>{ if(B.t<e.until) return true; u.shield=Math.max(0,u.shield-e.n); return false; }); }
-      if(u.linaEnd&&B.t>=u.linaEnd){ u.linaEnd=0; u.def-=u.K.def; u.res-=u.K.def; }
-      if(u.espEnd&&B.t>=u.espEnd){ u.espEnd=0; u.asPct-=u.K.as; AC.reIv(u); }
+      if(u.linaEnd&&B.t>=u.linaEnd){ u.linaEnd=0; u.def-=u.linaV; u.res-=u.linaV; u.linaV=0; }
+      if(u.espEnd&&B.t>=u.espEnd){ u.espEnd=0; u.asPct-=u.espV; u.espV=0; AC.reIv(u); }
       if(u.argAt&&B.t>=u.argAt){ u.argAt=0; const K=u.K, T=AC.sk3T(B,u); if(T.length){ const t=T.slice().sort((a,b)=>b.def-a.def)[0], R=t.R, Cc=t.C; B.events.push({k:"sk3",id:"bomb",a:u.uid,R,C:Cc});
-          AC.skHit(B,u,t,K.coef); T.filter(x=>x!==t&&Math.max(Math.abs(x.R-R),Math.abs(x.C-Cc))<=1).forEach(x=>AC.skHit(B,u,x,K.coef*K.splash/100)); } }
+          AC.skHit(B,u,t,K.coef); T.filter(x=>x!==t&&Math.max(Math.abs(x.R-R),Math.abs(x.C-Cc))<=1).forEach(x=>AC.skHit(B,u,x,K.splash)); } }
       if(u.gyAt&&B.t>=u.gyAt){ u.gyAt=0; B.units.filter(x=>x.alive&&x.side===u.side&&x.R===u.R&&!x.disabled).forEach(x=>AC.heal(B,x,u.def*u.K.heal/100,"sk:관우")); B.events.push({k:"sk3",id:"rowheal",R:u.R}); } } },
   sk2Taken(B,t,a,o){ const K=t.K;
     if(t.skId==="관우"&&a&&a.side!==t.side&&o.id!=="ignite"){ t.gyN=(t.gyN||0)+1; if(t.gyN%K.hits===0){ const dir=AC.fdir(t), hw=(K.width-1)/2; const L=B.units.filter(x=>x.alive&&x.side===t.side&&x!==t&&!x.disabled&&(x.R-t.R)*dir<0&&Math.abs(x.C-t.C)<=hw); L.forEach(x=>AC.heal(B,x,t.def*K.coef/100,"sk:관우")); B.events.push({k:"sk3",id:"behind",a:t.uid,n:L.length}); } }
