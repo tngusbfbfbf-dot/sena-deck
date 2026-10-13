@@ -930,6 +930,24 @@
   /* ===== 오토체스 ===== */
   .accell.acreso{box-shadow:inset 0 0 0 2px #7fd8ff;background:rgba(127,216,255,.16)}.accell.acprowon{background:rgba(255,60,60,.16);box-shadow:inset 0 0 0 1px rgba(255,80,80,.6)}.acprow{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;font-size:12px;align-items:center}.acprow button{padding:2px 7px;border-radius:6px;border:1px solid #555;background:#222;color:#ddd}.acprow button.on{border-color:#ff5050;color:#fff;background:#5a1f1f}
   #acRoot{--acw:min(100%,560px)}
+  /* 시뮬레이션 (0.10.17v) */
+  .acsimbtn{margin-left:8px;font-size:12px;padding:3px 9px;border-radius:8px;border:1px solid #c9a24a;background:#1a1f2a;color:#f0d08a;cursor:pointer}.acsimbtn.on{background:#c9a24a;color:#1a1f2a}
+  #acRoot .simwrap{display:flex;flex-direction:column;gap:8px}#acRoot .simtop{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}#acRoot .simmsg{color:#ffb36a;font-size:12px}
+  #acRoot .simbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#acRoot .simbar button{padding:5px 10px;border-radius:8px;border:1px solid #3a4152;background:#1d2230;color:#e8e4f0;cursor:pointer;font-size:13px}#acRoot .simbar button.pri{background:#c9a24a;color:#1a1306;border-color:#c9a24a;font-weight:700}#acRoot .simbar button.on{border-color:#c9a24a;color:#f0d08a}
+  #acRoot .simsp,#acRoot .simrepb{display:inline-flex;gap:3px;align-items:center;font-size:12px}#acRoot .simrep,#acRoot .simhud{font-size:13px;color:#cfd6e6}#acRoot .simhud:empty,#acRoot .simrep:empty{display:none}
+  #acRoot .simmain{display:grid;grid-template-columns:minmax(0,var(--acw)) minmax(0,1fr);gap:12px;align-items:start}#acRoot .simbt .simmain{grid-template-columns:minmax(0,var(--acw))}
+  #acRoot .simleft{display:flex;flex-direction:column;gap:6px;min-width:0}#acRoot .simboard .accell{cursor:pointer}#acRoot .simboard .accell.simsel{box-shadow:inset 0 0 0 2px #f0d08a}
+  #acRoot .simsyn{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12px}#acRoot .simsy{padding:2px 6px;border-radius:6px;background:#1d2230;color:#8a90a0;border:1px solid #2c3242}#acRoot .simsy.on{color:#f0d08a;border-color:#c9a24a}#acRoot .simsy i{font-style:normal;opacity:.8}
+  #acRoot .simselp{font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}#acRoot .simselp button{padding:2px 8px;border-radius:6px;border:1px solid #3a4152;background:#1d2230;color:#e8e4f0;cursor:pointer}
+  #acRoot .simpick{display:flex;flex-direction:column;gap:6px;max-height:78vh;overflow:auto}#acRoot .simpick input{padding:6px 8px;border-radius:8px;border:1px solid #3a4152;background:#11141c;color:#e8e4f0;font-size:14px}
+  #acRoot .simmon{display:flex;gap:6px;align-items:center;font-size:12px;flex-wrap:wrap}#acRoot .simmon button{padding:3px 8px;border-radius:6px;border:1px solid #3a4152;background:#1d2230;color:#e8e4f0;cursor:pointer}#acRoot .simmon button.on{border-color:#ff7a7a;color:#ffb0b0}
+  #acRoot .simtier>b{font-size:12px;color:#cfd6e6}#acRoot .simlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px;margin-top:3px}
+  #acRoot .simhero{display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;column-gap:6px;text-align:left;padding:3px;border-radius:8px;border:1px solid var(--tc,#3a4152);background:#161a24;color:#e8e4f0;cursor:pointer}#acRoot .simhero.on{box-shadow:0 0 0 2px #f0d08a}
+  #acRoot .simhero .acface{grid-row:1/3;width:34px;height:34px;position:relative;overflow:hidden;border-radius:6px;display:block}#acRoot .simhero .acface img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}#acRoot .simhero>*{min-width:0}#acRoot .simhero .nm{font-size:12px;font-weight:700}#acRoot .simhero .sy{font-size:10px;color:#9aa2b4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #acRoot .simres{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+#acRoot .simres h3{margin:4px 0;font-size:16px}#acRoot .simres h3[data-simwin=me]{color:#7fe08a}#acRoot .simres h3[data-simwin=ai]{color:#ff8f8f}#acRoot .simtw{overflow-x:auto}#acRoot .simres table{border-collapse:collapse;font-size:12px;width:100%}#acRoot .simres th,#acRoot .simres td{padding:3px 5px;border-bottom:1px solid #2a3040;text-align:right;white-space:nowrap}#acRoot .simres td:nth-child(-n+2),#acRoot .simres th:nth-child(-n+2){text-align:left}#acRoot .simres tr.ai td:first-child{color:#ff8f8f}#acRoot .simres tr.me td:first-child{color:#7fe08a}#acRoot .simres tr.dead{opacity:.6}
+  @media (max-width:760px){ #acRoot .simmain{grid-template-columns:minmax(0,1fr)} #acRoot .simpick{max-height:none} #acRoot .simlist{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))} }
+
   .achud{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}
   .achud .hi{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:14px;border:1px solid var(--gold-line);background:rgba(14,17,25,.7);font-size:13px;white-space:nowrap}
   .achud .hi b{color:var(--gold-hi);font-variant-numeric:tabular-nums} .achud .hp b{color:#ff8f9b} .achud small{color:var(--text-muted);font-size:11px}
@@ -1485,7 +1503,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.10.16v</span></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.10.17v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -6076,7 +6094,7 @@ const AC={
     if(el&&el.dataset.k===key){ ["hp","def","atk","res","aspd"].forEach(k=>{ const q=el.querySelector(`[data-acst-${k}]`), r=n.querySelector(`[data-acst-${k}]`); if(q&&r&&q.textContent!==r.textContent) q.textContent=r.textContent; }); return; }
     if(el) el.replaceWith(n); else $("acRoot").appendChild(n); },
   mob(){ return !!(window.matchMedia&&matchMedia("(max-width:560px)").matches); },
-  render(){ AC._mob=AC.mob(); const st=AC.st, S=st.me, C=AC_CONFIG, box=$("acRoot"); if(!box) return;
+  render(){ if(AC.simOn) return SIM.render(); AC._mob=AC.mob(); const st=AC.st, S=st.me, C=AC_CONFIG, box=$("acRoot"); if(!box) return;
     const need=AC.xpNeed(S.level), od=C.odds[S.level-1], fieldN=AC.field(S).length, prep=st.phase==="prep";
     const hRound=`<div class="achud a-round"><span class="hi">라운드 <b data-ach="round">${st.round}</b><i class="acmode ${AC.isBoss(st)?"boss":AC.isPve(st)?"pve":"pvp"}" data-acmode>${AC.isBoss(st)?"보스":AC.isPve(st)?"몬스터":"PVP"}</i>${(n=>n?`<i class="acnext${n.boss?" boss":""}" data-acnext title="다음 ${n.boss?"보스":"PVE"} 라운드">${n.boss?"👹 BOSS":"👾 PVE"} R${n.r}</i>`:"")(AC.isPve(st)&&!AC.isBoss(st)&&st.round>3?AC.nextPve(st.round):AC.nextPve(st.round))}${AC.modeTag(st)}</span></div>`;
     const hHp=`<span class="hi hp hpbig" data-achp="me" title="내 체력"><span class="hrt">❤️</span><b data-ach="hp">${st.hp}</b><i class="achpbar"><i style="width:${st.hp/C.startHp*100}%"></i></i></span><span class="hi hp hpbig foe" data-achp="ai" title="상대 체력">${st.mode==="endless"?"상대 ∞":AC.isFfa(st)&&st.opp!=null?esc(st.players[st.opp].name.replace("봇 ",""))+(st.oppGhost?"👻":""):"상대"} <span class="hrt">🖤</span><b data-ach="aihp">${st.mode==="endless"?"∞":st.aiHp??C.aiStartHp}</b><i class="achpbar"><i style="width:${(st.aiHp??C.aiStartHp)/C.aiStartHp*100}%"></i></i></span>`;
@@ -6186,7 +6204,7 @@ const AC={
       else { const sl=add("acslash"+(e.sk?" sk":""),bx,by), ang=Math.atan2(dy,dx)*180/Math.PI+90; if(sl.animate) sl.animate([{transform:`rotate(${ang}deg) scaleX(.2)`,opacity:1},{transform:`rotate(${ang}deg) scaleX(1.2)`,opacity:1},{transform:`rotate(${ang}deg) scaleX(1)`,opacity:0}],{duration:260*slow,easing:"ease-out"}); setTimeout(()=>sl.remove(),280*slow); land(); } });
     if(AC.info&&AC.info.bt) AC.drawInfo(); },
   /* 입력 */
-  onClick(e){ const st=AC.st, S=st.me, t=e.target; const prep=st.phase==="prep"; if(t.closest("[data-acroster] summary")){ setTimeout(()=>{ const d=document.querySelector("[data-acroster]"); AC.rosterOpen=!!(d&&d.open); }); return; } const rw=t.closest("[data-acrno]"); if(rw){ AC.info={no:+rw.dataset.acrno,t:0,shop:true,roster:true}; AC.drawInfo(); return; } if(t.closest("[data-acroster]")) return;
+  onClick(e){ if(AC.simOn) return SIM.onClick(e); const st=AC.st, S=st.me, t=e.target; const prep=st.phase==="prep"; if(t.closest("[data-acroster] summary")){ setTimeout(()=>{ const d=document.querySelector("[data-acroster]"); AC.rosterOpen=!!(d&&d.open); }); return; } const rw=t.closest("[data-acrno]"); if(rw){ AC.info={no:+rw.dataset.acrno,t:0,shop:true,roster:true}; AC.drawInfo(); return; } if(t.closest("[data-acroster]")) return;
     if(AC.deckView!=null&&(t.closest("[data-acdo=dclose]")||!t.closest(".acpopb"))&&t.closest("[data-acdeck]")){ AC.deckView=null; AC.render(); return; } if(t.closest("[data-acdeck]")) return;
     const dv=t.closest("[data-achp=ai],[data-acpid]"); if(dv&&!AC.modeOpen){ AC.deckView=dv.dataset.acpid!=null?+dv.dataset.acpid:(AC.isFfa(st)&&st.opp!=null?st.opp:"ai"); AC.render(); return; }
     const pk=t.closest("[data-acpick],[data-acbots],[data-acdiff]"); if(pk){ const m=AC.msel(); if(pk.dataset.acpick) m.mode=pk.dataset.acpick; if(pk.dataset.acbots) m.bots=+pk.dataset.acbots; if(pk.dataset.acdiff!=null&&!pk.disabled) m.diff=+pk.dataset.acdiff; AC.render(); return; }
@@ -6227,7 +6245,7 @@ const AC={
     if(tk&&(!AC.sel||+tk.dataset.acu===AC.sel)){ const id=+tk.dataset.acu; AC.sel=AC.sel===id?null:id; const u=S.units.find(x=>x.uid===id); AC.info=AC.sel&&u&&(u.loc||"")[0]!=="f"?{no:u.no,t:u.t,uid:id}:null; AC.render(); return; }
     if(AC.sel&&lc){ if(lc.dataset.acloc[0]==="f"){ AC.enter=AC.enter||{}; AC.enter[AC.sel]=Date.now(); } const w=AC.move(S,AC.sel,lc.dataset.acloc); if(w) AC.msg(w); AC.sel=null; AC.info=null; AC.save(); AC.render(); return; }
     if(AC.sel||AC.info){ AC.sel=null; AC.info=null; AC.render(); } },
-  onDrag(e){ const st=AC.st; if(st.phase!=="prep") return; const tk=e.target.closest&&e.target.closest("[data-acu]"), itd=e.target.closest&&e.target.closest("[data-acitem]");
+  onDrag(e){ if(AC.simOn) return SIM.onDrag(e); const st=AC.st; if(st.phase!=="prep") return; const tk=e.target.closest&&e.target.closest("[data-acu]"), itd=e.target.closest&&e.target.closest("[data-acitem]");
     if(e.type==="dragstart"&&itd){ AC.dragItem=itd.dataset.acitem; AC.dragId=null; e.dataTransfer.setData("text/plain","item"); e.dataTransfer.effectAllowed="copy"; return; }
     if(AC.dragItem&&(e.type==="dragover"||e.type==="drop")){ if(e.type==="dragover"){ if(tk) e.preventDefault(); return; } e.preventDefault(); const k=AC.dragItem; AC.dragItem=null; if(tk){ const w=AC.useItem(st,st.me,k,+tk.dataset.acu); AC.msg(w||AC.itemMsg(k)); AC.save(); AC.render(); } return; }
     if(e.type==="dragend"){ AC.dragItem=null; }
@@ -7807,6 +7825,9 @@ function gaCardHTML(r, fresh){
   const pity=r.ph==="a100"||r.ph==="b200";
   return `<div class="gacard g${esc(r.g)}${fresh&&r.g==="전설"?" legend":""}${r.w?" wish":""}" data-ganm="${esc(r.nm)}" title="${esc(r.nm)} · ${esc(GACHA_DB.pinfo[r.pk].lb)} · ${r.i}회차${pity?" (확정)":""}">`
     +`<span class="gaimg">${bg?`<img class="gbg" src="${esc(bg)}" alt="">`:""}${img?`<img src="${esc(img)}" alt="">`:`<b>${esc(r.nm.slice(0,2))}</b>`}</span>`
+<footer style="margin:24px auto 12px;max-width:900px;padding:10px;text-align:center;font-size:12px;color:#9a93a8;line-height:1.6">이 페이지는 비상업적 팬 프로젝트이며 넷마블(Netmarble)과 관련이 없습니다. 게임 이름과 이미지의 권리는 각 권리자에게 있습니다.<br>Non-commercial fan project. Not affiliated with Netmarble. Game names and images belong to their respective rights holders.</footer>
+<a href="../" style="position:fixed;right:10px;bottom:10px;z-index:50;padding:6px 10px;border-radius:8px;background:#1a1f2a;border:1px solid #c9a24a;color:#f0d08a;font-size:13px;text-decoration:none">← 배치툴</a>
+<script>(function(){ function go(){ try{ showTab("ac"); }catch(e){ var b=document.querySelector('#tabs button[data-tab=ac]'); if(b) b.click(); } var t=document.getElementById("tabs"); if(t) t.style.display="none"; } if(document.readyState==="complete") go(); else addEventListener("load",go); })();</script>
     +`<span class="ganm">${esc(r.nm)}</span>${r.w&&r.g!=="일반"&&r.g!=="고급"?'<i class="gatag">위시</i>':""}${pity?'<i class="gatag gp">확정</i>':""}</div>`;
 }
 function gaGaugeHTML(B){
@@ -7825,9 +7846,6 @@ function gaWishHTML(B){
   const parts=B.wish.map(s=>{ const ch=gaSlotChoices(s); const sels=[]; for(let k=0;k<s.n;k++,i++){ const v=L[i];
       sels.push(`<select data-gaw="${i}" class="${!v||dup.has(v)?"bad":""}"><option value="">—</option>${ch.map(n=>`<option${n===v?" selected":""}>${esc(n)}</option>`).join("")}</select>`); }
     return `<span class="gaws"><span class="muted">${esc(s.lb)}</span>${sels.join("")}</span>`; });
-<footer style="margin:24px auto 12px;max-width:900px;padding:10px;text-align:center;font-size:12px;color:#9a93a8;line-height:1.6">이 페이지는 비상업적 팬 프로젝트이며 넷마블(Netmarble)과 관련이 없습니다. 게임 이름과 이미지의 권리는 각 권리자에게 있습니다.<br>Non-commercial fan project. Not affiliated with Netmarble. Game names and images belong to their respective rights holders.</footer>
-<a href="../" style="position:fixed;right:10px;bottom:10px;z-index:50;padding:6px 10px;border-radius:8px;background:#1a1f2a;border:1px solid #c9a24a;color:#f0d08a;font-size:13px;text-decoration:none">← 배치툴</a>
-<script>(function(){ function go(){ try{ showTab("ac"); }catch(e){ var b=document.querySelector('#tabs button[data-tab=ac]'); if(b) b.click(); } var t=document.getElementById("tabs"); if(t) t.style.display="none"; } if(document.readyState==="complete") go(); else addEventListener("load",go); })();</script>
   return `<div class="gawish" data-gawish><span class="clab">위시</span>${parts.join("")}${gaWishOk(B)?"":'<span class="awarn">모두 고르기 (중복 X)</span>'}</div>`;
 }
 function gaStatsHTML(B){
@@ -7952,7 +7970,83 @@ $("oppPanel").addEventListener("click",e=>{ if(e.target.closest("[data-opp]")) g
 $("tNotice").addEventListener("click",e=>{ if(e.target.closest("[data-tnclose]")) showTNotice(null); });
 showTNotice(migrateDeckTTypes());
 refreshList(); renderAll();
-AC.init(); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop","dragend"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
+/* ===== 오토체스 시뮬레이션 (샌드박스 · 0.10.17v) — 실제 게임 상태(AC.st·7kr_ac)는 건드리지 않음 ===== */
+const SIM={ KEY:"7kr_acsim", s:null, anim:null, q:"", sel:null, pick:null, res:null, rep:null, speed:1,
+  load(){ if(SIM.s) return SIM.s; let o=null; try{ o=JSON.parse(localStorage.getItem(SIM.KEY)||"null"); }catch{} SIM.s=o&&Array.isArray(o.me)&&Array.isArray(o.ai)?o:{me:[],ai:[],uid:1,monR:SIM.pveRounds()[0]||5}; return SIM.s; },
+  save(){ try{ localStorage.setItem(SIM.KEY,JSON.stringify(SIM.s)); }catch{} },
+  pveRounds(){ const r=[]; for(let i=1;i<=40;i++) if(AC.isPve({round:i})) r.push(i); return r; },
+  calmRound(){ let r=11; while(AC.isPve({round:r})) r++; return r; },
+  at(side,loc){ return SIM.s[side].find(u=>u.loc===loc); },
+  put(side,loc,o){ const S=SIM.s, L=S[side]; const i=L.findIndex(u=>u.loc===loc); if(i>=0) L.splice(i,1); L.push(Object.assign({uid:S.uid++,loc},o)); SIM.save(); },
+  toggle(on){ if(on&&AC.anim) return AC.msg&&AC.msg("진행 중인 전투가 끝난 뒤에 열 수 있어요"); if(!on&&SIM.anim) SIM.stop(); AC.simOn=!!on; AC.info=null; AC.sel=null; const b=$("acSimBtn"); if(b){ b.classList.toggle("on",AC.simOn); b.textContent=AC.simOn?"← 게임으로":"🧪 시뮬레이션"; } AC.render(); },
+  st(){ const S=SIM.s, R=SIM.calmRound(), mk=L=>({units:L.map(u=>({uid:u.uid,no:u.mon?0:u.no,t:u.t||0,copies:1,loc:"f"+u.loc,mon:!!u.mon,boss:!!u.boss})),level:99}); return {seed:(Math.random()*1e9)>>>0,round:R,me:mk(S.me),ai:mk(S.ai)}; },
+  init(st){ const B=AC.battleInit(st), C=AC_CONFIG, R=SIM.s.monR; let ch=false; B.units.forEach(u=>{ if(!u.mon) return; const s=AC.monStats(R,u.boss), hp=Math.round(s.hp*C.hpMult); u.s=s; u.hp=u.maxHp=hp; u.crit=s.crit||0; u.iv=1/(s.aspd*(1+u.asPct/100)); ch=true; });
+    if(ch) B.snap=JSON.stringify(B.units,(k,v)=>k==="cloneOf"?undefined:v); return B; },
+  start(){ const S=SIM.s; if(!S.me.length||!S.ai.length) return SIM.msg("양쪽에 1명 이상 놓아 주세요"); SIM.res=null; SIM.rep=null; SIM.sel=null; SIM.pick=null; const B=SIM.init(SIM.st()); B.persist=true;
+    SIM.acc={heal:{},sh:{},sk:{},skh:{},prevSh:{}}; B.units.forEach(u=>SIM.acc.prevSh[u.uid]=u.shield||0); SIM.oldSpeed=AC.speed; AC.speed=SIM.speed; SIM.anim={B,last:performance.now(),acc:0,raf:0}; SIM.render(); if(B.done) return SIM.finish(); SIM.anim.raf=requestAnimationFrame(SIM.frame); },
+  track(B,ev){ const A=SIM.acc; for(const e of ev){ if(e.k==="heal"&&e.n>0) A.heal[e.b]=(A.heal[e.b]||0)+e.n; else if(e.k==="fx"&&e.cls==="sk5") A.sk[e.b]=(A.sk[e.b]||0)+1; else if(e.k==="hit"&&e.sk) A.skh[e.a]=(A.skh[e.a]||0)+1; }
+    for(const u of B.units){ const p=A.prevSh[u.uid]||0, n=u.shield||0; if(n>p) A.sh[u.uid]=(A.sh[u.uid]||0)+(n-p); A.prevSh[u.uid]=n; } },
+  frame(now){ const A=SIM.anim; if(!A) return; const dt=Math.min(0.1,(now-A.last)/1000)*SIM.speed*AC_CONFIG.playRate; A.last=now; A.acc+=dt; const B=A.B; B.events=[]; let all=[];
+    while(A.acc>=AC_CONFIG.dt&&!B.done){ AC.battleStep(B,AC_CONFIG.dt); A.acc-=AC_CONFIG.dt; all=all.concat(B.events); SIM.track(B,B.events); B.events=[]; }
+    AC.drawBattle(B,all); SIM.hud(B); if(B.done){ A.raf=0; setTimeout(SIM.finish,450); return; } A.raf=requestAnimationFrame(SIM.frame); },
+  skip(){ const A=SIM.anim; if(!A) return; cancelAnimationFrame(A.raf); const B=A.B; let n=0; while(!B.done&&n++<1e5){ B.events=[]; AC.battleStep(B,AC_CONFIG.dt); SIM.track(B,B.events); } B.events=[]; SIM.finish(); },
+  stop(){ const A=SIM.anim; if(A) cancelAnimationFrame(A.raf); SIM.anim=null; if(SIM.oldSpeed!=null){ AC.speed=SIM.oldSpeed; SIM.oldSpeed=null; } },
+  finish(){ const A=SIM.anim; if(!A) return; const B=A.B, X=SIM.acc; SIM.res={winner:B.winner,t:B.t,rows:B.units.filter(u=>!u.cloneOf).map(u=>({side:u.side,name:u.name,no:u.no,mon:u.mon,boss:u.boss,t:u.t,alive:u.alive,hp:Math.max(0,Math.round(u.hp)),maxHp:u.maxHp,dealt:Math.round(u.dealt||0),taken:Math.round(u.taken||0),heal:Math.round(X.heal[u.uid]||0),sh:Math.round(X.sh[u.uid]||0),sk:X.sk[u.uid]||0,skh:X.skh[u.uid]||0}))}; SIM.stop(); SIM.render(); },
+  reset(){ SIM.stop(); SIM.res=null; SIM.render(); },
+  clear(){ SIM.stop(); SIM.s.me=[]; SIM.s.ai=[]; SIM.res=null; SIM.rep=null; SIM.sel=null; SIM.save(); SIM.render(); },
+  swap(){ const S=SIM.s, m=S.me.filter(u=>!u.mon), am=S.ai.filter(u=>u.mon); S.me=S.ai.filter(u=>!u.mon); S.ai=m.concat(am.filter(x=>!m.some(y=>y.loc===x.loc))); SIM.sel=null; SIM.save(); SIM.render(); },
+  repeat(N){ const S=SIM.s; if(!S.me.length||!S.ai.length) return SIM.msg("양쪽에 1명 이상 놓아 주세요"); SIM.stop(); let i=0,w=0,l=0,d=0; SIM.rep={N,i:0,w:0,l:0,d:0,run:true}; SIM.render();
+    const step=()=>{ const t0=performance.now(); while(i<N&&performance.now()-t0<40){ const B=AC.battleRun(SIM.init(SIM.st())); if(B.winner==="me") w++; else if(B.winner==="ai") l++; else d++; i++; } SIM.rep={N,i,w,l,d,run:i<N}; const el=document.querySelector("[data-simrep]"); if(el) el.outerHTML=SIM.repHTML(); if(i<N) setTimeout(step,0); };
+    setTimeout(step,0); },
+  repHTML(){ const r=SIM.rep; if(!r) return `<div data-simrep></div>`; return `<div class="simrep" data-simrep>반복 ${r.i}/${r.N}회${r.run?" …":""} · 승 <b data-simw>${r.w}</b> · 패 ${r.l}${r.d?` · 무 ${r.d}`:""} · 승률 <b data-simwr>${r.i?Math.round(r.w/r.i*1000)/10:0}%</b></div>`; },
+  msg(s){ const m=document.querySelector("[data-simmsg]"); if(m){ m.textContent=s; clearTimeout(SIM.mt); SIM.mt=setTimeout(()=>{ m.textContent=""; },2200); } },
+  hud(B){ const el=document.querySelector("[data-simhud]"); if(!el) return; const hp=s=>{ const L=B.units.filter(u=>u.side===s); const a=L.reduce((x,u)=>x+Math.max(0,u.hp),0), m=L.reduce((x,u)=>x+u.maxHp,0); return [L.filter(u=>u.alive).length,L.length,m?Math.round(a/m*100):0]; }, a=hp("me"), b=hp("ai"); el.textContent=`${B.t.toFixed(1)}초 · 아군 ${a[0]}/${a[1]} (${a[2]}%) · 적 ${b[0]}/${b[1]} (${b[2]}%)`; },
+  synHTML(side){ const nos=SIM.s[side].filter(u=>!u.mon).map(u=>u.no), L=AC.synLevels(nos).sort((a,b)=>(b.lv>=0)-(a.lv>=0)||b.lv-a.lv||b.n-a.n);
+    return `<div class="simsyn" data-simsyn="${side}"><b>${side==="me"?"아군":"적"} 시너지</b>${L.length?L.map(x=>`<span class="simsy${x.lv>=0?" on":""}" data-simsy="${x.s.id}" title="${esc(x.s.desc[Math.max(0,x.lv)]||"")}">${AC.synIco(x.s)} ${esc(x.s.name)} <i>${x.n}${x.next?"/"+x.next:""}</i></span>`).join(""):`<span class="muted">없음</span>`}</div>`; },
+  tok(u,side){ if(u.mon) return `<div class="actk mon foe${u.boss?" boss":""}" data-simtk>${AC.monFace(u.boss)}<span class="acnm">${u.boss?"보스":"몬스터"}</span></div>`; const h=AC.hero(u.no); return `<div class="actk tier${AC.tierNo(u.no)}${side==="ai"?" foe":""}" data-simtk draggable="true">${AC.face(u.no)}${AC.tbadge(u.t||0)}${AC.rbadge(u.no)}<span class="acnm">${esc(h?h.name:"?")}</span></div>`; },
+  board(){ const C=AC_CONFIG, sel=SIM.sel; let g=""; const cell=(side,r,c)=>{ const loc=r+","+c, u=SIM.at(side,loc), on=sel&&sel.side===side&&sel.loc===loc; return `<div class="accell ${side}${r===0?" front":""}${on?" simsel":""}" data-simcell="${side}|${loc}">${u?SIM.tok(u,side):""}</div>`; };
+    for(let R=0;R<C.rows*2;R++) for(let c=0;c<C.cols;c++) g+=R<C.rows?cell("ai",C.rows-1-R,c):cell("me",R-C.rows,c);
+    return `<div class="acboard simboard" id="acBoard"><div class="acgrid">${g}</div><div class="aclayer" id="acLayer"></div><div class="acmid" aria-hidden="true"></div></div>`; },
+  picker(){ const q=SIM.q.trim(), C=AC_CONFIG, H=AC.heroes().filter(x=>{ if(!q) return true; const h=AC.hero(x.no); return h&&(h.name.includes(q)||AC.synOf(x.no).some(s=>s.name.includes(q))); }); const by={}; H.forEach(x=>(by[x.tier]=by[x.tier]||[]).push(x));
+    const it=x=>{ const h=AC.hero(x.no); return `<button type="button" class="simhero tier${x.tier}${SIM.pick&&SIM.pick.no===x.no?" on":""}" data-simpick="${x.no}" draggable="true" title="${esc(h.name)}">${AC.face(x.no)}<span class="nm">${esc(h.name)}</span><span class="sy">${AC.synOf(x.no).map(s=>esc(s.name)).join(" · ")}</span></button>`; };
+    const tiers=Object.keys(by).map(Number).sort((a,b)=>a-b);
+    return `<div class="simpick" data-simpicker><input type="search" placeholder="영웅·시너지 검색" value="${esc(SIM.q)}" data-simq><div class="simmon"><button type="button" data-simpickmon="0" class="${SIM.pick&&SIM.pick.mon&&!SIM.pick.boss?"on":""}">👾 몬스터</button><button type="button" data-simpickmon="1" class="${SIM.pick&&SIM.pick.boss?"on":""}">👹 보스</button><label>세기 <select data-simmonr>${SIM.pveRounds().map(r=>`<option value="${r}"${r===SIM.s.monR?" selected":""}>${r}R</option>`).join("")}</select></label></div>
+      ${tiers.map(t=>`<div class="simtier"><b>${t}코 ${esc(C.tierName[t]||"")}</b><div class="simlist">${by[t].map(it).join("")}</div></div>`).join("")||`<p class="muted">검색 결과 없음</p>`}</div>`; },
+  selPanel(){ const sl=SIM.sel; if(!sl) return SIM.pick?`<div class="simselp">${SIM.pick.mon?(SIM.pick.boss?"보스":"몬스터"):esc(AC.hero(SIM.pick.no).name)} 선택됨 → 놓을 칸을 누르세요 <button type="button" data-simdo="unpick">취소</button></div>`:`<div class="simselp muted">영웅을 고른 뒤 칸을 누르거나 끌어다 놓으세요. 놓인 영웅을 누르면 초월 변경·이동·제거.</div>`;
+    const u=SIM.at(sl.side,sl.loc); if(!u) return ""; return `<div class="simselp" data-simselp>${u.mon?(u.boss?"보스":"몬스터"):`<b>${esc(AC.hero(u.no).name)}</b> 초월 <select data-simt>${Array.from({length:13},(_,i)=>`<option value="${i}"${i===(u.t||0)?" selected":""}>${i}</option>`).join("")}</select>`} <span class="muted">빈 칸을 누르면 이동</span> <button type="button" data-simdo="del">제거</button> <button type="button" data-simdo="unsel">닫기</button></div>`; },
+  resHTML(){ const r=SIM.res; if(!r) return ""; const w=r.winner==="me"?"아군 승리":r.winner==="ai"?"적 승리":"무승부", f=n=>fmtN(n);
+    const row=x=>`<tr class="${x.side}${x.alive?"":" dead"}"><td>${x.side==="me"?"아군":"적"}</td><td>${esc(x.name)}${x.mon?"":` <small>${x.t}초월</small>`}</td><td>${x.alive?`${f(x.hp)}/${f(x.maxHp)}`:"사망"}</td><td>${f(x.dealt)}</td><td>${f(x.taken)}</td><td>${f(x.heal)}</td><td>${f(x.sh)}</td><td>${x.sk}${x.skh?` <small>(${x.skh}타)</small>`:""}</td></tr>`;
+    return `<div class="simres" data-simres><h3 data-simwin="${r.winner||"draw"}">${w} <small>${r.t.toFixed(1)}초</small></h3><div class="simtw"><table><thead><tr><th>편</th><th>영웅</th><th>남은 체력</th><th>준 피해</th><th>받은 피해</th><th>회복</th><th>보호막</th><th>스킬 발동</th></tr></thead><tbody>${r.rows.sort((a,b)=>(a.side>b.side?-1:a.side<b.side?1:0)||b.dealt-a.dealt).map(row).join("")}</tbody></table></div><small class="muted">스킬 발동 = 스킬 이름이 뜬 횟수 (괄호: 스킬 판정 타격 수) · 보호막 = 얻은 보호막 합</small></div>`; },
+  render(){ const box=$("acRoot"); if(!box) return; SIM.load(); const bt=!!SIM.anim, sp=SIM.speed;
+    box.innerHTML=`<div class="simwrap${bt?" simbt":""}" data-sim><div class="simtop"><b>🧪 시뮬레이션</b> <span class="muted">실제 게임 진행·저장과 별개</span> <span class="simmsg" data-simmsg></span></div>
+      <div class="simbar">${bt?`<button type="button" data-simdo="skip">⏭ 결과 보기</button><button type="button" data-simdo="reset">■ 중지</button>`:`<button type="button" class="pri" data-simdo="start">⚔️ 전투 시작</button><button type="button" data-simdo="reset">리셋</button><button type="button" data-simdo="clear">비우기</button><button type="button" data-simdo="swap">⇅ 좌우 바꾸기</button>`}
+        <span class="simsp">${[1,2,4].map(x=>`<button type="button" data-simsp="${x}" class="${sp===x?"on":""}">x${x}</button>`).join("")}</span>
+        ${bt?"":`<span class="simrepb">반복 ${[10,50,200].map(n=>`<button type="button" data-simrepn="${n}">${n}</button>`).join("")}</span>`}</div>
+      ${SIM.repHTML()}<div class="simhud" data-simhud></div>
+      <div class="simmain"><div class="simleft">${SIM.synHTML("ai")}<div class="a-board">${SIM.board()}</div>${SIM.synHTML("me")}${bt?"":SIM.selPanel()}${SIM.resHTML()}</div>${bt?"":`<div class="simright">${SIM.picker()}</div>`}</div></div>`;
+    if(bt) SIM.hud(SIM.anim.B); },
+  place(side,loc){ const p=SIM.pick; if(p.mon&&side==="me") return SIM.msg("몬스터·보스는 적 쪽에만 놓을 수 있어요"); SIM.put(side,loc,p.mon?{mon:true,boss:!!p.boss,t:0}:{no:p.no,t:p.t||0}); },
+  onClick(e){ const t=e.target; if(SIM.anim&&!t.closest("[data-simdo],[data-simsp]")) return;
+    const d=t.closest("[data-simdo]"); if(d){ const k=d.dataset.simdo; if(k==="start") return SIM.start(); if(k==="reset") return SIM.reset(); if(k==="clear") return SIM.clear(); if(k==="swap") return SIM.swap(); if(k==="skip") return SIM.skip();
+      if(k==="unpick") SIM.pick=null; if(k==="unsel") SIM.sel=null; if(k==="del"&&SIM.sel){ const L=SIM.s[SIM.sel.side], i=L.findIndex(u=>u.loc===SIM.sel.loc); if(i>=0) L.splice(i,1); SIM.sel=null; SIM.save(); } return SIM.render(); }
+    const sp=t.closest("[data-simsp]"); if(sp){ SIM.speed=+sp.dataset.simsp; if(SIM.anim) AC.speed=SIM.speed; document.querySelectorAll("[data-simsp]").forEach(b=>b.classList.toggle("on",+b.dataset.simsp===SIM.speed)); return; }
+    const rn=t.closest("[data-simrepn]"); if(rn) return SIM.repeat(+rn.dataset.simrepn);
+    const pm=t.closest("[data-simpickmon]"); if(pm){ const b=pm.dataset.simpickmon==="1"; SIM.pick=SIM.pick&&SIM.pick.mon&&!!SIM.pick.boss===b?null:{mon:true,boss:b}; SIM.sel=null; return SIM.render(); }
+    const pk=t.closest("[data-simpick]"); if(pk){ const no=+pk.dataset.simpick; SIM.pick=SIM.pick&&SIM.pick.no===no?null:{no,t:0}; SIM.sel=null; return SIM.render(); }
+    const c=t.closest("[data-simcell]"); if(c){ const [side,loc]=c.dataset.simcell.split("|"), u=SIM.at(side,loc);
+      if(SIM.pick){ SIM.place(side,loc); SIM.pick=null; return SIM.render(); }
+      if(SIM.sel&&!u){ const s=SIM.sel, m=SIM.at(s.side,s.loc); if(m){ if(m.mon&&side==="me") return SIM.msg("몬스터는 적 쪽에만 놓을 수 있어요"); SIM.s[s.side]=SIM.s[s.side].filter(x=>x!==m); m.loc=loc; SIM.s[side].push(m); SIM.save(); } SIM.sel=null; return SIM.render(); }
+      if(u){ SIM.sel=SIM.sel&&SIM.sel.side===side&&SIM.sel.loc===loc?null:{side,loc}; return SIM.render(); } SIM.sel=null; return SIM.render(); } },
+  onInput(e){ const t=e.target; if(t.matches("[data-simq]")){ if(e.type!=="input"||SIM.q===t.value) return; SIM.q=t.value; const p=document.querySelector("[data-simpicker]"); if(p){ const pos=t.selectionStart; p.outerHTML=SIM.picker(); const n=document.querySelector("[data-simq]"); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch{} } } return; }
+    if(t.matches("[data-simt]")&&SIM.sel){ const u=SIM.at(SIM.sel.side,SIM.sel.loc); if(u){ u.t=+t.value; SIM.save(); SIM.render(); } return; }
+    if(t.matches("[data-simmonr]")){ SIM.s.monR=+t.value; SIM.save(); } },
+  onDrag(e){ if(SIM.anim) return; const t=e.target;
+    if(e.type==="dragstart"){ const pk=t.closest&&t.closest("[data-simpick]"), tk=t.closest&&t.closest("[data-simcell]"); if(pk) SIM.drag={no:+pk.dataset.simpick}; else if(tk&&SIM.at(...tk.dataset.simcell.split("|"))) SIM.drag={from:tk.dataset.simcell}; else return; try{ e.dataTransfer.setData("text/plain","sim"); }catch{} return; }
+    if(e.type==="dragover"){ if(SIM.drag&&t.closest("[data-simcell]")) e.preventDefault(); return; }
+    if(e.type==="drop"){ const c=t.closest("[data-simcell]"), D=SIM.drag; SIM.drag=null; if(!c||!D) return; e.preventDefault(); const [side,loc]=c.dataset.simcell.split("|");
+      if(D.no!=null) SIM.put(side,loc,{no:D.no,t:0}); else { const [fs,fl]=D.from.split("|"), m=SIM.at(fs,fl); if(m&&!(m.mon&&side==="me")){ const o=SIM.at(side,loc); SIM.s[fs]=SIM.s[fs].filter(x=>x!==m); if(o){ SIM.s[side]=SIM.s[side].filter(x=>x!==o); o.loc=fl; SIM.s[fs].push(o); } m.loc=loc; SIM.s[side].push(m); SIM.save(); } } SIM.render(); return; }
+    if(e.type==="dragend") SIM.drag=null; } };
+AC.init(); $("acSimBtn").addEventListener("click",()=>SIM.toggle(!AC.simOn)); ["input","change"].forEach(ev=>$("acRoot").addEventListener(ev,e=>{ if(AC.simOn) SIM.onInput(e); })); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop","dragend"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
 showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"||t==="raid"||t==="ac"?t:"deck"; }catch{ return "deck"; } })());
 (function intro(){ const de=document.documentElement; if(!de.classList.contains("intro")) return;
   if(reduceMotion()){ de.classList.remove("intro"); return; }
