@@ -7825,9 +7825,6 @@ function gaMC(B, ws, target, n0, N, runs, seed){
   return {runs, mean:fin?sum/fin:Infinity, pN:hit/runs, fin};
 }
 // ----- 표시 -----
-<footer style="margin:24px auto 12px;max-width:900px;padding:10px;text-align:center;font-size:12px;color:#9a93a8;line-height:1.6">이 페이지는 비상업적 팬 프로젝트이며 넷마블(Netmarble)과 관련이 없습니다. 게임 이름과 이미지의 권리는 각 권리자에게 있습니다.<br>Non-commercial fan project. Not affiliated with Netmarble. Game names and images belong to their respective rights holders.</footer>
-<a href="../" style="position:fixed;right:10px;bottom:10px;z-index:50;padding:6px 10px;border-radius:8px;background:#1a1f2a;border:1px solid #c9a24a;color:#f0d08a;font-size:13px;text-decoration:none">← 배치툴</a>
-<script>(function(){ function go(){ try{ showTab("ac"); }catch(e){ var b=document.querySelector('#tabs button[data-tab=ac]'); if(b) b.click(); } var t=document.getElementById("tabs"); if(t) t.style.display="none"; } if(document.readyState==="complete") go(); else addEventListener("load",go); })();</script>
 function gaPortrait(nm, kind){
   if(kind==="pet"){ const P=petByName(nm); return P&&P.icon||""; }
   const n=GA_PORTRAIT_ALIAS[nm]||nm; return portraitFor({name:n});
@@ -8071,5 +8068,8 @@ showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"
 
 addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&AC.mob()!==AC._mob&&document.getElementById("acRoot")&&!AC.anim) AC.render(); }catch(e){} });
 </script>
+<footer style="margin:24px auto 12px;max-width:900px;padding:10px;text-align:center;font-size:12px;color:#9a93a8;line-height:1.6">이 페이지는 비상업적 팬 프로젝트이며 넷마블(Netmarble)과 관련이 없습니다. 게임 이름과 이미지의 권리는 각 권리자에게 있습니다.<br>Non-commercial fan project. Not affiliated with Netmarble. Game names and images belong to their respective rights holders.</footer>
+<a href="../" style="position:fixed;right:10px;bottom:10px;z-index:50;padding:6px 10px;border-radius:8px;background:#1a1f2a;border:1px solid #c9a24a;color:#f0d08a;font-size:13px;text-decoration:none">← 배치툴</a>
+<script>(function(){ function go(){ try{ showTab("ac"); }catch(e){ var b=document.querySelector('#tabs button[data-tab=ac]'); if(b) b.click(); } var t=document.getElementById("tabs"); if(t) t.style.display="none"; } if(document.readyState==="complete") go(); else addEventListener("load",go); })();</script>
 </body>
 </html>
