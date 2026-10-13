@@ -1505,7 +1505,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.10.20v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.10.21v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5454,7 +5454,7 @@ const AC_CONFIG={
   // 0.4v 시너지: 판에 올린 서로 다른 영웅 수로 단계 결정 · bp = 단계 인원 · hidden = 숨김 단계 (표시 안 함) · 숫자는 v (단계별 배열)
   syn:[
     {id:"marks",name:"지정사수",ico:"🎯",members:["스니퍼","블랙로즈","에스파다","콜트","오르카"],bp:[3,5],v:{giant:[1,1],coef:[220,220],maxHp:[4,4],exec:[0,5]},desc:["지정사수는 특별한 스킬을 지닙니다. 거인학살자: 3번째 공격마다 공격력 220% + 대상 최대 체력 4% 피해", "+ 체력 5% 미만 적 즉시 처형"]},
-    {id:"fury",name:"전투광",ico:"🩸",members:["지크","카일","칼헤론","브란즈&브란셀","실베스타","파이","트루드"],bp:[2,4,6],v:{ls:[3,4,5],revive:[0,0,1.5]},desc:["전투광: 입힌 피해 3% 흡혈", "흡혈 4%", "흡혈 5% · 쓰러지면 1.5초 동안 되살아남 (체력 15%)"]},
+    {id:"fury",name:"전투광",ico:"🩸",members:["지크","카일","칼헤론","브란즈&브란셀","실베스타","트루드"],bp:[2,4,6],v:{ls:[3,4,5],revive:[0,0,1.5]},desc:["전투광: 입힌 피해 3% 흡혈", "흡혈 4%", "흡혈 5% · 쓰러지면 1.5초 동안 되살아남 (체력 8%)"]},
     {id:"sword",name:"검객",ico:"⚔️",members:["풍연","에반","챈슬러","지크","세인","태오","카마도 탄지로","아가츠마 젠이츠"],bp:[2,4,6,8,10],hidden:[10],v:{atk:[4,6,8,10,100],evade:[0,0,8,12,100],dbl:[0,0,0,10,100]},desc:["검객: 공격력 +4% · 적 처치 시 해당 검객 영웅 공격력 +3% (최대 5중첩)", "공격력 +6%", "공격력 +8% · 회피 8%", "공격력 +10% · 회피 12% · 10% 확률로 2명 동시 공격", "공격력 +100% · 회피 100% · 항상 2명 동시 공격"]},
     {id:"van",name:"선봉장",ico:"🛡️",members:["에반","유진호","관우","룩","라드그리드","헬레니아"],bp:[2,3,4,5],v:{hpAll:[50,60,120,220],def:[5,7,15,20]},desc:["아군 전체 생명력 +50 · 선봉장 방어력 +5%","생명력 +60 · 방어력 +7%","생명력 +120 · 방어력 +15%","생명력 +220 · 방어력 +20%"]},
     {id:"guard",name:"수호자",ico:"🧱",members:["아수라","라쿤","니아","아라곤","카르마","스파이크","트루드","클레미스","녹스","루디","겔리두스"],bp:[2,4,6],v:{dr:[10,20,30]},desc:["수호자: 받는 피해 −10% · 체력 50% 미만 첫 도달 시 최대 체력 10% 회복 (전투당 1회)","−20%","−30%"]},
@@ -5478,7 +5478,7 @@ const AC_CONFIG={
     {id:"grave",name:"무덤지기",ico:"💀",sena:1,members:["로지"],bp:[1],v:{atk:[5],souls:[5],nova:[300]},desc:["적이 쓰러질 때마다 영혼 1 · 영혼당 공격력 +5% · 영혼 5개면 적 전체에 큰 마법 피해 (전투당 1번)"]},
     {id:"judge",name:"대법관",ico:"⚖️",sena:1,members:["쥬리"],bp:[1],v:{dr:[25],sk:[40],cut:[20],resCut:[30],near:[3]},desc:["앞쪽 칸: 근접 (사거리 1) · 받는 피해 −25% · 전투 시작 때 가까운 적 3명 마법 저항 −30% · 뒤쪽 칸: 원거리 · 스킬 피해 +40% · 가장 강한 적 1명에게 '판결' (공격력 −20%)"]},
     {id:"ignite",name:"이그니트",ico:"☄️",sena:1,members:["파이"],bp:[1],v:{burn:[10],dur:[3],as:[50]},desc:["공격마다 3초 화상 (매초 파이 공격력 10%) · 체력 50% 아래면 공격 속도 +50%"]}],
-  furyReviveHp:15, guerMove:2,
+  furyReviveHp:8, guerMove:2,
  aiStartHp:100, projMs:280, // 0.3v: 상대 체력 · 원거리 투사체 시간(ms)
   hpMult:1.0,
   aiLevelByRound:[1,2,3,3,4,4,5,5,6,6,6,7,7,7,8,8,8,8,9,9,9,9,10], aiBonusPerRound:0.5, aiReserve:0, aiMaxRolls:3,
