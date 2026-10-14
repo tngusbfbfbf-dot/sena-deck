@@ -1276,6 +1276,9 @@
    #acRoot .achc>.x{position:absolute;right:4px;top:4px;z-index:6}
    @media (max-width:560px){ #acRoot .achc-art{height:118px} #acRoot .achc-stats{gap:10px 6px;padding:12px 8px} #acRoot .achc-st{font-size:14px} #acRoot .achc-sti{font-size:18px} #acRoot .achc-sy{font-size:12px} #acRoot .achc-sk{width:46px;height:46px} #acRoot .achc-it{width:36px;height:36px} #acRoot .achc-hp{margin-left:0} }
 
+   #acRoot .acface.hiart img.art{object-fit:cover;object-position:50% 40%}
+   #acRoot .achc-art .acface.hiart img.art{object-position:50% 30%}
+   #acRoot .achc-art{height:180px} @media (max-width:560px){ #acRoot .achc-art{height:150px!important} }
    /* 0.6v 스킬 */
   .acsyd p{white-space:pre-line}
   #acRoot .acskslot{position:absolute;left:4px;top:4px;z-index:6;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:#0009;border:1px solid #fff3;overflow:hidden}
@@ -1594,7 +1597,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.12v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.13v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -6221,7 +6224,12 @@ const AC={
   /* ---------- 화면 ---------- */
   init(){ try{ AC.light=localStorage.getItem("7kr_ac_light")==="1"; }catch{} const o=AC.load(); AC.st=o||AC.newGame(); AC.modeOpen=!o; AC.render(); },
   msg(t){ AC._m=t; const m=$("acMsg"); if(m) m.textContent=t; clearTimeout(AC.msgT); AC.msgT=setTimeout(()=>{ AC._m=""; const e=$("acMsg"); if(e) e.textContent=""; },2200); },
-  face(no,cls){ const h=AC.hero(no), pt=portraitFor(h), bg=pt&&gradeBgFor(h); return `<span class="acface ${cls||""}">${bg?`<img class="gbg" src="${esc(bg)}" alt="">`:""}${pt?`<img src="${esc(pt)}" alt="">`:`<b>${esc(h?h.name:"?")}</b>`}</span>`; },
+  /* 0.11.13v 고해상도 일러스트 (별도 WebP · 실패하면 기존 초상화) */
+  heroArt:{"헬레니아": "h00", "하연": "h01", "클레미스": "h02", "오르카": "h03", "실베스타": "h04", "루디": "h05", "동영": "h06", "녹스": "h07", "아가츠마 젠이츠": "h08", "카마도 탄지로": "h09", "쥬리": "h10", "로지": "h11", "밀리아": "h12", "파이": "h13", "겔리두스": "h14"},
+  artSrc(h,card){ const k=h&&AC.heroArt[h.name]; if(!k) return ""; const base=/\/autochess\/?/.test(location.pathname)?"img/heroes/":"autochess/img/heroes/"; return base+k+(card?"c":"f")+".webp"; },
+  face(no,cls){ const h=AC.hero(no), pt=portraitFor(h), bg=pt&&gradeBgFor(h), card=/\bcard\b/.test(cls||""), art=AC.artSrc(h,card);
+    if(art) return `<span class="acface hiart ${cls||""}" data-acart="${card?"c":"f"}">${bg?`<img class="gbg" src="${esc(bg)}" alt="">`:""}<img class="art" src="${esc(art)}" alt="" onerror="this.onerror=null;${pt?`this.src='${esc(pt)}';this.className='';this.parentNode.removeAttribute('data-acart')`:`this.remove()`}"></span>`;
+    return `<span class="acface ${cls||""}">${bg?`<img class="gbg" src="${esc(bg)}" alt="">`:""}${pt?`<img src="${esc(pt)}" alt="">`:`<b>${esc(h?h.name:"?")}</b>`}</span>`; },
   tokenHTML(u){ const h=AC.hero(u.no), tr=AC.tierNo(u.no), pu=AC.pulse===u.uid, en=AC.enter&&AC.enter[u.uid]&&Date.now()-AC.enter[u.uid]<900; return `<div class="actk tier${tr}${AC.sel===u.uid?" sel":""}${pu?" pulse":""}${en&&tr>=4?" enter":""}" data-acu="${u.uid}" draggable="true" title="${esc(h.name)} · ${AC_CONFIG.tierName[tr]} ${AC.cost(u.no)}골드 · ${u.t}초월 (${u.copies}장)">${AC.face(u.no)}${AC.tbadge(u.t)}${AC.rbadge(u.no)}${AC.ubadge(u.no)}${u.emb?`<i class="acemb" data-acemb title="검객 상징 장착: 검객으로 취급">${AC.embImg()}</i>`:""}<span class="acnm">${esc(h.name)}</span>${pu?`<span class="acup" data-acup>+1초월!</span>`:""}</div>`; },
   /* 통계 표 (라운드 1개) */
   statsHTML(L){ if(!L||!L.stats||!L.stats.length) return `<p class="muted">이 라운드는 통계가 없어요</p>`; const all=L.stats, mx=Math.max(1,...all.map(x=>x.dealt));
@@ -6253,7 +6261,7 @@ const AC={
     const items=[0,1,2].map(i=>`<span class="achc-it" data-acit="${i}">${i===0&&emb?`<img src="${C.embIcon}" alt="검객 상징" title="검객 상징">`:""}</span>`).join("");
     const si=(c,v,lab,k)=>`<div class="achc-st" title="${lab}"><span class="achc-sti ${c}">${AC.statIco(c)}</span><b data-acst-${k}>${v}</b></div>`;
     return `<div class="acinfo achc tier${tr}" data-acinfo data-achc><div class="achc-card"><div class="achc-tab" data-achct>${t}초월</div>
-      <div class="achc-art">${AC.face(no)}<div class="achc-syns">${syn}</div><div class="achc-cost">${AC.ico("coin")}<b>${AC.cost(no)}</b></div><div class="achc-nm">${esc(h.name)}${I.side==="ai"?" · 상대":""}</div></div>
+      <div class="achc-art">${AC.face(no,"card")}<div class="achc-syns">${syn}</div><div class="achc-cost">${AC.ico("coin")}<b>${AC.cost(no)}</b></div><div class="achc-nm">${esc(h.name)}${I.side==="ai"?" · 상대":""}</div></div>
       <div class="achc-hp"><i class="hp" data-acbar="hp" style="width:${hp/tot*100}%"></i><i class="sh" data-acbar="sh" style="left:${hp/tot*100}%;width:${sh/tot*100}%"></i><b data-acst-hp>${fmtN(hp)} / ${fmtN(mhp)}${sh?` (+${fmtN(sh)})`:""}</b></div>
       <div class="achc-low"><button type="button" class="achc-sk${I.sk?" on":""}" data-acdo="isk" title="스킬 설명 보기">${AC.skIco(no)}</button><div class="achc-items">${items}</div></div></div>
       <div class="achc-stats">${si("atk",fmtN(X.atk),"공격력","atk")}${si("as",X.aspd,"공격 속도","aspd")}${si("def",fmtN(X.def),"방어력","def")}${si("res",fmtN(X.res),"마법 저항","res")}${si("crit",Math.round(crit||0)+"%","치명타","crit")}${si("rng",rng,"사거리","rng")}</div>
