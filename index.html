@@ -1194,11 +1194,12 @@
   /* 0.6v 스킬 */
   .acsyd p{white-space:pre-line}
   #acRoot .acskslot{position:absolute;left:4px;top:4px;z-index:6;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:#0009;border:1px solid #fff3;overflow:hidden}
-  #acRoot .acskslot.u{border-color:#ffd36a;box-shadow:0 0 6px #ffb30088} #acRoot .acskslot img,.acskico img,.acemb{position:absolute;left:1px;bottom:12px;font-size:12px;line-height:1;filter:drop-shadow(0 0 2px #000);z-index:3;pointer-events:none}.acembimg{width:16px;height:16px;object-fit:contain;vertical-align:middle}.acitem .acembimg{width:20px;height:20px}.acembp{color:#ffd36a;font-size:11px;margin:2px 0}.acsyimg{width:100%;height:100%;object-fit:cover}
+  #acRoot .acskslot.u{border-color:#ffd36a;box-shadow:0 0 6px #ffb30088} #acRoot .acskslot img,#acRoot .acemb{position:absolute;left:1px;bottom:12px;font-size:12px;line-height:1;filter:drop-shadow(0 0 2px #000);z-index:3;pointer-events:none}.acembimg{width:16px;height:16px;object-fit:contain;vertical-align:middle}.acitem .acembimg{width:20px;height:20px}.acembp{color:#ffd36a;font-size:11px;margin:2px 0}.acsyimg{width:100%;height:100%;object-fit:cover}
   #acRoot .acshop .acsknm{display:block;font-size:10px;font-weight:800;color:#ffd36a;line-height:1.1;margin-top:1px;text-align:center}
   .acskill{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:6px 8px;border-radius:8px;background:#ffffff0d;border:1px solid #ffd36a44;max-width:420px}
   .acskill.gen{border-color:#ffffff22} .acskill b{font-size:13px;color:#ffd36a} .acskill p{margin:2px 0 0;font-size:12px;line-height:1.35;color:var(--text,#ddd);white-space:pre-line}
-  .acskico{flex:0 0 28px;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-size:17px;background:#0008;border:1px solid #ffd36a66;overflow:hidden}
+  .acskico img{position:static;display:block;width:100%;height:100%;object-fit:cover;border-radius:6px} /* 0.11.10v 스킬 아이콘은 이름 옆 칸 안에 */
+   .acskico{flex:0 0 28px;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-size:17px;background:#0008;border:1px solid #ffd36a66;overflow:hidden}
   .acfx.sk5{font-size:14px;color:#ffe48a;-webkit-text-stroke:.6px #6a4300;text-shadow:0 0 6px #ff9d00,0 1px 2px #000;z-index:12;white-space:nowrap}
   .acfx.rage{color:#ff6262;font-size:14px;text-shadow:0 0 6px #f00,0 1px 2px #000} .acfx.imm{color:#c8f5ff}
   .acbeam{position:absolute;z-index:8;height:6px;margin-top:-3px;transform-origin:0 50%;background:linear-gradient(90deg,#fff,#ffcf5a 30%,#ff8a00);border-radius:3px;box-shadow:0 0 10px #ffb300;pointer-events:none;animation:acfade .6s ease-out forwards}
@@ -1508,7 +1509,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.9v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.10v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
