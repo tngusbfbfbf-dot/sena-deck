@@ -1277,7 +1277,7 @@
    @media (max-width:560px){ #acRoot .achc-art{height:118px} #acRoot .achc-stats{gap:10px 6px;padding:12px 8px} #acRoot .achc-st{font-size:14px} #acRoot .achc-sti{font-size:18px} #acRoot .achc-sy{font-size:12px} #acRoot .achc-sk{width:46px;height:46px} #acRoot .achc-it{width:36px;height:36px} #acRoot .achc-hp{margin-left:0} }
 
    #acRoot .acface.hiart img.art{object-fit:cover;object-position:50% 30%}
-   #acRoot .acface.hiart[data-acart="c"] img.art{object-position:50% 12%}
+   #acRoot .acface.hiart[data-acart="c"] img.art{object-position:50% 25%}
    #acRoot .achc-art{height:180px} @media (max-width:560px){ #acRoot .achc-art{height:150px!important} }
    /* 0.6v 스킬 */
   .acsyd p{white-space:pre-line}
@@ -1597,7 +1597,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.14v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.15v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -6225,8 +6225,8 @@ const AC={
   init(){ try{ AC.light=localStorage.getItem("7kr_ac_light")==="1"; }catch{} const o=AC.load(); AC.st=o||AC.newGame(); AC.modeOpen=!o; AC.render(); },
   msg(t){ AC._m=t; const m=$("acMsg"); if(m) m.textContent=t; clearTimeout(AC.msgT); AC.msgT=setTimeout(()=>{ AC._m=""; const e=$("acMsg"); if(e) e.textContent=""; },2200); },
   /* 0.11.13v 고해상도 일러스트 (별도 WebP · 실패하면 기존 초상화) */
-  heroArt:{"헬레니아": "h00", "하연": "h01", "클레미스": "h02", "오르카": "h03", "실베스타": "h04", "루디": "h05", "동영": "h06", "녹스": "h07", "아가츠마 젠이츠": "h08", "카마도 탄지로": "h09", "쥬리": "h10", "로지": "h11", "밀리아": "h12", "파이": "h13", "겔리두스": "h14"},
-  artSrc(h,card){ const k=h&&AC.heroArt[h.name]; if(!k) return ""; const base=/\/autochess\/?/.test(location.pathname)?"img/heroes/":"autochess/img/heroes/"; return base+k+(card?"c":"f")+".webp?v=14"; },
+  heroArt:{"헬레니아": "h00", "하연": "h01", "클레미스": "h02", "오르카": "h03", "실베스타": "h04", "루디": "h05", "동영": "h06", "녹스": "h07", "아가츠마 젠이츠": "h08", "카마도 탄지로": "h09", "쥬리": "h10", "로지": "h11", "밀리아": "h12", "파이": "h13", "브란즈&브란셀": "h15", "라드그리드": "h16", "레긴레이프": "h17", "린": "h18", "바네사": "h19", "오공": "h20", "스파이크": "h21", "카르마": "h22", "팔라누스": "h23", "카일": "h24", "칼헤론": "h25", "콜트": "h26", "트루드": "h27", "태오": "h28", "겔리두스": "h14"},
+  artSrc(h,card){ const k=h&&AC.heroArt[h.name]; if(!k) return ""; const base=/\/autochess\/?/.test(location.pathname)?"img/heroes/":"autochess/img/heroes/"; return base+k+(card?"c":"f")+".webp?v=15"; },
   /* 0.11.14v 컨테이너 비율로 크롭 선택: 넓으면(가로/세로 ≥ 1.4) 와이드 크롭, 좁거나 정사각이면 얼굴 크롭 */
   fitArt(){ const R=document.getElementById("acRoot"); if(!R) return; R.querySelectorAll("img.art[data-artf]").forEach(im=>{ const p=im.parentNode, w=p.clientWidth, h=p.clientHeight; if(!w||!h) return; const k=w/h>=1.4?"c":"f", want=k==="c"?im.dataset.artc:im.dataset.artf; if(p.dataset.acart&&p.dataset.acart!==k){ p.dataset.acart=k; } if(p.dataset.acart&&im.getAttribute("src")!==want) im.setAttribute("src",want); }); },
   artWatch(){ if(AC._artW) return; const R=document.getElementById("acRoot"); if(!R||typeof MutationObserver==="undefined") return; let q=0; const run=()=>{ if(q) return; q=requestAnimationFrame(()=>{ q=0; AC.fitArt(); }); }; AC._artW=new MutationObserver(run); AC._artW.observe(R,{childList:true,subtree:true}); window.addEventListener("resize",run); run(); },
