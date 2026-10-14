@@ -1279,6 +1279,11 @@
    #acRoot .acface.hiart img.art{object-fit:cover;object-position:50% 30%}
    #acRoot .acface.hiart[data-acart="c"] img.art{object-position:50% 25%}
    #acRoot .achc-art{height:180px} @media (max-width:560px){ #acRoot .achc-art{height:150px!important} }
+   /* 0.11.17v 일러스트 없는 영웅: 작은 초상 원래 크기로 가운데 · 뒤는 흐린 초상 + 등급색 */
+   #acRoot .achc-lo{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--tc) 45%,#000),#0b0d0e 75%)}
+   #acRoot .achc-lo .blur{position:absolute;inset:-20px;width:calc(100% + 40px);height:calc(100% + 40px);object-fit:cover;filter:blur(14px) brightness(.55) saturate(1.2);opacity:.85}
+   #acRoot .achc-lo .pt{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:min(128px,64%);width:auto;aspect-ratio:1;object-fit:cover;border-radius:8px;border:2px solid var(--tc);box-shadow:0 4px 16px #000a}
+   @media (max-width:560px){ #acRoot .achc-lo .pt{left:60%} }
    /* 0.6v 스킬 */
   .acsyd p{white-space:pre-line}
   #acRoot .acskslot{position:absolute;left:4px;top:4px;z-index:6;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:#0009;border:1px solid #fff3;overflow:hidden}
@@ -6233,7 +6238,7 @@ const AC={
   msg(t){ AC._m=t; const m=$("acMsg"); if(m) m.textContent=t; clearTimeout(AC.msgT); AC.msgT=setTimeout(()=>{ AC._m=""; const e=$("acMsg"); if(e) e.textContent=""; },2200); },
   /* 0.11.13v 고해상도 일러스트 (별도 WebP · 실패하면 기존 초상화) */
   heroArt:{"헬레니아": "h00", "하연": "h01", "클레미스": "h02", "오르카": "h03", "실베스타": "h04", "루디": "h05", "동영": "h06", "녹스": "h07", "아가츠마 젠이츠": "h08", "카마도 탄지로": "h09", "쥬리": "h10", "로지": "h11", "밀리아": "h12", "파이": "h13", "브란즈&브란셀": "h15", "라드그리드": "h16", "레긴레이프": "h17", "린": "h18", "바네사": "h19", "오공": "h20", "스파이크": "h21", "카르마": "h22", "팔라누스": "h23", "카일": "h24", "칼헤론": "h25", "콜트": "h26", "트루드": "h27", "태오": "h28", "비담": "h29", "리나": "h30", "에스파다": "h31", "지크": "h32", "파스칼": "h33", "세인": "h34", "차해인": "h35", "미호": "h36", "니아": "h37", "아라곤": "h38", "관우": "h39", "룩": "h40", "챈슬러": "h41", "겔리두스": "h14"},
-  artSrc(h,card){ const k=h&&AC.heroArt[h.name]; if(!k) return ""; const base=/\/autochess\/?/.test(location.pathname)?"img/heroes/":"autochess/img/heroes/"; return base+k+(card?"c":"f")+".webp?v=17"; },
+  artSrc(h,card){ const k=h&&AC.heroArt[h.name]; if(!k) return ""; const base=/\/autochess\/?/.test(location.pathname)?"img/heroes/":"autochess/img/heroes/"; return base+k+(card?"c":"f")+".webp?v=18"; },
   /* 0.11.14v 컨테이너 비율로 크롭 선택: 넓으면(가로/세로 ≥ 1.4) 와이드 크롭, 좁거나 정사각이면 얼굴 크롭 */
   fitArt(){ const R=document.getElementById("acRoot"); if(!R) return; R.querySelectorAll("img.art[data-artf]").forEach(im=>{ const p=im.parentNode, w=p.clientWidth, h=p.clientHeight; if(!w||!h) return; const k=w/h>=1.4?"c":"f", want=k==="c"?im.dataset.artc:im.dataset.artf; if(p.dataset.acart&&p.dataset.acart!==k){ p.dataset.acart=k; } if(p.dataset.acart&&im.getAttribute("src")!==want) im.setAttribute("src",want); }); },
   artWatch(){ if(AC._artW) return; const R=document.getElementById("acRoot"); if(!R||typeof MutationObserver==="undefined") return; let q=0; const run=()=>{ if(q) return; q=requestAnimationFrame(()=>{ q=0; AC.fitArt(); }); }; AC._artW=new MutationObserver(run); AC._artW.observe(R,{childList:true,subtree:true}); window.addEventListener("resize",run); run(); },
@@ -6271,7 +6276,7 @@ const AC={
     const items=[0,1,2].map(i=>`<span class="achc-it" data-acit="${i}">${i===0&&emb?`<img src="${C.embIcon}" alt="검객 상징" title="검객 상징">`:""}</span>`).join("");
     const si=(c,v,lab,k)=>`<div class="achc-st" title="${lab}"><span class="achc-sti ${c}">${AC.statIco(c)}</span><b data-acst-${k}>${v}</b></div>`;
     return `<div class="acinfo achc tier${tr}" data-acinfo data-achc><div class="achc-card"><div class="achc-tab" data-achct>${t}초월</div>
-      <div class="achc-art">${AC.face(no,"card")}<div class="achc-syns">${syn}</div><div class="achc-cost">${AC.ico("coin")}<b>${AC.cost(no)}</b></div><div class="achc-nm">${esc(h.name)}${I.side==="ai"?" · 상대":""}</div></div>
+      <div class="achc-art">${AC.artSrc(h,true)||!portraitFor(h)?AC.face(no,"card"):`<div class="achc-lo" data-achclo><img class="blur" src="${esc(portraitFor(h))}" alt=""><img class="pt" src="${esc(portraitFor(h))}" alt=""></div>`}<div class="achc-syns">${syn}</div><div class="achc-cost">${AC.ico("coin")}<b>${AC.cost(no)}</b></div><div class="achc-nm">${esc(h.name)}${I.side==="ai"?" · 상대":""}</div></div>
       <div class="achc-hp"><i class="hp" data-acbar="hp" style="width:${hp/tot*100}%"></i><i class="sh" data-acbar="sh" style="left:${hp/tot*100}%;width:${sh/tot*100}%"></i><b data-acst-hp>${fmtN(hp)} / ${fmtN(mhp)}${sh?` (+${fmtN(sh)})`:""}</b></div>
       <div class="achc-low"><button type="button" class="achc-sk${I.sk?" on":""}" data-acdo="isk" title="스킬 설명 보기">${AC.skIco(no)}</button><div class="achc-items">${items}</div></div></div>
       <div class="achc-stats">${si("atk",fmtN(X.atk),"공격력","atk")}${si("as",X.aspd,"공격 속도","aspd")}${si("def",fmtN(X.def),"방어력","def")}${si("res",fmtN(X.res),"마법 저항","res")}${si("crit",Math.round(crit||0)+"%","치명타","crit")}${si("rng",rng,"사거리","rng")}</div>
