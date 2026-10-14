@@ -1508,7 +1508,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.8v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.11.9v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -5742,7 +5742,7 @@ const AC={
   skillOf(no){ const h=AC.hero(no); return h&&AC.skCfg(h.name)||null; },
   skIco(no){ const C=AC_CONFIG, h=AC.hero(no), k=AC.skillOf(no), im=h&&C.skillIcons[h.name]; return im?`<img src="${im}" alt="">`:(k?k.ico:C.genericSkill.ico); },
   synIco(s,lv){ const T=AC_CONFIG.synTierIcons&&AC_CONFIG.synTierIcons[s.id]; if(T&&T.tiers&&T.tiers.length){ const off=lv!=null&&lv<0, L=Math.max(lv||0,0), i=off?0:Math.min(T.map?(T.map[Math.min(L,T.map.length-1)]??0):L,T.tiers.length-1); return `<img class="acsyimg acsytier${off?" off":""}" data-acsytier="${off?"off":i}" src="${off&&T.off?T.off:T.tiers[i]}" alt="">`; } const im=AC_CONFIG.synIcons[s.name]; return im?`<img class="acsyimg" src="${im}" alt="">`:s.ico; },
-  skillLine(no,t){ const C=AC_CONFIG, k=AC.skillOf(no), h=AC.hero(no); t=t||0; const M=h&&C.skillMeta&&C.skillMeta[h.name], M2=M&&M.n2?`<div class="acsk2" data-acsk2><img src="${M.i2}" alt=""><b>${esc(M.n2)}</b>${M.sub2?` <small>${esc(M.sub2)}</small>`:""}</div>`:""; if(!k) return `<div class="acskill gen" data-acskill><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(M?M.n:C.genericSkill.name)}</b><p>고유 스킬 없음 · 기본 공격만</p></div></div>`; const ti=AC.skTi(h.name,t), s3=!!(AC_CONFIG.skills3[h.name]||AC_CONFIG.skills2[h.name]||AC_CONFIG.skills1[h.name]);
+  skillLine(no,t){ const C=AC_CONFIG, k=AC.skillOf(no), h=AC.hero(no); t=t||0; const M=h&&C.skillMeta&&C.skillMeta[h.name], M2=M&&M.n2&&!String(AC.skDesc(h.name,0)||"").includes(M.n2)?`<div class="acsk2" data-acsk2><img src="${M.i2}" alt=""><b>${esc(M.n2)}</b>${M.sub2?` <small>${esc(M.sub2)}</small>`:""}</div>`:""; if(!k) return `<div class="acskill gen" data-acskill><span class="acskico">${AC.skIco(no)}</span><div><b>${esc(M?M.n:C.genericSkill.name)}</b><p>고유 스킬 없음 · 기본 공격만</p></div></div>`; const ti=AC.skTi(h.name,t), s3=!!(AC_CONFIG.skills3[h.name]||AC_CONFIG.skills2[h.name]||AC_CONFIG.skills1[h.name]);
     return `<div class="acskill" data-acskill data-sktier="${ti}"><span class="acskico">${AC.skIco(no)}</span><div><b data-acskname>${esc(k.name)}</b> <small class="acsktier" data-acsktier>${"ABC"[ti]}단계 · ${(s3?["0–5","6–11","12"]:["0–2","3–5","6+"])[ti]}초월</small><p>${AC.skDesc(h.name,t,true)}</p>${M2}${t>=12&&k.fin?`<div class="acfin" data-acfin><b>✦ 12초월 히든 종결자 효과${k.fin.name?"-"+esc(k.fin.name):""}</b><p>${esc(k.fin.desc)}</p></div>`:""}</div></div>`; },
   hsMul(B,side){ const o=side==="me"?"ai":"me"; return Math.max(0,1+(AC.sv(B,side,"tuner","up")-AC.sv(B,o,"tuner","down"))/100); }, // 0.10.3v 조율자: 회복·쉴드 배율
   glMul(B,u,k){ const L=B.syn&&B.syn[u.side]&&B.syn[u.side].glacier; if(L==null) return 1; const S=AC.synById("glacier"); if(!S.v.all[L]&&!S.members.includes(u.name)) return 1; return 1+S.v[k][L]/100; }, // 0.10.23v 빙하: 받는 보호막·회복 배율
