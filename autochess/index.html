@@ -8538,6 +8538,7 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
     const at=(st.s1a||[]).map(a=>ATTR.find(x=>x[0]===a)[1]).join("·");
     const dk=S.dkStk?` <i class="acbuf" title="다크나이츠 처치 중첩 · 다음 군수품 ${(DK[S.dkDone||0]||["완료"])[0]}">📦 ${S.dkStk}</i>`:"";
     return h.replace('<span class="ttl">아이템</span>',`<span class="ttl">아이템</span><i class="acbuf" data-s1attr title="(구) 세나 속성 (이번 게임 · 모든 플레이어 동일)">시즌1 · 속성 ${at||"-"}</i>${dk}`).replace(/<\/div>$/,gs+"</div>"); };
+  AC._s1G=G; const oCard=AC.cardHTML; AC.cardHTML=function(I){ let h=oCard.apply(AC,arguments); const st=AC.st; let U=I&&I.uid!=null&&st&&st.me.units.find(x=>x.uid===I.uid); if(!U&&I&&I.side==="ai"&&st){ const F=AC.scoutS&&AC.scoutS(st)||st.ai; U=F&&I.fu!=null&&F.units.find(x=>x.uid===I.fu); } const gs=(U&&U.gear||[]).filter(id=>G[id]); if(!gs.length) return h; let n=0; return h.replace(/<span class="achc-it" data-acit="(\d)"><\/span>/g,(m,i)=>{ const g=G[gs[n++]]; return g?`<span class="achc-it" data-acit="${i}" title="${esc(typeof tip==="function"?tip(g):g.name)}">${gi(g)}</span>`:m; }); };
   const oTK=AC.tokenHTML; AC.tokenHTML=function(u){ let h=oTK.apply(AC,arguments); { const L=heroSyms(u.no); if(L.length){ const k=h.lastIndexOf("</div>"); const tag=`<span class="s1tkb" data-s1bdg style="position:absolute;right:1%;top:20%;width:21%;max-width:24px;min-width:13px;z-index:6;pointer-events:none;display:flex;flex-direction:column;gap:2px">${L.map(x=>`<img src="${x.i}" alt="" title="${esc(x.n)}" style="width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 0 2px #000)">`).join("")}</span>`; h=k<0?h+tag:h.slice(0,k)+tag+h.slice(k); } } if(!u.gear||!u.gear.length) return h; const ic=`<span class="s1gear" data-s1gearbar style="position:absolute;left:0;right:0;bottom:-4px;display:flex;justify-content:center;gap:1px;z-index:5;pointer-events:none">${u.gear.map(id=>G[id]?`<span title="${esc(G[id].name)}" style="width:14px;height:14px;display:inline-block;border:1px solid #c9a24a;border-radius:3px;overflow:hidden;background:#111">${gi(G[id])}</span>`:"").join("")}</span>`; const i=h.lastIndexOf("</div>"); return i<0?h+ic:h.slice(0,i)+ic+h.slice(i); };
   // 0.13.3v 시즌1: 화면 글자 '체력' → '생명력' (기존 시즌은 그대로)
   const RW=t=>t.replace(/체력/g,"생명력").replace(/엘리스/g,"앨리스");
@@ -8615,6 +8616,7 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
       if(u.s1esp&&B.t>=u.s1esp){ u.res+=u.s1espR||0; u.s1esp=0; u.s1espR=0; } }
     return r; };
 })();
+;(function(){ if(AC.season!=="s1"||!AC.niaCells) return; const o=AC.niaCells; AC.niaCells=function(){ return AC_CONFIG.skills2["니아"]?o.apply(AC,arguments):[]; }; })();
 /* ===== 0.14.1v 시즌1 스킬 툴팁 (데이터 기반: desc + syn + rows[{label,type,values,unit}]) ===== */
 (function(){ if(AC.season!=="s1") return; const SK=S1SK1;
   const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -8650,6 +8652,7 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
 .s1i-at{color:#f08a2c}.s1i-ma{color:#7f7bff}
 .s1i:hover::after,.s1i:focus::after{content:attr(data-tip);position:absolute;bottom:135%;left:-6px;width:max-content;max-width:190px;white-space:normal;line-height:1.35;background:#1b1a17;border:1px solid #8a7444;color:#f3e6c4;font-size:11px;padding:3px 6px;border-radius:4px;z-index:99;pointer-events:none}
 .actk .acrg,.actk .s1tkb,.actk .acnm{display:none!important}
+@media(max-width:560px){#acRoot .achc-stats{padding-top:34px!important}}
 @media(max-width:420px){.s1tip{font-size:12px;padding:8px 9px}}`; document.head.appendChild(css);
 })();
 AC.init(); $("acSimBtn").addEventListener("click",()=>SIM.toggle(!AC.simOn)); ["input","change"].forEach(ev=>$("acRoot").addEventListener(ev,e=>{ if(AC.simOn) SIM.onInput(e); })); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop","dragend"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
