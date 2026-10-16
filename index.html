@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.5v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.6v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8570,7 +8570,7 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
   const allies=(B,u)=>B.units.filter(x=>x.alive&&x.side===u.side&&!x.disabled);
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), adj=(a,b)=>dist(a,b)<1.5;
   const near=(o,Lst)=>Lst.slice().sort((a,b)=>dist(a,o)-dist(b,o));
-  const ev=(B,u,txt)=>B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"});
+  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   // (마) 고정값 × (1+마공/100) · 마법 저항 경감 · 피해 증폭·스킬 피해·받는 피해 감소
   const magHit=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; let d=v*MA(u)*100/(100+Math.max(0,t.res||0))*(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100); d=Math.max(1,Math.round(d)); hitEv(B,u,t,d); return AC.applyDmg(B,u,t,d,{id:"sk:"+id}); };
@@ -8578,7 +8578,7 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
   const phyHit=(B,u,t,coef,id,add)=>{ if(!t||!t.alive) return 0; let d=AC._s1oCH.call(AC,B,u,t,coef,false,true); if(add) d+=add*100/(100+Math.max(0,t.def||0)); d=Math.max(1,Math.round(d)); hitEv(B,u,t,d); return AC.applyDmg(B,u,t,d,{id:"sk:"+id}); };
   const heal=(B,u,n,id)=>AC.heal(B,u,n,"sk:"+id);
   AC.s1WeakMul=(B,side)=>B.units.some(x=>x.alive&&x.side===side&&x.skId==="s1:실비아")?1.07:1;
-  const every=(u,n)=>u.atks>0&&u.atks%n===0;
+  const every=(u,n)=>!u.s1skip&&u.s1c>0&&u.s1c%n===0; // 1.0.6v 스킬 발동 후 1초 내 기본 공격은 집계 제외
   const H={
     "파이":(B,u,tg)=>{ if(!every(u,3)) return; ev(B,u,SK["파이"].name); let sum=0; for(const f of foes(B,u).filter(x=>x===tg||adj(x,u))) sum+=phyHit(B,u,f,240,"파이");
       heal(B,u,L(u,[150,175,200])*MA(u),"파이");
@@ -8604,7 +8604,7 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
   const oSS=AC.skStart; AC.skStart=function(B){ const r=oSS.apply(AC,arguments); for(const u of B.units){ if(u.mon||!CFG[u.name]) continue; u.skId="s1:"+u.name; u.s3=true; u.K=u.K||{}; u.s1n=u.name;
       if(u.name==="태오"){ const src=B.refs[u.uid]; if(src&&src.s1taeo) u.atkPct+=src.s1taeo; }
       if(u.name==="미호") u.s1mihoFirst=true; } return r; };
-  const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ if(u.s1n&&H[u.s1n]){ const t=tg.alive?tg:near(u,foes(B,u))[0]; if(t) H[u.s1n](B,u,t); return; } if(u.s1n) return; return oSA.apply(AC,arguments); };
+  const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ if(u.s1n&&H[u.s1n]){ u.s1skip=u.s1lock>B.t; if(!u.s1skip) u.s1c=(u.s1c||0)+1; const t=tg.alive?tg:near(u,foes(B,u))[0]; if(t) H[u.s1n](B,u,t); return; } if(u.s1n) return; return oSA.apply(AC,arguments); };
   const oHe=AC.heal; AC.heal=function(B,u,n,id){ if(u&&u.s1mihoFirst&&n>0){ u.s1mihoFirst=false; n*=1.2; } return oHe.call(AC,B,u,n,id); };
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ if(t&&t.s1petr>B.t) d*=1.15; const was=t&&t.alive; const r=oAD.call(AC,B,a,t,d,o);
     if(a&&t&&a.side!==t.side&&!(o&&(o.id==="ignite"||o.id==="s1dot"||o.refl))){ if(t.alive&&TAKEN[t.s1n]){ t.s1hit=(t.s1hit||0)+1; if(t.s1hit%5===0) TAKEN[t.s1n](B,t); } }
@@ -8852,7 +8852,7 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
           if(bd>u.range+1){ let best=null,bv=1e9; for(let dR=-1;dR<=1;dR++) for(let dC=-1;dC<=1;dC++){ const R=tg.R+dR, Cc=tg.C+dC; if(!free(B,R,Cc)) continue; const v=Math.hypot(R-u.R,Cc-u.C); if(v<bv){ bv=v; best=[R,Cc]; } }
             if(best){ u.R=best[0]; u.C=best[1]; u.s1dashCd=B.t+1; u.s1mobT=B.t+4; fx(B,u,"기동타격 돌진"); } } } }
       // 천둥군주 (아일린): 기본 공격 5회마다
-      if(u.name==="아일린"&&lv(B,u.side,"천둥군주")!=null){ const n=Math.floor(u.atks/5); if(n>(u.s1thN||0)){ u.s1thN=n; AC.s1thunder(B,u); } }
+      if(u.name==="아일린"&&lv(B,u.side,"천둥군주")!=null){ const d=u.atks-(u.s1la||0); u.s1la=u.atks; if(d>0&&!(u.s1lock>B.t)) u.s1tc=(u.s1tc||0)+d; if((u.s1tc||0)>=5){ u.s1tc-=5; u.s1lock=B.t+1; AC.s1thunder(B,u); } }
       // 암행어사 위장 해제: 마지막 아군
       if(u.s1hide&&u.untg>B.t&&!B.units.some(x=>x!==u&&x.alive&&x.side===u.side)){ u.untg=0; u.s1hide=0; fx(B,u,"위장 해제","dis"); }
       // 팔사검 해방
