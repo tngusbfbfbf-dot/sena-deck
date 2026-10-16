@@ -8432,8 +8432,8 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   const UNI={"천둥군주":"아일린","암행어사":"윤건","예언가":"스쿨드","팔사검":"카구라","천하무쌍":"여포"};
   // bp: s1_open_questions.md 확정값 · ★ = 자리표시 (사용자 값 대기)
   const BP={"세븐나이츠":[3,5,7],"다크나이츠":[2,4,6],"사황":[1,2,3,4,5,6,7,8],"테라영지":[2,4,6],"(구) 세나":[2,3,4,5],"천상의 수호자":[3,5,7,10],"신바람":[2,3,4],"혁명단":[2,3,4],"그림자단":[2,4],"숨은 강자들":[1,4],"흑마법 연구탑":[2,3,4],"성십자단":[2,4,6],
-    "방어대":[3,5,7],"주술사":[2,4,6,8],"기동타격":[2,4,6],"사격수":[2,3,4,5,6],"정화술사":[2,4,6],"결투가":[2,3,4,5],"복수자":[2,3,4,5],"지휘자":[2,3,4,5],"약탈자":[2,4,6],"추적자":[3,5,7],"성기사":[2,4,6,8],"흑마법사":[2,4,6]};
-  const PH={"흑마법 연구탑":1,"성십자단":1,"약탈자":1,"흑마법사":1,"사격수":1};
+    "방어대":[3,5,7],"주술사":[2,4,6,8],"기동타격":[2,4,6],"사격수":[2,4,6],"정화술사":[2,4,6],"결투가":[2,3,4,5],"복수자":[2,3,4,5],"지휘자":[2,3,4,5],"약탈자":[2,4,6,8],"추적자":[3,5,7],"성기사":[2,4,6,8],"흑마법사":[2,4,6,8]};
+  const PH={"흑마법 연구탑":1,"성십자단":1};
   const KNOWN={
     "세븐나이츠":"아군 누구든 생명력 30% 이하가 되면 발동 (전투당 1회). 단계별 효과 수치: 사용자 초안 대기",
     "다크나이츠":"처치 관여 1회당 처치 중첩 (×1/×3/×6, 게임 내내 누적) · 중첩 보상(군수품) 15단계 · 군수품 개봉당 모든 공격력 +5%",
@@ -8657,6 +8657,72 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
 .actk .acrg,.actk .s1tkb,.actk .acnm{display:none!important}
 @media(max-width:560px){#acRoot .achc-stats{padding-top:34px!important}}
 @media(max-width:420px){.s1tip{font-size:12px;padding:8px 9px}}`; document.head.appendChild(css);
+})();
+/* ===== 0.14.3v 시즌1 직업 시너지 12종 (syn_job_draft.md 원문) ===== */
+(function(){ if(AC.season!=="s1") return; const C=AC_CONFIG;
+  const T={
+    "방어대":["모든 아군이 피격으로부터 받는 모든 피해를 고정수치만큼 막습니다.",["피해 20","피해 40","피해 70"]],
+    "주술사":["전투가 끝날 때까지 영웅이 스킬을 사용할 때마다 주술사가 추가 공격력을 얻습니다.",["공격력 25, 추가 공격력 2","공격력 50, 추가 공격력 4","공격력 100, 추가 공격력 10","공격력 200, 추가 공격력 20"]],
+    "기동타격":["기동타격은 자신의 다음 기본 공격 대상을 향해 빠르게 접근합니다. 기동타격은 받는 피해량이 감소합니다. 전투 시작 및 기동타격 이후 4초 동안 해당 효과가 두 배로 증가합니다.",["20%","25%","30%"]],
+    "사격수":["사격수는 4초마다 4초동안 지속되는 추가 공격 속도를 얻습니다. 전투 시작 후 4초 후 부터 발동합니다.",["+80%","+180%","+400%"]],
+    "흑마법사":["모든 아군이 마법 저항을 얻습니다.",["+40","+80","+150","+250"]],
+    "정화술사":["정화술사는 매초 최대 생명력의 일정 비율만큼 생명력을 회복합니다. 생명력이 가득 차면, 대신 보호막을 생성합니다(최대 생명력 10%까지만).",["4%","6%","10%"]],
+    "결투가":["결투가는 전투 시작 시 보호막을 얻고 매초 추가 공격력이 증가합니다.",["보호막 최대 생명력 20%, 공격력 +4%","보호막 최대 생명력 50%, 공격력 +8%","보호막 최대 생명력 70%, 공격력 +12%","보호막 최대 생명력 100%, 공격력 +20%"]],
+    "복수자":["추가 공격 속도, 기본 공격과 스킬 피해의 일부를 생명력으로 회복.",["공속 +25%, 회복량 15%","공속 +65%, 회복량 20%","공속 +120%, 회복량 25%","공속 +250%, 회복량 35%"]],
+    "지휘자":["처음으로 생명력이 50% 이하로 떨어지면 최대 생명력에 비례해 빠르게 회복(초당 4회 분할). 이후 모든 아군 지휘자는 10% 증가된 피해.",["최대 생명력 30%","최대 생명력 55%","최대 생명력 80%","최대 생명력 120%"]],
+    "약탈자":["전투 시작 시 적의 후방(출발한 칸의 상대편 칸)으로 도약. 추가 치확·치피, 스킬에 치명타 적용 가능.",["치확 +20%, 치피 +30%","치확 +40%, 치피 +40%","치확 +75%, 치피 +50%","치확 +100%, 치피 +75%"]],
+    "추적자":["추가 피해 및 마지막 생존 추적자 추가 피해.",["추가 피해 25%, 마지막 생존 추적자 +20%","추가 피해 40%, 마지막 생존 추적자 +25%","추가 피해 65%, 마지막 생존 추적자 +35%"]],
+    "성기사":["성기사가 추가 최대 생명력을 얻습니다.",["+400","+1000","+1600","+2400"]]};
+  C.syn.forEach(s=>{ const x=T[s.id]; if(!x||s.stub) return; s.desc=s.bp.map((b,i)=>(i===0?x[0]+" ":"")+"("+b+") "+(x[1][i]||"")); s.s1job=1; });
+  const V={ 방어대:[20,40,70], 주술사:[[25,2],[50,4],[100,10],[200,20]], 기동타격:[20,25,30], 사격수:[80,180,400], 흑마법사:[40,80,150,250], 정화술사:[4,6,10],
+    결투가:[[20,4],[50,8],[70,12],[100,20]], 복수자:[[25,15],[65,20],[120,25],[250,35]], 지휘자:[30,55,80,120], 약탈자:[[20,30],[40,40],[75,50],[100,75]], 추적자:[[25,20],[40,25],[65,35]], 성기사:[400,1000,1600,2400] };
+  const lv=(B,side,id)=>{ const L=B.syn[side]; return L&&L[id]!=null&&L[id]>=0?L[id]:null; };
+  const has=(B,u,id)=>{ if(lv(B,u.side,id)==null||u.mon) return false; const s=AC.synById(id); if(s&&s.members.includes(u.name)) return true; const src=B.refs[u.uid]; return !!(src&&(src.gear||[]).includes("s_"+id)); };
+  const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"buff"});
+  const skNames=new Set(Object.values(typeof S1SK1!=="undefined"?S1SK1:{}).map(x=>x.name));
+  const oAS=AC.applySynergies; AC.applySynergies=function(B){ oAS.apply(AC,arguments);
+    for(const u of B.units){ if(u.mon||u._s1j) continue; u._s1j=1; let l;
+      if((l=lv(B,u.side,"흑마법사"))!=null) u.res=(u.res||0)+V.흑마법사[l];
+      if(has(B,u,"성기사")){ const n=V.성기사[lv(B,u.side,"성기사")]; u.maxHp+=n; u.hp+=n; }
+      if(has(B,u,"주술사")) u.yeo=(u.yeo||0)+V.주술사[lv(B,u.side,"주술사")][0];
+      if(has(B,u,"복수자")){ u.asPct+=V.복수자[lv(B,u.side,"복수자")][0]; u.s1rev=V.복수자[lv(B,u.side,"복수자")][1]; }
+      if(has(B,u,"약탈자")){ const v=V.약탈자[lv(B,u.side,"약탈자")]; u.crit+=v[0]; u.cdAdd=(u.cdAdd||0)+v[1]; u.s1skCrit=true; u.s1loot=1; }
+      if(has(B,u,"기동타격")) u.s1mob=V.기동타격[lv(B,u.side,"기동타격")];
+      if(has(B,u,"추적자")) u.s1trk=V.추적자[lv(B,u.side,"추적자")];
+      if(has(B,u,"지휘자")) u.s1cmd=V.지휘자[lv(B,u.side,"지휘자")];
+      if(has(B,u,"정화술사")) u.s1pur=V.정화술사[lv(B,u.side,"정화술사")];
+      if(has(B,u,"결투가")) u.s1duel=V.결투가[lv(B,u.side,"결투가")];
+      if(has(B,u,"사격수")) u.s1gun=V.사격수[lv(B,u.side,"사격수")]; } };
+  const oSS=AC.skStart; AC.skStart=function(B){ const r=oSS.apply(AC,arguments); B._s1ei=B.events.length; B._s1acc=0;
+    const occ=(R,Cc)=>B.units.some(x=>x.alive&&x.R===R&&x.C===Cc);
+    for(const u of B.units){ if(!u.alive) continue;
+      if(u.s1duel){ AC.addShield(B,u,u.maxHp*u.s1duel[0]/100); fx(B,u,"결투가 🛡"); }
+      if(u.s1loot){ const R2=C.rows*2-1-u.R; if(!occ(R2,u.C)){ u.R=R2; fx(B,u,"약탈자 도약"); } }
+      if(u.s1mob) u.s1mobT=B.t+4; }
+    return r; };
+  const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
+    for(let i=B._s1ei||0;i<B.events.length;i++){ const e=B.events[i]; if(e.k==="fx"&&e.cls==="sk5"&&skNames.has(e.txt)){ const c=B.units.find(x=>x.uid===e.b); if(c) for(const u of B.units) if(u.alive&&u.side===c.side&&has(B,u,"주술사")) u.yeo+=V.주술사[lv(B,u.side,"주술사")][1]; } }
+    B._s1ei=B.events.length;
+    const el=B.t-(B.t0||0);
+    for(const u of B.units){ if(!u.alive) continue;
+      if(u.s1gun){ const on=el>=4; if(on!==!!u.s1gunOn){ u.s1gunOn=on; u.asPct+=on?u.s1gun:-u.s1gun; AC.reIv(u); if(on) fx(B,u,"사격수 공속"); } }
+      if(u.s1cmdQ&&u.s1cmdQ.n>0){ u.s1cmdQ.acc+=dt; while(u.s1cmdQ.acc>=0.25&&u.s1cmdQ.n>0){ u.s1cmdQ.acc-=0.25; u.s1cmdQ.n--; AC.heal(B,u,u.s1cmdQ.per,"syn:지휘자"); } } }
+    B._s1acc=(B._s1acc||0)+dt;
+    while(B._s1acc>=1){ B._s1acc-=1;
+      for(const u of B.units){ if(!u.alive) continue;
+        if(u.s1duel) u.atkPct+=u.s1duel[1];
+        if(u.s1pur){ const n=u.maxHp*u.s1pur/100; if(u.hp>=u.maxHp){ const cap=u.maxHp*0.1; if(u.shield<cap) AC.addShield(B,u,Math.min(n,cap-u.shield)); } else AC.heal(B,u,n,"syn:정화술사"); } } }
+    return r; };
+  const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ o=o||{};
+    if(a&&t&&a.side!==t.side){
+      const bl=lv(B,t.side,"방어대"); if(bl!=null&&!t.mon&&o.id!=="s1dot"&&o.id!=="ignite") d=Math.max(1,d-V.방어대[bl]);
+      if(t.s1mob) d*=1-Math.min(90,t.s1mob*(B.t<t.s1mobT?2:1))/100;
+      if(a.s1trk){ let m=a.s1trk[0]; if(!B.units.some(x=>x!==a&&x.alive&&x.side===a.side&&x.s1trk)) m+=a.s1trk[1]; d*=1+m/100; }
+      if(a.s1cmdDone) d*=1.1; }
+    const r=oAD.call(AC,B,a,t,d,o);
+    if(a&&a.alive&&a.s1rev&&t&&a.side!==t.side&&r>0&&!o.refl) AC.heal(B,a,r*a.s1rev/100,"syn:복수자");
+    if(t&&t.alive&&t.s1cmd&&!t.s1cmdUsed&&t.hp<=t.maxHp/2){ t.s1cmdUsed=1; t.s1cmdQ={n:4,acc:0,per:t.maxHp*t.s1cmd/400}; fx(B,t,"지휘자 회복","heal"); B.units.forEach(x=>{ if(x.side===t.side&&x.s1cmd) x.s1cmdDone=1; }); }
+    return r; };
 })();
 AC.init(); $("acSimBtn").addEventListener("click",()=>SIM.toggle(!AC.simOn)); ["input","change"].forEach(ev=>$("acRoot").addEventListener(ev,e=>{ if(AC.simOn) SIM.onInput(e); })); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop","dragend"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
 showTab((()=>{ try{ const t=localStorage.getItem("7kr_tab"); return t==="heroes"||t==="guild"||t==="tune"||t==="craft"||t==="gacha"||t==="siege"||t==="raid"||t==="ac"?t:"deck"; }catch{ return "deck"; } })());
