@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.13.3v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.13.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8405,7 +8405,7 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   AC.S1_SYN_ICONS=Object.assign({ /* "세븐나이츠":{bronze:"...",silver:"...",gold:"...",platinum:"..."} */ },window.S1_SYN_ICONS||{});
   AC.KEY="7kr_ac_s1"; AC.PKEY="7kr_ac_prog_s1"; C.s1=true;
   // 명단 (s1.txt 그대로 · 손오공 = 툴 이름 '오공')
-  const RAW=S1ROSTER, alias={"손오공":"오공"};
+  const RAW=S1ROSTER, alias={"손오공":"오공","앨리스":"엘리스"} /* 툴 DB 이름 → 시즌1 화면엔 사용자 표기(앨리스) */;
   const roster={1:[],2:[],3:[],4:[],5:[]}, mem={};
   RAW.forEach(([t,n,tags])=>{ const nm=alias[n]||n; roster[t].push(nm); tags.forEach(g=>{ (mem[g]=mem[g]||[]).push(nm); }); });
   C.roster=roster; AC._H=null; AC._S=null; AC._csl=null; C.uniqueTiers=[]; C.tierName={1:"1코스트",2:"2코스트",3:"3코스트",4:"4코스트",5:"5코스트"};
@@ -8528,8 +8528,8 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
     return h.replace('<span class="ttl">아이템</span>',`<span class="ttl">아이템</span><i class="acbuf" data-s1attr title="(구) 세나 속성 (이번 게임 · 모든 플레이어 동일)">시즌1 · 속성 ${at||"-"}</i>${dk}`).replace(/<\/div>$/,gs+"</div>"); };
   const oTK=AC.tokenHTML; AC.tokenHTML=function(u){ let h=oTK.apply(AC,arguments); { const L=heroSyms(u.no); if(L.length){ const k=h.lastIndexOf("</div>"); const tag=`<span class="s1tkb" data-s1bdg style="position:absolute;right:1%;top:20%;width:21%;max-width:24px;min-width:13px;z-index:6;pointer-events:none;display:flex;flex-direction:column;gap:2px">${L.map(x=>`<img src="${x.i}" alt="" title="${esc(x.n)}" style="width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 0 2px #000)">`).join("")}</span>`; h=k<0?h+tag:h.slice(0,k)+tag+h.slice(k); } } if(!u.gear||!u.gear.length) return h; const ic=`<span class="s1gear" data-s1gearbar style="position:absolute;left:0;right:0;bottom:-4px;display:flex;justify-content:center;gap:1px;z-index:5;pointer-events:none">${u.gear.map(id=>G[id]?`<span title="${esc(G[id].name)}" style="width:14px;height:14px;display:inline-block;border:1px solid #c9a24a;border-radius:3px;overflow:hidden;background:#111">${gi(G[id])}</span>`:"").join("")}</span>`; const i=h.lastIndexOf("</div>"); return i<0?h+ic:h.slice(0,i)+ic+h.slice(i); };
   // 0.13.3v 시즌1: 화면 글자 '체력' → '생명력' (기존 시즌은 그대로)
-  const RW=t=>t.replace(/체력/g,"생명력");
-  const fixDom=root=>{ if(!root) return; const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT); let n; while((n=w.nextNode())) if(n.nodeValue.includes("체력")) n.nodeValue=RW(n.nodeValue); root.querySelectorAll("[title],[aria-label],[alt]").forEach(e=>{ for(const a of ["title","aria-label","alt"]){ const v=e.getAttribute(a); if(v&&v.includes("체력")) e.setAttribute(a,RW(v)); } }); };
+  const RW=t=>t.replace(/체력/g,"생명력").replace(/엘리스/g,"앨리스");
+  const fixDom=root=>{ if(!root) return; const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT); let n; while((n=w.nextNode())) if(/체력|엘리스/.test(n.nodeValue)) n.nodeValue=RW(n.nodeValue); root.querySelectorAll("[title],[aria-label],[alt]").forEach(e=>{ for(const a of ["title","aria-label","alt"]){ const v=e.getAttribute(a); if(v&&/체력|엘리스/.test(v)) e.setAttribute(a,RW(v)); } }); };
   AC.s1FixText=fixDom;
   const oMsg=AC.msg; AC.msg=function(t){ return oMsg.call(AC,typeof t==="string"?RW(t):t); };
   const run=()=>{ const r=document.getElementById("acRoot"); fixDom(r); const sec=r&&r.closest("section"); if(sec) fixDom(sec); };
