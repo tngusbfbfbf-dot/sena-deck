@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.14.1v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.14.2v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8649,6 +8649,7 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
 .s1i{position:relative;display:inline-flex;vertical-align:-2px;width:14px;height:14px;margin:0 1px;cursor:help}.s1i svg{width:14px;height:14px}
 .s1i-at{color:#f08a2c}.s1i-ma{color:#7f7bff}
 .s1i:hover::after,.s1i:focus::after{content:attr(data-tip);position:absolute;bottom:135%;left:-6px;width:max-content;max-width:190px;white-space:normal;line-height:1.35;background:#1b1a17;border:1px solid #8a7444;color:#f3e6c4;font-size:11px;padding:3px 6px;border-radius:4px;z-index:99;pointer-events:none}
+.actk .acrg,.actk .s1tkb,.actk .acnm{display:none!important}
 @media(max-width:420px){.s1tip{font-size:12px;padding:8px 9px}}`; document.head.appendChild(css);
 })();
 AC.init(); $("acSimBtn").addEventListener("click",()=>SIM.toggle(!AC.simOn)); ["input","change"].forEach(ev=>$("acRoot").addEventListener(ev,e=>{ if(AC.simOn) SIM.onInput(e); })); ["click"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onClick)); ["dragstart","dragover","drop","dragend"].forEach(ev=>$("acRoot").addEventListener(ev,AC.onDrag));
