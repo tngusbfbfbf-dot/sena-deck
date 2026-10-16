@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.14.2v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">0.14.3v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8554,9 +8554,10 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
 /* ===== 0.14.0v 시즌1 1코스트 영웅 스킬 (skills/cost1.md 원문) ===== */
 (function(){ if(AC.season!=="s1") return; const C=AC_CONFIG, SK=S1SK1, NM=Object.keys(SK);
   // 기존 스킬 끄기 (이 14명만) · 아이콘·설명
-  ["skills1","skills2","skills3","skills5"].forEach(k=>{ C[k]=Object.assign({},C[k]); NM.forEach(n=>delete C[k][n]); });
-  C.skillIcons=Object.assign({},C.skillIcons); C.skillMeta=Object.assign({},C.skillMeta);
-  NM.forEach(n=>{ C.skillIcons[n]=SK[n].img; delete C.skillMeta[n]; });
+  // 0.14.3v 시즌1: 시즌0 스킬·패시브 전부 제거 (시즌1 스킬만)
+  ["skills1","skills2","skills3","skills5"].forEach(k=>{ C[k]={}; });
+  C.skillIcons={}; C.skillMeta={};
+  NM.forEach(n=>{ C.skillIcons[n]=SK[n].img; });
   const CFG={}; NM.forEach(n=>CFG[n]={name:SK[n].name,ico:"✨",desc:SK[n].desc,s1:1});
   const oCfg=AC.skCfg; AC.skCfg=function(name){ return CFG[name]||oCfg.apply(AC,arguments); };
   const oTi=AC.skTi; AC.skTi=function(name,t){ return CFG[name]?AC.sk3Tier(t||0):oTi.apply(AC,arguments); };
@@ -8617,6 +8618,8 @@ const S1SK1={"파이": {"name": "아그니아의 창", "img": "data:image/webp;b
     return r; };
 })();
 ;(function(){ if(AC.season!=="s1"||!AC.niaCells) return; const o=AC.niaCells; AC.niaCells=function(){ return AC_CONFIG.skills2["니아"]?o.apply(AC,arguments):[]; }; })();
+
+;(function(){ if(AC.season!=="s1") return; const oSL=AC.skillLine; AC.skillLine=function(no,t){ const h=AC.hero(no); if(h&&!S1SK1[h.name]) return `<div class="acskill gen" data-acskill data-s1nosk><span class="acskico">❔</span><div><b>스킬 미정</b><p>기본 공격만</p></div></div>`; return oSL.apply(AC,arguments); }; })();
 /* ===== 0.14.1v 시즌1 스킬 툴팁 (데이터 기반: desc + syn + rows[{label,type,values,unit}]) ===== */
 (function(){ if(AC.season!=="s1") return; const SK=S1SK1;
   const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
