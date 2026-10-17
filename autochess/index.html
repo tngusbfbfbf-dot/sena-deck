@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.25v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.26v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -9238,7 +9238,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
     "흑마법연구탑":["흑마법진 칸 생성(위치 무작위). 전투 시작 시 흑마법진 위 연구원이 흑마법진 위 모든 추가 효과(소속 영웅 스킬에 포함) 획득 + 피해증폭 +10/20/40%.",["1개","3개","4개"]],
     "암행어사":["상시 위장(기본 공격 대상 불가, 스킬 피해 받거나 마지막 아군이면 해제, 재위장 불가). 전투 시작 시 지난 플레이어 전투 최다 처치 적(동률 시 가까운 적)에게 3초 무력화(피해 안 받고 못 줌).",[]],
     "예언가":["상대 진영 3칸 매 라운드 선택(봇 무작위). 해당 칸 시작 적 받는 피해 +15%(그 라운드만). 3명 처치: 모든 아군 피해증폭 +3% / 2명: 자신 +2% / 1명: 7골드 / 0명: 2골드",[]],
-    "팔사검":["상시 불굴(첫 죽음 저항, 생명력 1 고정, 피격 8회 후 사망). 강화는 상점에 나올 때만 구매, 비용 플레이어 체력 4, 총 12회, 1회당 공격력 +60·공속 +3%, 초월 대신 강화. 체력 4 미만 구매 불가, 정확히 4면 구매 후 탈락. 12회 강화 시 해방: 필드에 카구라만 남으면 남은 적 전원 즉사.",[]],
+    "팔사검":["상시 불굴(첫 죽음 저항, 생명력 1 고정, 피격 8회 후 사망). 카구라 보유 시 골드 카구라 카드는 상점에 나오지 않음. 카구라를 필드에 둔 다음 라운드부터 상점 갱신(라운드·새로고침)마다 15% 고정 확률로 ❤4 카구라 카드가 1칸에 등장, 구매 시 강화 1회(비용 플레이어 체력 4, 골드 없음), 총 12회, 1회당 공격력 +60·공속 +3%, 초월 대신 강화. 체력 4 미만 구매 불가, 정확히 4면 구매 후 탈락. 12회 강화 시 해방: 필드에 카구라만 남으면 남은 적 전원 즉사.",[]],
     "천둥군주":["기본 공격 5회마다 천둥으로 적 진영 전체에 공격력 85% 피해, 무작위 3칸 직격(고정 피해 +75, 3초 마비), 한 전투에서 같은 적 2회 직격 시 처형.",[]],
     "천하무쌍":["전투 시작 시 지난 플레이어 전투 적 최다 처치 영웅보다 자신 처치 수가 많으면: 스킬마다 생명력 비율 최저 아군을 스킬 피해만큼 회복, 스킬로 처치 시 연속 발동(최대 1회). 같거나 적으면: 그 적에게 추가 피해 +25%, 33% 확률 빗나감.",[]]};
   C.syn.forEach(s=>{ const x=T[s.id]; if(!x||s.stub) return; s.desc=s.bp.map((b,i)=>(i===0&&x[0]?x[0]+" ":"")+(x[1].length?"("+b+") "+(x[1][i]||""):"")); if(!x[1].length) s.desc[0]=x[0]; });
@@ -9299,11 +9299,39 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const player=(st,S)=>st&&st.players?st.players.find(p=>p.S===S):null;
   // ---------- 상태이상 면역 (천상 10) ----------
   const oDb=AC.debuff; AC.debuff=function(B,t,kind,fn){ if(t&&t.s1imm){ B.events.push({k:"fx",b:t.uid,txt:"면역",cls:"imm"}); return false; } return oDb.apply(AC,arguments); };
-  // ---------- 팔사검 강화 (상점에서만 · 플레이어 체력 4 · 12회) ----------
-  const isKg=no=>{ const h=AC.hero(no); return h&&h.name==="카구라"; };
-  const hpOf=(st,S)=>{ const p=player(st,S); return p?p.hp:(st&&S===st.me?st.hp:99); };
-  const oCB=AC.canBuy; AC.canBuy=function(st,S,i){ const no=S.shop[i]; if(no!=null&&isKg(no)){ const u=AC.owned(S,no); if(u){ if((u.s1kg||0)>=12) return "강화 12회 완료"; if(hpOf(st,S)<4) return "체력 부족"; return ""; } } return oCB.apply(AC,arguments); };
-  const oBuy=AC.buy; AC.buy=function(st,S,i){ const no=S.shop[i]; if(no!=null&&isKg(no)){ const u=AC.owned(S,no); if(u){ const why=AC.canBuy(st,S,i); if(why) return why; u.s1kg=(u.s1kg||0)+1; if(st.pool) st.pool[no]--; S.shop[i]=null; const p=player(st,S); if(p) p.hp-=4; if(st&&S===st.me){ st.hp=Math.max(0,(st.hp||0)-4); if(AC.msg) AC.msg(`⚔️ 팔사검 강화 ${u.s1kg}/12 (체력 -4)${u.s1kg===12?" · 해방!":""}`); } if(p&&p.hp<=0&&AC.ffaElim) AC.ffaElim(st); return ""; } } return oBuy.apply(AC,arguments); };
+  // ---------- 팔사검 강화 (1.0.26v 상점 방식): 카구라 보유 시 골드 카구라 카드는 상점에 안 나옴 · 필드에 둔 다음 라운드부터 상점 갱신마다 15% 확률로 ❤4 카구라 카드 1장 = 강화 1회 (최대 12 · 초월 대신) ----------
+  const KG_TIP="팔사검\n팔사검의 주인은 불굴 상태를 상시 획득합니다.\n플레이어 체력을 바쳐 팔사검을 해방시킵니다.\n해방된 팔사검은 오직 자신만이 전투에 남아 싸우기를 기다립니다..\n카구라가 필드 위에 존재할 시, 라운드마다 플레이어 체력 4를 소모하여 카구라를 강화합니다. 총 12번 강화된 카구라는 팔사검을 해방하여 싸웁니다.\n전투 시작 후, 필드위에 오직 카구라만 남아있을 경우 해방된 팔사검이 상대를 집어 삼킵니다.", KG_P=15, KG_HP=4, KG_MAX=12;
+  const isKg=no=>{ const h=AC.hero(no); return !!h&&h.name==="카구라"; };
+  const kgNo=()=>{ if(AC._s1kgNo==null){ const x=AC.heroes().find(h=>isKg(h.no)); AC._s1kgNo=x?x.no:-1; } return AC._s1kgNo; };
+  const kgU=S=>(S&&S.units||[]).filter(u=>isKg(u.no)).sort((a,b)=>(b.t||0)-(a.t||0)||(b.s1kg||0)-(a.s1kg||0))[0]||null;
+  const hpOf=(st,S)=>{ const p=player(st,S); if(p) return p.hp; if(st&&S===st.me) return st.hp; if(st&&S===st.ai) return st.aiHp; return 99; };
+  const markKg=(st)=>{ const L=st&&st.players?st.players.filter(p=>p.alive).map(p=>p.S):[st&&st.me,st&&st.ai]; for(const S of L){ if(!S) continue; if(AC.field(S).some(u=>isKg(u.no))) S.s1kgEl=1; } };
+  AC.s1kgEligible=S=>{ if(!kgU(S)){ if(S) S.s1kgEl=0; return false; } return !!S.s1kgEl; };
+  const oRoll=AC.roll; AC.roll=function(st,level,S){ const r=oRoll.apply(AC,arguments); if(!S) return r; const kn=kgNo();
+    if(kn>=0&&kgU(S)) for(let i=0;i<r.length;i++){ let g=0; while(r[i]!=null&&r[i]===kn&&g++<20) r[i]=AC.rollOne(st,level,S); if(r[i]===kn) r[i]=null; }
+    S.s1kgSlot=null; if(AC.s1kgEligible(S)&&AC.rnd(st)*100<KG_P){ const j=Math.floor(AC.rnd(st)*r.length); r[j]=null; S.s1kgSlot=j; }
+    return r; };
+  const isKgSlot=(S,i)=>S&&S.s1kgSlot!=null&&+i===S.s1kgSlot&&S.shop&&S.shop[i]==null;
+  const oCB=AC.canBuy; AC.canBuy=function(st,S,i){ if(isKgSlot(S,i)){ const u=kgU(S); if(!u) return "카구라 없음"; if((u.s1kg||0)>=KG_MAX) return "강화 12회 완료"; if(hpOf(st,S)<KG_HP) return "체력 부족"; return ""; }
+    const no=S&&S.shop?S.shop[i]:null; if(no!=null&&isKg(no)&&kgU(S)) return "보유 중 · 체력으로만 강화"; return oCB.apply(AC,arguments); };
+  const oBuy=AC.buy; AC.buy=function(st,S,i){ if(isKgSlot(S,i)){ const why=AC.canBuy(st,S,i); if(why) return why; const u=kgU(S); u.s1kg=(u.s1kg||0)+1; S.s1kgSlot=null;
+      const p=player(st,S); if(p) p.hp-=KG_HP; if(st&&S===st.me){ st.hp=Math.max(0,(st.hp||0)-KG_HP); if(AC.msg) AC.msg(`⚔️ 팔사검 강화 ${u.s1kg}/12 (체력 -4)${u.s1kg===KG_MAX?" · 해방!":""}`); } else if(st&&!st.players&&S===st.ai) st.aiHp=Math.max(0,(st.aiHp||0)-KG_HP);
+      if(p&&p.hp<=0&&AC.ffaElim) AC.ffaElim(st); return ""; }
+    const no=S&&S.shop?S.shop[i]:null; if(no!=null&&isKg(no)&&kgU(S)) return "보유 중 · 체력으로만 강화"; return oBuy.apply(AC,arguments); };
+  // 카구라 초월은 체력 강화로만: 보상·복제기로 들어오는 추가 카구라는 초월 대신 골드로 환급, 복제기(초월)·재설정기는 카구라에 사용 불가
+  const oGH=AC.gainHero; AC.gainHero=function(st,S,no,copies,txt){ if(isKg(no)&&kgU(S)){ const c=copies||1, g=AC.cost(no)*c; S.gold+=g; txt&&txt.push(`카구라 +${c}장 → 초월 대신 골드 +${g} (카구라는 체력으로만 강화)`); return kgU(S); } return oGH.apply(AC,arguments); };
+  const oUI=AC.useItem; AC.useItem=function(st,S,kind,uid){ const u=S&&S.units.find(x=>x.uid===uid); if(u&&isKg(u.no)&&(kind==="lo"||kind==="hi"||kind==="reset")) return "카구라는 체력으로만 강화"; return oUI.apply(AC,arguments); };
+  // 전투가 끝날 때 필드에 있던 카구라 → 다음 라운드 상점부터 대상
+  const oFR=AC.ffaResolve; AC.ffaResolve=function(st){ markKg(st); return oFR.apply(AC,arguments); };
+  const oAR=AC.applyResult; AC.applyResult=function(st){ if(!(AC.isFfa&&AC.isFfa(st))) markKg(st); return oAR.apply(AC,arguments); };
+  // 봇: 카구라 보유 · 상점에 나왔고 체력 12 초과면 강화
+  const oAP=AC.aiPrep; AC.aiPrep=function(st,S,diff,foe,hp){ const r=oAP.apply(AC,arguments); try{ if(S&&S.s1kgSlot!=null&&hpOf(st,S)>12&&!AC.canBuy(st,S,S.s1kgSlot)) AC.buy(st,S,S.s1kgSlot); }catch(e){} return r; };
+  // 상점 칸 그리기
+  const kgCard=(st,S,i)=>{ const u=kgU(S), n=(u&&u.s1kg)||0, why=AC.canBuy(st,S,i), on=st.phase==="prep"||st.phase==="battle", no=kgNo();
+    return `<button type="button" class="acshop tier5 s1kgshop" data-acbuy="${i}" data-s1kgbuy="${n}"${why||!on?' aria-disabled="true"':""} title="${esc(KG_TIP)}${why?"\n· "+esc(why):""}"><span class="acsc-face">${AC.face(no)}</span><span class="acsc-foot"><span class="acnm">카구라</span><span class="accost" style="color:#ff6b7d"><b>❤ ${KG_HP}</b></span></span><span class="acsytags"><i class="acsyt acsbsyn on" title="${esc(KG_TIP)}"><span class="acsbsi img">${AC.skIco(no)}</span><span>팔사검 강화 ${n}/12</span></i></span></button>`; };
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const paintKg=()=>{ const st=AC.st; if(!st||AC.simOn) return; const S=st.me, i=S&&S.s1kgSlot; if(i==null||!isKgSlot(S,i)) return; const box=document.querySelector("#acRoot .acshops"); if(!box) return; const el=box.children[i]; if(!el||el.dataset.s1kgbuy!=null) return; el.outerHTML=kgCard(st,S,i); };
+  const oRen=AC.render; AC.render=function(){ const r=oRen.apply(AC,arguments); try{ paintKg(); }catch(e){} return r; };
   // ---------- 예언가 칸 선택 ----------
   AC.s1prPick=function(S,cell){ S.s1pr=S.s1pr||[]; const i=S.s1pr.indexOf(cell); if(i>=0) S.s1pr.splice(i,1); else if(S.s1pr.length<3) S.s1pr.push(cell); };
   const rndCells=(st)=>{ const L=[]; for(let r=0;r<C.rows;r++) for(let c=0;c<C.cols;c++) L.push(r+","+c); const out=[]; while(out.length<3&&L.length) out.push(L.splice(Math.floor(AC.rnd(st)*L.length),1)[0]); return out; };
