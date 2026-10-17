@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.36v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.37v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8492,8 +8492,8 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
     const uses=g.k==="comp"?Object.entries(recipe).filter(([k])=>k.split("+").includes(id)).map(([k,v])=>{ const ks=k.split("+"), o=ks[0]===id?ks[1]:ks[0]; return {with:G[o],out:G[v]}; }).filter(x=>x.with&&x.out):null;
     return {name:g.name,img:g.img,kind:K,stats:st,sp:g.sp||[],rec,uses}; };
   const rnd=(st,L)=>L[Math.floor(AC.rnd(st)*L.length)];
-  const give=(S,id,n)=>{ const I=AC.items(S); I["g:"+id]=(I["g:"+id]||0)+(n||1); };
-  const back=(S,u)=>{ for(const id of u.gear||[]) give(S,id); u.gear=[]; };
+  const give=(S,id,n)=>{ const I=AC.items(S); I["g:"+id]=(I["g:"+id]||0)+(n||1); const g=G[id]; if(g) S.s1rcv=(S.s1rcv||0)+(n||1)*(g.k==="comp"?1:g.k==="item"?2:0); };  /* 1.0.37v 받은 조합 재료 환산(완성=2) */
+  const back=(S,u)=>{ const I=AC.items(S); for(const id of u.gear||[]) I["g:"+id]=(I["g:"+id]||0)+1; u.gear=[]; };
   AC.s1Give=give;
   // ---------- 시너지 수: 상징 ----------
   AC.embN=function(L){ const m={}, seen={}; for(const u of L||[]){ const RB=(AC._curB&&AC._curB.refs)?AC._curB:(AC.anim&&AC.anim.B&&AC.anim.B.refs&&AC.anim.B.units&&AC.anim.B.units.includes(u)?AC.anim.B:null), src=u.gear?u:(RB&&RB.refs[u.uid])||u;  /* 1.0.34v 화면 전투 중 시너지 패널도 상징 반영 */ for(const id of src.gear||[]){ const g=G[id]; if(!g||g.k!=="sym") continue; const s=AC.synById(g.syn), nm=AC.hero(u.no)&&AC.hero(u.no).name; if(!s||s.members.includes(nm)) continue; const k=g.syn+":"+u.no; if(seen[k]) continue; seen[k]=1; m[g.syn]=(m[g.syn]||0)+1; } } return m; };
@@ -8538,7 +8538,9 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   // ---------- 보상: 조합 장비 (★자리표시 규칙) ----------
   const oPR=AC.pveReward; AC.pveReward=function(st,S,B,isBot){ const r=oPR.apply(AC,arguments); const early=C.ac010.earlyPve.includes(st.round), add=[];
     const c=rnd(st,D.comps); give(S,c.id); add.push(c.name);
-    if(!early){ const c2=rnd(st,D.comps); give(S,c2.id); add.push(c2.name); const sy=rnd(st,Object.values(G).filter(g=>g.k==="sym")); give(S,sy.id); add.push(sy.name); }
+    if(!early){ const c2=rnd(st,D.comps); give(S,c2.id); add.push(c2.name); const c3=rnd(st,D.comps); give(S,c3.id); add.push(c3.name); }  /* 1.0.37v 상징 보상 제거 → 조합 재료 1개로 대체 */
+    /* 1.0.37v 이정표: 25라운드 이후 첫 PvE 보상 → 완성 6개분(재료 12), 30라운드 이후 첫 PvE 보상 → 완성 9개분(재료 18). 받은 조합 재료(완성 아이템=2개 환산)가 부족하면 부족분을 조합 재료로 지급 */
+    for(const [R0,N0] of [[25,12],[30,18]]){ S.s1pity=S.s1pity||{}; if(st.round>=R0&&!S.s1pity[R0]){ S.s1pity[R0]=1; const need=Math.max(0,N0-(S.s1rcv||0)); for(let i=0;i<need;i++){ const c4=rnd(st,D.comps); give(S,c4.id); add.push("★"+c4.name); } } }
     const t="🧩 "+add.join(", "); if(Array.isArray(r)){ r.push(t); return r; } return (r?r+" · ":"")+t; };
   const oNR=AC.nextRound; AC.nextRound=function(st){ if(st&&st.phase==="result") dkAll(st); const r=oNR.apply(AC,arguments); const L=st.players?st.players.filter(p=>p.alive&&!p.me).map(p=>p.S):[st.ai]; L.forEach(S=>S&&AC.s1BotGear(st,S)); return r; };
   // ---------- 장착 ----------
