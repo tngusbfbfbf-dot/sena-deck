@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.24v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.25v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8402,6 +8402,19 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   hdr(); addEventListener("load",hdr);
   if(SEA!=="s1") return;
   const C=AC_CONFIG, D=S1DATA;
+  /* 1.0.25v 시즌1 PvE 하향 (프리시즌 그대로): R17 ×0.75 · R24 ×0.8 · R31 ×0.8 · R38 ×0.75 · R45 이후 ×0.7 (생명력·공격력) · 보스 생명력 ×5 · 공격력 ×2 */
+  { const PM={17:0.75,24:0.8,31:0.8,38:0.75,45:0.7}, pm=r=>PM[r]!=null?PM[r]:(r>45&&AC.pveK(r)>0?0.7:1);
+    AC_CONFIG.ac010.boss=Object.assign({},AC_CONFIG.ac010.boss,{hp:5,atk:2});
+    const oMS=AC.monStats; AC.monStats=function(round,boss){ const s=oMS.apply(AC,arguments), m=pm(round); if(m===1) return s; return Object.assign({},s,{hp:s.hp*m,atk:s.atk*m}); };
+    /* 보스 정보창: 준비 단계에서 보스를 눌러도 일반 몬스터 수치가 나오던 문제 → 보스 수치 · 이름 · 얼굴 */
+    let lastBoss=false; document.addEventListener("click",e=>{ const m=e.target&&e.target.closest&&e.target.closest("[data-acmon]"); if(m) lastBoss=m.classList.contains("boss"); },true);
+    const oDI=AC.drawInfo; AC.drawInfo=function(){ const I=AC.info; if(I&&I.mon&&!I.bt&&I.boss==null) I.boss=lastBoss; return oDI.apply(AC,arguments); };
+    const oIH=AC.infoHTML; AC.infoHTML=function(){ const I=AC.info; let boss=false;
+      if(I&&I.bt&&AC.anim){ const u=AC.anim.B.units.find(x=>x.uid===I.bt); boss=!!(u&&u.mon&&u.boss); } else if(I&&I.mon) boss=!!I.boss;
+      if(!boss) return oIH.apply(AC,arguments);
+      const ms=AC.monStats; if(!I.bt) AC.monStats=function(r){ return ms.call(AC,r,true); };
+      let h; try{ h=oIH.apply(AC,arguments); } finally{ AC.monStats=ms; }
+      return h.replace(AC.monFace(),AC.monFace(true)).replace('<div class="nm">몬스터','<div class="nm">보스'); }; }
   // ▼ 시너지 등급 아이콘 자리: 사용자 그림이 오면 이름 → {bronze,silver,gold,platinum} (URL 또는 data URL) 만 채우면 됨
   AC.S1_SYN_ICONS=Object.assign({ /* "세븐나이츠":{bronze:"...",silver:"...",gold:"...",platinum:"..."} */ },window.S1_SYN_ICONS||{});
   AC.KEY="7kr_ac_s1"; AC.PKEY="7kr_ac_prog_s1"; C.s1=true;
@@ -8541,11 +8554,14 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   AC.s1BotGear=function(st,S){ const I=AC.items(S); const F=()=>S.units.filter(u=>!u.pend).sort((a,b)=>(b.loc[0]==="f")-(a.loc[0]==="f")||AC.score(b)-AC.score(a));
     for(const k of Object.keys(I).filter(k=>k.startsWith("g:"))) while(I[k]>0){ let ok=false; for(const u of F()){ if(!AC.useItem(st,S,k,u.uid)){ ok=true; break; } } if(!ok) break; } };
   // ---------- 화면 ----------
+  /* 1.0.25v: 속성 배지는 내 (구) 세나 시너지가 켜졌을 때만 (전투의 u.s1sena 조건과 같은 시너지 단계 판정 · 속성 추첨은 그대로) */
+  const senaOn=(st,S)=>{ try{ if(st.phase==="battle"&&AC.anim&&AC.anim.B&&S===st.me){ const L=AC.anim.B.syn&&AC.anim.B.syn.me; return !!(L&&L["구세나"]!=null); }
+    const F=AC.field(S); return AC.synLevels(F.map(u=>u.no),AC.embN(F),AC.gExt(S.golem?[{gEmb:S.golem.emb}]:[])).some(x=>x.s.id==="구세나"&&x.lv>=0); }catch(e){ return false; } };
   const oIH=AC.itemsHTML; AC.itemsHTML=function(st,S){ let h=oIH.apply(AC,arguments); const I=AC.items(S), prep=st.phase==="prep";
     const gs=Object.keys(I).filter(k=>k.startsWith("g:")&&I[k]>0).map(k=>{ const g=G[k.slice(2)]; return `<button type="button" class="acitem${AC.itemSel===k?" on":""}" data-acitem="${k}" data-s1gear="${g.id}" draggable="${prep?"true":"false"}" title="${esc(tip(g))} · 영웅에 끌어 놓거나, 누른 뒤 영웅을 누르세요"><b style="width:26px;height:26px;display:inline-block">${gi(g)}</b><small>${I[k]}</small></button>`; }).join("");
     const at=(st.s1a||[]).map(a=>ATTR.find(x=>x[0]===a)[1]).join("·");
     const dk=S.dkStk?` <i class="acbuf" title="다크나이츠 처치 중첩 · 다음 군수품 ${(DK[S.dkDone||0]||["완료"])[0]}">📦 ${S.dkStk}</i>`:"";
-    return h.replace('<span class="ttl">아이템</span>',`<span class="ttl">아이템</span><i class="acbuf" data-s1attr title="(구) 세나 속성 (이번 게임 · 모든 플레이어 동일)">시즌1 · 속성 ${at||"-"}</i>${dk}`).replace(/<\/div>$/,gs+"</div>"); };
+    return h.replace('<span class="ttl">아이템</span>',`<span class="ttl">아이템</span>${senaOn(st,S)?`<i class="acbuf" data-s1attr title="(구) 세나 속성 (이번 게임 · 모든 플레이어 동일)">시즌1 · 속성 ${at||"-"}</i>`:""}${dk}`).replace(/<\/div>$/,gs+"</div>"); };
   AC._s1G=G; const oCard=AC.cardHTML; AC.cardHTML=function(I){ let h=oCard.apply(AC,arguments); const st=AC.st; let U=I&&I.uid!=null&&st&&st.me.units.find(x=>x.uid===I.uid); if(!U&&I&&I.side==="ai"&&st){ const F=AC.scoutS&&AC.scoutS(st)||st.ai; U=F&&I.fu!=null&&F.units.find(x=>x.uid===I.fu); } const gs=(U&&U.gear||[]).filter(id=>G[id]); if(!gs.length) return h; let n=0; return h.replace(/<span class="achc-it" data-acit="(\d)"><\/span>/g,(m,i)=>{ const g=G[gs[n++]]; return g?`<span class="achc-it" data-acit="${i}" data-s1gid="${g.id}" title="${esc(typeof tip==="function"?tip(g):g.name)}">${gi(g)}</span>`:m; }); };
   const oTK=AC.tokenHTML; AC.tokenHTML=function(u){ let h=oTK.apply(AC,arguments); { const L=heroSyms(u.no); if(L.length){ const k=h.lastIndexOf("</div>"); const tag=`<span class="s1tkb" data-s1bdg style="position:absolute;right:1%;top:20%;width:21%;max-width:24px;min-width:13px;z-index:6;pointer-events:none;display:flex;flex-direction:column;gap:2px">${L.map(x=>`<img src="${x.i}" alt="" title="${esc(x.n)}" style="width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 0 2px #000)">`).join("")}</span>`; h=k<0?h+tag:h.slice(0,k)+tag+h.slice(k); } } if(!u.gear||!u.gear.length) return h; const ic=`<span class="s1gear" data-s1gearbar style="position:absolute;left:0;right:0;bottom:-4px;display:flex;justify-content:center;gap:1px;z-index:5;pointer-events:none">${u.gear.map(id=>G[id]?`<span data-s1gid="${id}" title="${esc(G[id].name)}" style="pointer-events:auto;cursor:pointer;width:14px;height:14px;display:inline-block;border:1px solid #c9a24a;border-radius:3px;overflow:hidden;background:#111">${gi(G[id])}</span>`:"").join("")}</span>`; const i=h.lastIndexOf("</div>"); return i<0?h+ic:h.slice(0,i)+ic+h.slice(i); };
   // 0.13.3v 시즌1: 화면 글자 '체력' → '생명력' (기존 시즌은 그대로)
