@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.12v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.13v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8810,28 +8810,32 @@ Object.assign(S1SK1,{"크리스": {"name": "어둠의 일격", "img": "data:imag
       if(u.s1naWave&&!(u.stun&&B.t<u.stun)){ const t=near(u,foes(B,u))[0]; if(t&&cheb(u,t)>u.range&&goNear(B,u,t)){ u.s1naWave=false; nataWave(B,u,t); } } }
     return r; };
 })();
-/* ===== 0.14.1v 시즌1 스킬 툴팁 (데이터 기반: desc + syn + rows[{label,type,values,unit}]) ===== */
+/* ===== 1.0.13v 시즌1 스킬 툴팁 (데이터 기반: desc + syn + rows[{label,type,values,unit}]) ===== */
 (function(){ if(AC.season!=="s1") return; const SK=S1SK1;
   const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const ICO={공:'<span class="s1i s1i-at" data-tip="공격력 계수: 공격력의 %" tabindex="0"><svg viewBox="0 0 16 16"><path d="M3 13C5 9 8 5 13 2c-2 4-4 7-8 11z M6 14c2-3 4-6 8-8-1 3-3 6-7 8z" fill="currentColor"/></svg></span>',
            마:'<span class="s1i s1i-ma" data-tip="마법 공격력 비례: 값 × (1 + 마법 공격력/100)" tabindex="0"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.2" fill="currentColor"/><circle cx="6.3" cy="6.2" r="1.7" fill="#fff" opacity=".7"/></svg></span>'};
+  // 1.0.13v: 문장(설명) / 계수 줄 분리. 계수 줄은 모두 가로줄 아래(rows)로. 텍스트는 원문 그대로.
+  const isSent=l=>/니다|다\.?\s*$|\.\s*$/.test(l)||/^(기본 지속 효과|전투 시작)\s*:/.test(l);
+  const NUMS=/^(.+?)\s*:?\s*(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){0,2})\s*(%?)$/;
   function parse(n){ const S=SK[n]; if(S.rows) return S; const out={name:S.name,img:S.img,desc:[],syn:[],rows:[]};
     String(S.desc).split("\n").map(x=>x.trim()).filter(Boolean).forEach(l=>{ let m;
-      if((m=l.match(/^(.+?)\s*:?\s*([\d.]+(?:\/[\d.]+){0,2})(%?)$/))&&!/[.다]$/.test(m[1])&&!/:/.test(m[1])&&!/=|\+\s*$/.test(m[1])){ let lb=m[1].replace(/:$/,"").trim(), ty="none"; const k=lb.match(/\((공|마)\)/); if(k){ ty=k[1]; lb=lb.replace(k[0],"").trim(); } out.rows.push({label:lb,type:ty,values:m[2].split("/").map(Number),unit:m[3]}); }
-      else if((m=l.match(/^(.{1,12} 추가 효과):\s*(.+)$/))) out.syn.push(l);
-      else out.desc.push(l); }); return S.rows=out.rows, S.syn=out.syn, S.descL=out.desc, S; }
+      if(/^.{1,12} 추가 효과:/.test(l)) { out.syn.push(l); return; }
+      if(isSent(l)) { out.desc.push(l); return; }
+      if((m=l.match(NUMS))&&!/[:=+%]|[.다]$/.test(m[1].replace(/:\s*$/,""))){ let lb=m[1].replace(/:\s*$/,"").trim(), ty="none"; const k=lb.match(/\((공|마)\)/); if(k){ ty=k[1]; lb=lb.replace(k[0],"").trim(); } out.rows.push({label:lb,type:ty,values:m[2].split("/").map(x=>Number(x.trim())),unit:m[3]}); }
+      else out.rows.push({raw:l}); }); return S.rows=out.rows, S.syn=out.syn, S.descL=out.desc, S; }
   AC.s1SkData=n=>SK[n]?parse(n):null;
   AC.s1Mk=h=>String(h).replace(/\((공|마)\)/g,(m,k)=>ICO[k]).replace(/(^|[(+\s])(?:물|공)\s?(\d+(?:\.\d+)?%)/g,(m,p,v)=>p+ICO.공+v).replace(/(^|[(+\s])마\s?(\d+(?:\.\d+)?%?)(?![가-힣])/g,(m,p,v)=>p+ICO.마+v).replace(/(\d%?)\+(<span class="s1i)/g,"$1 + $2");
   function txt(s,D){ let h=AC.s1Mk(E(s));
     if(D.rows.some(r=>r.type==="공")) h=h.replace(/물리 피해(?!량)/g,"물리 피해"+ICO.공);
     if(D.rows.some(r=>r.type==="마")) h=h.replace(/마법 피해(?!량)/g,"마법 피해"+ICO.마); return h; }
   AC.s1SkHtml=function(n,t){ const D=parse(n), ti=AC.sk3Tier(t||0), f=v=>(Math.round(v*100)/100);
-    const rows=D.rows.map(r=>{ const vs=r.values.map((v,i)=>`<span class="${r.values.length===1||i===ti?"on":""}">${f(v)}${r.unit}</span>`).join(" / ");
+    const rows=D.rows.map(r=>{ if(r.raw) return `<div class="s1r s1raw"><span class="l">${txt(r.raw,D)}</span></div>`; const vs=r.values.map((v,i)=>`<span class="${r.values.length===1||i===ti?"on":""}">${f(v)}${r.unit}</span>`).join(" / ");
       return `<div class="s1r"><span class="l">${E(r.label)}${r.type!=="none"?ICO[r.type]:""}:</span><span class="v">[ ${vs} ]</span></div>`; }).join("");
-    const tl=D.rows.some(r=>r.values.length>1)?`<div class="s1tl">[ 0초월 / 6초월 / 12초월 ] · 현재 ${t||0}초월</div>`:"";
+    const tl=D.rows.some(r=>r.values&&r.values.length>1)?`<div class="s1tl">[ 0초월 / 6초월 / 12초월 ] · 현재 ${t||0}초월</div>`:"";
     return `<div class="s1tip" data-acskill data-sktier="${ti}"><div class="s1h"><img src="${D.img}" alt=""><b data-acskname>${E(D.name)}</b></div><hr>
       <div class="s1d">${D.descL.map(l=>`<p>${txt(l,D)}</p>`).join("")}${D.syn.map(l=>`<p class="s1syn">${txt(l,D)}</p>`).join("")}</div>
-      ${rows?`<hr><div class="s1rows">${rows}</div>${tl}`:""}</div>`; };
+      ${rows?`<hr data-s1rule><div class="s1rows">${rows}</div>${tl}`:""}</div>`; };
   const oSL=AC.skillLine; AC.skillLine=function(no,t){ const h=AC.hero(no); return h&&SK[h.name]?AC.s1SkHtml(h.name,t):oSL.apply(AC,arguments); };
   const css=document.createElement("style"); css.textContent=`
 .s1tip{background:#0f1316;border:1.5px solid #8a7444;border-radius:6px;padding:10px 12px;color:#d9d4c7;font-size:13px;line-height:1.55;max-width:100%;box-sizing:border-box;text-align:left}
