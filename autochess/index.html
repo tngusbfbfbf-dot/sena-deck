@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.31v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.32v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8516,7 +8516,7 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
         u.cdAdd=(u.cdAdd||0)+Math.max(0,u.crit-100)*0.5; } } };
   AC.reIv=function(u){ u.iv=1/Math.min(5,u.s.aspd*Math.max(0.2,1+u.asPct/100)*(u.s1mul||1)); };
   const oSK=AC.skStart; AC.skStart=function(B){ B.units.forEach(u=>AC.reIv(u)); return oSK.apply(AC,arguments); };
-  const oCH=AC.calcHit; AC._s1oCH=oCH; AC.calcHit=function(B,a,t,coef,crit,sk){ if(sk){ if(!a.s1skCrit) crit=false; coef*=1+(a.s1ma||0)/100; } return oCH.call(AC,B,a,t,coef,crit,sk); };
+  const oCH=AC.calcHit; AC._s1oCH=oCH; AC.calcHit=function(B,a,t,coef,crit,sk){ if(sk){ if(!a.s1skCrit) crit=false; }  /* 1.0.32v (공) 계수는 마공 배율 없음 · (마)만 ×(1+마공/100) */ return oCH.call(AC,B,a,t,coef,crit,sk); };
   const oGM=AC.glMul; AC.glMul=function(B,u,k){ let m=oGM.apply(AC,arguments); if(u.s1fire) m*=1-u.s1fire/100; if(u.s1sena&&(B.s1a||[]).includes("guard")) m*=1.1; return m; };
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ const was=t&&t.alive; const r=oAD.apply(AC,arguments);
     if(a&&t&&a.side!==t.side&&!a.mon&&!(o&&o.refl)){
