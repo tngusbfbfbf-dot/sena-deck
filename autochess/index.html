@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.32v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.33v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8596,7 +8596,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const allies=(B,u)=>B.units.filter(x=>x.alive&&x.side===u.side&&!x.disabled);
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), adj=(a,b)=>dist(a,b)<1.5;
   const near=(o,Lst)=>Lst.slice().sort((a,b)=>dist(a,o)-dist(b,o));
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt,nc)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5",cast:nc?0:1}); if(!nc&&AC.s1OnCast) AC.s1OnCast(B,u); };  /* 1.0.33v cast:1 = 액티브 스킬 발동 (주술사 중첩) */
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   // (마) 고정값 × (1+마공/100) · 마법 저항 경감 · 피해 증폭·스킬 피해·받는 피해 감소
   const magHit=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; let d=v*MA(u)*100/(100+Math.max(0,t.res||0))*(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100); d=Math.max(1,Math.round(d)); hitEv(B,u,t,d); return AC.applyDmg(B,u,t,d,{id:"sk:"+id}); };
@@ -8612,7 +8612,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
     "멜키르":(B,u,tg)=>{ if(!every(u,6)) return; ev(B,u,SK["멜키르"].name); heal(B,u,L(u,[260,290,360])*MA(u),"멜키르"); magHit(B,u,tg,L(u,[260,390,585]),"멜키르"); },
     "바네사":(B,u,tg)=>{ if(!every(u,5)) return; ev(B,u,SK["바네사"].name); magHit(B,u,tg,L(u,[300,450,675]),"바네사"); if(tg.alive) AC.debuff(B,tg,"stun",()=>{ tg.stun=Math.max(tg.stun||0,B.t+1.25); tg.s1petr=B.t+1.25; B.events.push({k:"fx",b:tg.uid,txt:"석화",cls:"dis"}); }); },
     "린":(B,u,tg)=>{ if(!every(u,5)) return; ev(B,u,SK["린"].name); u.s1rin=(u.s1rin||0)+1; magHit(B,u,tg,L(u,[220,330,495]),"린");
-      if(u.s1rin===4){ u.asPct+=40; AC.reIv(u); ev(B,u,"공속 +40%"); }
+      if(u.s1rin===4){ u.asPct+=40; AC.reIv(u); ev(B,u,"공속 +40%",1); }
       if(u.s1rin>4){ const t2=near(u,foes(B,u).filter(x=>x!==tg))[0]; if(t2) magHit(B,u,t2,L(u,[80,120,180]),"린"); } },
     "태오":(B,u,tg)=>{ if(!every(u,5)) return; ev(B,u,SK["태오"].name); phyHit(B,u,tg,280,"태오",20*MA(u)); },
     "클라한":(B,u,tg)=>{ heal(B,u,L(u,[20,25,30])*MA(u),"클라한"); },
@@ -8634,7 +8634,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const oHe=AC.heal; AC.heal=function(B,u,n,id){ if(u&&u.s1mihoFirst&&n>0){ u.s1mihoFirst=false; n*=1.2; } return oHe.call(AC,B,u,n,id); };
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ if(t&&t.s1petr>B.t) d*=1.15; const was=t&&t.alive; const r=oAD.call(AC,B,a,t,d,o);
     if(a&&t&&a.side!==t.side&&!(o&&(o.id==="ignite"||o.id==="s1dot"||o.refl))){ if(t.alive&&TAKEN[t.s1n]&&AC.s1HitOK(B,t)){ t.s1hit=(t.s1hit||0)+1; const hn=t.s1hit; if(t.s1n==="니아"?(hn===5||(hn>5&&(hn-5)%10===0)):hn%5===0) TAKEN[t.s1n](B,t);  /* 1.0.27v 니아: 최초 피격 5회 이후 매 피격 10회 마다 */ } }
-    if(a&&a.s1n==="태오"&&was&&t&&!t.alive&&!t.mon){ a.atkPct+=1.5; const src=B.refs[a.uid]; if(src&&B.persist!==false) src.s1taeo=(src.s1taeo||0)+1.5; ev(B,a,"공격력 +1.5%"); }
+    if(a&&a.s1n==="태오"&&was&&t&&!t.alive&&!t.mon){ a.atkPct+=1.5; const src=B.refs[a.uid]; if(src&&B.persist!==false) src.s1taeo=(src.s1taeo||0)+1.5; ev(B,a,"공격력 +1.5%",1); }
     return r; };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
     for(const D of B.s1dots||[]){ if(D.left<=0||!D.t.alive) { D.left=0; continue; } D.acc+=dt; while(D.acc>=1&&D.left>0&&D.t.alive){ D.acc-=1; D.left--; AC.applyDmg(B,D.src,D.t,D.dps,{id:"s1dot"}); B.events.push({k:"fx",b:D.t.uid,txt:"🔥",cls:"burn"}); } }
@@ -8660,7 +8660,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), adj=(a,b)=>a!==b&&Math.max(Math.abs(a.R-b.R),Math.abs(a.C-b.C))<=1, within=(a,b,r)=>Math.max(Math.abs(a.R-b.R),Math.abs(a.C-b.C))<=r;
   const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
   const free=(B,R,C)=>R>=0&&C>=0&&R<CC.rows*2&&C<CC.cols&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===C);
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt,nc)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5",cast:nc?0:1}); if(!nc&&AC.s1OnCast) AC.s1OnCast(B,u); };  /* 1.0.33v cast:1 = 액티브 스킬 발동 (주술사 중첩) */
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100)*(t.s1dyMark>0?1:1);
@@ -8762,7 +8762,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
   const free=(B,R,C,me)=>R>=0&&C>=0&&R<CC.rows*2&&C<CC.cols&&!B.units.some(x=>x.alive&&x!==me&&Math.round(x.R)===R&&Math.round(x.C)===C);
   const isTank=u=>/탱커/.test((S1ROLES.H||{})[u.name==="엘리스"?"앨리스":u.name]||"");
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt,nc)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5",cast:nc?0:1}); if(!nc&&AC.s1OnCast) AC.s1OnCast(B,u); };  /* 1.0.33v cast:1 = 액티브 스킬 발동 (주술사 중첩) */
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
@@ -8881,7 +8881,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), cheb=(a,b)=>Math.max(Math.abs(a.R-b.R),Math.abs(a.C-b.C)), adj=(a,b)=>a!==b&&cheb(a,b)<=1, within=(a,b,r)=>cheb(a,b)<=r;
   const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
   const free=(B,R,C,me)=>R>=0&&C>=0&&R<CC.rows*2&&C<CC.cols&&!B.units.some(x=>x.alive&&x!==me&&Math.round(x.R)===R&&Math.round(x.C)===C);
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt,nc)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5",cast:nc?0:1}); if(!nc&&AC.s1OnCast) AC.s1OnCast(B,u); };  /* 1.0.33v cast:1 = 액티브 스킬 발동 (주술사 중첩) */
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
@@ -9021,7 +9021,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), cheb=(a,b)=>Math.max(Math.abs(Math.round(a.R)-Math.round(b.R)),Math.abs(Math.round(a.C)-Math.round(b.C)));
   const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
   const free=(B,R,C,me)=>R>=0&&C>=0&&R<CC.rows*2&&C<CC.cols&&!B.units.some(x=>x.alive&&x!==me&&Math.round(x.R)===R&&Math.round(x.C)===C);
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt,nc)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5",cast:nc?0:1}); if(!nc&&AC.s1OnCast) AC.s1OnCast(B,u); };  /* 1.0.33v cast:1 = 액티브 스킬 발동 (주술사 중첩) */
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
@@ -9225,8 +9225,9 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
         if(p){ u.R=p[0]; u.C=p[1]; fx(B,u,"약탈자 도약"); } }
       if(u.s1mob) u.s1mobT=B.t+4; }
     return r; };
+  /* 1.0.33v 주술사: 액티브 스킬 발동(ev) 1회마다 즉시 중첩 — 이벤트 목록 스캔 대신 (화면 전투는 렌더러가 매 프레임 B.events를 비워 누락됐음) */
+  AC.s1OnCast=function(B,c){ if(!B||!B.syn||!c) return; for(const u of B.units) if(u.alive&&u.side===c.side&&has(B,u,"주술사")) u.s1ma=(u.s1ma||0)+V.주술사[lv(B,u.side,"주술사")][1]; };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
-    for(let i=B._s1ei||0;i<B.events.length;i++){ const e=B.events[i]; if(e.k==="fx"&&e.cls==="sk5"&&skNames.has(e.txt)){ const c=B.units.find(x=>x.uid===e.b); if(c) for(const u of B.units) if(u.alive&&u.side===c.side&&has(B,u,"주술사")) u.s1ma=(u.s1ma||0)+V.주술사[lv(B,u.side,"주술사")][1]; } }
     B._s1ei=B.events.length;
     const el=B.t-(B.t0||0);
     for(const u of B.units){ if(!u.alive) continue;
@@ -9670,7 +9671,11 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
     h=h.replace(/(<div class="achc-stats">[\s\S]*?data-acst-rng>[^<]*<\/b><\/div>)/,"$1"+cell);
     if(M.hp) h=h.replace(/<div class="achc-hp"/,`<div class="achc-hp" title="${E(tipOf(M.hp,"생명력",!!I.bt))}"`);
     return h; };
-  const oDI=AC.drawInfo; AC.drawInfo=function(){ const r=oDI.apply(AC,arguments); try{ const el=document.querySelector("#acRoot [data-acinfo]"); if(el&&AC.info&&AC.info.bt&&AC.anim){ const u=AC.anim.B.units.find(x=>x.uid===AC.info.bt), q=el.querySelector("[data-acst-ma]"); if(u&&q){ const v=fmt(u.s1ma||0,0); if(q.textContent!==v) q.textContent=v; } } }catch(e){} return r; };
+  const oDI=AC.drawInfo; AC.drawInfo=function(){ const r=oDI.apply(AC,arguments); try{ const el=document.querySelector("#acRoot [data-acinfo]"); if(el&&AC.info&&AC.info.bt&&AC.anim){ const u=AC.anim.B.units.find(x=>x.uid===AC.info.bt), q=el.querySelector("[data-acst-ma]"); if(u&&q){ const v=fmt(u.s1ma||0,0); if(q.textContent!==v) q.textContent=v; }
+      /* 1.0.33v 전투 중 모든 칸 실시간 갱신 (현재값 · 시작 기본값보다 높으면 초록) */
+      if(u&&AC.s1Snap){ const S=AC.s1Snap(AC.anim.B,u), b0=u._s1b0||{}; const F={atk:[S.atk,0,""],aspd:[S.as,2,""],def:[S.def,0,""],res:[S.res,0,""],crit:[S.crit,0,"%"],rng:[S.rng,0,""],ma:[S.ma,0,""]}, BK={atk:"atk",aspd:"as",def:"def",res:"res",crit:"crit",rng:"rng",ma:"ma"};
+        for(const k in F){ const c=el.querySelector("[data-acst-"+k+"]"); if(!c||F[k][0]==null) continue; const v=(F[k][1]?(+F[k][0]).toFixed(F[k][1]).replace(/0$/,"").replace(/\.$/,""):String(Math.round(F[k][0])))+F[k][2]; if(c.textContent!==v) c.textContent=v;
+          const p=c.parentElement, bv=b0[BK[k]]; if(p&&bv!=null){ const hi=F[k][0]-bv>(F[k][1]?0.005:0.5); if(hi) p.setAttribute("data-s1up","1"); } } } } }catch(e){} return r; };
   const css=document.createElement("style"); css.textContent=`
 #acRoot .achc-st[data-s1up] b{color:#7ee08a}`; document.head.appendChild(css);
 })();
