@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.17v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.18v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8411,6 +8411,10 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   RAW.forEach(([t,n,tags])=>{ const nm=alias[n]||n; roster[t].push(nm); tags.forEach(g=>{ (mem[g]=mem[g]||[]).push(nm); }); });
   C.roster=roster; AC._H=null; AC._S=null; AC._csl=null; C.uniqueTiers=[]; C.tierName={1:"1코스트",2:"2코스트",3:"3코스트",4:"4코스트",5:"5코스트"};
   // 전투 규칙 (사용자 2026-10-16): 기본 치명타 25% · 치명 피해 130% · 스킬은 치명 불가(아이템 예외) · 공속 상한 5.0
+  // 1.0.18v 공통 규칙 (사용자 확정): 자기 액티브 스킬 사용 중 + 종료 후 1초 동안은 피격 횟수를 세지 않음. 사용 시간 = 연속 타격·채널·예약 피해가 끝나는 시점까지
+  AC.S1HDUR={"에이스":1,"쥬리":3,"카르마":4,"클로에":2,"엘리스":2.5,"스파이크":2,"나타":6,"블랙로즈":0.6,"연희":0.5,"동영":0.5,"세라":1,"선란":0.75};
+  AC.s1HitLock=(B,u,extra)=>{ const n=u.s1n||u.name, d=(extra!=null?extra:(AC.S1HDUR[n]||0)); u.s1hLock=Math.max(u.s1hLock||0,B.t+d+1); };
+  AC.s1HitOK=(B,t)=>!(t.s1hLock>B.t);
   C.critDmg=130; const R2={}; for(const k in C.roles) R2[k]=Object.assign({},C.roles[k],{crit:25}); C.roles=R2;
   // 역할군: 사용자 시즌1 역할군 대기 → 기존 역할 유지 (없는 영웅은 근접 물리 딜러 기본값)
   C.s1RolePending=true;
@@ -8573,7 +8577,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
   const allies=(B,u)=>B.units.filter(x=>x.alive&&x.side===u.side&&!x.disabled);
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), adj=(a,b)=>dist(a,b)<1.5;
   const near=(o,Lst)=>Lst.slice().sort((a,b)=>dist(a,o)-dist(b,o));
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   // (마) 고정값 × (1+마공/100) · 마법 저항 경감 · 피해 증폭·스킬 피해·받는 피해 감소
   const magHit=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; let d=v*MA(u)*100/(100+Math.max(0,t.res||0))*(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100); d=Math.max(1,Math.round(d)); hitEv(B,u,t,d); return AC.applyDmg(B,u,t,d,{id:"sk:"+id}); };
@@ -8610,7 +8614,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
   const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ if(u.s1n&&H[u.s1n]){ u.s1skip=u.s1lock>B.t; if(!u.s1skip) u.s1c=(u.s1c||0)+1; const t=tg.alive?tg:near(u,foes(B,u))[0]; if(t) H[u.s1n](B,u,t); return; } if(u.s1n) return; return oSA.apply(AC,arguments); };
   const oHe=AC.heal; AC.heal=function(B,u,n,id){ if(u&&u.s1mihoFirst&&n>0){ u.s1mihoFirst=false; n*=1.2; } return oHe.call(AC,B,u,n,id); };
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ if(t&&t.s1petr>B.t) d*=1.15; const was=t&&t.alive; const r=oAD.call(AC,B,a,t,d,o);
-    if(a&&t&&a.side!==t.side&&!(o&&(o.id==="ignite"||o.id==="s1dot"||o.refl))){ if(t.alive&&TAKEN[t.s1n]){ t.s1hit=(t.s1hit||0)+1; if(t.s1hit%5===0) TAKEN[t.s1n](B,t); } }
+    if(a&&t&&a.side!==t.side&&!(o&&(o.id==="ignite"||o.id==="s1dot"||o.refl))){ if(t.alive&&TAKEN[t.s1n]&&AC.s1HitOK(B,t)){ t.s1hit=(t.s1hit||0)+1; if(t.s1hit%5===0) TAKEN[t.s1n](B,t); } }
     if(a&&a.s1n==="태오"&&was&&t&&!t.alive&&!t.mon){ a.atkPct+=1.5; const src=B.refs[a.uid]; if(src&&B.persist!==false) src.s1taeo=(src.s1taeo||0)+1.5; ev(B,a,"공격력 +1.5%"); }
     return r; };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
@@ -8637,7 +8641,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), adj=(a,b)=>a!==b&&Math.max(Math.abs(a.R-b.R),Math.abs(a.C-b.C))<=1, within=(a,b,r)=>Math.max(Math.abs(a.R-b.R),Math.abs(a.C-b.C))<=r;
   const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
   const free=(B,R,C)=>R>=0&&C>=0&&R<CC.rows*2&&C<CC.cols&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===C);
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100)*(t.s1dyMark>0?1:1);
@@ -8700,7 +8704,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
     if(t&&t.s1dyMark>B.t) d*=1.15;
     if(t&&t.s1amEnd>B.t&&a&&a.side!==t.side&&a!==t.s1amMark) d*=0.6;  // 표식이 없는 적에게서 받는 피해만 40% 감소
     const r=oAD.call(AC,B,a,t,d,o);
-    if(a&&t&&t.alive&&a.side!==t.side&&!(o.id==="ignite"||o.id==="s1dot"||o.refl)&&N2.includes(t.s1n)){ t.s1h++; if(!(o.id==="s1dot")) combo(B,t);
+    if(a&&t&&t.alive&&a.side!==t.side&&!(o.id==="ignite"||o.id==="s1dot"||o.refl)&&N2.includes(t.s1n)&&AC.s1HitOK(B,t)){ t.s1h++; if(!(o.id==="s1dot")) combo(B,t);
       if(t.s1n==="겔리두스"&&t.s1h===6){ ev(B,t,SK[t.s1n].name); const g=L(t,[400,500,700]); t.maxHp+=g; t.hp+=g; t.s1geG=g; t.s1geEnd=B.t+6; t.s1geAcc=0; } }
     return r; };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
@@ -8724,7 +8728,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
   const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
   const free=(B,R,C,me)=>R>=0&&C>=0&&R<CC.rows*2&&C<CC.cols&&!B.units.some(x=>x.alive&&x!==me&&Math.round(x.R)===R&&Math.round(x.C)===C);
   const isTank=u=>/탱커/.test((S1ROLES.H||{})[u.name==="엘리스"?"앨리스":u.name]||"");
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
@@ -8800,7 +8804,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ o=o||{}; const r=oAD.call(AC,B,a,t,d,o);
     if(a&&a.alive&&r>0&&a.s1n==="콜트"&&a.s1coV>0) AC.heal(B,a,r*a.s1coV/100,"sk:콜트");   // 모든 피해 흡혈
     if(a&&a.alive&&r>0&&a.s1ju&&B.t<=a.s1ju.end+1e-9) AC.heal(B,a,r*0.15,"sk:쥬리");     // 연결 중 쥬리가 입힌 피해의 15%
-    if(a&&t&&t.alive&&a.side!==t.side&&!(o.id==="ignite"||o.id==="s1dot"||o.refl)&&N3.includes(t.s1n)){ t.s1h++; combo(B,t); if(t.s1n==="에이스"&&t.s1h%5===0) aceFast(B,t); }
+    if(a&&t&&t.alive&&a.side!==t.side&&!(o.id==="ignite"||o.id==="s1dot"||o.refl)&&N3.includes(t.s1n)&&AC.s1HitOK(B,t)){ t.s1h++; combo(B,t); if(t.s1n==="에이스"&&t.s1h%5===0) aceFast(B,t); }
     return r; };
   const oKill=AC.kill; AC.kill=function(B,t,a){ if(t&&B&&B.units) for(const u of B.units){ if(u.alive&&u.s1n==="나타"&&u.side!==t.side&&u.tgUid===t.uid&&t.hitLog&&t.hitLog[u.uid]!=null){ u.s1naWave=true; } } return oKill.apply(AC,arguments); };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
@@ -8823,7 +8827,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
   const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), cheb=(a,b)=>Math.max(Math.abs(a.R-b.R),Math.abs(a.C-b.C)), adj=(a,b)=>a!==b&&cheb(a,b)<=1, within=(a,b,r)=>cheb(a,b)<=r;
   const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
   const free=(B,R,C,me)=>R>=0&&C>=0&&R<CC.rows*2&&C<CC.cols&&!B.units.some(x=>x.alive&&x!==me&&Math.round(x.R)===R&&Math.round(x.C)===C);
-  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
+  const ev=(B,u,txt)=>{ u.s1lock=B.t+1; AC.s1HitLock(B,u); B.events.push({k:"fx",b:u.uid,txt,cls:"sk5"}); };
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
   const hitEv=(B,u,t,d)=>B.events.push({k:"hit",a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
@@ -8887,7 +8891,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
     "로지":[8,(B,u)=>{ ev(B,u,nm(u)); const n=Math.round(L(u,[4,5,9])), I={T:B.t+8*MA(u),hp:0,d:0,r:0,parts:[]}; if(!(u.s1rz||[]).length) u.s1rzK=0;
       near(u,foes(B,u)).slice(0,n).forEach(x=>AC.debuff(B,x,"steal",()=>{ const h=x.maxHp*L(u,[5,5,15])/100, d=L(u,[5,5,30]), r=L(u,[5,5,30]); x.maxHp-=h; x.hp=Math.min(x.hp,x.maxHp); x.def-=d; x.res-=r; I.hp+=h; I.d+=d; I.r+=r; I.parts.push([x,h,d,r]); }));
       u.maxHp+=I.hp; u.hp+=I.hp; u.def+=I.d; u.res+=I.r; (u.s1rz=u.s1rz||[]).push(I); fx(B,u,"강화"); }],
-    "오공":[5,(B,u)=>{ ev(B,u,nm(u)); const k=1+Math.round(L(u,[0,2,4])); for(let i=0;i<k;i++) later(B,B.t+0.15*i,()=>{ if(!u.alive) return; const t=tgOf(B,u); if(!t) return; fx(B,t,"분신");
+    "오공":[5,(B,u)=>{ ev(B,u,nm(u)); const k=1+Math.round(L(u,[0,2,4])); AC.s1HitLock(B,u,0.15*(k-1)); for(let i=0;i<k;i++) later(B,B.t+0.15*i,()=>{ if(!u.alive) return; const t=tgOf(B,u); if(!t) return; fx(B,t,"분신");
         mag(B,u,t,L(u,[285,430,1200]),u.s1n); if(t.alive) AC.debuff(B,t,"res",()=>{ t.res-=5*wk(B,u); }); foes(B,u).filter(x=>x!==t&&adj(x,t)).forEach(x=>mag(B,u,x,L(u,[145,215,400]),u.s1n)); }); }],
     "라드그리드":[0,(B,u)=>{ ev(B,u,nm(u)); const g=tShield(B,u,L(u,[400,500,2000]),4,"s1rgSh"); u.s1rgO=g;
       allies(B,u).filter(x=>x!==u&&!x.mon).sort((a,b)=>a.hp-b.hp).slice(0,2).forEach(a=>{ const s=AC.addShield(B,a,L(u,[225,275,1000])); if(s){ fx(B,a,"🛡 +"+Math.round(s)); (B.s1rg=B.s1rg||[]).push({o:u,a,amt:s,T:B.t+4}); } }); }],
@@ -8915,7 +8919,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
     if(a&&t&&a.s1bmSk&&a.side!==t.side&&String(o.id||"").startsWith("sk:")) d+=a.s1bmSk*MA(a)*mit(t.res);                       // 흑마법진(유신): 스킬 피해 +20(마)
     const r=oAD.call(AC,B,a,t,d,o);
     if(a&&a.alive&&r>0&&a.s1n==="루디"&&t&&t.side!==a.side) heal(B,a,a.maxHp*L(a,[1.5,1.5,5])/100,"루디");                       // 피해를 입힌 후 회복 (피해 1회마다)
-    if(a&&t&&t.alive&&a.side!==t.side&&!(o.id==="ignite"||o.id==="s1dot"||o.refl)&&N4.includes(t.s1n)){ t.s1h++; combo(B,t); }
+    if(a&&t&&t.alive&&a.side!==t.side&&!(o.id==="ignite"||o.id==="s1dot"||o.refl)&&N4.includes(t.s1n)&&AC.s1HitOK(B,t)){ t.s1h++; combo(B,t); }
     return r; };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
     if(B.s1q4&&B.s1q4.length){ const now=B.s1q4.filter(q=>q.at<=B.t+1e-9); B.s1q4=B.s1q4.filter(q=>q.at>B.t+1e-9); now.forEach(q=>q.fn()); }
@@ -9014,7 +9018,14 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
     const occ=(R,Cc)=>B.units.some(x=>x.alive&&x.R===R&&x.C===Cc);
     for(const u of B.units){ if(!u.alive) continue;
       if(u.s1duel){ AC.addShield(B,u,u.maxHp*u.s1duel[0]/100); fx(B,u,"결투가 🛡"); }
-      if(u.s1loot){ const R2=C.rows*2-1-u.R; if(!occ(R2,u.C)){ u.R=R2; fx(B,u,"약탈자 도약"); } }
+      if(u.s1loot){ const R2=C.rows*2-1-u.R; let p=occ(R2,u.C)?null:[R2,u.C];
+        // 1.0.18v 착지 칸에 영웅이 있으면 그 칸의 인접 빈칸(주위 8칸) 중 하나로 도약 · 없으면 다음으로 가까운 빈칸
+        // 선택: 가까운 칸(체비셰프 거리) → 적 후방 쪽 줄 → 원래 칸과 직선(상하좌우) → 보드 중앙 열 쪽
+        if(!p){ const deep=R=>u.side==="me"?-R:R, mid=(C.cols-1)/2; let best=null,bk=null;
+          for(let R=0;R<C.rows*2;R++) for(let Cc=0;Cc<C.cols;Cc++){ if(occ(R,Cc)) continue; const k=[Math.max(Math.abs(R-R2),Math.abs(Cc-u.C)),-deep(R),Math.abs(R-R2)+Math.abs(Cc-u.C),Math.abs(Cc-mid)];
+            if(!bk||k.some((v,i)=>v!==bk[i]&&k.slice(0,i).every((w,j)=>w===bk[j])&&v<bk[i])){ bk=k; best=[R,Cc]; } }
+          p=best; }
+        if(p){ u.R=p[0]; u.C=p[1]; fx(B,u,"약탈자 도약"); } }
       if(u.s1mob) u.s1mobT=B.t+4; }
     return r; };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
