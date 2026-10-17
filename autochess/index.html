@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.35v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.36v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -9737,9 +9737,6 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   AC.s1ManaStrip=STRIP;
   const oSH=AC.s1SkHtml; AC.s1SkHtml=function(n,t){ let h=oSH.apply(AC,arguments); const T=AC.S1MANA[n]; if(!T||n==="클라한") return h;
     h=h.replace(/(<div class="s1d">)([\s\S]*?)(<\/div>)/,(m,a,b,c)=>a+b.replace(/<p>([^<]*)/g,(q,x)=>"<p>"+STRIP(x))+c);
-    const row=`<div class="s1r s1mana"><span class="l">시작 마나 / 최대 마나:</span><span class="v">[ <span class="on">${T[0]}</span> / <span class="on">${T[1]}</span> ]</span></div>`;
-    if(/<div class="s1rows">/.test(h)) h=h.replace(/<div class="s1rows">/,'<div class="s1rows">'+row);
-    else h=h.replace(/<\/div><\/div>\s*$/,`</div><hr data-s1rule><div class="s1rows">${row}</div></div>`);
     return h; };
   // 정보창: 마나 줄 (전투 중 현재/최대 실시간, 그 외 시작/최대)
   const mInfo=(no,bt,I)=>{ const h=AC.hero(no); const T=h&&AC.S1MANA[h.name]; if(!T||h.name==="클라한") return null;
