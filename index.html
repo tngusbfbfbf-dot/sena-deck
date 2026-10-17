@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.18v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.19v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -9022,7 +9022,7 @@ Object.assign(S1SK1,{"스파이크": {"name": "혹한의 일격", "img": "data:i
         // 1.0.18v 착지 칸에 영웅이 있으면 그 칸의 인접 빈칸(주위 8칸) 중 하나로 도약 · 없으면 다음으로 가까운 빈칸
         // 선택: 가까운 칸(체비셰프 거리) → 적 후방 쪽 줄 → 원래 칸과 직선(상하좌우) → 보드 중앙 열 쪽
         if(!p){ const deep=R=>u.side==="me"?-R:R, mid=(C.cols-1)/2; let best=null,bk=null;
-          for(let R=0;R<C.rows*2;R++) for(let Cc=0;Cc<C.cols;Cc++){ if(occ(R,Cc)) continue; const k=[Math.max(Math.abs(R-R2),Math.abs(Cc-u.C)),-deep(R),Math.abs(R-R2)+Math.abs(Cc-u.C),Math.abs(Cc-mid)];
+          for(let R=0;R<C.rows*2;R++) for(let Cc=0;Cc<C.cols;Cc++){ if(occ(R,Cc)||(u.side==="me"?R>=C.rows:R<C.rows)) continue;  /* 1.0.19v 적 진영 칸만 · 빈칸 없으면 제자리 */ const k=[Math.max(Math.abs(R-R2),Math.abs(Cc-u.C)),-deep(R),Math.abs(R-R2)+Math.abs(Cc-u.C),Math.abs(Cc-mid)];
             if(!bk||k.some((v,i)=>v!==bk[i]&&k.slice(0,i).every((w,j)=>w===bk[j])&&v<bk[i])){ bk=k; best=[R,Cc]; } }
           p=best; }
         if(p){ u.R=p[0]; u.C=p[1]; fx(B,u,"약탈자 도약"); } }
