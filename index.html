@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.37v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.38v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8537,14 +8537,23 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   const dkAll=st=>{ const L=st.players?st.players.filter(p=>p.alive).map(p=>p.S):[st.me,st.ai]; for(const S of L){ S.dkDone=S.dkDone||0; while(S.dkDone<DK.length&&(S.dkStk||0)>=DK[S.dkDone][0]){ dkOpen(st,S,S.dkDone); if(S===st.me) AC.msg(`📦 다크나이츠 군수품 ${DK[S.dkDone][0]}: ${DK[S.dkDone][1]}`); S.dkDone++; } } };
   // ---------- 보상: 조합 장비 (★자리표시 규칙) ----------
   const oPR=AC.pveReward; AC.pveReward=function(st,S,B,isBot){ const r=oPR.apply(AC,arguments); const early=C.ac010.earlyPve.includes(st.round), add=[];
-    const c=rnd(st,D.comps); give(S,c.id); add.push(c.name);
-    if(!early){ const c2=rnd(st,D.comps); give(S,c2.id); add.push(c2.name); const c3=rnd(st,D.comps); give(S,c3.id); add.push(c3.name); }  /* 1.0.37v 상징 보상 제거 → 조합 재료 1개로 대체 */
-    /* 1.0.37v 이정표: 25라운드 이후 첫 PvE 보상 → 완성 6개분(재료 12), 30라운드 이후 첫 PvE 보상 → 완성 9개분(재료 18). 받은 조합 재료(완성 아이템=2개 환산)가 부족하면 부족분을 조합 재료로 지급 */
-    for(const [R0,N0] of [[25,12],[30,18]]){ S.s1pity=S.s1pity||{}; if(st.round>=R0&&!S.s1pity[R0]){ S.s1pity[R0]=1; const need=Math.max(0,N0-(S.s1rcv||0)); for(let i=0;i<need;i++){ const c4=rnd(st,D.comps); give(S,c4.id); add.push("★"+c4.name); } } }
-    const t="🧩 "+add.join(", "); if(Array.isArray(r)){ r.push(t); return r; } return (r?r+" · ":"")+t; };
+    /* 1.0.38v 라운드별 조합 재료 수 (고르게 분배 · 24라운드 보스까지 18개 · 이후 감소) */
+    const CNT={1:1,2:1,3:2,10:4,17:5,24:5,31:1,38:1,45:0}; const nC=CNT[st.round]!=null?CNT[st.round]:(early?1:1);
+    for(let i=0;i<nC;i++){ const c=rnd(st,D.comps); give(S,c.id); add.push(c.name); }
+    /* 안전망: 24라운드 보상부터 재료 18개(완성 9개분), 25·30 이정표(12·18)도 유지. 받은 조합 재료(완성 아이템=2개 환산)가 부족하면 부족분 지급 */
+    for(const [R0,N0] of [[24,18],[25,12],[30,18]]){ S.s1pity=S.s1pity||{}; if(st.round>=R0&&!S.s1pity[R0]){ S.s1pity[R0]=1; const need=Math.max(0,N0-(S.s1rcv||0)); for(let i=0;i<need;i++){ const c4=rnd(st,D.comps); give(S,c4.id); add.push("★"+c4.name); } } }
+    /* 1.0.38v 아이템 제거기: 보스 50% · 10라운드 이후 일반 PvE 15% */
+    if(!early){ const p=AC.isBossR(st.round)?0.5:0.15; if(AC.rnd(st)<p){ const I=AC.items(S); I.rm=(I.rm||0)+1; add.push("🧲 아이템 제거기"); } }
+    const t="🧩 "+(add.join(", ")||"없음"); if(Array.isArray(r)){ r.push(t); return r; } return (r?r+" · ":"")+t; };
   const oNR=AC.nextRound; AC.nextRound=function(st){ if(st&&st.phase==="result") dkAll(st); const r=oNR.apply(AC,arguments); const L=st.players?st.players.filter(p=>p.alive&&!p.me).map(p=>p.S):[st.ai]; L.forEach(S=>S&&AC.s1BotGear(st,S)); return r; };
   // ---------- 장착 ----------
-  const oUI=AC.useItem; AC.useItem=function(st,S,kind,uid){ if(!String(kind).startsWith("g:")) return oUI.apply(AC,arguments);
+  /* 1.0.38v 아이템 제거기 */
+  C.ac010.items.rm=C.ac010.items.rm||{ico:"🧲",name:"아이템 제거기",tip:"아이템을 장착한 영웅에게 사용 → 장착한 모든 아이템을 아이템 칸으로 돌려받음"};
+  const oIHrm=AC.itemsHTML; AC.itemsHTML=function(st,S){ let h=oIHrm.apply(AC,arguments); const I=AC.items(S), n=I.rm||0, A=C.ac010.items.rm, prep=st.phase==="prep";
+    const btn=`<button type="button" class="acitem${AC.itemSel==="rm"?" on":""}${n?"":" none"}" data-acitem="rm" draggable="${prep&&n?"true":"false"}" title="${A.name}: ${A.tip} · 영웅에 끌어 놓거나, 누른 뒤 영웅을 누르세요"><b>${A.ico}</b><small>${n}</small></button>`;
+    return h.replace(/(<button[^>]*data-acitem="reset"[\s\S]*?<\/button>)/,"$1"+btn); };
+  const oUI=AC.useItem; AC.useItem=function(st,S,kind,uid){ if(kind==="rm"){ const I=AC.items(S), u=S.units.find(x=>x.uid===uid); if(!u) return "영웅을 고르세요"; if(!(I.rm>0)) return "아이템 없음"; if(!(u.gear&&u.gear.length)) return "장착한 아이템이 없는 영웅"; const n=u.gear.length; back(S,u); I.rm--; AC._csl=null; return ""; } if(!String(kind).startsWith("g:")) return oUI.apply(AC,arguments);
+
     const I=AC.items(S), u=S.units.find(x=>x.uid===uid), id=kind.slice(2), g=G[id]; if(!u) return "영웅을 고르세요"; if(!(I[kind]>0)||!g) return "아이템 없음"; u.gear=u.gear||[];
     if(g.k==="sym"){ const s=AC.synById(g.syn); if(s.members.includes(AC.hero(u.no).name)) return "이미 "+s.name+" 영웅"; if(u.gear.includes(id)) return "이미 같은 상징 장착"; }
     if(g.k==="comp"){ const j=u.gear.findIndex(x=>G[x]&&G[x].k==="comp"); if(j>=0){ const nid=recipe[[u.gear[j],id].sort().join("+")]; u.gear[j]=nid; I[kind]--; AC._s1last=`✨ ${G[nid].name} 완성!`; AC._csl=null; return ""; } }
