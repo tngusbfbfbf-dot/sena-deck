@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.23v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.24v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8742,6 +8742,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const mag=(B,u,t,v,id)=>deal(B,u,t,magV(B,u,t,v*MA(u)),id);                          // (마) 고정값
   const phy=(B,u,t,coef,id)=>deal(B,u,t,phyV(B,u,t,AC.atkNow(B,u)*coef/100),id);         // (공) %
   const phyRaw=(B,u,t,raw,id)=>deal(B,u,t,phyV(B,u,t,raw),id);
+  const magB=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; const d=Math.max(1,Math.round(magV(B,u,t,v*MA(u)))); B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit:false,sk:true,rg:false,beam:1,aR:t.R,aC:t.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+id})||0; };
   const heal=(B,u,n,id)=>AC.heal(B,u,n,"sk:"+id);
   const later=(B,at,fn)=>(B.s1q3=B.s1q3||[]).push({at,fn});
   const wk=(B,u)=>AC.s1WeakMul?AC.s1WeakMul(B,u):1;
@@ -8767,10 +8768,12 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
         for(let dR=-1;dR<=1;dR++) for(let dC=-1;dC<=1;dC++){ if(!dR&&!dC) continue; const R=R0+dR, C=C0+dC; if(!free(B,R,C,u)) continue; const o={R,C}; if(cheb(o,tg)!==r) continue; const s=F.filter(x=>cheb(x,o)<=1).length; if(s<bs){ bs=s; best=[R,C]; } }
         if(best){ u.R=best[0]; u.C=best[1]; } }
       u.s1coS=Math.min(4,u.s1coS+1); u.s1coV=u.s1coS*5; fx(B,u,"흡혈 "+u.s1coV+"%"); },
-    "연희":(B,u,tg,c)=>{ if(!c||u.s1a%5) return; ev(B,u,nm(u)); u.stun=Math.max(u.stun||0,B.t+0.5); fx(B,u,"정신집중");
+    "연희":(B,u,tg,c)=>{ if(!c||u.s1a%5) return; ev(B,u,nm(u)); u.stun=Math.max(u.stun||0,B.t+0.5); fx(B,u,"정신집중"); B.events.push({k:"sk3",id:"s1yhCharge",a:u.uid,R:u.R,C:u.C,dur:0.5});
       later(B,B.t+0.5,()=>{ if(!u.alive) return; const t=tg.alive?tg:near(u,foes(B,u))[0]; if(!t) return; const dR=t.R-u.R, dC=t.C-u.C, Ln=Math.hypot(dR,dC)||1, ux=dR/Ln, uy=dC/Ln, p0=dR*ux+dC*uy;
         const back=foes(B,u).filter(x=>{ if(x===t) return false; const vr=x.R-u.R, vc=x.C-u.C; return vr*ux+vc*uy>p0+0.01&&Math.abs(vr*uy-vc*ux)<=0.6; }).sort((a,b)=>dist(a,u)-dist(b,u));
-        mag(B,u,t,L(u,[460,600,960]),u.s1n); back.forEach(x=>mag(B,u,x,L(u,[138,180,288]),u.s1n)); }); },
+        { let k=Ln; while(true){ const R=u.R+ux*(k+0.5), C=u.C+uy*(k+0.5); if(R<-0.5||C<-0.5||R>CC.rows*2-0.5||C>CC.cols-0.5) break; k+=0.5; } [t].concat(back).forEach(x=>{ k=Math.max(k,(x.R-u.R)*ux+(x.C-u.C)*uy+0.5); });   // 1.0.24v 관통 빔: 연희 → 대상 → 보드 끝 (판정 궤도와 동일한 직선)
+          B.events.push({k:"sk3",id:"s1yhBeam",a:u.uid,aR:u.R,aC:u.C,bR:u.R+ux*k,bC:u.C+uy*k,hits:[t].concat(back).map(x=>[x.R,x.C])}); }
+        magB(B,u,t,L(u,[460,600,960]),u.s1n); back.forEach(x=>magB(B,u,x,L(u,[138,180,288]),u.s1n)); }); },
     "레긴레이프":(B,u,tg,c)=>{ if(!c||u.s1a%6) return; ev(B,u,nm(u)); let cur=tg; const hit=new Set([tg]); mag(B,u,cur,L(u,[120,180,290]),u.s1n);
       for(let i=0;i<3;i++){ const F=foes(B,u).filter(x=>x!==cur&&within(x,cur,3)); const nx=near(cur,F.filter(x=>!hit.has(x)))[0]||near(cur,F)[0]||(cur.alive?cur:null); if(!nx) break; cur=nx; hit.add(cur); mag(B,u,cur,L(u,[120,180,290]),u.s1n); } },
     "라이언":(B,u,tg,c)=>{ if(!c||u.s1a%4) return; ev(B,u,nm(u)); near(u,foes(B,u)).slice(0,3).forEach(x=>phyRaw(B,u,x,L(u,[30,45,70])*MA(u)+AC.atkNow(B,u)*2,u.s1n)); },
@@ -8820,6 +8823,23 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
       const J=u.s1ju; if(J){ J.acc+=dt; while(J.acc>=1&&J.k<3){ J.acc-=1; J.k++; const A=J.T.filter(x=>x.alive); if(A.length){ const per=L(u,[190,285,445])/A.length; A.forEach(x=>mag(B,u,x,per,u.s1n)); } } if(J.k>=3||B.t>=J.end+0.2) juEnd(B,u); }
       if(u.s1naWave&&!(u.stun&&B.t<u.stun)){ const t=near(u,foes(B,u))[0]; if(t&&cheb(u,t)>u.range&&goNear(B,u,t)){ u.s1naWave=false; nataWave(B,u,t); } } }
     return r; };
+  // 1.0.24v 연희 '파괴의 손짓' 연출: 0.5초 충전 빛 → 금빛 코어 + 보랏빛 외광 관통 광선이 보드 끝까지 뻗음 → 맞은 적 피격 플래시
+  const PX=AC.PX; if(PX){ const oFx=PX.sk3fx; PX.sk3fx=function(B,e,slow,light){
+    if(e.id!=="s1yhCharge"&&e.id!=="s1yhBeam") return oFx.apply(this,arguments);
+    const S=this.scene; if(!S) return; const {W,H}=this.cell(), m=Math.min(W,H);
+    if(e.id==="s1yhCharge"){ const u=B.units.find(x=>x.uid===e.a), [x,y]=this.px(u?u.R:e.R,u?u.C:e.C), ms=(e.dur||0.5)*1000*slow;
+      const g=this.gfx().clear().setPosition(x,y).setDepth(42).setAlpha(1).setScale(0.35);
+      g.fillStyle(0x9a3cff,0.28).fillCircle(0,0,m*0.62).fillStyle(0xffd86a,0.55).fillCircle(0,0,m*0.34).fillStyle(0xfff6d8,0.95).fillCircle(0,0,m*0.14);
+      S.tweens.add({targets:g,scale:1,duration:ms,ease:"Quad.easeIn",onComplete:()=>S.tweens.add({targets:g,alpha:0,scale:1.25,duration:160*slow,onComplete:()=>this.done(g)})});
+      if(!light){ const r=this.gfx().clear().setPosition(x,y).setDepth(42).setAlpha(0.9).setScale(1.6); r.lineStyle(Math.max(2,m*0.05),0xc98bff,1).strokeCircle(0,0,m*0.5);
+        S.tweens.add({targets:r,scale:0.4,alpha:0.2,duration:ms,ease:"Quad.easeIn",onComplete:()=>this.done(r)}); }
+      return; }
+    const [ax,ay]=this.px(e.aR,e.aC), [bx,by]=this.px(e.bR,e.bC), w=light?3:Math.max(5,m*0.32), g=this.gfx().clear().setPosition(0,0).setDepth(41).setAlpha(1).setScale(1), P={p:0};
+    const draw=p=>{ const ex=ax+(bx-ax)*p, ey=ay+(by-ay)*p; g.clear().lineStyle(w*2.4,0x8a2cff,0.28).lineBetween(ax,ay,ex,ey).lineStyle(w*1.35,0xc070ff,0.7).lineBetween(ax,ay,ex,ey).lineStyle(w*0.55,0xffe9a0,1).lineBetween(ax,ay,ex,ey).fillStyle(0xfff6d8,0.95).fillCircle(ax,ay,w*0.9); };
+    draw(0); const L0=Math.hypot(bx-ax,by-ay)||1, hit=(e.hits||[]).map(([R,C])=>{ const [hx,hy]=this.px(R,C); return {R,C,f:Math.min(1,Math.hypot(hx-ax,hy-ay)/L0),done:0}; });
+    S.tweens.add({targets:P,p:1,duration:170*slow,ease:"Quad.easeOut",onUpdate:()=>{ draw(P.p); hit.forEach(h=>{ if(!h.done&&P.p>=h.f){ h.done=1; this.flash(h.R,h.C,320*slow); } }); },
+      onComplete:()=>{ draw(1); hit.forEach(h=>{ if(!h.done){ h.done=1; this.flash(h.R,h.C,320*slow); } }); S.tweens.add({targets:g,alpha:0,delay:230*slow,duration:320*slow,onComplete:()=>this.done(g)}); }}); };
+  }
 })();
 /* ===== 1.0.17v 시즌1 4코스트 영웅 스킬 (skills/cost4.md 원문) ===== */
 (function(){ if(AC.season!=="s1") return; const SK=S1SK1, CC=AC_CONFIG;
