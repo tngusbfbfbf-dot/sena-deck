@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.33v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.34v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8496,7 +8496,7 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   const back=(S,u)=>{ for(const id of u.gear||[]) give(S,id); u.gear=[]; };
   AC.s1Give=give;
   // ---------- 시너지 수: 상징 ----------
-  AC.embN=function(L){ const m={}, seen={}; for(const u of L||[]){ const src=u.gear?u:(AC._curB&&AC._curB.refs&&AC._curB.refs[u.uid])||u; for(const id of src.gear||[]){ const g=G[id]; if(!g||g.k!=="sym") continue; const s=AC.synById(g.syn), nm=AC.hero(u.no)&&AC.hero(u.no).name; if(!s||s.members.includes(nm)) continue; const k=g.syn+":"+u.no; if(seen[k]) continue; seen[k]=1; m[g.syn]=(m[g.syn]||0)+1; } } return m; };
+  AC.embN=function(L){ const m={}, seen={}; for(const u of L||[]){ const RB=(AC._curB&&AC._curB.refs)?AC._curB:(AC.anim&&AC.anim.B&&AC.anim.B.refs&&AC.anim.B.units&&AC.anim.B.units.includes(u)?AC.anim.B:null), src=u.gear?u:(RB&&RB.refs[u.uid])||u;  /* 1.0.34v 화면 전투 중 시너지 패널도 상징 반영 */ for(const id of src.gear||[]){ const g=G[id]; if(!g||g.k!=="sym") continue; const s=AC.synById(g.syn), nm=AC.hero(u.no)&&AC.hero(u.no).name; if(!s||s.members.includes(nm)) continue; const k=g.syn+":"+u.no; if(seen[k]) continue; seen[k]=1; m[g.syn]=(m[g.syn]||0)+1; } } return m; };
   const hasS=(B,u,id)=>{ const L=B.syn[u.side]; if(!L||L[id]==null) return false; const s=AC.synById(id); if(s.members.includes(u.name)) return true; const src=B.refs[u.uid]; return !!(src&&(src.gear||[]).includes("s_"+id)); };
   // ---------- 게임 시작: 속성 · 변형 없음 ----------
   AC.vRoll=()=>null;
@@ -8634,7 +8634,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const oHe=AC.heal; AC.heal=function(B,u,n,id){ if(u&&u.s1mihoFirst&&n>0){ u.s1mihoFirst=false; n*=1.2; } return oHe.call(AC,B,u,n,id); };
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ if(t&&t.s1petr>B.t) d*=1.15; const was=t&&t.alive; const r=oAD.call(AC,B,a,t,d,o);
     if(a&&t&&a.side!==t.side&&!(o&&(o.id==="ignite"||o.id==="s1dot"||o.refl))){ if(t.alive&&TAKEN[t.s1n]&&AC.s1HitOK(B,t)){ t.s1hit=(t.s1hit||0)+1; const hn=t.s1hit; if(t.s1n==="니아"?(hn===5||(hn>5&&(hn-5)%10===0)):hn%5===0) TAKEN[t.s1n](B,t);  /* 1.0.27v 니아: 최초 피격 5회 이후 매 피격 10회 마다 */ } }
-    if(a&&a.s1n==="태오"&&was&&t&&!t.alive&&!t.mon){ a.atkPct+=1.5; const src=B.refs[a.uid]; if(src&&B.persist!==false) src.s1taeo=(src.s1taeo||0)+1.5; ev(B,a,"공격력 +1.5%",1); }
+    if(a&&a.s1n==="태오"&&was&&t&&!t.alive&&!t.mon){ a.atkPct+=1.5; const src=B.refs[a.uid]; if(src&&B.persist!==false) src.s1taeo=(src.s1taeo||0)+1.5; B.events.push({k:"fx",b:a.uid,txt:"공격력 +1.5%",cls:"buff"});  /* 1.0.34v 영구 패시브 → 카운트 잠금 없음 */ }
     return r; };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
     for(const D of B.s1dots||[]){ if(D.left<=0||!D.t.alive) { D.left=0; continue; } D.acc+=dt; while(D.acc>=1&&D.left>0&&D.t.alive){ D.acc-=1; D.left--; AC.applyDmg(B,D.src,D.t,D.dps,{id:"s1dot"}); B.events.push({k:"fx",b:D.t.uid,txt:"🔥",cls:"burn"}); } }
