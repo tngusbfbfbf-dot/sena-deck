@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.29v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.30v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -9653,27 +9653,26 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
     const gear=(su&&su.gear)||(live&&B.refs[live.uid].gear)||[];
     const synOn=Object.keys(A.syn).filter(id=>{ const lv=A.syn[id]; if(lv==null||lv<0) return false; const s=AC.synById(id); return s&&(s.members.includes(A.name)||gear.includes("s_"+id)); }).map(id=>AC.synById(id).name);
     return {rows,gear,ros,bench,live:!!live,synOn,ag:S.s1ag||{}}; };
-  function html(I){ const X=AC.s1StatBreak(I); if(!X) return ""; const fv=(v,d,un)=>fmt(v,d)+un;
-    const rows=X.rows.map(r=>{ const parts=[]; if(Math.abs(r.itm)>0.005) parts.push(`<i class="it">${sg(r.itm,r.d,r.un)} 아이템</i>`); if(Math.abs(r.syn)>0.005) parts.push(`<i class="sy">${sg(r.syn,r.d,r.un)} 시너지</i>`); if(Math.abs(r.pas)>0.005) parts.push(`<i class="ps">${sg(r.pas,r.d,r.un)} 스킬 패시브</i>`);
-      const cur=r.now!=null&&Math.abs(r.now-r.fin)>(r.d?0.005:0.5)?` <em>현재 ${fv(r.now,r.d,r.un)}</em>`:"";
-      return `<div class="s1bd-r" data-s1bd="${r.k}"><span class="l">${r.lab}</span><b>${fv(r.fin,r.d,r.un)}</b>${cur}<span class="p">${parts.length?`(기본 ${fv(r.base,r.d,r.un)}, ${parts.join(", ")})`:""}</span></div>`; }).join("");
-    const gl=X.gear.map(id=>G[id]).filter(g=>g&&(g.sp||[]).length).map(g=>{ let sp=g.sp.join(" "); if(/이번 게임에서 획득한 골드/.test(sp)) sp=sp.replace(/이번 게임에서 획득한 골드:\s*\??/,"이번 게임에서 획득한 골드: "+(X.ag[g.id]||0)); const tg=FULL[g.id]?"수치 포함":PART[g.id]?"일부 수치 포함 · 나머지 전투 중":"전투 중 발동"; return `<li><b>${E(g.name)}</b> <span class="tg">[${tg}]</span> ${E(sp)}</li>`; }).join("");
-    const rs=X.ros&&X.ros.length?`<li><b>망자의 묵주</b> 이번 전투 장착: ${X.ros.map(id=>E((G[id]||{}).name||id)).join(", ")} (위 수치 포함)</li>`:"";
-    return `<div class="s1bd" data-s1bd-box><div class="s1bd-h">${X.live?"스탯 (전투 시작 기준 · 현재값 별도 표시)":X.bench?"스탯 (벤치: 아이템만 반영 · 배치 시 시너지 반영)":"스탯 (전투 시작 기준 · 아이템·시너지 반영)"}</div>${rows}
-      ${X.synOn.length?`<div class="s1bd-n">적용 시너지: ${X.synOn.map(E).join(", ")}</div>`:""}
-      ${gl||rs?`<div class="s1bd-n">아이템 특수 효과 ([수치 포함] = 위 수치에 반영, [전투 중 발동] = 조건·시간에 따라 전투 중 적용):</div><ul>${rs}${gl}</ul>`:""}
-      <div class="s1bd-f">마법 공격력: 스킬 (마) 수치 × (1 + 마법 공격력/100). 스킬 패시브 = 전투 시작 시 적용되는 영웅 고유 효과.</div></div>`; }
-  const oCard=AC.cardHTML; AC.cardHTML=function(I,no,t,X){ let fin=null; try{ if(!I.bt){ const R=AC.s1StatBreak(I); if(R){ fin={}; R.rows.forEach(r=>fin[r.k]=r.fin); X=Object.assign({},X,{mhp:Math.round(fin.hp),hp:null,atk:Math.round(fin.atk),def:Math.round(fin.def),res:Math.round(fin.res),aspd:+fin.as.toFixed(2)}); } } }catch(e){}
-    let h=oCard.call(AC,I,no,t,X); if(fin){ h=h.replace(/(data-acst-crit>)[^<]*/,"$1"+Math.round(fin.crit)+"%").replace(/(data-acst-rng>)[^<]*/,"$1"+fin.rng); }
-    let bd=""; try{ bd=html(I); }catch(e){ bd=""; } if(!bd) return h; const i=h.lastIndexOf('<button type="button" class="x" data-acdo="iclose"'); return i<0?h+bd:h.slice(0,i)+bd+h.slice(i); };
+  // 1.0.30v: 별도 표 없음 — 오른쪽 기본 스탯 칸(+마법 공격력)과 생명력 바에 최종값 반영, 내역은 마우스 오버(title)로만
+  const MAICO='<svg viewBox="0 0 24 24" class="acico"><circle cx="12" cy="12" r="7.5" fill="#7f7bff"/><circle cx="9.6" cy="9.4" r="2.4" fill="#fff" opacity=".7"/></svg>';
+  const KEY={atk:"atk",aspd:"as",def:"def",res:"res",crit:"crit",rng:"rng",ma:"ma"};
+  const UN={as:"/초",crit:"%"}, DG={as:2};
+  function tipOf(r,lab,live){ if(!r) return lab; const d=DG[r.k]||0, u=UN[r.k]||"", f=v=>fmt(v,d)+u, p=[`기본 ${f(r.base)}`]; if(Math.abs(r.itm)>0.005) p.push(`${sg(r.itm,d,u)} 아이템`); if(Math.abs(r.syn)>0.005) p.push(`${sg(r.syn,d,u)} 시너지`); if(Math.abs(r.pas)>0.005) p.push(`${sg(r.pas,d,u)} 스킬 패시브`);
+    return `${lab} ${f(r.fin)}${live&&r.now!=null&&Math.abs(r.now-r.fin)>(d?0.005:0.5)?` (현재 ${f(r.now)})`:""} · ${p.join(" / ")}`; }
+  const up=r=>r&&(r.itm+r.syn+r.pas>0.005||(r.now!=null&&r.now-r.base>0.005));
+  const oCard=AC.cardHTML; AC.cardHTML=function(I,no,t,X){ let R=null; try{ R=AC.s1StatBreak(I); }catch(e){ R=null; } const M={}; if(R) R.rows.forEach(r=>M[r.k]=r);
+    if(R&&!I.bt){ X=Object.assign({},X,{mhp:Math.round(M.hp.fin),hp:null,atk:Math.round(M.atk.fin),def:Math.round(M.def.fin),res:Math.round(M.res.fin),aspd:+M.as.fin.toFixed(2)}); }
+    let h=oCard.call(AC,I,no,t,X);
+    if(R&&!I.bt) h=h.replace(/(data-acst-crit>)[^<]*/,"$1"+Math.round(M.crit.fin)+"%").replace(/(data-acst-rng>)[^<]*/,"$1"+M.rng.fin);
+    let ma=0; if(I.bt&&AC.anim){ const u=AC.anim.B.units.find(x=>x.uid===I.bt); ma=u?(u.s1ma||0):0; } else if(M.ma) ma=M.ma.fin;
+    h=h.replace(/(<div class="achc-st") title="([^"]*)">(<span class="achc-sti [^"]*">[\s\S]*?<\/span>)<b data-acst-(\w+)>/g,(m,a,lab,ic,k)=>{ const r=M[KEY[k]]; return `${a}${up(r)?' data-s1up="1"':""} title="${E(tipOf(r,lab,!!I.bt))}">${ic}<b data-acst-${k}>`; });
+    const mr=M.ma; const cell=`<div class="achc-st"${up(mr)||ma>0.005?' data-s1up="1"':""} title="${E(tipOf(mr,"마법 공격력",!!I.bt))}"><span class="achc-sti ma">${MAICO}</span><b data-acst-ma>${fmt(ma,0)}</b></div>`;
+    h=h.replace(/(<div class="achc-stats">[\s\S]*?data-acst-rng>[^<]*<\/b><\/div>)/,"$1"+cell);
+    if(M.hp) h=h.replace(/<div class="achc-hp"/,`<div class="achc-hp" title="${E(tipOf(M.hp,"생명력",!!I.bt))}"`);
+    return h; };
+  const oDI=AC.drawInfo; AC.drawInfo=function(){ const r=oDI.apply(AC,arguments); try{ const el=document.querySelector("#acRoot [data-acinfo]"); if(el&&AC.info&&AC.info.bt&&AC.anim){ const u=AC.anim.B.units.find(x=>x.uid===AC.info.bt), q=el.querySelector("[data-acst-ma]"); if(u&&q){ const v=fmt(u.s1ma||0,0); if(q.textContent!==v) q.textContent=v; } } }catch(e){} return r; };
   const css=document.createElement("style"); css.textContent=`
-#acRoot .s1bd{grid-column:1/-1;width:100%;box-sizing:border-box;margin-top:6px;padding:6px 8px;background:#0f1316;border:1px solid #4a4132;border-radius:6px;font-size:11.5px;line-height:1.45;color:#d9d4c7;text-align:left}
-#acRoot .s1bd-h{color:#f3e6c4;font-weight:700;margin-bottom:3px;font-size:12px}
-#acRoot .s1bd-r{display:flex;flex-wrap:wrap;gap:0 6px;align-items:baseline;border-bottom:1px dashed #2a2620;padding:1px 0}
-#acRoot .s1bd-r .l{min-width:84px;color:#b9b2a2}#acRoot .s1bd-r b{color:#ffd36a;min-width:44px}#acRoot .s1bd-r em{color:#9fd0ff;font-style:normal}
-#acRoot .s1bd-r .p{color:#8f897c}#acRoot .s1bd-r .p i{font-style:normal}#acRoot .s1bd-r .p .it{color:#f0b46a}#acRoot .s1bd-r .p .sy{color:#b8f27a}#acRoot .s1bd-r .p .ps{color:#9fd0ff}
-#acRoot .s1bd-n{margin-top:4px;color:#c9c2b0}#acRoot .s1bd ul{margin:2px 0 0 16px;padding:0}#acRoot .s1bd li{margin:1px 0;color:#a9a294}#acRoot .s1bd li b{color:#f0b46a}#acRoot .s1bd li .tg{color:#9fd0ff}
-#acRoot .s1bd-f{margin-top:4px;color:#7e786b;font-size:10.5px}`; document.head.appendChild(css);
+#acRoot .achc-st[data-s1up] b{color:#7ee08a}`; document.head.appendChild(css);
 })();
 /* ===== 1.0.4v 아이템 탭 → 설명 팝업 (두 시즌 공통 · 드래그는 그대로) ===== */
 (function(){ const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
