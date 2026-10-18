@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.42v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.43v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8489,7 +8489,7 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   const gi=g=>`<img src="${g.img}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`;
   AC.s1G=G; AC.s1STN=STN; AC.s1Recipe=recipe;  /* 1.0.40v 도감용 */
   AC.s1ItemPop=id=>{ const g=G[id]; if(!g) return null; const st=Object.entries(g.st||{}).map(([k,v])=>STN[k].replace(" %","")+" +"+v+(STN[k].includes("%")?"%":""));
-    const K={comp:"조합 재료",item:"완성 아이템",acc:"장신구",sym:"상징"}[g.k]||""; const rec=g.rec?g.rec.map(r=>G[r]).filter(Boolean):null;
+    const K={comp:"조합 재료",item:"완성 아이템",acc:"유물",sym:"상징"}[g.k]||""; const rec=g.rec?g.rec.map(r=>G[r]).filter(Boolean):null;
     const uses=g.k==="comp"?Object.entries(recipe).filter(([k])=>k.split("+").includes(id)).map(([k,v])=>{ const ks=k.split("+"), o=ks[0]===id?ks[1]:ks[0]; return {with:G[o],out:G[v]}; }).filter(x=>x.with&&x.out):null;
     return {name:g.name,img:g.img,kind:K,stats:st,sp:g.sp||[],rec,uses}; };
   const rnd=(st,L)=>L[Math.floor(AC.rnd(st)*L.length)];
@@ -8530,7 +8530,7 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
     if(t&&B.syn[t.side]&&B.syn[t.side]["세븐나이츠"]!=null&&t.alive&&t.hp<=t.maxHp*0.3){ B.s1sk=B.s1sk||{}; if(!B.s1sk[t.side]){ B.s1sk[t.side]=1; B.events.push({k:"fx",b:t.uid,txt:"세븐나이츠!",cls:"nova"}); } }
     return r; };
   // ---------- 다크나이츠 군수품 ----------
-  const DK=[[10,"2골드"],[35,"2단계 영웅"],[65,"4단계 영웅"],[100,"하급 영웅 복제기+3단계 영웅"],[150,"무작위 조합 아이템+재조합기"],[200,"4단계+5단계 영웅"],[330,"3초월 5단계 영웅"],[440,"우마왕의 갑옷"],[550,"완성 아이템 선택"],[660,"장신구 선택"],[750,"지원 아이템 선택"],[850,"배치 인원+1, 20골드"],[1000,"태오·연희·카르마 장비, 아이템 제거기, 20골드"],[1200,"신화 장비, 장신구 상자, 아이템 제거기, 50골드"],[1500,"배치 인원+2, 신화 장비 변환기, 80골드"]];
+  const DK=[[10,"2골드"],[35,"2단계 영웅"],[65,"4단계 영웅"],[100,"하급 영웅 복제기+3단계 영웅"],[150,"무작위 조합 아이템+재조합기"],[200,"4단계+5단계 영웅"],[330,"3초월 5단계 영웅"],[440,"우마왕의 갑옷"],[550,"완성 아이템 선택"],[660,"유물 선택"],[750,"지원 아이템 선택"],[850,"배치 인원+1, 20골드"],[1000,"태오·연희·카르마 장비, 아이템 제거기, 20골드"],[1200,"신화 장비, 유물 상자, 아이템 제거기, 50골드"],[1500,"배치 인원+2, 신화 장비 변환기, 80골드"]];
   C.s1DK=DK;
   const hero=(st,S,tier,t)=>{ const no=AC.pickHero(st,tier,[]); if(no==null) return; const tx=[]; AC.gainHero(st,S,no,1,tx); if(t){ const u=AC.owned(S,no); if(u) u.t=Math.max(u.t,t); } };
   const dkOpen=(st,S,i)=>{ const I=AC.items(S), g=n=>S.gold+=n, um=D.items.find(x=>x.name==="우마왕의 갑옷");
@@ -9720,7 +9720,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
     return `<div class="s1cdx" data-s1cdx>
       <h4>조합 재료 <small>${D.comps.length}종 · 누르면 해당 재료로 만드는 완성 아이템 강조${AC.s1cdxF?` · <a data-s1cdxc="">해제</a>`:""}</small></h4><div class="s1cdxcs">${comps}</div>
       <h4>완성 아이템 <small>${D.items.length}종</small></h4><div class="s1cdxg">${D.items.map(g=>card(g)).join("")}</div>
-      <h4>장신구 <small>${(D.acc||[]).length}종</small></h4><div class="s1cdxg">${(D.acc||[]).map(g=>card(g)).join("")}</div>
+      <h4>유물 <small>${(D.acc||[]).length}종</small></h4><div class="s1cdxg">${(D.acc||[]).map(g=>card(g)).join("")}</div>
       <h4>상징 <small>${syms.length}종</small></h4><div class="s1cdxg">${syms.map(g=>card(g)).join("")}</div>
       <h4>특수 아이템</h4><div class="s1cdxg">${sp.map(g=>`<div class="s1cdxi"><span class="s1cdxic">${ic(g)}</span><div class="s1cdxt"><b>${E(g.name)}</b>${g.sp.map(l=>`<p>${E(l)}</p>`).join("")}</div></div>`).join("")}</div></div>`; };
   const oRH=AC.rosterHTML; AC.rosterHTML=function(){ let h=oRH.apply(AC,arguments); const it=AC.s1rTab==="item";
