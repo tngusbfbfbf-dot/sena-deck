@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.38v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.39v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8544,7 +8544,17 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
     for(const [R0,N0] of [[24,18],[25,12],[30,18]]){ S.s1pity=S.s1pity||{}; if(st.round>=R0&&!S.s1pity[R0]){ S.s1pity[R0]=1; const need=Math.max(0,N0-(S.s1rcv||0)); for(let i=0;i<need;i++){ const c4=rnd(st,D.comps); give(S,c4.id); add.push("★"+c4.name); } } }
     /* 1.0.38v 아이템 제거기: 보스 50% · 10라운드 이후 일반 PvE 15% */
     if(!early){ const p=AC.isBossR(st.round)?0.5:0.15; if(AC.rnd(st)<p){ const I=AC.items(S); I.rm=(I.rm||0)+1; add.push("🧲 아이템 제거기"); } }
+    /* 1.0.39v 45라운드 이후 보스: 완성 아이템 선택 박스 (3개 중 1개 · 보스 완전 처치 시에만) */
+    if(AC.isBossR(st.round)&&st.round>=45&&AC.bossFrac(B)>=1){ const L=D.items.slice(), op=[]; while(op.length<3&&L.length) op.push(L.splice(Math.floor(AC.rnd(st)*L.length),1)[0].id);
+      if(isBot){ const id=op[Math.floor(AC.rnd(st)*op.length)]; give(S,id); add.push("🎁 "+G[id].name); } else { S.s1pick=op; add.push("🎁 완성 아이템 선택 박스"); } }
     const t="🧩 "+(add.join(", ")||"없음"); if(Array.isArray(r)){ r.push(t); return r; } return (r?r+" · ":"")+t; };
+  AC.s1PickDo=function(st,S,id){ if(!S.s1pick||!S.s1pick.includes(id)) return ""; S.s1pick=null; give(S,id); const m="🎁 "+G[id].name+" 획득"; if(S.rwPop) S.rwPop.txt.push(m); return m; };
+  const oRW=AC.rwHTML; AC.rwHTML=function(st){ let h=oRW.apply(AC,arguments); const S=st&&st.me; if(!h||!S||!S.s1pick) return h;
+    const box=`<div class="acrwch s1pick"><p>완성 아이템 1개를 고르세요</p><div class="s1pk">${S.s1pick.map(id=>{ const g=G[id]; return `<button type="button" class="s1pkb" data-s1pick="${id}" title="${(g.sp||[]).join(" ").replace(/"/g,"&quot;")}"><img src="${g.img}" alt=""><span>${g.name}</span></button>`; }).join("")}</div></div>`;
+    return h.replace(/<button type="button" class="acgo" data-acdo="rwok">확인<\/button>/,"").replace(/<\/div><\/div>$/,box+"</div></div>"); };
+  document.addEventListener("click",e=>{ const b=e.target.closest&&e.target.closest("[data-s1pick]"); if(!b||!AC.st) return; e.stopPropagation(); e.preventDefault(); const m=AC.s1PickDo(AC.st,AC.st.me,b.dataset.s1pick); if(m) AC.msg(m); AC.save&&AC.save(); AC.render(); },true);
+  { const css=document.createElement("style"); css.textContent=`.s1pick .s1pk{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px}.s1pkb{display:flex;flex-direction:column;align-items:center;gap:4px;width:92px;padding:6px 4px;border:1px solid #8a7444;border-radius:8px;background:linear-gradient(180deg,#2a2112,#15100a);color:#f3e6c4;font-size:11px;cursor:pointer}.s1pkb img{width:44px;height:44px;border-radius:6px}.s1pkb:hover{border-color:#ffd36a;box-shadow:0 0 10px #ffd36a66}`; document.head.appendChild(css); }
+  const oNRp=AC.nextRound; AC.nextRound=function(st){ const S=st&&st.me; if(S&&S.s1pick){ const id=S.s1pick[Math.floor(AC.rnd(st)*S.s1pick.length)]; AC.s1PickDo(st,S,id); } return oNRp.apply(AC,arguments); };
   const oNR=AC.nextRound; AC.nextRound=function(st){ if(st&&st.phase==="result") dkAll(st); const r=oNR.apply(AC,arguments); const L=st.players?st.players.filter(p=>p.alive&&!p.me).map(p=>p.S):[st.ai]; L.forEach(S=>S&&AC.s1BotGear(st,S)); return r; };
   // ---------- 장착 ----------
   /* 1.0.38v 아이템 제거기 */
