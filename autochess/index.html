@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.5v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.6v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8504,10 +8504,17 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   const ATTR=[["fire","불"],["ice","얼음"],["weak","약화"],["guard","보호"],["curse","저주"]]; AC.S1ATTR=ATTR;
   const oNew=AC.newGame; AC.newGame=function(seed,o){ const st=oNew.call(AC,seed,o); const L=ATTR.map(a=>a[0]), n=1+Math.floor(AC.rnd(st)*3), out=[]; while(out.length<n) out.push(L.splice(Math.floor(AC.rnd(st)*L.length),1)[0]); st.s1a=out; return st; };
   // ---------- 전투 ----------
+  /* 1.0.6v 받는 피해 감소 곱연산: u.dr 를 접근자로 바꿔 += x 는 (1-x/100) 곱, -= x 는 같은 항 제거. 읽으면 실효값 (1-Π)×100 */
+  AC.s1DrInstall=function(u){ if(!u||u._s1dr) return; const L=[], cur=+u.dr||0; if(cur) L.push(cur);
+    const eff=()=>{ let m=1; for(const x of L) m*=Math.max(0,1-x/100); return (1-m)*100; };
+    Object.defineProperty(u,"_s1dr",{value:L,enumerable:false});
+    Object.defineProperty(u,"dr",{configurable:true,enumerable:true,get:eff,set(v){ v=+v||0; if(v===0){ L.length=0; return; } const d=v-eff(); if(Math.abs(d)<1e-9) return;
+      if(d>0){ L.push(d); return; } const i=L.findIndex(x=>Math.abs(x+d)<1e-6); if(i>=0){ L.splice(i,1); return; }
+      /* 정확히 같은 항이 없으면(동적 수치 변경) 목표 실효값에 맞춰 보정 항 추가 */ let m=1; for(const x of L) m*=Math.max(0,1-x/100); const tgt=1-v/100; L.push((1-tgt/m)*100); }}); };
   const oBI=AC.battleInit; AC.battleInit=function(st){ AC._curB=null; AC._s1a=(AC.st&&AC.st.s1a)||[]; const B=oBI.apply(AC,arguments); AC._curB=null; return B; };
   const oAS=AC.applySynergies; AC.applySynergies=function(B){ AC._curB=B; B.s1a=AC._s1a||[]; oAS.call(AC,B);
     for(const side of ["me","ai"]){ const U=B.units.filter(u=>u.side===side&&!u.mon), L=B.syn[side]||{}, S=B.Sref&&B.Sref[side];
-      for(const u of U){ if(u._s1) continue; u._s1=1; u.s1ma=0; u.s1skCrit=false; u.s1mul=1;
+      for(const u of U){ if(u._s1) continue; u._s1=1; AC.s1DrInstall(u); u.s1ma=0; u.s1skCrit=false; u.s1mul=1;
         const src=B.refs[u.uid]; for(const id of (src&&src.gear)||[]){ const g=G[id]; if(!g) continue; const s=g.st||{};
           if(s.atkPct) u.atkPct+=s.atkPct; if(s.mag) u.s1ma+=s.mag; if(s.asPct) u.asPct+=s.asPct; if(s.def) u.def+=s.def; if(s.res) u.res+=s.res; if(s.hp){ u.maxHp+=s.hp; u.hp=u.maxHp; } if(s.crit) u.crit+=s.crit; if(s.amp) u.ampAll=(u.ampAll||0)+s.amp; if(s.ls) u.ls+=s.ls; if(s.sk) u.skAmp+=s.sk; if(s.dr) u.dr+=s.dr;
           if((g.sp||[]).some(t=>t.includes("스킬")&&t.includes("치명타"))) u.s1skCrit=true; }
@@ -9593,7 +9600,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
       if(N(t,"i2")&&!t.s1i2&&p<=0.6){ t.s1i2=1; t.untg=Math.max(t.untg||0,B.t+1); t.s1cl=1; AC.heal(B,t,(t.maxHp-t.hp)*0.2*N(t,"i2")); fx(B,t,"밤의 사냥꾼"); }
       if((n=N(t,"i3"))&&!t.s1i3&&p<=0.4){ t.s1i3=1; tsh(B,t,t.maxHp*0.25*n,5); fx(B,t,"🛡️ 흡혈귀의 창"); }
       if((n=N(t,"i5"))&&!t.s1i5&&p<=0.6){ t.s1i5=1; tsh(B,t,t.maxHp*0.4*n,4,true); fx(B,t,"🛡️ 사신쇄검"); }
-      if((n=N(t,"i18"))&&!t.s1i18&&p<=0.4){ t.s1i18=1; AC.addShield(B,t,t.maxHp*0.2*n); if(AC.s1MGain) AC.s1MGain(B,t,15*n); fx(B,t,"🛡️ 밤의 수호자"); }
+      if((n=N(t,"i18"))&&!t.s1i18&&p<=0.4){ t.s1i18=1; AC.addShield(B,t,t.maxHp*0.2*n); if(AC.s1MGainD) AC.s1MGainD(B,t,15*n); fx(B,t,"🛡️ 밤의 수호자"); }
       if(o.basic&&(n=N(t,"i15"))&&!(t.s1i15>B.t)){ t.s1i15=B.t+2; B.units.filter(x=>x.alive&&!x.disabled&&x.side!==t.side&&AC.dist(x,t)<=1).forEach(x=>magD(B,t,x,100*n)); }
       stack9(B,t);
       if(N(t,"a0")&&(t.s1a0||0)<35){ t.s1a0=(t.s1a0||0)+1; t.def+=1; t.res=(t.res||0)+1; t.maxHp+=5; t.hp+=5; if(t.s1a0===35){ gold(B,t,"a0"); (t.s1tm=t.s1tm||{}).a0g=0; } } }
@@ -9785,14 +9792,17 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
       if((n=gN(u,"i10"))&&!u.s1mI10){ u.s1mTot=(u.s1mTot||0)+v; if(u.s1mTot>=150){ u.s1mI10=1; u.asPct+=15*n; AC.reIv(u); } } }
     if(!has(u)) return 0; u.mana=Math.min(u.mana+v,u.s1mMax*2); return v; };
   const oSS=AC.skStart; AC.skStart=function(B){ const r=oSS.apply(AC,arguments);
-    for(const u of B.units){ u.mana=0; u.s1mMax=0; if(u.mon||u.clone||u.golem) continue;
+    for(const u of B.units){ if(AC.s1DrInstall) AC.s1DrInstall(u); u.mana=0; u.s1mMax=0; if(u.mon||u.clone||u.golem) continue;
       const src=B.refs&&B.refs[u.uid]; u.s1gear=((src&&src.gear)||[]).slice();
       const T=AC.S1MANA[u.s1n||u.name]; if(T&&u.s1n!=="클라한"&&!u.s1psg){ u.s1mMax=T[1]; u.mana=Math.min(T[0],T[1]); }
       u.s1mReg=u.s1gear.reduce((t,id)=>{ const g=GM()[id]; return t+((g&&g.st&&g.st.mr)||0); },0); u.s1mItem=gN(u,"a6")+gN(u,"a8")+gN(u,"i10")>0;
       u.s1thOn=u.name==="아일린"&&!!(B.syn&&B.syn[u.side]&&B.syn[u.side]["천둥군주"]>=0); u.s1thM=0; }
-    for(const u of B.units){ const n=gN(u,"i18"); if(n) AC.s1MGain(B,u,20*n); }  /* 1.0.50v 밤의 수호자 방패: 전투 시작 마나 20 */
+    for(const u of B.units){ const n=gN(u,"i18"); if(n) AC.s1MGainD(B,u,20*n); }  /* 1.0.50v 밤의 수호자 방패: 전투 시작 마나 20 */
     return r; };
+  /* 1.0.6v 지연 지급: 마나 잠금 중이면 보관했다가 잠금 해제 직후 일반 마나 획득으로 지급 (사망 시 소멸) */
+  AC.s1MGainD=function(B,u,v){ if(!u||!u.alive||!(v>0)) return; AC._mT=B.t; if(locked(u)) u.s1mDef=(u.s1mDef||0)+v; else AC.s1MGain(B,u,v); };
   const oStep=AC.skStep; AC.skStep=function(B,dt){ AC._mT=B.t;
+    for(const u of B.units) if(u.s1mDef>0&&u.alive&&!locked(u)){ const v=u.s1mDef; u.s1mDef=0; AC.s1MGain(B,u,v); }
     for(const u of B.units) if(u.alive&&u.s1mReg>0) AC.s1MGain(B,u,u.s1mReg*dt);
     const r=oStep.apply(AC,arguments); AC._mT=B.t;
     /* 1.0.35v 마나가 가득 차면 행동 가능한 즉시 자동 발동 (기절·빙결·무력화·다른 스킬 사용 중 제외) */
