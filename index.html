@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.39v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.0.40v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8487,6 +8487,7 @@ const S1DATA={"comps": [{"id": "c0", "name": "모험가의 대검", "st": {"atkP
   for(const id in G) C.ac010.items["g:"+id]={ico:"🧩",name:G[id].name,tip:tip(G[id])};
   const recipe={}; D.items.forEach(x=>recipe[x.rec.join("+")]=x.id);
   const gi=g=>`<img src="${g.img}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:4px">`;
+  AC.s1G=G; AC.s1STN=STN; AC.s1Recipe=recipe;  /* 1.0.40v 도감용 */
   AC.s1ItemPop=id=>{ const g=G[id]; if(!g) return null; const st=Object.entries(g.st||{}).map(([k,v])=>STN[k].replace(" %","")+" +"+v+(STN[k].includes("%")?"%":""));
     const K={comp:"조합 재료",item:"완성 아이템",acc:"장신구",sym:"상징"}[g.k]||""; const rec=g.rec?g.rec.map(r=>G[r]).filter(Boolean):null;
     const uses=g.k==="comp"?Object.entries(recipe).filter(([k])=>k.split("+").includes(id)).map(([k,v])=>{ const ks=k.split("+"), o=ks[0]===id?ks[1]:ks[0]; return {with:G[o],out:G[v]}; }).filter(x=>x.with&&x.out):null;
@@ -9702,6 +9703,42 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
           const p=c.parentElement, bv=b0[BK[k]]; if(p&&bv!=null){ const hi=F[k][0]-bv>(F[k][1]?0.005:0.5); if(hi) p.setAttribute("data-s1up","1"); } } } } }catch(e){} return r; };
   const css=document.createElement("style"); css.textContent=`
 #acRoot .achc-st[data-s1up] b{color:#7ee08a}`; document.head.appendChild(css);
+})();
+/* ===== 1.0.40v 시즌1 로스터 아이템 도감 ===== */
+(function(){ if(AC.season!=="s1") return; const D=S1DATA;
+  const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  AC.s1rTab=AC.s1rTab||"hero"; AC.s1cdxF=null;
+  const ic=g=>g&&g.img?`<img src="${g.img}" alt="">`:`<i class="s1cdxe">${g&&g.ico||"?"}</i>`;
+  const stl=g=>Object.entries(g.st||{}).map(([k,v])=>{ const n=(AC.s1STN||{})[k]||k; return n.replace(" %","")+" +"+v+(n.includes("%")?"%":""); }).join(" · ");
+  const card=(g,extra)=>{ const G=AC.s1G||{}; const rec=g.rec?`<span class="s1cdxr">${g.rec.map(r=>`<i data-s1gid="${r}" title="${E((G[r]||{}).name||"")}">${ic(G[r])}</i>`).join("<b>+</b>")}</span>`:"";
+    const st=stl(g); const dim=AC.s1cdxF&&g.rec&&!g.rec.includes(AC.s1cdxF)?" dim":""; const hi=AC.s1cdxF&&g.rec&&g.rec.includes(AC.s1cdxF)?" hi":"";
+    return `<div class="s1cdxi${dim}${hi}"><span class="s1cdxic" data-s1gid="${g.id}" title="${E(g.name)}">${ic(g)}</span><div class="s1cdxt"><b data-s1gid="${g.id}">${E(g.name)}</b>${rec}${st?`<em>${E(st)}</em>`:""}${(g.sp||[]).map(l=>`<p>${E(l)}</p>`).join("")}${extra||""}</div></div>`; };
+  const codex=()=>{ const G=AC.s1G||{}, A=AC_CONFIG.ac010.items||{};
+    const comps=D.comps.map(g=>`<button type="button" class="s1cdxc${AC.s1cdxF===g.id?" on":""}" data-s1cdxc="${g.id}" title="${E(g.name)} · 눌러서 이 재료로 만드는 완성 아이템 강조">${ic(g)}<span>${E(g.name)}</span><small>${E(stl(g))}</small></button>`).join("");
+    const syms=Object.values(G).filter(g=>g.k==="sym");
+    const sp=[A.rm?{id:"_rm",name:A.rm.name,ico:A.rm.ico,sp:[A.rm.tip]}:null,{id:"_pick",name:"완성 아이템 선택 박스",ico:"🎁",sp:["45라운드 이후 보스를 처치하면 획득 · 무작위 완성 아이템 3개 중 1개 선택"]}].filter(Boolean);
+    return `<div class="s1cdx" data-s1cdx>
+      <h4>조합 재료 <small>${D.comps.length}종 · 누르면 해당 재료로 만드는 완성 아이템 강조${AC.s1cdxF?` · <a data-s1cdxc="">해제</a>`:""}</small></h4><div class="s1cdxcs">${comps}</div>
+      <h4>완성 아이템 <small>${D.items.length}종</small></h4><div class="s1cdxg">${D.items.map(g=>card(g)).join("")}</div>
+      <h4>장신구 <small>${(D.acc||[]).length}종</small></h4><div class="s1cdxg">${(D.acc||[]).map(g=>card(g)).join("")}</div>
+      <h4>상징 <small>${syms.length}종</small></h4><div class="s1cdxg">${syms.map(g=>card(g)).join("")}</div>
+      <h4>특수 아이템</h4><div class="s1cdxg">${sp.map(g=>`<div class="s1cdxi"><span class="s1cdxic">${ic(g)}</span><div class="s1cdxt"><b>${E(g.name)}</b>${g.sp.map(l=>`<p>${E(l)}</p>`).join("")}</div></div>`).join("")}</div></div>`; };
+  const oRH=AC.rosterHTML; AC.rosterHTML=function(){ let h=oRH.apply(AC,arguments); const it=AC.s1rTab==="item";
+    const tabs=`<div class="s1rtabs"><button type="button" data-s1rtab="hero" class="${it?"":"on"}">영웅</button><button type="button" data-s1rtab="item" class="${it?"on":""}">아이템 도감</button></div>`;
+    h=h.replace('<details class="acroster"',`<details class="acroster${it?" s1tab-item":""}"`).replace("<summary>로스터</summary>","<summary>로스터</summary>"+tabs);
+    return it?h.replace(/<\/details>\s*$/,codex()+"</details>"):h; };
+  document.addEventListener("click",e=>{ const t=e.target.closest&&e.target.closest("[data-s1rtab],[data-s1cdxc]"); if(!t) return;
+    if(t.dataset.s1rtab!=null){ AC.s1rTab=t.dataset.s1rtab; } else { const v=t.dataset.s1cdxc; AC.s1cdxF=!v||AC.s1cdxF===v?null:v; }
+    e.preventDefault(); e.stopPropagation(); const el=document.querySelector(".a-roster"); if(el) el.innerHTML=AC.rosterHTML(); },true);
+  const css=document.createElement("style"); css.textContent=`
+#acRoot .s1rtabs{display:flex;gap:6px;margin:6px 0}#acRoot .s1rtabs button{padding:4px 12px;border:1px solid #5d4f30;border-radius:14px;background:#15120c;color:#cfc6b0;font-size:12px;cursor:pointer}#acRoot .s1rtabs button.on{border-color:#d6b26a;color:#ffe6a6;background:linear-gradient(180deg,#3a2c12,#1a1409)}
+#acRoot .acroster.s1tab-item .acrt{display:none}
+#acRoot .s1cdx h4{margin:10px 0 6px;color:#f3e6c4;font-size:13px}#acRoot .s1cdx h4 small{color:#8f866f;font-weight:400;font-size:11px}#acRoot .s1cdx h4 a{color:#ffd36a;cursor:pointer}
+#acRoot .s1cdxcs{display:flex;flex-wrap:wrap;gap:6px}#acRoot .s1cdxc{display:flex;flex-direction:column;align-items:center;width:78px;padding:5px 3px;border:1px solid #4a4132;border-radius:7px;background:#12100c;color:#e7e1d2;font-size:11px;cursor:pointer}#acRoot .s1cdxc.on{border-color:#ffd36a;box-shadow:0 0 8px #ffd36a55}#acRoot .s1cdxc img{width:34px;height:34px;border-radius:5px}#acRoot .s1cdxc small{color:#ffd36a;font-size:10px;text-align:center}
+#acRoot .s1cdxg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px}#acRoot .s1cdxi{display:flex;gap:8px;padding:6px;border:1px solid #3a3326;border-radius:7px;background:#0f0d0a;transition:opacity .15s}#acRoot .s1cdxi.dim{opacity:.28}#acRoot .s1cdxi.hi{border-color:#ffd36a}
+#acRoot .s1cdxic img,#acRoot .s1cdxe{width:40px;height:40px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;font-style:normal;background:#111;cursor:pointer}#acRoot .s1cdxt{flex:1;min-width:0;font-size:11.5px;line-height:1.45;color:#d9d4c7}#acRoot .s1cdxt b{color:#f3e6c4;font-size:12.5px;cursor:pointer;margin-right:6px}
+#acRoot .s1cdxr{display:inline-flex;align-items:center;gap:2px;vertical-align:middle}#acRoot .s1cdxr i img{width:18px;height:18px;border-radius:3px;vertical-align:middle;cursor:pointer}#acRoot .s1cdxr b{font-size:11px;color:#8f866f;margin:0}
+#acRoot .s1cdxt em{display:block;font-style:normal;color:#ffd36a}#acRoot .s1cdxt p{margin:2px 0 0;color:#b8f27a}`; document.head.appendChild(css);
 })();
 /* ===== 1.0.35v 시즌1 마나 시스템 =====
    기본 공격 +10(적중/빗나감 무관) · 피격 시 min(50, 감소 전 피해 1% + 감소 후 피해 7%) · 보호막 흡수/무효/0 피해는 미획득
