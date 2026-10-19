@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.2.0v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.2.1v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -9195,7 +9195,7 @@ Object.assign(S1SK1,{"엘리시아": {"name": "별빛 낙하", "img": "data:imag
   const H={  // 기본 공격 (c = 집계된 기본 공격)
     "팔라누스":(B,u,tg,c)=>{ if(u.s1paN>0||!c||!AC.s1MUse(u)) return; ev(B,u,nm(u)); u.s1lock=u.s1hLock=1e9;  /* 레이저 8회가 끝날 때까지 사용 중 */ u.s1paN=8; if(!u.s1paOn){ u.s1paOn=1; u.s1paR0=u.range; u.range=99; u.asPct+=75; AC.reIv(u); } },
     "카일":(B,u,tg,c)=>{ if(!c||!AC.s1MUse(u)) return; ev(B,u,nm(u)); const dR=Math.sign(Math.round(tg.R-u.R)), dC=Math.sign(Math.round(tg.C-u.C)), R=Math.round(u.R), C=Math.round(u.C);
-      const cells=dR&&dC?[[R+dR,C+dC],[R+dR,C],[R,C+dC]]:dR?[[R+dR,C-1],[R+dR,C],[R+dR,C+1]]:[[R-1,C+dC],[R,C+dC],[R+1,C+dC]];
+      const cells=dR&&dC?[[R+2*dR,C+2*dC],[R+2*dR,C+dC],[R+dR,C+2*dC]]:dR?[[R+2*dR,C-1],[R+2*dR,C],[R+2*dR,C+1]]:[[R-1,C+2*dC],[R,C+2*dC],[R+1,C+2*dC]];  /* 1.2.0v 수정: 앞 1칸 너머(거리 2) 너비 3칸 · 대각은 거리 2 모서리 3칸 */
       /* 1.2.0v 카일 타격 모션 잔상(26프레임 · 35fps) → 사슬이 앞으로 뻗는 15번째 프레임(0.4초)에 피해 (모든 전투) */
       const cc=cells[dR&&dC?0:1]; const cand=dR&&dC?[[R-dR,C],[R,C-dC]]:dR?[[R,C+1],[R,C-1]]:[[R-1,C],[R+1,C]]; const inb=p=>p[0]>=0&&p[1]>=0&&p[0]<CC.rows*2&&p[1]<CC.cols; let an=cand.find(p=>inb(p)&&free(B,p[0],p[1],u))||cand.find(inb)||cand[0]; if(dR<0){ const tR=Math.round(tg.R), tC=Math.round(tg.C), ch=[-1,0,1][Math.floor(Math.random()*3)]; an=[Math.max(0,tR-1),Math.min(CC.cols-1,Math.max(0,tC+ch))]; }  /* 1.2.0v 대상이 위: 대상 위/대각 위에 무작위로 나타나 아래로 내려침 */
       B.events.push({k:"sk3",id:"s1kyAnim",a:u.uid,R:an[0],C:an[1],cR:cc[0],cC:cc[1],cells});  /* 1.2.0v 사슬 끝이 타격 3칸 중 가운데를 향하도록 */ AC.s1HitLock(B,u,0.45);
