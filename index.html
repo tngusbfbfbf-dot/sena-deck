@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.3v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -10967,7 +10967,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
   const TC={실버:"linear-gradient(135deg,#8e939c,#e3e6ea)",골드:"linear-gradient(135deg,#a8781c,#f3cd5a)",프리즘:"linear-gradient(135deg,#7fd3ff,#d59cff,#ffe08a,#8fffc8)"};
   const oNG=AC.newGame; AC.newGame=function(seed,o){ const st=oNG.apply(AC,arguments); if(s1()&&st) st.s1augT=AC.s1AugRoll(()=>AC.rnd(st)); return st; };  /* 게임당 1회 · 모든 플레이어 공통 */
   const allS=st=>st.players?st.players.filter(p=>p.alive!==false).map(p=>p.S):[st.me,st.ai].filter(Boolean);
-  const poolOf=(t,r)=>(AC.S1AUG[t]||[]).filter(x=>!x.only||(Array.isArray(x.only)?x.only.includes(r):x.only===r));  /* only:-1 = 보류(등장 안 함) */ const draw=(st,L,ex,S)=>{ const own=S?(S.s1aug||[]):[], P=L.filter(x=>!ex.includes(x.id)&&!own.some(o=>o.id===x.id)); return P.length?P[Math.floor(AC.rnd(st)*P.length)].id:null; };  /* 1.3.0 이미 고른 발전 제외 (플레이어별 · 같은 id만 · 등급 다른 비슷한 발전은 허용) */
+  const poolOf=(t,r)=>(AC.S1AUG[t]||[]).filter(x=>{ if(x.s21){ const g=AC.s1Stage(r); if(!(g.s===2&&g.k===1)) return false; } return true; }).filter(x=>!x.only||(Array.isArray(x.only)?x.only.includes(r):x.only===r));  /* only:-1 = 보류(등장 안 함) */ const draw=(st,L,ex,S)=>{ const own=S?(S.s1aug||[]):[], P=L.filter(x=>!ex.includes(x.id)&&!own.some(o=>o.id===x.id)); return P.length?P[Math.floor(AC.rnd(st)*P.length)].id:null; };  /* 1.3.0 이미 고른 발전 제외 (플레이어별 · 같은 id만 · 등급 다른 비슷한 발전은 허용) */
   AC.s1AugDraw=draw; AC.s1AugPoolOf=(t,r)=>poolOf(t,r);
   const augGet=(t,id)=>(AC.S1AUG[t]||[]).find(x=>x.id===id);
   AC.s1AugDo=(st,S,i)=>{ const c=S.s1augC; if(!c||!c.op[i]) return; const a=augGet(c.t,c.op[i]); (S.s1aug=S.s1aug||[]).push({t:c.t,id:a.id,name:a.name,r:c.r}); S.s1augC=null; try{ AC.s1AugAfterPick&&AC.s1AugAfterPick(st,S,c,a); if(a.on) a.on(st,S,c); }catch(e){ console.error(e); } if(S===st.me){ AC.msg&&AC.msg("발전: "+a.name); AC.save&&AC.save(); AC.render(); setTimeout(()=>AC.s1PQ&&AC.s1PQ(),50); } };
@@ -11166,7 +11166,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
     {n:"황금상자",d:"유물 4개 중 하나를 선택합니다. 유물은 고유한 효과를 지닌 강력한 장비입니다.",on:(st,S)=>{ AC.s1PickNow(st,S,"acc"); const q=S.s1pq&&S.s1pq[S.s1pq.length-1]; if(meS(st,S)&&q&&q.kind==="acc") q.op=q.op.slice(0,4); }},
     {n:"정기흡공",d:"적 플레이어에게 입힌 피해량의 20%만큼 플레이어 체력을 회복합니다. 아군 유닛이 모든 피해 흡혈을 12% 얻습니다."},
     {n:"숙적",on:(st,S)=>{ gainN(st,S,"태오"); gainN(st,S,"카일"); },d:"대상 영웅: 태오/카일 / 효과: 태오와 카일이 공격력을 10%, 생명력을 100 얻습니다. 둘 중 한 명이 스킬을 사용하면 다른 한 명이 마나를 10 얻습니다. / 획득: 태오/카일"},
-    {n:"남매",on:(st,S)=>{ gainN(st,S,"라드그리드"); gainN(st,S,"란드그리드"); },d:"대상 영웅: 라드그리드/란드그리드 / 효과: 라드그리드에 의해 기본 공격 피해를 입은 대상에게 란드그리드는 항상 175% 증폭된 피해를 입힙니다. / 획득: 라드그리드/란드그리드"},
+    {n:"자매",on:(st,S)=>{ gainN(st,S,"라드그리드"); gainN(st,S,"란드그리드"); },d:"대상 영웅: 라드그리드/란드그리드 / 효과: 라드그리드에 의해 기본 공격 피해를 입은 대상에게 란드그리드는 항상 175% 증폭된 피해를 입힙니다. / 획득: 라드그리드/란드그리드"},
     {n:"연모심",on:(st,S)=>{ gainN(st,S,"선란"); gainN(st,S,"윤건"); },d:"대상 영웅: 선란/윤건 / 효과: 윤건의 기본 공격은 항상 선란의 대상을 대상으로 지정합니다. 선란 또는 윤건이 2명 이상 처치한 라운드마다 2골드를 획득합니다. / 획득: 선란/윤건"},
     {n:"성십자단 문장",d:"성십자단 상징을 획득합니다.",on:(st,S)=>sym(S,"성십자단")},
     {n:"나이트 크로우 문장",d:"나이트 크로우 상징을 획득합니다.",on:(st,S)=>sym(S,"나이트크로우")},
@@ -11262,19 +11262,19 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
   AC.s1GolemStats=function(r){ const row=S1ROLES.T["공전사"]["2"]; return {atk:row.atk[0],def:row.dr[0],res:row.dr[1],hp:row.hp[0]+150*stg(r),skill:0,aspd:row.aspd,crit:25,cdmg:130,weak:0,block:0,dmgRed:0,dmg:"phys"}; };
   const oSK=AC.skInit; AC.skInit=function(B){ try{ if(s1()&&B&&B.Sref) for(const u of B.units){ if(!u.golem) continue; const S=B.Sref[u.side]; if(!S||!S.golem||!S.golem.s1) continue; const s=AC.s1GolemStats(B.round); u.s=s; u.hp=u.maxHp=Math.round(s.hp*C.hpMult); u.crit=s.crit; u.mag=false; u.range=1; u.name="골렘"; } }catch(e){ console.error(e); } return oSK.apply(AC,arguments); };
   const oGT=AC.gTok; AC.gTok=function(g){ if(!s1()||!g||!g.s1) return oGT.apply(AC,arguments); return `<div class="actk tier2 acgolem${AC.gSel?" sel":""}" data-acgolem draggable="true" title="골렘" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;overflow:hidden"><span class="acgface" style="font-size:20px;line-height:1">🗿</span><span style="font-size:10px;font-weight:700;color:#fff;line-height:1.1">골렘</span><span class="acgemb" style="display:flex;gap:2px">${g.emb.map(id=>{ const s=AC.synById(id); return `<img src="${AC.synEmbSrc(id)}" alt="${H.esc(s.name)}" title="${H.esc(s.name)}" style="width:14px;height:14px;max-width:14px;object-fit:contain">`; }).join("")}</span></div>`; };
-  /* 전투 시작: 숙적 · 남매 · 연모심 · 뜨거운 갑옷 */
+  /* 전투 시작: 숙적 · 자매 · 연모심 · 뜨거운 갑옷 */
   const nm=u=>u&&!u.clone&&!u.mon?u.name:"";
   const oAS2=AC.applySynergies; AC.applySynergies=function(B){ const r=oAS2.apply(AC,arguments); try{ if(!s1()||!B||!B.Sref) return r;
     for(const side of ["me","ai"]){ const S=B.Sref[side]; if(!S||!(S.s1aug||[]).length) continue; const U=B.units.filter(u=>u.side===side&&!u.mon&&!u.clone&&!u.golem&&u.alive); if(U.some(u=>u._s1augH)) continue;
       for(const u of U){ u._s1augH=1;
         if(hv(S,"숙적")&&(u.name==="태오"||u.name==="카일")){ u.atkPct+=10; hpAdd(u,100); u.s1g47=1; }
-        if(hv(S,"남매")&&u.name==="라드그리드") u.s1g48r=1; if(hv(S,"남매")&&u.name==="란드그리드") u.s1g48l=1;
+        if(hv(S,"자매")&&u.name==="라드그리드") u.s1g48r=1; if(hv(S,"자매")&&u.name==="란드그리드") u.s1g48l=1;
         if(hv(S,"연모심")&&(u.name==="선란"||u.name==="윤건")) u.s1g49=u.name;
         if(hv(S,"뜨거운 갑옷")&&((B.refs[u.uid]||{}).gear||[]).includes("i15")) u.s1g10=AC.s1g10Pct(B.round); } }
   }catch(e){ console.error(e); } return r; };
   /* 숙적: 스킬 사용 시 다른 한 명 마나 10 */
   const oOC2=AC.s1OnCast; AC.s1OnCast=function(B,c){ const r=oOC2?oOC2.apply(AC,arguments):undefined; try{ if(c&&c.s1g47){ const o=c.name==="태오"?"카일":"태오"; for(const x of B.units) if(x.alive&&x.side===c.side&&x.s1g47&&x.name===o) AC.s1MGain(B,x,10); } }catch(e){} return r; };
-  /* 남매: 라드그리드 스킬 피해 → 표식, 란드그리드 피해 ×1.75 */
+  /* 자매: 라드그리드 스킬 피해 → 표식, 란드그리드 피해 ×1.75 */
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ try{ if(a&&t&&t.s1g48m&&a.s1g48l&&t.s1g48m===a.side){ arguments[3]=d*1.75; B.s1g48amp=(B.s1g48amp||0)+1; } }catch(e){} const r=oAD.apply(AC,arguments); try{ if(a&&t&&a.s1g48r&&o&&o.basic&&t.side!==a.side){ if(t.s1g48m!==a.side) B.s1g48mk=(B.s1g48mk||0)+1; t.s1g48m=a.side; }  /* bak235: 기본 공격 적중 시 표식 */ }catch(e){} return r; };
   /* 연모심: 윤건 기본 공격 대상 = 선란의 대상 */
   const oTg=AC.s1Tgt; AC.s1Tgt=function(B,u){ try{ if(u&&u.s1g49==="윤건"){ const p=B.units.find(x=>x.alive&&x.side===u.side&&x.s1g49==="선란"); const t=p&&p.s1lastTg; if(t&&t.alive&&!t.untg&&t.side!==u.side) return t; } }catch(e){} return oTg.apply(AC,arguments); };
@@ -11347,7 +11347,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
     {n:"홍어의 왕",d:"레벨 업하면 강력한 아이템을 획득합니다. 4레벨: 조합 장비 선택 상자 / 6레벨: 완성 장비 선택 상자 / 7레벨: 신화 장비 5가지 중 1개 선택"},
     {n:"네오미니멀리즘",d:"완성 장비를 정확히 1개 장착한 유닛의 장비가 신화 장비로 업그레이드됩니다. 신화 장비를 장착한 유닛이 추가로 생명력을 7% 얻습니다. 아이템 제거기 2개를 획득합니다. (망자의 묵주는 사용불가)",on:(st,S)=>{ I(S).rm=(I(S).rm||0)+2; neo(S); }},
     {n:"탄력적 운영",d:"무작위 상징 1개를 획득합니다. 매 스테이지 시작 시 무작위 상징 1개를 획득합니다. 모든 아군이 장착한 상징 1개당 생명력을 40 얻습니다.",on:(st,S)=>rSym(st,S)},
-    {n:"무지의 베일",on:(st,S)=>{ if(S.level<6){ S.level=Math.min(C.maxLevel,6); S.xp=0; } xp(S,4); },d:"즉시 6레벨이 되고 4의 경험치를 얻습니다. 추후증강이 자동으로 선택됩니다."},
+    {n:"무지의 베일",s21:1,on:(st,S)=>{ if(S.level<6){ S.level=Math.min(C.maxLevel,6); S.xp=0; } xp(S,4); },d:"즉시 6레벨이 되고 4의 경험치를 얻습니다. 추후증강이 자동으로 선택됩니다."},
     {n:"장기 투자",d:"더 이상 이자를 획득하지 않으며, 지금 바로 15골드를 획득합니다. 라운드 시작 시 4의 경험치를 획득합니다.",on:(st,S)=>{ S.gold+=15; }},
     {n:"유한한 원숭이 정리",on:(st,S)=>give(S,"m33"),d:"묘비지기의 묵주를 획득합니다."},
     {n:"신속연사",d:"아군의 공격 속도가 즉시 16% 증가합니다. 매 라운드 종료 후에 효과가 2% 추가로 증가합니다.",on:(st,S)=>{ S.s1p29=16; }},
@@ -11361,7 +11361,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
     {n:"성십자단 왕관",d:"성십자단 상징, 루리, 여제의 창을 획득합니다.",on:crown("성십자단","루리","여제의 창")},
     {n:"나이트 크로우 왕관",d:"나이트 크로우 상징, 칼헤론, 흡혈귀의 창을 획득합니다.",on:crown("나이트크로우","칼헤론","흡혈귀의 창")},
   ];
-  AC.S1AUG.프리즘=L.map((x,i)=>({id:"p"+(i+1),name:x.n,desc:x.d,only:x.only,on:x.on}));
+  AC.S1AUG.프리즘=L.map((x,i)=>({id:"p"+(i+1),name:x.n,desc:x.d,only:x.only,s21:x.s21,on:x.on}));
   const ID=n=>"p"+(L.findIndex(x=>x.n===n)+1), hv=(S,n)=>!!(S&&(S.s1aug||[]).some(a=>a.id===ID(n)));
   const allS=st=>st.players?st.players.filter(p=>p.alive!==false).map(p=>p.S):[st.me,st.ai].filter(Boolean);
   const reroll=(st,S)=>{ const Iv=I(S); for(const key of Object.keys(Iv)){ if(!key.startsWith("g:")||!(Iv[key]>0)) continue; const g=G[key.slice(2)]; if(!g||!["comp","item","sym","myth"].includes(g.k)) continue; const P=Object.values(G).filter(x=>x.k===g.k&&x.id!==g.id&&!x.uni&&(g.k!=="item"||D.items.some(y=>y.id===x.id))); if(!P.length) continue; const n=Iv[key]; delete Iv[key]; for(let j=0;j<n;j++){ const y=rnd(st,P); Iv["g:"+y.id]=(Iv["g:"+y.id]||0)+1; } } };
