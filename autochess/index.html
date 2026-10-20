@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.0v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.1v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -10940,12 +10940,13 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
   const TC={실버:"linear-gradient(135deg,#8e939c,#e3e6ea)",골드:"linear-gradient(135deg,#a8781c,#f3cd5a)",프리즘:"linear-gradient(135deg,#7fd3ff,#d59cff,#ffe08a,#8fffc8)"};
   const oNG=AC.newGame; AC.newGame=function(seed,o){ const st=oNG.apply(AC,arguments); if(s1()&&st) st.s1augT=AC.s1AugRoll(()=>AC.rnd(st)); return st; };  /* 게임당 1회 · 모든 플레이어 공통 */
   const allS=st=>st.players?st.players.filter(p=>p.alive!==false).map(p=>p.S):[st.me,st.ai].filter(Boolean);
-  const poolOf=(t,r)=>(AC.S1AUG[t]||[]).filter(x=>!x.only||(Array.isArray(x.only)?x.only.includes(r):x.only===r));  /* only:-1 = 보류(등장 안 함) */ const draw=(st,L,ex)=>{ const P=L.filter(x=>!ex.includes(x.id)); return P.length?P[Math.floor(AC.rnd(st)*P.length)].id:null; };
+  const poolOf=(t,r)=>(AC.S1AUG[t]||[]).filter(x=>!x.only||(Array.isArray(x.only)?x.only.includes(r):x.only===r));  /* only:-1 = 보류(등장 안 함) */ const draw=(st,L,ex,S)=>{ const own=S?(S.s1aug||[]):[], P=L.filter(x=>!ex.includes(x.id)&&!own.some(o=>o.id===x.id)); return P.length?P[Math.floor(AC.rnd(st)*P.length)].id:null; };  /* 1.3.0 이미 고른 발전 제외 (플레이어별 · 같은 id만 · 등급 다른 비슷한 발전은 허용) */
+  AC.s1AugDraw=draw; AC.s1AugPoolOf=(t,r)=>poolOf(t,r);
   const augGet=(t,id)=>(AC.S1AUG[t]||[]).find(x=>x.id===id);
   AC.s1AugDo=(st,S,i)=>{ const c=S.s1augC; if(!c||!c.op[i]) return; const a=augGet(c.t,c.op[i]); (S.s1aug=S.s1aug||[]).push({t:c.t,id:a.id,name:a.name,r:c.r}); S.s1augC=null; try{ AC.s1AugAfterPick&&AC.s1AugAfterPick(st,S,c,a); if(a.on) a.on(st,S,c); }catch(e){ console.error(e); } if(S===st.me){ AC.msg&&AC.msg("발전: "+a.name); AC.save&&AC.save(); AC.render(); setTimeout(()=>AC.s1PQ&&AC.s1PQ(),50); } };
-  AC.s1AugRe=(st,S,i)=>{ const c=S.s1augC; if(!c||c.rr[i]) return; const n=draw(st,poolOf(c.t,c.r),c.op); if(!n) return; c.op[i]=n; c.rr[i]=1; };
+  AC.s1AugRe=(st,S,i)=>{ const c=S.s1augC; if(!c||c.rr[i]) return; const n=draw(st,poolOf(c.t,c.r),c.op,S); if(!n){ AC.s1AugShort=(AC.s1AugShort||0)+1; return; } c.op[i]=n; c.rr[i]=1; };
   AC.s1Develop=function(st){ if(!st.s1augT) st.s1augT=AC.s1AugRoll(()=>AC.rnd(st)); const k=AC.s1DevRounds.indexOf(st.round); if(k<0) return; const t=st.s1augT[k];
-    for(const S of allS(st)){ if(!S||(S.s1aug||[]).some(x=>x.r===st.round)) continue; const op=[]; for(let j=0;j<3;j++){ const n=draw(st,poolOf(t,st.round),op); if(n) op.push(n); } if(!op.length) continue;
+    for(const S of allS(st)){ if(!S||(S.s1aug||[]).some(x=>x.r===st.round)) continue; const op=[]; for(let j=0;j<3;j++){ const n=draw(st,poolOf(t,st.round),op,S); if(n) op.push(n); } if(op.length<3) AC.s1AugShort=(AC.s1AugShort||0)+1; if(!op.length) continue;
       S.s1augC={r:st.round,t,op,rr:op.map(()=>0)}; if(S!==st.me) AC.s1AugDo(st,S,AC.s1AugBot?AC.s1AugBot(st,S,S.s1augC):Math.floor(AC.rnd(st)*op.length)); }
     setTimeout(()=>AC.s1AugPop(),0); };
   AC.s1AugPop=()=>{ const st=AC.st; if(!st||!st.me||!s1()) return; const S=st.me, c=S.s1augC; if(!c){ document.querySelectorAll("[data-s1augpop]").forEach(x=>x.remove()); return; }
