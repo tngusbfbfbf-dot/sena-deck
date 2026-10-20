@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.5v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -9250,9 +9250,13 @@ Object.assign(S1SK1,{
       later(B,B.t+0.4,()=>{ if(!u.alive) return; const H=foes(B,u).filter(x=>cells.some(p=>p[0]===Math.round(x.R)&&p[1]===Math.round(x.C))); B.events.push({k:"sk3",id:"s1kyHit",cells,hits:H.map(x=>[x.R,x.C,x.uid])}); H.forEach(x=>phy(B,u,x,L(u,[250,250,600]),u.s1n)); }); },
     "선란":(B,u,tg,c)=>{ if(!c) return; if(AC.s1MUse(u)){ u.s1slF=true; slCast(B,u); } },  // 첫 기본 공격 6회
     "발리스타":(B,u,tg,c)=>{ if(!c||!AC.s1MUse(u)) return; ev(B,u,nm(u)); const F=foes(B,u).filter(x=>within(x,u,4)); const mk=x=>x.s1baM&&x.s1baM[u.uid];
-      const t=F.filter(x=>!mk(x)).sort((a,b)=>dist(b,u)-dist(a,u))[0]||F.sort((a,b)=>dist(b,u)-dist(a,u))[0]||tg; mag(B,u,t,L(u,[40,60,800]),u.s1n); if(!t.alive) return; (t.s1baM=t.s1baM||{})[u.uid]=1; fx(B,t,"표식","dis");
-      u.untg=B.t+0.5; goNear(B,u,t); foes(B,u).filter(x=>adj(x,u)).forEach(x=>phy(B,u,x,L(u,[270,270,700]),u.s1n));
-      foes(B,u).filter(x=>x!==t&&mk(x)).forEach(m=>{ const p=freeNear(B,m,m,null)||[Math.round(m.R),Math.round(m.C)]; const o={R:p[0],C:p[1]}; fx(B,m,"그림자"); const V=foes(B,u).filter(x=>cheb(x,o)<=1&&!(x.R===o.R&&x.C===o.C&&x!==m)); B.events.push({k:"sk3",id:"s1shadow",a:u.uid,no:u.no,R:o.R,C:o.C,tg:V.map(x=>[x.R,x.C])}); V.forEach(x=>phy(B,u,x,L(u,[200,200,400]),u.s1n)); }); },
+      const t=F.filter(x=>!mk(x)).sort((a,b)=>dist(b,u)-dist(a,u))[0]||F.sort((a,b)=>dist(b,u)-dist(a,u))[0]||tg; const R0=Math.round(u.R), C0=Math.round(u.C);
+      /* 1.3.4 순서 연출 + 피해 시점 분산(피해량 동일): 0초 쇠뇌 발사 → 0.25초 적중·표식 → 0.45초 사라짐/순간이동(대상 지정 불가: 시전~도착 후 0.5초)·돌격 베기 → 0.65초 그림자 소환·타격 */
+      u.untg=B.t+0.95; B.events.push({k:"sk3",id:"s1baBolt",a:u.uid,aR:R0,aC:C0,R:Math.round(t.R),C:Math.round(t.C)});
+      later(B,B.t+0.25,()=>{ if(!u.alive) return; mag(B,u,t,L(u,[40,60,800]),u.s1n); if(!t.alive) return; (t.s1baM=t.s1baM||{})[u.uid]=1; fx(B,t,"표식","dis");
+        later(B,B.t+0.2,()=>{ if(!u.alive) return; const a0=[Math.round(u.R),Math.round(u.C)]; if(t.alive) goNear(B,u,t); u.untg=B.t+0.5; fx(B,u,"대상 지정 불가","dis");
+          const A=foes(B,u).filter(x=>adj(x,u)); B.events.push({k:"sk3",id:"s1baTp",a:u.uid,aR:a0[0],aC:a0[1],R:Math.round(u.R),C:Math.round(u.C),tg:A.map(x=>[Math.round(x.R),Math.round(x.C)])}); A.forEach(x=>phy(B,u,x,L(u,[270,270,700]),u.s1n));
+          later(B,B.t+0.2,()=>{ if(!u.alive) return; foes(B,u).filter(x=>x!==t&&mk(x)).forEach(m=>{ const p=freeNear(B,m,m,null)||[Math.round(m.R),Math.round(m.C)]; const o={R:p[0],C:p[1]}; fx(B,m,"그림자"); const V=foes(B,u).filter(x=>cheb(x,o)<=1&&!(x.R===o.R&&x.C===o.C&&x!==m)); B.events.push({k:"sk3",id:"s1shadow",a:u.uid,no:u.no,R:o.R,C:o.C,tg:V.map(x=>[x.R,x.C])}); V.forEach(x=>phy(B,u,x,L(u,[200,200,400]),u.s1n)); }); }); }); }); },
     "유신":(B,u,tg,c)=>{ if(!c||!AC.s1MUse(u)) return; u.s1ysN=(u.s1ysN||0)+1;
       /* 1.2.0v 연출: 먹구름이 몰려옴(0.3초) → 푸른 번개(늑대) 5발이 차례로 날아가 적중 시 피해 (모든 전투 · 기절은 적중 후부터) */
       const ysFire=(T,big,hitFn)=>{ if(!T.length) return; const n=Math.max(5,T.length), L2=[]; for(let i=0;i<n;i++) L2.push(T[i%T.length]); const c=T.reduce((o,x)=>({R:o.R+x.R/T.length,C:o.C+x.C/T.length}),{R:0,C:0});
@@ -9333,6 +9337,39 @@ Object.assign(S1SK1,{
       if(!px._s1dk[no]){ const ctx=T.getSourceImage().getContext("2d"), z=96; ctx.save(); ctx.filter="grayscale(1) brightness(0.4) contrast(1.5)"; ctx.drawImage(px.atlasCv,p[0],p[1],z,z,p[0],p[1],z,z); ctx.restore();
         ctx.save(); ctx.globalCompositeOperation="source-atop"; ctx.fillStyle="rgba(110,50,190,0.45)"; ctx.fillRect(p[0],p[1],z,z); ctx.restore(); T.add("h"+no,0,p[0],p[1],z,z); T.refresh(); px._s1dk[no]=1; }
       return K; };
+    /* 1.3.4 발리스타 표식: 표식이 남은 적 발밑에 보라색 조준 고리(회전·맥동)를 계속 표시 (발리스타가 살아 있는 동안) */
+    const oDrB=PX.draw; PX.draw=function(B,ev){ const r=oDrB.apply(this,arguments); try{ const S=this.scene; if(!S||!B||!B.units) return r; const M=this._s1baMk=(this._s1baMk&&this._s1baMk.S===S&&this._s1baMk.B===B)?this._s1baMk:(this._s1baMk&&Object.values(this._s1baMk.g).forEach(g=>{ try{ g.destroy(); }catch(e){} }),{S,B,g:{}});
+        const {W,H}=this.cell(), m=Math.min(W,H), now=(typeof performance!=="undefined"?performance.now():Date.now())/1000, live={};
+        for(const x of B.units){ if(!x.alive||!x.s1baM) continue; if(!B.units.some(b=>b.alive&&b.side!==x.side&&x.s1baM[b.uid])) continue; live[x.uid]=1;
+          let g=M.g[x.uid]; if(!g){ g=M.g[x.uid]=S.add.graphics().setDepth(36); } const [px,py]=this.px(x.R,x.C), k=1+0.08*Math.sin(now*6), rr=m*0.47*k;
+          g.clear().setPosition(px,py).setRotation(now*1.6).lineStyle(Math.max(2,m*0.05),0xb48cff,0.9).strokeCircle(0,0,rr);
+          for(let i=0;i<4;i++){ const a=i*Math.PI/2; g.lineBetween(Math.cos(a)*rr*0.72,Math.sin(a)*rr*0.72,Math.cos(a)*rr*1.18,Math.sin(a)*rr*1.18); }
+          g.fillStyle(0x7b3fe4,0.18).fillCircle(0,0,rr*0.95); }
+        for(const id in M.g) if(!live[id]){ try{ M.g[id].destroy(); }catch(e){} delete M.g[id]; } }catch(e){} return r; };
+    /* 1.3.4 발리스타 연출: 쇠뇌 화살(발사 위치→대상, 꼬리·적중 섬광·표식 고리) → 그림자 연기로 사라짐(출발 칸) → 대상 옆 도착 연기 + 인접 적 보라색 베기 */
+    const oBa=PX.sk3fx; PX.sk3fx=function(B,e,slow,light){ if(e.id!=="s1baBolt"&&e.id!=="s1baTp") return oBa.apply(this,arguments);
+      const S=this.scene; if(!S) return; const {W,H}=this.cell(), m=Math.min(W,H), T=S.tweens, G=d=>this.gfx().clear().setPosition(0,0).setDepth(d).setAlpha(1).setScale(1).setRotation(0);
+      const [ax,ay]=this.px(e.aR,e.aC), [x,y]=this.px(e.R,e.C);
+      const puff=(px,py,d0)=>{ for(let i=0;i<14;i++){ const a=i/14*6.283, g=G(41); g.setPosition(px,py).fillStyle(i%2?0x2a1440:0x5b2d91,0.75).fillCircle(0,0,m*0.26); g.setScale(0.6);
+          T.add({targets:g,x:px+Math.cos(a)*m*0.6,y:py+Math.sin(a)*m*0.5,scale:1.6,alpha:0,delay:d0,duration:520*slow,ease:"Quad.easeOut",onComplete:()=>this.done(g)}); } };
+      if(e.id==="s1baBolt"){ const ang=Math.atan2(y-ay,x-ax), g=G(44), L=m*0.9; g.setPosition(ax,ay).setRotation(ang);
+        g.lineStyle(Math.max(3,m*0.09),0x6b4a2a,1).lineBetween(-L/2,0,L/2,0).fillStyle(0xd9e4ff,1).fillTriangle(L/2+m*0.22,0,L/2-m*0.04,-m*0.14,L/2-m*0.04,m*0.14).lineStyle(Math.max(2,m*0.04),0xb48cff,0.9).lineBetween(-L/2,-m*0.06,-L/2-m*0.1,0).lineBetween(-L/2,m*0.06,-L/2-m*0.1,0);
+        const tr=G(43); const P={p:0};
+        T.add({targets:P,p:1,duration:250*slow,ease:"Sine.easeIn",onUpdate:()=>{ const cx=ax+(x-ax)*P.p, cy=ay+(y-ay)*P.p; g.setPosition(cx,cy); tr.clear().lineStyle(Math.max(4,m*0.16),0xb48cff,0.55).lineBetween(ax+(x-ax)*Math.max(0,P.p-0.35),ay+(y-ay)*Math.max(0,P.p-0.35),cx,cy); },
+          onComplete:()=>{ this.done(g); T.add({targets:tr,alpha:0,duration:120*slow,onComplete:()=>this.done(tr)});
+            const f=G(45); f.setPosition(x,y).setScale(0.3).fillStyle(0xf3ecff,1).fillCircle(0,0,m*0.55); T.add({targets:f,scale:1.4,alpha:0,duration:220*slow,onComplete:()=>this.done(f)});
+            const r=G(45); r.setPosition(x,y).lineStyle(Math.max(2,m*0.06),0xb48cff,1).strokeCircle(0,0,m*0.42); r.setScale(1.4).setAlpha(0); T.add({targets:r,scale:1,alpha:1,duration:200*slow,ease:"Back.easeOut",onComplete:()=>T.add({targets:r,alpha:0,delay:250*slow,duration:250*slow,onComplete:()=>this.done(r)})}); }});
+        return; }
+      // s1baTp: 출발 칸 연기 → 도착 칸 연기 → 인접 적 베기(보라 호)
+      puff(ax,ay,0); puff(x,y,80*slow);
+      { const gh=G(43); gh.setPosition(ax,ay).lineStyle(Math.max(2,m*0.05),0xb48cff,0.9).strokeRoundedRect(-m*0.43,-m*0.43,m*0.86,m*0.86,m*0.1).fillStyle(0x3a1d5c,0.45).fillRoundedRect(-m*0.43,-m*0.43,m*0.86,m*0.86,m*0.1);
+        T.add({targets:gh,alpha:0,scale:1.25,duration:300*slow,ease:"Quad.easeOut",onComplete:()=>this.done(gh)}); }
+      { const ap=G(44); ap.setPosition(x,y).fillStyle(0xffffff,1).fillCircle(0,0,m*0.75).setScale(0.2); T.add({targets:ap,scale:1.3,alpha:0,delay:60*slow,duration:320*slow,onComplete:()=>this.done(ap)}); }
+      const ring=G(42); ring.setPosition(x,y).lineStyle(Math.max(4,m*0.13),0x9a6bff,1).strokeCircle(0,0,m*0.75).setScale(0.3).setAlpha(0);
+      T.add({targets:ring,scale:1.15,alpha:1,delay:60*slow,duration:200*slow,ease:"Quad.easeOut",onComplete:()=>T.add({targets:ring,alpha:0,duration:220*slow,onComplete:()=>this.done(ring)})});
+      (e.tg||[]).forEach(([R,C],i)=>{ const [tx,ty]=this.px(R,C), a0=Math.atan2(ty-y,tx-x), g=G(46), P={p:0};
+        T.add({targets:P,p:1,delay:(90+i*40)*slow,duration:180*slow,ease:"Quad.easeOut",onUpdate:()=>{ g.clear().lineStyle(Math.max(4,m*0.14),0xf0e6ff,1).beginPath().arc(tx,ty,m*0.45,a0+Math.PI-0.9,a0+Math.PI-0.9+1.8*P.p,false).strokePath(); },
+          onComplete:()=>T.add({targets:g,alpha:0,duration:150*slow,onComplete:()=>this.done(g)})}); }); };
     const oFx=PX.sk3fx; PX.sk3fx=function(B,e,slow,light){ if(e.id!=="s1shadow") return oFx.apply(this,arguments);
       const S=this.scene; if(!S) return; const {W,H}=this.cell(), m=Math.min(W,H), [x,y]=this.px(e.R,e.C), sz=m*0.86, has=this.atlas&&this.fpos&&this.fpos[e.no]!=null;
       const T=(e.tg||[]).map(([R,C])=>this.px(R,C)), [tx,ty]=T[0]||[x,y];
@@ -10793,7 +10830,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
    기본 공격 +10(적중/빗나감 무관) · 피격 시 min(50, 감소 전 피해 1% + 감소 후 피해 7%) · 보호막 흡수/무효/0 피해는 미획득
    스킬 사용 중(+잠금 시간) 획득 불가 · 초과분 이월 · 소환물/골렘/몬스터 없음 · 여의보주 초당 마나 재생 +1 */
 (function(){ if(AC.season!=="s1") return;
-  AC.S1MANA={"파이": [60, 100], "멜키르": [130, 240], "플라튼": [40, 90], "바네사": [10, 60], "린": [0, 50], "태오": [30, 70], "미호": [40, 80], "미스트": [90, 180], "하연": [30, 80], "실비아": [0, 60], "제인": [30, 70], "니아": [40, 110], "에스파다": [20, 55], "제이브": [50, 90], "겔리두스": [0, 80], "브란즈&브란셀": [80, 200], "카르마": [50, 80], "키리엘": [35, 60], "아멜리아": [140, 160], "트루드": [90, 180], "프레이야": [20, 85], "동영": [80, 140], "세라": [70, 130], "클로에": [30, 70], "메이": [270, 340], "엘리스": [50, 90], "크리스": [60, 160], "레이첼": [45, 70], "쥬리": [15, 55], "콜트": [10, 30], "에이스": [50, 120], "연희": [40, 90], "레긴레이프": [0, 60], "란드그리드": [20, 50], "라이언": [20, 90], "룩": [40, 60], "블랙로즈": [150, 260], "나타": [40, 60], "루리": [0, 40], "스파이크": [20, 70], "루디": [30, 70], "지크": [40, 70], "로지": [50, 100], "팔라누스": [50, 90], "오공": [20, 50], "카일": [40, 80], "라드그리드": [90, 120], "선란": [30, 160], "발리스타": [110, 210], "챈슬러": [40, 95], "유신": [40, 130], "엘리시아": [40, 90], "아일린": [50, 80], "윤건": [60, 100], "스쿨드": [110, 200], "카구라": [60, 120], "델론즈": [10, 55], "여포": [120, 170], "밀리아": [110, 230], "벨리카": [110, 230], "아리스": [0, 40], "세인": [65, 80]};  // 이름: [시작 마나, 최대 마나]
+  AC.S1MANA={"파이": [60, 100], "멜키르": [130, 240], "플라튼": [40, 90], "바네사": [10, 60], "린": [0, 50], "태오": [30, 70], "미호": [40, 80], "미스트": [90, 180], "하연": [30, 80], "실비아": [0, 60], "제인": [30, 70], "니아": [40, 110], "에스파다": [20, 55], "제이브": [50, 90], "겔리두스": [0, 80], "브란즈&브란셀": [80, 200], "카르마": [50, 80], "키리엘": [35, 60], "아멜리아": [140, 160], "트루드": [90, 180], "프레이야": [20, 85], "동영": [80, 140], "세라": [70, 130], "클로에": [30, 70], "메이": [270, 340], "엘리스": [50, 90], "크리스": [60, 160], "레이첼": [45, 70], "쥬리": [15, 55], "콜트": [10, 30], "에이스": [50, 120], "연희": [40, 90], "레긴레이프": [0, 60], "란드그리드": [20, 50], "라이언": [20, 90], "룩": [40, 60], "블랙로즈": [150, 260], "나타": [40, 60], "루리": [0, 40], "스파이크": [20, 70], "루디": [30, 70], "지크": [40, 70], "로지": [50, 100], "팔라누스": [50, 90], "오공": [20, 50], "카일": [40, 80], "라드그리드": [90, 120], "선란": [30, 160], "발리스타": [40, 75], "챈슬러": [40, 95], "유신": [40, 130], "엘리시아": [40, 90], "아일린": [50, 80], "윤건": [60, 100], "스쿨드": [110, 200], "카구라": [60, 120], "델론즈": [10, 55], "여포": [120, 170], "밀리아": [110, 230], "벨리카": [110, 230], "아리스": [0, 40], "세인": [65, 80]};  // 이름: [시작 마나, 최대 마나]
   AC.S1MANA_ONCE={"아리스":1,"겔리두스":1};
   AC.S1THMAX=150;  // 천둥군주(아일린) 별도 게이지
   let _GM=null; const GM=()=>_GM||(_GM=Object.fromEntries(S1DATA.items.concat(S1DATA.comps||[]).concat(S1DATA.acc||[]).map(g=>[g.id,g])));
