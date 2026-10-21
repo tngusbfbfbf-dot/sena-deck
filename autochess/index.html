@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.9v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.10v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -10087,7 +10087,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
     if(D.rows.some(r=>r.type==="마")) h=h.replace(/마법 피해(?!량)/g,"마법 피해"+ICO.마); return h; }
   const T5=n=>n!=="카구라"&&S1ROSTER.some(r=>r[0]===5&&r[1]===n);  // 1.0.21v 5코스트 이정표 0/3/6
   AC.s1SkHtml=function(n,t){ const D=parse(n), f5=T5(n), ti=f5?((t||0)>=6?2:(t||0)>=3?1:0):AC.sk3Tier(t||0), f=v=>(Math.round(v*100)/100);
-    const rows=D.rows.map(r=>{ if(r.raw) return `<div class="s1r s1raw"><span class="l">${txt(r.raw,D)}</span></div>`; const pv=(V,u)=>V.map((v,i)=>`<span class="${V.length===1||i===ti?"on":""}">${f(v)}${u}</span>`).join(" / "); if(r.parts) return `<div class="s1r"><span class="l">${E(r.label)}${ICO.공}${ICO.마}:</span><span class="v">[ ${r.parts.map(P=>pv(P[1],P[2])).join(" ] + [ ")} ]</span></div>`; const vs=r.values.map((v,i)=>`<span class="${r.values.length===1||i===ti?"on":""}">${f(v)}${r.unit}</span>`).join(" / ");
+    const rows=D.rows.map(r=>{ if(r.raw) return `<div class="s1r s1raw"><span class="l">${txt(r.raw,D).replace(/(-?\d+(?:\.\d+)?)(%?)\s*\/\s*(-?\d+(?:\.\d+)?)(%?)\s*\/\s*(-?\d+(?:\.\d+)?)(%?)(?![\d.\/])/g,(m0,a,ua,b,ub,c,uc)=>{ const u=uc||ub||ua; return `[ ${[a,b,c].map((v,i)=>`<span class="${i===ti?"on":""}">${v}${u}</span>`).join(" / ")} ]`; })}</span></div>`;  /* 1.4.0v 원문 줄의 a/b/c 단계 강조 */ const pv=(V,u)=>V.map((v,i)=>`<span class="${V.length===1||i===ti?"on":""}">${f(v)}${u}</span>`).join(" / "); if(r.parts) return `<div class="s1r"><span class="l">${E(r.label)}${ICO.공}${ICO.마}:</span><span class="v">[ ${r.parts.map(P=>pv(P[1],P[2])).join(" ] + [ ")} ]</span></div>`; const vs=r.values.map((v,i)=>`<span class="${r.values.length===1||i===ti?"on":""}">${f(v)}${r.unit}</span>`).join(" / ");
       return `<div class="s1r"><span class="l">${E(r.label)}${r.type!=="none"?ICO[r.type]:""}:</span><span class="v">[ ${vs} ]</span></div>`; }).join("");
     const tl=D.rows.some(r=>r.values&&r.values.length>1)?`<div class="s1tl">[ ${f5?"0초월 / 3초월 / 6초월":"0초월 / 6초월 / 12초월"} ] · 현재 ${t||0}초월</div>`:"";
     return `<div class="s1tip" data-acskill data-sktier="${ti}"><div class="s1h"><img src="${D.img}" alt=""><b data-acskname>${E(D.name)}</b></div><hr>
@@ -10101,7 +10101,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
 .s1tip hr{border:0;border-top:2px solid #4a4132;margin:8px 0}
 .s1tip .s1d p{margin:0 0 6px}.s1tip .s1syn{color:#b8f27a}
 .s1tip .s1r{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.s1tip .s1r .v{white-space:nowrap;color:#9d978a;margin-left:auto}
-.s1tip .s1r .v .on{color:#ffd36a;font-weight:700}
+.s1tip .s1r .v .on,.s1tip .s1raw .on{color:#ffd36a;font-weight:700}
 .s1tip .s1tl{font-size:11px;color:#7e786b;text-align:right;margin-top:3px}
 .s1i{position:relative;display:inline-flex;vertical-align:-2px;width:14px;height:14px;margin:0 1px;cursor:help}.s1i svg{width:14px;height:14px}
 .s1i-at{color:#f08a2c}.s1i-ma{color:#7f7bff}
@@ -10952,7 +10952,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
    기본 공격 +10(적중/빗나감 무관) · 피격 시 min(50, 감소 전 피해 1% + 감소 후 피해 7%) · 보호막 흡수/무효/0 피해는 미획득
    스킬 사용 중(+잠금 시간) 획득 불가 · 초과분 이월 · 소환물/골렘/몬스터 없음 · 여의보주 초당 마나 재생 +1 */
 (function(){ if(AC.season!=="s1") return;
-  AC.S1MANA={"파이": [60, 100], "멜키르": [130, 240], "플라튼": [40, 90], "바네사": [10, 60], "린": [0, 50], "태오": [30, 70], "미호": [40, 80], "미스트": [90, 180], "하연": [30, 80], "실비아": [0, 60], "제인": [30, 70], "니아": [40, 110], "에스파다": [20, 55], "제이브": [50, 90], "겔리두스": [0, 80], "브란즈&브란셀": [40, 85], "카르마": [50, 80], "키리엘": [35, 60], "아멜리아": [140, 160], "트루드": [90, 180], "프레이야": [20, 85], "동영": [40, 75], "세라": [70, 130], "클로에": [30, 70], "메이": [270, 340], "엘리스": [50, 90], "크리스": [60, 160], "레이첼": [45, 70], "쥬리": [15, 55], "콜트": [10, 30], "에이스": [40, 90], "연희": [40, 90], "레긴레이프": [0, 60], "란드그리드": [20, 50], "라이언": [20, 90], "룩": [40, 60], "블랙로즈": [150, 260], "나타": [40, 60], "루리": [0, 40], "스파이크": [20, 70], "루디": [30, 70], "지크": [40, 70], "로지": [50, 100], "팔라누스": [50, 90], "오공": [20, 50], "카일": [40, 80], "라드그리드": [90, 120], "선란": [40, 80], "발리스타": [40, 75], "챈슬러": [40, 95], "유신": [40, 130], "엘리시아": [40, 90], "아일린": [50, 80], "윤건": [60, 100], "스쿨드": [110, 200], "카구라": [60, 120], "델론즈": [10, 55], "여포": [120, 170], "밀리아": [110, 230], "벨리카": [110, 230], "아리스": [0, 40], "세인": [65, 80]};  // 이름: [시작 마나, 최대 마나]
+  AC.S1MANA={"파이": [60, 100], "멜키르": [40, 110], "플라튼": [40, 90], "바네사": [10, 60], "린": [0, 50], "태오": [30, 70], "미호": [40, 80], "미스트": [40, 110], "하연": [30, 80], "실비아": [0, 60], "제인": [30, 70], "니아": [40, 110], "에스파다": [20, 55], "제이브": [50, 90], "겔리두스": [0, 80], "브란즈&브란셀": [40, 85], "카르마": [50, 80], "키리엘": [35, 60], "아멜리아": [40, 100], "트루드": [40, 85], "프레이야": [20, 85], "동영": [40, 75], "세라": [70, 130], "클로에": [30, 70], "메이": [40, 85], "엘리스": [50, 90], "크리스": [40, 85], "레이첼": [45, 70], "쥬리": [15, 55], "콜트": [10, 30], "에이스": [40, 90], "연희": [40, 90], "레긴레이프": [0, 60], "란드그리드": [20, 50], "라이언": [20, 90], "룩": [40, 60], "블랙로즈": [40, 90], "나타": [40, 60], "루리": [0, 40], "스파이크": [20, 70], "루디": [30, 70], "지크": [40, 70], "로지": [50, 100], "팔라누스": [50, 90], "오공": [20, 50], "카일": [40, 80], "라드그리드": [90, 120], "선란": [40, 80], "발리스타": [40, 75], "챈슬러": [40, 95], "유신": [40, 130], "엘리시아": [40, 90], "아일린": [50, 80], "윤건": [60, 100], "스쿨드": [110, 200], "카구라": [60, 120], "델론즈": [10, 55], "여포": [120, 170], "밀리아": [110, 230], "벨리카": [110, 230], "아리스": [0, 40], "세인": [65, 80]};  // 이름: [시작 마나, 최대 마나]
   AC.S1MANA_ONCE={"아리스":1,"겔리두스":1};
   AC.S1THMAX=150;  // 천둥군주(아일린) 별도 게이지
   let _GM=null; const GM=()=>_GM||(_GM=Object.fromEntries(S1DATA.items.concat(S1DATA.comps||[]).concat(S1DATA.acc||[]).map(g=>[g.id,g])));
