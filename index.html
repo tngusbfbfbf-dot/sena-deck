@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.8v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">1.3.9v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -6010,7 +6010,7 @@ const AC={
       if(u.sunUntil>B.t&&!(u.hopAt>B.t)&&AC.tanHop(B,u)) continue;
       let tg=foes[0], bd=1e9; for(const f of foes){ const d=Math.hypot(f.R-u.R,f.C-u.C); if(d<bd){ bd=d; tg=f; } }
       if(u.skId==="스니퍼"&&u.snLeft===1){ const f=foes.slice().sort((a,b)=>Math.hypot(b.R-u.R,b.C-u.C)-Math.hypot(a.R-u.R,a.C-u.C))[0]; if(f){ tg=f; u.snForce=true; } } else u.snForce=false;
-      if(u.brMark){ const m=foes.find(x=>x.uid===u.brMark.uid); if(m) tg=m; else u.brMark=null; } u.tgUid=tg.uid;
+      if(u.brMark){ const m=foes.find(x=>x.uid===u.brMark.uid); if(m) tg=m; else u.brMark=null; } if(u.s1g49==="윤건"){ const p=B.units.find(x=>x.alive&&x.side===u.side&&x.s1g49==="선란"), m=p&&p.s1lastTg; if(m&&foes.includes(m)) tg=m; } /* 1.3.9v 연모심 */ u.tgUid=tg.uid;
       u.cd=Math.max(-C.dt,u.cd-dt); if(u.ammo>0&&!(u.orcaNext>B.t)) AC.orcaFire(B,u,tg); if(!u.alive) continue;
       if(AC.dist(u,tg)<=u.range||u.snForce){ if(u.cd<=0){ const fast=u.ignite&&u.hp<u.maxHp*0.5?1+AC.sv(B,u.side,"ignite","as")/100:1; u.cd+=u.iv/fast; u.atks++; u.sc++;
           if(u.fin&&u.skId==='실베스타'&&u.atks===u.K.fin.at) AC.finQ(B,u,B.t,'sil');
@@ -9228,7 +9228,9 @@ Object.assign(S1SK1,{
   const paEnd=u=>{ if(u.s1paOn){ u.s1paOn=0; u.range=u.s1paR0; u.asPct-=75; AC.reIv(u); } };
   const rzEnd=(B,u,I)=>{ u.maxHp-=I.hp; u.hp=Math.min(u.hp,u.maxHp); u.def-=I.d; u.res-=I.r; I.parts.forEach(([x,h,d,r])=>{ if(x.alive){ x.maxHp+=h; x.def+=d; x.res+=r; } }); };
   const slCast=(B,u)=>{ ev(B,u,nm(u)); const t=near(u,foes(B,u))[0]; if(!t) return;
-    const R0=u.R, C0=u.C, bR=Math.round(u.R)-Math.sign(Math.round(t.R-u.R)), bC=Math.round(u.C)-Math.sign(Math.round(t.C-u.C)); if(free(B,bR,bC,u)){ u.R=bR; u.C=bC; B.events.push({k:"sk3",id:"s1slHop",aR:R0,aC:C0,bR,bC}); }  // 뒤로 1칸
+    const R0=u.R, C0=u.C, uR0=Math.round(u.R), uC0=Math.round(u.C); let sR=Math.sign(t.R-u.R), sC=Math.sign(t.C-u.C); if(!sR&&!sC) sR=u.side===0?-1:1;  /* 1.3.9v: 대상 반대쪽 1칸 · 막히면 뒤쪽 대각·옆 중 대상에서 가장 먼 빈 칸 */
+    let bR=uR0-sR, bC=uC0-sC; if(!free(B,bR,bC,u)){ let bv=-1, pk=null; for(let dR=-1;dR<=1;dR++) for(let dC=-1;dC<=1;dC++){ if(!dR&&!dC) continue; const R=uR0+dR, C=uC0+dC; if(!free(B,R,C,u)) continue; const v=Math.hypot(R-t.R,C-t.C); if(v>Math.hypot(uR0-t.R,uC0-t.C)-0.01&&v>bv){ bv=v; pk=[R,C]; } } if(pk){ bR=pk[0]; bC=pk[1]; } }
+    if(free(B,bR,bC,u)){ u.R=bR; u.C=bC; B.events.push({k:"sk3",id:"s1slHop",aR:R0,aC:C0,bR,bC}); }  // 뒤로 1칸
     u.dr=(u.dr||0)+30; u.cd=Math.max(u.cd||0,0.75); fx(B,u,"피해 감소 30%"); B.events.push({k:"sk3",id:"s1slShield",a:u.uid,dur:0.75});
     later(B,B.t+0.75,()=>{ u.dr-=30; if(!u.alive) return; const F=foes(B,u); let best=null,bn=0;
       for(let dR=-1;dR<=1;dR++) for(let dC=-1;dC<=1;dC++){ if(!dR&&!dC) continue; const S=[]; for(let k=1;k<=2;k++){ const x=F.find(f=>Math.round(f.R)===Math.round(u.R)+dR*k&&Math.round(f.C)===Math.round(u.C)+dC*k); if(x) S.push([x,k]); } if(S.length>bn){ bn=S.length; best=[dR,dC,S]; } }
@@ -10076,6 +10078,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
       if(/^.{1,12} 추가 효과:/.test(l)&&(HR==null||i<HR)) { out.syn.push(l); return; }
       if(HR!=null?i<HR:isSent(l)) { out.desc.push(l); return; }  // 1.0.16v: hr(사용자 [가로선] 위치)가 있으면 그 위=설명, 아래=계수
       if((m=l.match(NUMS))&&!/[:=+%]|[.다]$/.test(m[1].replace(/:\s*$/,""))){ let lb=m[1].replace(/:\s*$/,"").trim(), ty="none"; const k=lb.match(/\((공|물|마)\)/); if(k){ ty=k[1]==="물"?"공":k[1]; lb=lb.replace(k[0],"").trim(); } out.rows.push({label:lb,type:ty,values:m[2].split("/").map(x=>Number(x.trim())),unit:m[3]||""}); }
+      else if((m=l.match(/^(.+?)\((공|물)\+마\)\s*:\s*(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){1,2})\s*(%)?\s*\+\s*(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){1,2})\s*(%)?$/))) out.rows.push({label:m[1].trim(),type:"none",values:[0,0,0],parts:[["공",m[3].split("/").map(x=>Number(x.trim())),m[4]||""],["마",m[5].split("/").map(x=>Number(x.trim())),m[6]||""]]});  // 1.3.9v (공+마) 합성 줄
       else out.rows.push({raw:l}); }); return S.rows=out.rows, S.syn=out.syn, S.descL=out.desc, S; }
   AC.s1SkData=n=>SK[n]?parse(n):null;
   AC.s1Mk=h=>String(h).replace(/\((공|물|마)\)/g,(m,k)=>ICO[k==="물"?"공":k]).replace(/(^|[(+\s])(?:물|공)\s?(\d+(?:\.\d+)?%)/g,(m,p,v)=>p+ICO.공+v).replace(/(^|[(+\s])마\s?(\d+(?:\.\d+)?%?)(?![가-힣])/g,(m,p,v)=>p+ICO.마+v).replace(/(\d%?)\+(<span class="s1i)/g,"$1 + $2");
@@ -10084,7 +10087,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
     if(D.rows.some(r=>r.type==="마")) h=h.replace(/마법 피해(?!량)/g,"마법 피해"+ICO.마); return h; }
   const T5=n=>n!=="카구라"&&S1ROSTER.some(r=>r[0]===5&&r[1]===n);  // 1.0.21v 5코스트 이정표 0/3/6
   AC.s1SkHtml=function(n,t){ const D=parse(n), f5=T5(n), ti=f5?((t||0)>=6?2:(t||0)>=3?1:0):AC.sk3Tier(t||0), f=v=>(Math.round(v*100)/100);
-    const rows=D.rows.map(r=>{ if(r.raw) return `<div class="s1r s1raw"><span class="l">${txt(r.raw,D)}</span></div>`; const vs=r.values.map((v,i)=>`<span class="${r.values.length===1||i===ti?"on":""}">${f(v)}${r.unit}</span>`).join(" / ");
+    const rows=D.rows.map(r=>{ if(r.raw) return `<div class="s1r s1raw"><span class="l">${txt(r.raw,D)}</span></div>`; const pv=(V,u)=>V.map((v,i)=>`<span class="${V.length===1||i===ti?"on":""}">${f(v)}${u}</span>`).join(" / "); if(r.parts) return `<div class="s1r"><span class="l">${E(r.label)}${ICO.공}${ICO.마}:</span><span class="v">[ ${r.parts.map(P=>pv(P[1],P[2])).join(" ] + [ ")} ]</span></div>`; const vs=r.values.map((v,i)=>`<span class="${r.values.length===1||i===ti?"on":""}">${f(v)}${r.unit}</span>`).join(" / ");
       return `<div class="s1r"><span class="l">${E(r.label)}${r.type!=="none"?ICO[r.type]:""}:</span><span class="v">[ ${vs} ]</span></div>`; }).join("");
     const tl=D.rows.some(r=>r.values&&r.values.length>1)?`<div class="s1tl">[ ${f5?"0초월 / 3초월 / 6초월":"0초월 / 6초월 / 12초월"} ] · 현재 ${t||0}초월</div>`:"";
     return `<div class="s1tip" data-acskill data-sktier="${ti}"><div class="s1h"><img src="${D.img}" alt=""><b data-acskname>${E(D.name)}</b></div><hr>
@@ -10949,7 +10952,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
    기본 공격 +10(적중/빗나감 무관) · 피격 시 min(50, 감소 전 피해 1% + 감소 후 피해 7%) · 보호막 흡수/무효/0 피해는 미획득
    스킬 사용 중(+잠금 시간) 획득 불가 · 초과분 이월 · 소환물/골렘/몬스터 없음 · 여의보주 초당 마나 재생 +1 */
 (function(){ if(AC.season!=="s1") return;
-  AC.S1MANA={"파이": [60, 100], "멜키르": [130, 240], "플라튼": [40, 90], "바네사": [10, 60], "린": [0, 50], "태오": [30, 70], "미호": [40, 80], "미스트": [90, 180], "하연": [30, 80], "실비아": [0, 60], "제인": [30, 70], "니아": [40, 110], "에스파다": [20, 55], "제이브": [50, 90], "겔리두스": [0, 80], "브란즈&브란셀": [40, 85], "카르마": [50, 80], "키리엘": [35, 60], "아멜리아": [140, 160], "트루드": [90, 180], "프레이야": [20, 85], "동영": [40, 75], "세라": [70, 130], "클로에": [30, 70], "메이": [270, 340], "엘리스": [50, 90], "크리스": [60, 160], "레이첼": [45, 70], "쥬리": [15, 55], "콜트": [10, 30], "에이스": [40, 90], "연희": [40, 90], "레긴레이프": [0, 60], "란드그리드": [20, 50], "라이언": [20, 90], "룩": [40, 60], "블랙로즈": [150, 260], "나타": [40, 60], "루리": [0, 40], "스파이크": [20, 70], "루디": [30, 70], "지크": [40, 70], "로지": [50, 100], "팔라누스": [50, 90], "오공": [20, 50], "카일": [40, 80], "라드그리드": [90, 120], "선란": [30, 160], "발리스타": [40, 75], "챈슬러": [40, 95], "유신": [40, 130], "엘리시아": [40, 90], "아일린": [50, 80], "윤건": [60, 100], "스쿨드": [110, 200], "카구라": [60, 120], "델론즈": [10, 55], "여포": [120, 170], "밀리아": [110, 230], "벨리카": [110, 230], "아리스": [0, 40], "세인": [65, 80]};  // 이름: [시작 마나, 최대 마나]
+  AC.S1MANA={"파이": [60, 100], "멜키르": [130, 240], "플라튼": [40, 90], "바네사": [10, 60], "린": [0, 50], "태오": [30, 70], "미호": [40, 80], "미스트": [90, 180], "하연": [30, 80], "실비아": [0, 60], "제인": [30, 70], "니아": [40, 110], "에스파다": [20, 55], "제이브": [50, 90], "겔리두스": [0, 80], "브란즈&브란셀": [40, 85], "카르마": [50, 80], "키리엘": [35, 60], "아멜리아": [140, 160], "트루드": [90, 180], "프레이야": [20, 85], "동영": [40, 75], "세라": [70, 130], "클로에": [30, 70], "메이": [270, 340], "엘리스": [50, 90], "크리스": [60, 160], "레이첼": [45, 70], "쥬리": [15, 55], "콜트": [10, 30], "에이스": [40, 90], "연희": [40, 90], "레긴레이프": [0, 60], "란드그리드": [20, 50], "라이언": [20, 90], "룩": [40, 60], "블랙로즈": [150, 260], "나타": [40, 60], "루리": [0, 40], "스파이크": [20, 70], "루디": [30, 70], "지크": [40, 70], "로지": [50, 100], "팔라누스": [50, 90], "오공": [20, 50], "카일": [40, 80], "라드그리드": [90, 120], "선란": [40, 80], "발리스타": [40, 75], "챈슬러": [40, 95], "유신": [40, 130], "엘리시아": [40, 90], "아일린": [50, 80], "윤건": [60, 100], "스쿨드": [110, 200], "카구라": [60, 120], "델론즈": [10, 55], "여포": [120, 170], "밀리아": [110, 230], "벨리카": [110, 230], "아리스": [0, 40], "세인": [65, 80]};  // 이름: [시작 마나, 최대 마나]
   AC.S1MANA_ONCE={"아리스":1,"겔리두스":1};
   AC.S1THMAX=150;  // 천둥군주(아일린) 별도 게이지
   let _GM=null; const GM=()=>_GM||(_GM=Object.fromEntries(S1DATA.items.concat(S1DATA.comps||[]).concat(S1DATA.acc||[]).map(g=>[g.id,g])));
