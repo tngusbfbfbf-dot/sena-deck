@@ -12035,7 +12035,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
     "삼지창":["전투 시작 시 삼지창 영웅이 보유한 조합 장비가 전투 동안 완성 장비(같은 재료 2개 조합)로 변함. 아군은 보유한 조합 장비마다(완성 장비 = 2개) 보호막.",["1개 변환, 개당 보호막 20","3개 변환, 개당 35","모두 변환, 개당 60"]],
     "바다괴수":["",["전투 시작 시 생명력이 가장 높은 적을 기절. 4초 후 또는 최대 생명력 40%를 잃으면 해제. 상태 이상 면역 적은 제외","바다괴수의 공속 80% 증가"]],
     "심연":["아군의 공속 증가. 플레이어 발전 1개당 추가:",["10% + 발전당 5%","35% + 발전당 10%","80% + 발전당 15%"]],
-    "신기루":["전장에 신기루 칸(내 진영 4칸)이 생깁니다. 전투 시작 시 신기루 칸 위의 신기루 유닛이 추가 효과:",["주는 피해 15%","+ 초당 마나 4","+ 입힌 모든 피해의 33% 생명력 회복","모든 추가 효과 2배"]]};
+    "신기루":["전장에 신기루 칸(내 진영 4칸)이 생깁니다. 전투 시작 시 신기루 칸 위의 아군 유닛(신기루 여부 무관)이 추가 효과:",["주는 피해 15%","+ 초당 마나 4","+ 입힌 모든 피해의 33% 생명력 회복","모든 추가 효과 2배"]]};
   C.syn.forEach(s=>{ const x=T[s.name]; if(!x||s.stub) return; s.s2=1; s.desc=s.bp.map((b,i)=>(i===0&&x[0]?x[0]+" ":"")+"("+b+") "+(x[1][i]||"")); });
   const lv=(B,side,id)=>{ const L=B.syn&&B.syn[side]; return L&&L[id]!=null&&L[id]>=0?L[id]:null; };
   const has=(B,u,id)=>{ if(!u||u.mon||u.golem||lv(B,u.side,id)==null) return false; const s=AC.synById(id); if(s&&s.members.includes(u.name)) return true; const src=B.refs&&B.refs[u.uid]; return !!(src&&(src.gear||[]).includes("s_"+id)); };
@@ -12090,7 +12090,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
       if((l=lv(B,side,"폭풍"))!=null){ const hold=l===0?U.filter(u=>has(B,u,"폭풍")):U; hold.forEach(u=>{ u.s2bl=1; u.s2blCd=0; }); (B.s2st=B.s2st||{})[side]=[27,35,55,80][l]; }
       // 신기루
       if((l=lv(B,side,"신기루"))!=null){ const k=l>=3?2:1, on=new Set(AC.S2MIRAGE);
-        U.filter(u=>has(B,u,"신기루")&&on.has((((B.refs[u.uid]||{}).loc)||"").slice(1))).forEach(u=>{ u.ampAll=(u.ampAll||0)+15*k; if(l>=1) u.s1mReg=(u.s1mReg||0)+4*k; if(l>=2) u.s2vamp=33*k; fx(B,u,"신기루","sk5"); }); }
+        U.filter(u=>on.has((((B.refs[u.uid]||{}).loc)||"").slice(1))).forEach(u=>{ u.ampAll=(u.ampAll||0)+15*k; if(l>=1) u.s1mReg=(u.s1mReg||0)+4*k; if(l>=2) u.s2vamp=33*k; fx(B,u,"신기루","sk5"); }); }
       // 아틀란티스 정예
       U.forEach(u=>{ const src=B.refs[u.uid]; if(src&&src.s2el){ u.s2el=1; fx(B,u,"정예","sk5"); const f=AC.S2ELITE[u.name]; if(f) try{ f(B,u); }catch(e){} } });
     }
