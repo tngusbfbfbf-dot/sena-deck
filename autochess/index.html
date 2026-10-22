@@ -8424,8 +8424,12 @@ S1DATA.usym={"예언가": "data:image/webp;base64,UklGRhANAABXRUJQVlA4WAoAAAAQAA
 /* ===== 시즌2 데이터 (시즌1 복제로 시작 · 여기만 고치면 시즌1엔 영향 없음) ===== */
 window.S2ROSTER=[];  /* [단계, 이름, [계열, 직업...]] — 시즌2 명단 (사용자 값 대기 · 비어 있음) */
 window.S2SYN={
-  FAC:["산호군락","세이렌","해적단","폭풍","아틀란티스","버뮤다","유령선","해군","바다정령","삼지창","바다괴수","심연","신기루"], JOB:[], UNI:{},
-  BP:{"산호군락":[3,5,7],"세이렌":[2,4,6],"해적단":[3,4,5,6],"폭풍":[3,4,5,6],"아틀란티스":[3,5,7],"버뮤다":[3],"유령선":[3,6,8,10],"해군":[3,5,7,9],"바다정령":[3,6],"삼지창":[2,4,6],"바다괴수":[3,5],"심연":[2,4,6],"신기루":[1,2,3,5]},
+  FAC:["산호군락","세이렌","해적단","폭풍","아틀란티스","버뮤다","유령선","해군","바다정령","삼지창","바다괴수","심연","신기루"],
+  JOB:["쾌속선","낚시꾼","포병대","뱃사공","음유시인","바다학살자","파도술사","잠수부","사냥꾼","항해사","바다망령","등대지기","작살꾼"],
+  UNI:{"포세이돈":"포세이돈","대장장이":"대장장이","포식자":"포식자","레비아탄":"레비아탄","제독":"제독"},  /* 고유 시너지 → 영웅 이름 (명단 확정 시 실제 영웅 이름으로) */
+  CNT:{"쾌속선":6,"낚시꾼":6,"포병대":4,"뱃사공":7,"음유시인":4,"바다학살자":5,"파도술사":7,"잠수부":6,"사냥꾼":5,"항해사":6,"바다망령":7,"등대지기":4,"작살꾼":5},  /* 예정 인원 (참고용) */
+  BP:{"산호군락":[3,5,7],"세이렌":[2,4,6],"해적단":[3,4,5,6],"폭풍":[3,4,5,6],"아틀란티스":[3,5,7],"버뮤다":[3],"유령선":[3,6,8,10],"해군":[3,5,7,9],"바다정령":[3,6],"삼지창":[2,4,6],"바다괴수":[3,5],"심연":[2,4,6],"신기루":[1,2,3,5],
+     "쾌속선":[2,4,6,8],"낚시꾼":[2,4,6],"포병대":[2,3,4],"뱃사공":[2,4,6,8],"음유시인":[2,3,4],"바다학살자":[2,4,6],"파도술사":[2,4,6,8],"잠수부":[2,4,6],"사냥꾼":[2,4,6],"항해사":[2,3,4,6],"바다망령":[2,4,6,8],"등대지기":[2,3,4,5],"작살꾼":[2,4,6]},
   KNOWN:{} };
 window.S2AUG_PATCH=function(A){ /* A=AC.S1AUG {실버,골드,프리즘} — 시즌2 플레이어 발전 추가/수정/삭제 */ };
 (function(){ let s; try{ s=localStorage.getItem("7kr_ac_season"); }catch{} if(s==="s2") S1ROSTER.splice(0,S1ROSTER.length,...S2ROSTER); })();
@@ -12184,6 +12188,157 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
         v.style.display=(S.s2vaultHide!=null&&S.s2vaultHide===sg)?"none":""; } else if(v) v.remove(); }catch(e){} return r; };
   document.addEventListener("click",e=>{ const b=e.target.closest&&e.target.closest("[data-s2vault]"); if(!b) return; const st=AC.st; if(!st||!st.me||AC.s2Stage(st.me)<1) return;
     if(b.getAttribute("data-s2vault")==="take") AC.s2VaultTake(st,st.me); else st.me.s2vaultHide=AC.s2Stage(st.me); try{ AC.save&&AC.save(); }catch(e){} AC.render(); });
+})();
+/* ===== 시즌2 직업 13종 · 고유 직업 5종 (AC.seasonId==="s2" 전용) ===== */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s2") return; const C=AC_CONFIG, H=AC._s1h||{}, D=S1DATA;
+  const T={
+    "쾌속선":["쾌속선 영웅이 추가 공격 속도. 대상이 사망하면 새 대상에게 돌진하고 2.5초 동안 공격 속도 상승 효과 50% 증가.",["공속 30%","공속 65%","공속 105%","공속 150%"]],
+    "낚시꾼":["낚시꾼이 모든 피해 흡혈 12% + 추가 피해 (생명력 66% 아래 대상에게는 2배).",["+6%","+20%","+40%"]],
+    "포병대":["포병대의 피해 스킬 2회마다 추가 사격 (총 피해량 비례).",["55%","115%","175%"]],
+    "뱃사공":["뱃사공이 방어력·마법 저항 획득, 전투 시작 후 10초 동안 100% 증가.",["+20","+45","+75","+140"]],
+    "음유시인":["음유시인이 스킬을 한 번 더 사용 (추가 사용은 효과 감소).",["추가 1회, 55% 감소","추가 1회, 35% 감소","추가 1회, 35% 감소, 기본 공격 시 추가 마나 5"]],
+    "바다학살자":["",["생명력 35% 아래가 되면 잠시 대상 지정 불가 + 4칸 안 적에게 돌진 (후방 우선)","+ 바다학살자의 피해가 출혈: 2.5초 동안 55% 추가 마법 피해","+ 출혈 피해 100%"]],
+    "파도술사":["파도술사가 추가 마법 공격력. 파도술사에게 피해 입은 적이 죽으면 그 적 최대 생명력 비례 피해를 다른 적에게.",["+25, 7%","+50, 10%","+90, 2명에게 12%","+135, 2명에게 15%"]],
+    "잠수부":["잠수부가 생명력이 낮을수록 받는 피해 감소.",["15~25%","20~35%","35~50%"]],
+    "사냥꾼":["사냥꾼이 치명타 확률·치명타 피해 증가, 스킬도 치명타 가능.",["15% / 15%","35% / 35%","55% / 55%"]],
+    "항해사":["모든 아군 생명력 +100. 항해사는 추가 최대 생명력.",["+10%","+12%","+45%","+80%"]],
+    "바다망령":["3초마다 아군 마나 회복.",["모든 아군 5","+ 바다망령 15 추가","모든 아군 20, 바다망령 15 추가","모든 아군 40 (바다망령 15 추가), 마법 공격력 30"]],
+    "등대지기":["전투 시작 시 앞 2줄 아군 보호막(15초), 뒤 2줄 아군 마법 공격력.",["보호막 200 / 마법 공격력 15","350 / 25","500 / 40","800 / 60"]],
+    "작살꾼":["작살꾼이 기본 공격마다 공격력 중첩 (최대 8중첩).",["중첩당 7%","13%","25%"]],
+    "포세이돈":["전장 원하는 위치에 병사 2명 배치 (준비 단계). 병사는 움직이거나 공격하지 않고, 포세이돈이 쓰러지면 사라짐. 병사 생명력 = 포세이돈 최대 생명력의 50%.",[]],
+    "대장장이":["대장장이가 플레이어 대상 전투에 참여할 때마다 유물 제작 진척 +1 (4에서 유물 획득). 장착 장비마다 최대 생명력 350/600/2000 (1/3/6초월), 유물은 300% 더.",[]],
+    "포식자":["전투 시작 시 바로 뒤 칸 아군을 물어뜯어 그 최대 생명력의 40% 고정 피해. 포식자는 대상 생명력 40%·공격력 25% 획득.",[]],
+    "레비아탄":["생명력 12% 아래 적 처형, 처형 시 생명력 400 회복 · 마나 50.",[]],
+    "제독":["공격 속도 초당 0.55회 고정. 추가 공격력(1%→1)·공격 속도(1%→0.5)·마나(시작 마나 10→1, 초당 재생 1→10)를 마법 공격력으로 전환. 마나 대신 기본 공격마다 지휘 에너지 1, 8에서 스킬 사용.",[]]};
+  C.syn.forEach(s=>{ const x=T[s.name]; if(!x||s.stub) return; s.s2=1; s.s2cnt=(window.S2SYN.CNT||{})[s.name]; s.desc=s.bp.map((b,i)=>(i===0&&x[0]?x[0]+" ":"")+(x[1].length?"("+b+") "+(x[1][i]||""):"")); if(!x[1].length) s.desc[0]=x[0]; });
+  const lv=(B,side,id)=>{ const L=B.syn&&B.syn[side]; return L&&L[id]!=null&&L[id]>=0?L[id]:null; };
+  const has=(B,u,id)=>{ if(!u||u.mon||u.golem||u.s2sold||lv(B,u.side,id)==null) return false; const s=AC.synById(id); if(s&&s.members.includes(u.name)) return true; const src=B.refs&&B.refs[u.uid]; return !!(src&&(src.gear||[]).includes("s_"+id)); };
+  const L_=(B,u,id)=>has(B,u,id)?lv(B,u.side,id):null;
+  const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"buff"});
+  const allies=(B,side)=>B.units.filter(u=>u.alive&&u.side===side&&!u.mon);
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  const pve=B=>B.units.some(x=>x.mon);
+  const say=(st,S,m)=>{ if(st&&S===st.me&&AC.msg) AC.msg(m); };
+  const magHit=(B,a,t,v,id)=>{ if(!t||!t.alive) return 0; const d=v*100/(100+Math.max(0,t.res||0)); B.events.push({k:"hit",mg:1,a:a.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:true,aR:a.R,aC:a.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,a,t,d,{id}); };
+  const star=t=>(t||0)>=6?2:(t||0)>=3?1:0;
+  const free=(B,R,Cc)=>R>=0&&R<C.rows*2&&Cc>=0&&Cc<C.cols&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===Cc);
+  const dashTo=(B,u,t)=>{ let best=null,bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const R=Math.round(t.R)+dr, c=Math.round(t.C)+dc; if(!free(B,R,c)) continue; const d=Math.hypot(R-u.R,c-u.C); if(d<bd){ bd=d; best=[R,c]; } } if(best){ u.R=best[0]; u.C=best[1]; } u.s1lastTg=t; u.tgUid=t.uid; };
+  const DOT=new Set(["ignite","s1dot","burn","s2bleed","s2art","s2wave","s2storm"]);
+  const isSk=o=>o&&!o.basic&&!DOT.has(o.id)&&!o.fixed;
+  AC.S2SOLDIER_HP=0.5;
+
+  /* ---------- 전투 시작 (스탯) ---------- */
+  const oAS=AC.applySynergies; AC.applySynergies=function(B){ oAS.apply(AC,arguments);
+    for(const side of ["me","ai"]){ const U=B.units.filter(u=>u.side===side&&!u.mon&&!u.golem);
+      for(const u of U){ if(u._s2j) continue; u._s2j=1; let l;
+        if((l=L_(B,u,"쾌속선"))!=null){ u.s2spd=[30,65,105,150][l]; u.asPct+=u.s2spd; }
+        if((l=L_(B,u,"뱃사공"))!=null){ const v=[20,45,75,140][l]; u.def+=2*v; u.res=(u.res||0)+2*v; u.s2oar=v; }
+        if((l=L_(B,u,"파도술사"))!=null) u.s1ma=(u.s1ma||0)+[25,50,90,135][l];
+        if((l=L_(B,u,"사냥꾼"))!=null){ u.crit+=[15,35,55][l]; u.cdAdd=(u.cdAdd||0)+[15,35,55][l]; u.s1skCrit=true; }
+        if(lv(B,side,"항해사")!=null){ u.maxHp+=100; u.hp+=100; }
+        if((l=L_(B,u,"항해사"))!=null){ const n=Math.round(u.maxHp*[10,12,45,80][l]/100); u.maxHp+=n; u.hp+=n; }
+        if((l=lv(B,side,"바다망령"))===3) u.s1ma=(u.s1ma||0)+30;
+        if(has(B,u,"대장장이")){ const g=(B.refs[u.uid]||{}).gear||[], per=[350,600,2000][star(u.t)]; let n=0; g.forEach(id=>{ n+=/^a\d+$/.test(id)?per*4:per; }); u.maxHp+=n; u.hp+=n; }
+        AC.reIv(u); } } };
+
+  /* ---------- 전투 시작 (효과) ---------- */
+  const oSS=AC.skStart; AC.skStart=function(B){ const r=oSS.apply(AC,arguments);
+    for(const side of ["me","ai"]){ const U=allies(B,side).filter(u=>!u.golem); let l;
+      // 등대지기
+      if((l=lv(B,side,"등대지기"))!=null){ const sh=[200,350,500,800][l], ma=[15,25,40,60][l];
+        U.forEach(u=>{ if(u.row<=1){ const g=AC.addShield(B,u,sh); u.s2lh={g,end:B.t+15}; } else u.s1ma=(u.s1ma||0)+ma; }); }
+      // 바다망령 타이머
+      if(lv(B,side,"바다망령")!=null) (B.s2wr=B.s2wr||{})[side]=B.t+3;
+      // 포식자
+      U.filter(u=>has(B,u,"포식자")).forEach(p=>{ const v=U.find(x=>x!==p&&x.alive&&x.row===p.row+1&&Math.round(x.C)===Math.round(p.C)); if(!v) return;
+        const d=Math.round(v.maxHp*0.4); v.hp=Math.max(1,v.hp-d); B.events.push({k:"hit",a:p.uid,b:v.uid,d,crit:false,sk:true,fix:true,aR:p.R,aC:p.C,bR:v.R,bC:v.C});
+        const g=Math.round(v.maxHp*0.4); p.maxHp+=g; p.hp+=g; const pa=(p.s&&p.s.atk)||1, va=(v.s&&v.s.atk)||0; p.atkPct+=25*va/pa; fx(B,p,"포식","sk5"); });
+      // 제독
+      U.filter(u=>has(B,u,"제독")).forEach(u=>{ const conv=Math.max(0,u.atkPct)+0.5*Math.max(0,u.asPct)+0.1*(u.mana||0)+10*(u.s1mReg||0); u.s1ma=(u.s1ma||0)+conv; u.atkPct=0; u.asPct=0; u.s1mReg=0; u.s2adm=1; u.s1mMax=8; u.mana=0; AC.reIv(u); fx(B,u,"지휘 마공 +"+Math.round(conv),"sk5"); });
+      // 포세이돈 병사
+      const po=U.find(u=>has(B,u,"포세이돈")); if(po){ const S=B.Sref&&B.Sref[side]; const pos=(S&&S.s2sold&&S.s2sold.length?S.s2sold:defSold(S)).slice(0,2);
+        pos.forEach((k,i)=>{ const [r0,c0]=k.split(",").map(Number), R=side==="me"?C.rows+r0:C.rows-1-r0; if(!free(B,R,c0)) return; const hp=Math.round(po.maxHp*AC.S2SOLDIER_HP);
+          const s=JSON.parse(JSON.stringify(po,(k,v)=>k==="cloneOf"?undefined:v)); Object.assign(s,{uid:po.uid+"_s"+i,name:"병사",s1n:"병사",R,C:c0,row:r0,hp,maxHp:hp,shield:0,mana:0,s1mMax:0,s1mReg:0,skId:null,s3:false,K:{},clone:true,s2sold:po.uid,stun:1e9,atkPct:0,asPct:0,alive:true,dealt:0,taken:0,s2adm:0});
+          B.units.push(s); fx(B,s,"병사","buff"); }); }
+    }
+    return r; };
+  const defSold=S=>{ const occ=new Set(((S&&S.units)||[]).filter(u=>u.loc&&u.loc[0]==="f").map(u=>u.loc.slice(1))), o=[]; for(let r=C.rows-1;r>=0&&o.length<2;r--) for(let c=0;c<C.cols&&o.length<2;c++) if(!occ.has(r+","+c)) o.push(r+","+c); return o; };
+  AC.s2DefSold=defSold;
+  /* ---------- 매 틱 ---------- */
+  const oStep=AC.skStep; AC.skStep=function(B,dt){ const pre=new Map(); for(const u of B.units) if(u.alive&&u.s1mCast!=null) pre.set(u,u.s1mCast); else if(u.alive) pre.set(u,0);
+    const r=oStep.apply(AC,arguments);
+    for(const u of B.units){ if(!u.alive) continue; let l;
+      // 음유시인: 캐스트 감지 → 1회 반복 예약
+      if((l=L_(B,u,"음유시인"))!=null){ const c0=pre.get(u)||0; if((u.s1mCast||0)>c0){ if(u.s2echoing){ u.s2echoing=0; } else u.s2echoQ=B.t+0.4; } }
+      if(u.s2echoQ&&B.t>=u.s2echoQ&&!(u.stun>B.t)&&AC.s1CF&&AC.s1CF[u.s1n]&&u.s1mMax>0&&!((u.s1hLock||0)>B.t||(u.s1lock||0)>B.t)){ u.s2echoQ=0; const m0=u.mana; u.mana=Math.max(u.mana,u.s1mMax); u.s2echoing=1; u.s2echoRed=[55,35,35][L_(B,u,"음유시인")||0];
+        const c0=u.s1mCast||0; try{ AC.s1CF[u.s1n](B,u); }catch(e){} if((u.s1mCast||0)>c0){ u.mana=m0; u.s2echoW=Math.max(B.t+0.5,(u.s1lock||0)); fx(B,u,"메아리","sk5"); } else { u.mana=m0; u.s2echoing=0; } }
+      // 뱃사공 10초
+      if(u.s2oar&&B.t>=10){ u.def-=u.s2oar; u.res-=u.s2oar; u.s2oar=0; }
+      // 쾌속선 가속 종료
+      if(u.s2spdB&&B.t>=u.s2spdE){ u.asPct-=u.s2spdB; u.s2spdB=0; AC.reIv(u); }
+      // 바다학살자 돌진
+      if(!u.s2dive&&u.hp<u.maxHp*0.35&&has(B,u,"바다학살자")){ u.s2dive=1; u.untg=B.t+1; const F=foes(B,u).filter(x=>AC.dist(x,u)<=4); if(F.length){ const back=x=>u.side==="me"?-x.R:x.R; F.sort((a,b)=>back(a)-back(b)); dashTo(B,u,F[0]); } fx(B,u,"돌진","buff"); }
+      // 출혈
+      if(u.s2bl&&u.s2bl.length){ u.s2bl=u.s2bl.filter(b=>{ const k=Math.min(dt,b.end-b.t0)/2.5; if(b.src&&b.src.alive!==undefined) AC.applyDmg(B,b.src,u,b.v*k*100/(100+Math.max(0,u.res||0)),{id:"s2bleed"}); b.t0+=dt; return b.t0<b.end&&u.alive; }); }
+      // 등대지기 보호막 만료
+      if(u.s2lh&&B.t>=u.s2lh.end){ u.shield=Math.max(0,(u.shield||0)-u.s2lh.g); u.s2lh=null; }
+      // 제독 공속 고정
+      if(u.s2adm&&u.asPct!==0){ const v=u.asPct; u.asPct=0; u.s1ma=(u.s1ma||0)+0.5*Math.max(0,v); AC.reIv(u); }
+    }
+    // 바다망령
+    if(B.s2wr) for(const side in B.s2wr){ if(B.t<B.s2wr[side]) continue; B.s2wr[side]+=3; const l=lv(B,side,"바다망령"); if(l==null) continue; const base=[5,5,20,40][l];
+      allies(B,side).forEach(u=>{ if(u.s2sold||u.s2adm) return; const v=base+(l>=1&&has(B,u,"바다망령")?15:0); AC.s1MGainD(B,u,v); }); }
+    // 포세이돈 병사: 포세이돈 사망 또는 아군 전멸 시 소멸
+    for(const s of B.units) if(s.alive&&s.s2sold){ const p=B.units.find(x=>x.uid===s.s2sold); const others=B.units.some(x=>x.alive&&x.side===s.side&&!x.s2sold); if(!p||!p.alive||!others){ s.alive=false; s.hp=0; B.events.push({k:"die",b:s.uid}); } }
+    return r; };
+  /* ---------- 공속 고정 (제독) ---------- */
+  const oRI=AC.reIv; AC.reIv=function(u){ oRI.apply(AC,arguments); if(u&&u.s2adm) u.iv=1/0.55; };
+  /* ---------- 기본 공격 ---------- */
+  const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ const r=oSA.apply(AC,arguments); let l;
+    if((l=L_(B,u,"작살꾼"))!=null&&(u.s2hp||0)<8){ u.s2hp=(u.s2hp||0)+1; u.atkPct+=[7,13,25][l]; }
+    if(L_(B,u,"음유시인")===2) AC.s1MGainD(B,u,5);
+    if(u.s2adm){ u.mana=Math.min(8,(u.mana||0)+1); }
+    return r; };
+  /* ---------- 마나 (제독: 일반 마나 획득 없음) ---------- */
+  const oMG=AC.s1MGain; AC.s1MGain=function(B,u,v){ if(u&&(u.s2adm||u.s2sold)) return 0; return oMG.apply(this,arguments); };
+  /* ---------- 피해 ---------- */
+  const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ o=o||{}; let l;
+    if(a&&t&&a.side!==t.side&&d>0){
+      if((l=L_(B,a,"낚시꾼"))!=null) d*=1+[6,20,40][l]*(t.hp<t.maxHp*0.66?2:1)/100;
+      if(a.s2echoW>B.t&&isSk(o)) d*=1-(a.s2echoRed||0)/100;
+      if((l=L_(B,t,"잠수부"))!=null){ const R=[[15,25],[20,35],[35,50]][l], m=1-Math.max(0,t.hp)/t.maxHp; d*=1-(R[0]+(R[1]-R[0])*m)/100; } }
+    const h0=t&&t.alive?t.hp+(t.shield||0):0, al=t&&t.alive; const r=oAD.call(AC,B,a,t,d,o);
+    try{ if(a&&t&&a.side!==t.side){ const dealt=Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0));
+      if(dealt>0&&a.alive&&L_(B,a,"낚시꾼")!=null) AC.heal(B,a,dealt*0.12,"syn:낚시꾼");
+      if(has(B,a,"파도술사")) (t.s2wv=t.s2wv||{})[a.uid]=1;
+      if(dealt>0&&(l=L_(B,a,"바다학살자"))!=null&&l>=1&&o.id!=="s2bleed"&&t.alive){ (t.s2bl=t.s2bl||[]).push({src:a,v:dealt*[0,55,100][l]/100,t0:0,end:2.5}); }
+      if((l=L_(B,a,"포병대"))!=null&&isSk(o)&&dealt>0&&!AC._s2art){ a.s2artN=(a.s2artN||0)+1; a.s2artSum=(a.s2artSum||0)+dealt; if(a.s2artN>=2){ const v=a.s2artSum*[55,115,175][l]/100; a.s2artN=0; a.s2artSum=0; const tg=t.alive?t:foes(B,a).sort((x,y)=>AC.dist(x,a)-AC.dist(y,a))[0]; if(tg){ AC._s2art=1; try{ B.events.push({k:"hit",a:a.uid,b:tg.uid,d:Math.round(v),crit:false,sk:true,rg:true,aR:a.R,aC:a.C,bR:tg.R,bC:tg.C}); oAD.call(AC,B,a,tg,v,{id:"s2art"}); } finally{ AC._s2art=0; } } } }
+      if(t.alive&&!t.mon&&!t.boss&&t.hp<t.maxHp*0.12&&has(B,a,"레비아탄")&&a.alive){ AC.kill(B,t,a); fx(B,t,"처형","dis"); AC.heal(B,a,400,"syn:레비아탄"); AC.s1MGainD(B,a,50); }
+      else if(t.alive&&t.mon&&!t.boss&&t.hp<t.maxHp*0.12&&has(B,a,"레비아탄")&&a.alive){ AC.kill(B,t,a); AC.heal(B,a,400,"syn:레비아탄"); AC.s1MGainD(B,a,50); } } }catch(e){}
+    return r; };
+  /* ---------- 처치 (쾌속선 · 파도술사) ---------- */
+  const oKi=AC.kill; AC.kill=function(B,t,a){ const al=t&&t.alive; const r=oKi.apply(AC,arguments);
+    try{ if(al&&t&&!t.alive){
+      for(const u of B.units){ if(!u.alive||u.side===t.side) continue; const l=L_(B,u,"쾌속선"); if(l==null||!(u.tgUid===t.uid||u.s1lastTg===t)) continue; const F=foes(B,u); if(!F.length) continue; const n=F.sort((x,y)=>AC.dist(x,u)-AC.dist(y,u))[0]; dashTo(B,u,n);
+        if(u.s2spdB){ u.asPct-=u.s2spdB; } u.s2spdB=Math.round(u.s2spd*0.5); u.asPct+=u.s2spdB; u.s2spdE=B.t+2.5; AC.reIv(u); fx(B,u,"돌진","buff"); }
+      if(t.s2wv){ const side=t.side==="me"?"ai":"me", l=lv(B,side,"파도술사"); const src=B.units.find(x=>t.s2wv[x.uid]&&x.alive)||B.units.find(x=>t.s2wv[x.uid]); if(l!=null&&src){ const n=l>=2?2:1, pct=[7,10,12,15][l];
+          B.units.filter(x=>x.alive&&x.side===t.side&&x!==t).sort((x,y)=>AC.dist(x,t)-AC.dist(y,t)).slice(0,n).forEach(x=>magHit(B,src,x,t.maxHp*pct/100,"s2wave")); } } } }catch(e){}
+    return r; };
+  /* ---------- 전투 종료: 대장장이 제작 ---------- */
+  const oBE=AC.battleEnd; AC.battleEnd=function(B){ const r=oBE.apply(AC,arguments); if(!B.persist||pve(B)) return r;
+    try{ for(const side of ["me","ai"]){ const S=B.Sref&&B.Sref[side]; if(!S) continue; if(!B.units.some(u=>u.side===side&&has(B,u,"대장장이"))) continue;
+      S.s2forge=(S.s2forge||0)+1; if(S.s2forge>=4){ S.s2forge=0; const a=D.acc[Math.floor(AC.rnd(B)*D.acc.length)]; H.give&&H.give(S,a.id); say(AC.st,S,"🔨 대장장이: 유물 제작 완료 — "+a.name); } else say(AC.st,S,`🔨 대장장이 제작 ${S.s2forge}/4`); } }catch(e){}
+    return r; };
+  /* ---------- 화면: 포세이돈 병사 배치 · 대장장이 진척 ---------- */
+  const fieldHas=(S,id)=>{ try{ const x=AC.synLevels(AC.field(S).map(u=>u.no),AC.embN?AC.embN(AC.field(S)):0,{}).find(z=>z.s.id===id); return !!(x&&x.lv>=0); }catch(e){ return false; } };
+  const css=document.createElement("style"); css.textContent=`.accell.s2sold{box-shadow:inset 0 0 0 2px #4fc3ff!important}.accell.s2sold::after{content:"🔱";position:absolute;font-size:16px;opacity:.85;pointer-events:none}#s2info{position:fixed;right:10px;bottom:90px;z-index:50;background:#1d2636;color:#fff;border:1px solid #4fc3ff;border-radius:8px;padding:6px 10px;font-size:12px}#s2info button{margin-left:4px;padding:2px 8px}`; document.head.appendChild(css);
+  const oR=AC.render; AC.render=function(){ const r=oR.apply(AC,arguments); try{ const st=AC.st; if(!st||!st.me) return r; const S=st.me, po=fieldHas(S,"포세이돈"), sm=fieldHas(S,"대장장이");
+      const sold=po?new Set((S.s2sold&&S.s2sold.length?S.s2sold:defSold(S)).slice(0,2)):new Set(); document.querySelectorAll(".accell[data-acloc]").forEach(el=>{ const k=el.getAttribute("data-acloc"); if(k[0]!=="f") return; el.classList.toggle("s2sold",sold.has(k.slice(1))); if(sold.has(k.slice(1))) el.style.position=el.style.position||"relative"; });
+      let v=document.getElementById("s2info"); if(po||sm){ if(!v){ v=document.createElement("div"); v.id="s2info"; document.body.appendChild(v); }
+        v.innerHTML=(po?`🔱 병사 배치${AC.s2SoldMode?" — 빈 칸을 누르세요":""}<button type="button" data-s2sold>${AC.s2SoldMode?"완료":"위치 변경"}</button>`:"")+(po&&sm?"<br>":"")+(sm?`🔨 유물 제작 ${(S.s2forge||0)}/4`:""); } else if(v) v.remove(); }catch(e){} return r; };
+  document.addEventListener("click",e=>{ const st=AC.st; if(!st||!st.me) return; const b=e.target.closest&&e.target.closest("[data-s2sold]"); if(b){ AC.s2SoldMode=!AC.s2SoldMode; AC.s2SoldN=0; AC.render(); return; }
+    if(!AC.s2SoldMode||st.phase!=="prep") return; const c=e.target.closest&&e.target.closest(".accell[data-acloc]"); if(!c) return; const k=c.getAttribute("data-acloc").slice(1); if(AC.st.me.units.some(u=>u.loc==="f"+k)) return;
+    e.stopImmediatePropagation(); e.preventDefault(); const S=st.me; S.s2sold=(S.s2sold&&S.s2sold.length?S.s2sold:defSold(S)).slice(0,2); if(!S.s2sold.includes(k)){ S.s2sold[(AC.s2SoldN++)%2]=k; } try{ AC.save&&AC.save(); }catch(e){} AC.render(); },true);
 })();
 ;(function(){ if(typeof AC!=="undefined"&&AC.seasonId==="s2"&&AC.S1AUG&&window.S2AUG_PATCH) S2AUG_PATCH(AC.S1AUG); })();  /* 시즌2 플레이어 발전 */
 </script>
