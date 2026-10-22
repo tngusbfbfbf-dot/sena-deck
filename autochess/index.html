@@ -6996,7 +6996,7 @@ AC.PX={ game:null, scene:null, host:null, ready:false, units:{}, model:{}, cnt:{
     this.scene.tweens.add({targets:U.body,x:dx*m,y:dy*m,duration:120,yoyo:true,ease:"Quad.easeOut",onComplete:()=>{ U.lg=0; U.body.setPosition(0,0); }}); },
   punch(uid,dx,dy,sk){ const U=this.units[uid]; if(!U) return; if(U.img&&U.img.setTintFill){ U.img.setTintFill(sk?0xffe0ff:0xffffff); U.img.setAlpha(0.85); this.scene.time.delayedCall(60,()=>{ if(U.img.active){ U.img.clearTint(); U.img.setAlpha(1); U.dirty=1; } }); } },
   /* 유닛 */
-  card(m,sz){ const S=this.scene, d=this.dpr||1, key=`acc_${m.mon?"mon":m.no}_${m.t||0}_${m.side}_${Math.round(sz)}_${this.atlasN||0}`; if(S.textures.exists(key)) return key;
+  card(m,sz){ const S=this.scene, d=this.dpr||1, key=`acc_${m.mon?"mon":m.no}_${m.t||0}_${m.side}_${Math.round(sz)}_${this.atlasN||0}${AC.seasonId==="s2"?"_s2":""}`; if(S.textures.exists(key)) return key;
     const p=Math.round(sz*d), pad=Math.round(4*d), cv=document.createElement("canvas"); cv.width=cv.height=p+pad*2; const x=cv.getContext("2d"), o=pad, col="#"+(this.tierCol[m.tier]||0x888888).toString(16).padStart(6,"0"), rr=8*d;
     const rp=(X,Y,W,H,R)=>{ x.beginPath(); x.moveTo(X+R,Y); x.arcTo(X+W,Y,X+W,Y+H,R); x.arcTo(X+W,Y+H,X,Y+H,R); x.arcTo(X,Y+H,X,Y,R); x.arcTo(X,Y,X+W,Y,R); x.closePath(); };
     x.save(); rp(o,o,p,p,rr); x.clip(); x.fillStyle=m.mon?"#3a2030":"#222"; x.fillRect(o,o,p,p);
@@ -7005,7 +7005,7 @@ AC.PX={ game:null, scene:null, host:null, ready:false, units:{}, model:{}, cnt:{
     x.restore(); x.lineWidth=(m.tier>=3?3:2)*d; x.strokeStyle=col; rp(o,o,p,p,rr); x.stroke(); x.lineWidth=1.5*d; x.strokeStyle=m.side==="me"?"#5aa8ff":"#ff5a5a"; rp(o-2*d,o-2*d,p+4*d,p+4*d,rr+d); x.stroke();
     if(!m.mon){ const t=m.t||0, n=6, r=Math.max(3*d,p*0.065), y=o+p-r-1*d, gap=r*2.05, x0=o+p/2-gap*(n-1)/2;
       for(let i=0;i<n;i++){ x.beginPath(); for(let k=0;k<10;k++){ const a=-Math.PI/2+k*Math.PI/5, q=k%2?r*0.45:r; const X=x0+i*gap+Math.cos(a)*q, Y=y+Math.sin(a)*q; k?x.lineTo(X,Y):x.moveTo(X,Y); } x.closePath(); x.fillStyle=i<Math.min(t,6)?"#ffd23f":"#6b6f78"; x.fill(); x.lineWidth=(i<t-6?1.6:0.8)*d; x.strokeStyle=i<t-6?"#ff2a2a":"#000"; x.stroke(); }
-      const ro=AC.role(m.no); if(ro){ const fs=Math.max(8,Math.round(sz*0.15))*d; x.font=`${fs}px system-ui,sans-serif`; const w=x.measureText(ro.short).width+4*d; x.fillStyle=ro.dmg==="magic"?"#5b3aa0":"#8a4a1c"; x.fillRect(o+2*d,o+6*d,w,fs+2*d); x.fillStyle="#fff"; x.textBaseline="top"; x.fillText(ro.short,o+4*d,o+7*d); } }
+      const ro=AC.seasonId==="s2"?null:AC.role(m.no); if(ro){ const fs=Math.max(8,Math.round(sz*0.15))*d; x.font=`${fs}px system-ui,sans-serif`; const w=x.measureText(ro.short).width+4*d; x.fillStyle=ro.dmg==="magic"?"#5b3aa0":"#8a4a1c"; x.fillRect(o+2*d,o+6*d,w,fs+2*d); x.fillStyle="#fff"; x.textBaseline="top"; x.fillText(ro.short,o+4*d,o+7*d); } }
     S.textures.addCanvas(key,cv); return key; },
   mk(m){ const S=this.scene, {W,H}=this.cell(), sz=Math.min(W,H)*0.86, c=S.add.container(0,0).setDepth(10+m.R), body=S.add.container(0,0); c.add(body); const U={c,body,sz};
     if(m.tier>=4&&!this.low()){ const a=S.add.graphics(); a.fillStyle(m.tier===5?0xff9a2a:0xc58bff,0.35).fillRoundedRect(-sz/2-4,-sz/2-4,sz+8,sz+8,10); body.add(a); S.tweens.add({targets:a,alpha:{from:0.35,to:1},duration:m.tier===5?800:1200,yoyo:true,repeat:-1,ease:"Sine.easeInOut"}); U.aura=a; }
@@ -12484,7 +12484,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
 }catch(e){ console.warn("S2 1코 스킬",e); } })();
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
-(function(){ const F=0.78, on=()=>AC.seasonId==="s2";
+(function(){ const F=0.70, on=()=>AC.seasonId==="s2";
   const css=document.createElement("style"); css.textContent=
    "body.s2vis #acBoard .accell>.actk{transform:scale("+F+");transform-origin:50% 50%}"+
    "body.s2vis #acBoard.s2fight .accell{border-color:transparent!important;box-shadow:none!important;background:transparent!important}"+
