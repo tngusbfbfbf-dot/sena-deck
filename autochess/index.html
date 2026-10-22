@@ -8495,7 +8495,7 @@ window.S2AUG_PATCH=function(A){ /* A=AC.S1AUG {실버,골드,프리즘} — 시�
   const s1Row=no=>{ const r=AC.role(no); if(!r||!r.s1) return null; const tr=AC.tierNo(no), R=AC.S1RT[r.s1]; return R[String(tr)]||R[String(Math.max(1,tr-1))]||Object.values(R)[0]; };
   const lerp=(tri,t,five)=>{ const a=five?[0,3,6]:[0,6,12]; if(t>=a[2]) return tri[2]; const i=t>=a[1]?1:0, f=(t-a[i])/(a[i+1]-a[i]); return tri[i]+(tri[i+1]-tri[i])*f; };
   AC.statsOf=function(no,t){ const k="s1:"+no+":"+t; AC._S=AC._S||{}; if(AC._S[k]) return AC._S[k]; const r=AC.role(no), row=s1Row(no); if(!row) return {atk:40,def:30,res:30,hp:600,skill:0,aspd:0.7,crit:25,cdmg:130,weak:0,block:0,dmgRed:0,dmg:"phys"};
-    const five=AC.tierNo(no)===5, P=AC.powerOf(no,t), d=row.dr[0], rs=row.dr[1]!=null?row.dr[1]:row.dr[0]; /* 방/마저 = 초월 무관 고정값 (표의 '40/40' = 방어력/마법 저항) */
+    const five=AC.tierNo(no)===5&&AC.seasonId!=="s2" /* 시즌2: 5코스트도 0/6/12 */, P=AC.powerOf(no,t), d=row.dr[0], rs=row.dr[1]!=null?row.dr[1]:row.dr[0]; /* 방/마저 = 초월 무관 고정값 (표의 '40/40' = 방어력/마법 저항) */
     return AC._S[k]={atk:Math.round(lerp(row.atk,t,five)),def:d,res:rs,hp:Math.round(lerp(row.hp,t,five)),skill:P.skill,aspd:row.aspd,crit:25,cdmg:130,weak:0,block:0,dmgRed:0,dmg:r.dmg}; };
   AC.rangeOf=function(no){ const row=s1Row(no); return row?row.rng:1; };
   AC.rangeKind=function(no){ const row=s1Row(no); return row&&row.rng>1?"ranged":"melee"; };
