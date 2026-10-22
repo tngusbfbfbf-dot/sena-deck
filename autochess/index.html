@@ -12493,17 +12493,23 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
   const mark=()=>{ document.body.classList.toggle("s2vis",on()); const b=document.getElementById("acBoard"); if(b) b.classList.toggle("s2fight",on()&&!!AC.st&&AC.st.phase==="battle"); };
   const oR=AC.render; AC.render=function(){ const r=oR.apply(this,arguments); try{ mark(); }catch(e){} return r; };
   const PX=AC.PX; if(!PX) return;
+  /* S2 전투 초상화: 아틀라스에 S2 아트(배경 f + 초상 f) 사용 (기존엔 S2 영웅 portrait 없음 → 이름 글자) */
+  const oBA=PX.buildAtlas; PX.buildAtlas=function(){ if(this.atlas&&this._atSid!==AC.seasonId){ this.atlas=null; }
+    this._atSid=AC.seasonId; if(!on()) return oBA.apply(this,arguments);
+    let inP=0; const pick=(h,re)=>{ if(inP) return ""; inP=1; try{ const no=(AC.heroes().find(x=>AC.hero(x.no)===h)||{}).no; const m=no!=null&&String(AC.face(no)).match(re); return m?m[1]:""; }catch(e){ return ""; } finally{ inP=0; } };
+    const oP=portraitFor, oG=gradeBgFor; portraitFor=h=>pick(h,/data-artf="([^"]+)"/)||oP(h); gradeBgFor=h=>pick(h,/class="s2bgf" src="([^"]+)"/)||oG(h);
+    try{ return oBA.apply(this,arguments); } finally{ portraitFor=oP; gradeBgFor=oG; } };
   const oMk=PX.mk; PX.mk=function(m){ const U=oMk.apply(this,arguments); if(!on()) return U;
     const s=U.sz*F; U.sz=s; U.img.setDisplaySize(s+8,s+8); if(U.aura) U.aura.setScale(F); U.ic.setPosition(s/2,-s/2+AC_CONFIG.hpBar.h); U.dirty=1; return U; };
-  const oSy=PX.sync; PX.sync=function(B){ const r=oSy.apply(this,arguments); try{ mark(); }catch(e){} if(!on()) return r;
-    for(const k in this.units){ const U=this.units[k]; if(U.tx==null) continue; if(U.gx!==U.tx||U.gy!==U.ty){ const d=Math.hypot(U.tx-U.c.x,U.ty-U.c.y)/Math.max(1,Math.min(this.cell().W,this.cell().H));
-      U.gx=U.tx; U.gy=U.ty; U.mx=U.c.x; U.my=U.c.y; U.mt=0; U.md=Math.min(600,Math.max(180,260*Math.sqrt(Math.max(d,0.01)))); } } return r; };
+  const oSy=PX.sync; PX.sync=function(B){ const r=oSy.apply(this,arguments); try{ mark(); }catch(e){} return r; };
+  /* MOBA식 이동: 논리 칸 목표로 일정 속도 직선 이동, 칸마다 멈춤 없음, 멀면 따라잡기(대시/도약), 마지막만 살짝 감속 */
+  const V=3.8; /* 칸/모의초 (논리 이동 ≈ 0.3초/칸 보다 약간 빠름) */
   const oT=PX.tick; PX.tick=function(dt){ if(!on()) return oT.apply(this,arguments);
-    const rate=(AC.speed||1)*(AC_CONFIG.playRate||1);
-    for(const id in this.units){ const U=this.units[id]; if(U.tx==null) continue;
-      if(U.gx!==U.tx||U.gy!==U.ty||U.md==null){ U.gx=U.tx; U.gy=U.ty; U.mx=U.c.x; U.my=U.c.y; U.mt=0; U.md=260; }
-      U.mt=Math.min(U.md,U.mt+dt*rate); const p=U.mt/U.md, e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-      U.c.x=U.mx+(U.tx-U.mx)*e; U.c.y=U.my+(U.ty-U.my)*e; }
+    const rate=(AC.speed||1)*(AC_CONFIG.playRate||1), {W,H}=this.cell(), cs=Math.min(W,H), sec=Math.min(dt,100)/1000*rate;
+    for(const id in this.units){ const U=this.units[id]; if(U.tx==null) continue; const dx=U.tx-U.c.x, dy=U.ty-U.c.y, d=Math.hypot(dx,dy); if(d<0.5){ U.c.x=U.tx; U.c.y=U.ty; continue; }
+      const dc=d/cs; if(dc>4){ U.c.x=U.tx-dx/d*cs*4; U.c.y=U.ty-dy/d*cs*4; }
+      const v=dc>1.6?Math.max(V,dc*9):V; let st=v*cs*sec; if(dc<0.25) st=Math.min(st,Math.max(d*Math.min(1,sec*14),0.6));
+      const k=Math.min(1,st/Math.hypot(U.tx-U.c.x,U.ty-U.c.y)); U.c.x+=(U.tx-U.c.x)*k; U.c.y+=(U.ty-U.c.y)*k; }
     if(this.B&&this.ready&&this.pendSync){ this.pendSync=0; this.sync(this.B); } };
 })();</script>
 </body>
