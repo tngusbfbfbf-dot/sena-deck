@@ -12496,7 +12496,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
   const oHT=AC.hpTicks; AC.hpTicks=function(tot){ if(!on()) return oHT.apply(this,arguments); const L=[]; if(!(tot>0)) return L;
     const TK=tot>40000?10000:tot>8000?5000:1000, thinOn=tot<=6000;
     for(let v=TK;v<tot-1e-6;v+=TK) L.push({f:v/tot,w:2,thick:true,col:"#000"});
-    if(thinOn) for(let v=300;v<tot-1e-6;v+=300){ const n=Math.round(v/TK)*TK; if(n>0&&Math.abs(v-n)/tot<0.03) continue; L.push({f:v/tot,w:1,thick:false,col:"#8a8f98"}); }
+    if(thinOn) for(let v=300;v<tot-1e-6;v+=300){ const n=Math.round(v/TK)*TK; if(n>0&&Math.abs(v-n)/tot<0.03) continue; L.push({f:v/tot,w:1,thick:false,col:"#4a4e56"}); }
     return L.sort((a,b)=>a.f-b.f); };
   const PX=AC.PX; if(!PX) return;
   /* S2 전투 초상화: 아틀라스에 S2 아트(배경 f + 초상 f) 사용 (기존엔 S2 영웅 portrait 없음 → 이름 글자) */
