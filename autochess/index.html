@@ -12396,5 +12396,92 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
       return r.replace(/^<span class="acface hiart([^"]*)"/,`<span data-s2cost="${c}" class="acface hiart$1"`).replace(/(data-acart="[cf]">)/,`$1<img class="s2bgf" src="${base}f${c}.webp" alt=""><i class="s2bgc" style="border-image-source:url(${base}c${c}.webp)"></i>`); }catch(e){ return r; } };
 }catch(e){ console.warn("S2 코스트 배경",e); } })();
 </script>
+<script>
+/* ===== 시즌2 1코스트 영웅 스킬 14종 (AC.seasonId==="s2" 전용 · 임시 스킬 대체) ===== */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2") return; const C=AC_CONFIG;
+  const N=n=>S2N(n), Z=s=>String(s||"").replace(/\u200B/g,"");
+  const L=(u,v)=>{ if(!Array.isArray(v)) return v; const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; };
+  const MA=u=>1+(u.s1ma||0)/100;
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  const dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C), adj=(a,b)=>a!==b&&dist(a,b)<1.5;
+  const near=(o,Ls)=>Ls.slice().sort((a,b)=>dist(a,o)-dist(b,o));
+  const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"sk5"});
+  const hitEv=(B,u,t,d,mg)=>B.events.push({k:"hit",mg:mg?1:0,a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
+  /* (마) 값 × (1+마공/100) → 마법 저항 · 피해 증폭 · 받는 피해 감소 (시즌1 magHit 동일) */
+  const mag=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; let d=v*MA(u)*100/(100+Math.max(0,t.res||0))*(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100); d=Math.max(1,Math.round(d)); hitEv(B,u,t,d,1); AC.applyDmg(B,u,t,d,{id:"sk:"+id}); return d; };
+  /* (공) 현재 공격력 × % (시즌1 phyHit 동일 · 치명은 스킬 치명 규칙) */
+  const phy=(B,u,t,coef,id)=>{ if(!t||!t.alive) return 0; let d=AC._s1oCH.call(AC,B,u,t,coef,false,true); d=Math.max(1,Math.round(d)); hitEv(B,u,t,d,0); AC.applyDmg(B,u,t,d,{id:"sk:"+id}); return d; };
+  const heal=(B,u,v,id)=>AC.heal(B,u,v,"sk:"+id);
+  const stun=(B,t,d)=>{ if(t&&t.alive) AC.debuff(B,t,"stun",()=>{ t.stun=Math.max(t.stun||0,B.t+d); fx(B,t,"기절","dis"); }); };
+  const later=(B,at,fn)=>{ (B.s2q=B.s2q||[]).push({at,fn}); };
+  const tmp=(B,t,key,val,dur,kind)=>{ if(!t||!t.alive) return; const ok=()=>{ t[key]=(t[key]||0)+val; AC.reIv(t); later(B,B.t+dur,()=>{ t[key]-=val; AC.reIv(t); }); }; if(kind) AC.debuff(B,t,kind,ok); else ok(); };
+  const tgt=(B,u)=>AC.s1Tgt(B,u)||near(u,foes(B,u))[0];
+  const onLine=(B,u,dir,F)=>{ const len=Math.hypot(dir[0],dir[1])||1, dx=dir[0]/len, dy=dir[1]/len; return F.filter(x=>{ const vx=x.R-u.R, vy=x.C-u.C, p=vx*dx+vy*dy; return p>0&&Math.abs(vx*dy-vy*dx)<0.6; }).sort((a,b)=>dist(a,u)-dist(b,u)); };
+  const burning=(B,t)=>!!(t.burn&&B.t<t.burn.until);
+  const cast=(B,u,nm)=>{ fx(B,u,nm,"sk5"); if(AC.s1HitLock) AC.s1HitLock(B,u,0.3); };
+  const TXT={
+    "실베스타":["다음 3회 공격은 대상에게 물리 피해, 대상과 인접한 적들에게 마법 피해. 공격력 비례 155%/155%/155%, 마법 25/35/50.",[0,30]],
+    "리나":["가장 가까운 적에게 마나 파동 마법 피해 + 4초 불태움. 이미 불타면 추가 마법 피해 + 기절. 피해 135/175/235, 추가 165/225/300, 기절 1/1.5/2초. 정예 추가 효과(아틀란티스 정예일 때): 두 번째 파동을 다른 근처 대상(불타는 적 우선)에 30% 감소 피해.",[50,100]],
+    "밀리아":["대상과 5초 연결 + 마법 피해 200/325/550; 연결 중 대상이 받는 피해의 25%/30%/40%만큼 밀리아 회복.",[40,80]],
+    "라이언":["대상에게 물리 250/370/550% + 3초 40% 둔화(공속 감소).",[0,60]],
+    "벨리카":["대상에 불의 구체, 폭발하며 대상 공격력 4초 40% 감소 + 주변 적(인접) 마법 피해 240/360/600 (대상 포함).",[0,70]],
+    "아킬라":["4초 받는 모든 피해 50/52/55% 감소.",[45,90]],
+    "카르마":["방어 태세 2.5초 받는 피해 감소, 그 후 대상에게 물리 999%.\n피해량 감소: ((최대 75%)40% = (물)20% + (마)20/20/25",[0,40]],
+    "루디":["대상에게 물리 330%; 대상 생명력이 루디보다 높으면 추가 물리 450%; 기절 1.5/1.75/2초; 전투 끝까지 방어력 감소(마) 15/18/20.",[40,70]],
+    "스파이크":["공격력 450% 피해 + 회복(마) 250/300/375.",[30,100]],
+    "카일":["마나 없음(패시브): 잃은 생명력 1%당 공속 2/3/4% 증가; 기본 공격 시 회복(마) 20/30/70.",[0,0]],
+    "발리스타":["가장 먼 적 방향 쇠뇠, 처음 적중한 적에게 공격력 180/200/240% + 추가 마법 350/600/1000. 처치 시 관통, 초과 피해만큼 다음 적중 적에게 피해.",[0,120]],
+    "손오공":["가장 가까운 적 강타 마법 250/350/500; 대상 인접에 다른 적이 없으면 추가 마법 750/1050/1500.",[0,60]],
+    "파이":["패시브 처치마다 공격력 1.5% 영구(전투 간 유지). 사용: 대상에게 물리 300% + 마법 40/90/120 (0/6/12); 이 스킬로 처치 시 3칸 내 생명력 최저 적을 관통해 뒤 칸 도착 후 추가 물리 50%.",[0,50]],
+    "유이":["현재 대상 관통 음파 마법 250/375/585, 적중 적 하나당 피해 40%씩 감소.",[0,60]]};
+  for(const n in TXT){ const k=N(n); S1SK1[k]={name:n+" 스킬",img:"",desc:TXT[n][0]}; if(AC.S1MANA) AC.S1MANA[k]=TXT[n][1].slice(); }
+  const CF={
+    "실베스타":(B,u)=>{ cast(B,u,"3연속 강화"); u.s2sil=3; },
+    "리나":(B,u)=>{ const F=foes(B,u); const t=near(u,F)[0]; if(!t) return; cast(B,u,"마나 파동");
+      const wave=(x,k)=>{ const was=burning(B,x); mag(B,u,x,L(u,[135,175,235])*k,"리나"); if(was&&x.alive){ mag(B,u,x,L(u,[165,225,300])*k,"리나"); stun(B,x,L(u,[1,1.5,2])); } if(x.alive&&AC.s1Burn) AC.s1Burn(B,u,x,1,4); };
+      wave(t,1); if(u.s2el){ const R=foes(B,u).filter(x=>x!==t); const t2=R.filter(x=>burning(B,x)).sort((a,b)=>dist(a,u)-dist(b,u))[0]||near(u,R)[0]; if(t2) wave(t2,0.7); } },
+    "밀리아":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,"연결"); t.s2link={src:u,end:B.t+5,pct:L(u,[25,30,40])}; mag(B,u,t,L(u,[200,325,550]),"밀리아"); },
+    "라이언":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,"강타"); phy(B,u,t,L(u,[250,370,550]),"라이언"); if(t.alive){ tmp(B,t,"asPct",-40,3,"slow"); fx(B,t,"둔화","dis"); } },
+    "벨리카":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,"불의 구체"); tmp(B,t,"atkPct",-40,4,"weak"); [t].concat(foes(B,u).filter(x=>adj(x,t))).forEach(x=>mag(B,u,x,L(u,[240,360,600]),"벨리카")); },
+    "아킬라":(B,u)=>{ cast(B,u,"피해 감소"); tmp(B,u,"dr",L(u,[50,52,55]),4); },
+    "카르마":(B,u)=>{ cast(B,u,"방어 태세"); const atk=AC.atkNow(B,u), v=Math.min(75,atk*0.2+L(u,[20,20,25])*MA(u)); u.s2karV=v; tmp(B,u,"dr",v,2.5); later(B,B.t+2.5,()=>{ if(!u.alive) return; const t=tgt(B,u); if(t) phy(B,u,t,999,"카르마"); }); },
+    "루디":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,"강타"); const hi=t.hp>u.hp; phy(B,u,t,330,"루디"); if(hi&&t.alive) phy(B,u,t,450,"루디"); if(t.alive){ stun(B,t,L(u,[1.5,1.75,2])); const v=L(u,[15,18,20])*MA(u); t.def=Math.max(0,(t.def||0)-v); fx(B,t,"방어 -"+Math.round(v),"dis"); } },
+    "스파이크":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,"강타"); phy(B,u,t,450,"스파이크"); heal(B,u,L(u,[250,300,375])*MA(u),"스파이크"); },
+    "카일":(B,u)=>{},
+    "발리스타":(B,u)=>{ const F=foes(B,u); if(!F.length) return; const far=F.slice().sort((a,b)=>dist(b,u)-dist(a,u))[0]; cast(B,u,"쇠뇌"); const line=onLine(B,u,[far.R-u.R,far.C-u.C],F); const t=line[0]||far; const h0=t.hp+(t.shield||0);
+      const d=phy(B,u,t,L(u,[180,200,240]),"발리스타")+mag(B,u,t,L(u,[350,600,1000]),"발리스타");
+      if(!t.alive){ const ex=Math.max(0,d-h0), nx=line.find(x=>x!==t&&x.alive); if(ex>0&&nx){ hitEv(B,u,nx,ex,0); AC.applyDmg(B,u,nx,ex,{id:"sk:발리스타"}); } } },
+    "손오공":(B,u)=>{ const t=near(u,foes(B,u))[0]; if(!t) return; cast(B,u,"강타"); const alone=!foes(B,u).some(x=>adj(x,t)); mag(B,u,t,L(u,[250,350,500]),"손오공"); if(alone&&t.alive) mag(B,u,t,L(u,[750,1050,1500]),"손오공"); },
+    "파이":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,"일격"); phy(B,u,t,300,"파이"); mag(B,u,t,L(u,[40,90,120]),"파이");
+      if(!t.alive){ const n=foes(B,u).filter(x=>dist(x,u)<=3).sort((a,b)=>a.hp-b.hp)[0]; if(n){ const dr=Math.sign(n.R-u.R), dc=Math.sign(n.C-u.C), R=Math.round(n.R)+dr, c=Math.round(n.C)+dc; if(R>=0&&R<C.rows*2&&c>=0&&c<C.cols&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===c)){ u.R=R; u.C=c; } fx(B,u,"관통","sk5"); phy(B,u,n,50,"파이"); } } },
+    "유이":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,"음파"); const line=onLine(B,u,[t.R-u.R,t.C-u.C],foes(B,u)); const L2=line.includes(t)?line:[t].concat(line); let k=1; L2.forEach(x=>{ mag(B,u,x,L(u,[250,375,585])*k,"유이"); k*=0.6; }); } };
+  AC.s1CF=AC.s1CF||{};
+  for(const n in CF){ const f=CF[n]; AC.s1CF[N(n)]=(B,u)=>{ if(n==="카일") return; if(!AC.s1MUse(u)) return; try{ f(B,u); }catch(e){ console.warn("S2 스킬 "+n,e); } }; }
+  AC.S2SK1=CF;
+  /* 전투 시작: 카일 마나 없음 · 파이 영구 공격력 */
+  const oSS=AC.skStart; AC.skStart=function(B){ const r=oSS.apply(AC,arguments);
+    for(const u of B.units){ const n=Z(u.name); if(u.mon||u.s2sold) continue;
+      if(n==="카일"){ u.s1mMax=0; u.mana=0; u.s2kyle=0; }
+      if(n==="파이"){ const src=B.refs&&B.refs[u.uid]; const k=(src&&src.s2paiK)||0; if(k){ u.atkPct+=1.5*k; AC.reIv(u); } } } return r; };
+  /* 매 틱: 예약 효과 · 카일 공속 · 연결 만료 */
+  const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
+    if(B.s2q&&B.s2q.length){ const due=B.s2q.filter(x=>B.t>=x.at); B.s2q=B.s2q.filter(x=>B.t<x.at); due.forEach(x=>{ try{ x.fn(); }catch(e){} }); }
+    for(const u of B.units){ if(!u.alive) continue; if(Z(u.name)==="카일"&&!u.mon&&!u.s2sold){ const v=Math.round((1-u.hp/u.maxHp)*100*L(u,[2,3,4])); if(v!==u.s2kyle){ u.asPct+=v-(u.s2kyle||0); u.s2kyle=v; AC.reIv(u); } } }
+    return r; };
+  /* 피해: 실베스타 강화 공격 · 카일 회복 · 밀리아 연결 회복 */
+  const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ o=o||{}; const h0=t&&t.alive?t.hp+(t.shield||0):0; const r=oAD.apply(AC,arguments);
+    try{ if(a&&t&&a.side!==t.side){ const dealt=Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0));
+      if(t.s2link&&B.t<t.s2link.end&&t.s2link.src.alive&&dealt>0) AC.heal(B,t.s2link.src,dealt*t.s2link.pct/100,"sk:밀리아");
+      if(o.basic&&!AC._s2skIn&&a.alive){ const n=Z(a.name); AC._s2skIn=1; try{
+        if(n==="카일") heal(B,a,L(a,[20,30,70])*MA(a),"카일");
+        if(a.s2sil>0){ a.s2sil--; phy(B,a,t,155,"실베스타"); foes(B,a).filter(x=>adj(x,t)).forEach(x=>mag(B,a,x,L(a,[25,35,50]),"실베스타")); }
+      } finally{ AC._s2skIn=0; } } } }catch(e){}
+    return r; };
+  /* 처치: 파이 영구 공격력 */
+  const oKi=AC.kill; AC.kill=function(B,t,a){ const al=t&&t.alive; const r=oKi.apply(AC,arguments);
+    try{ if(al&&t&&!t.alive&&a&&a.side!==t.side&&Z(a.name)==="파이"&&!a.s2sold){ a.atkPct+=1.5; AC.reIv(a); if(B.persist){ const src=B.refs&&B.refs[a.uid]; if(src) src.s2paiK=(src.s2paiK||0)+1; } } }catch(e){}
+    return r; };
+}catch(e){ console.warn("S2 1코 스킬",e); } })();
+</script>
 </body>
 </html>
