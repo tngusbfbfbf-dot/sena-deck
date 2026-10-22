@@ -12483,5 +12483,28 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
     return r; };
 }catch(e){ console.warn("S2 1코 스킬",e); } })();
 </script>
+<script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
+(function(){ const F=0.78, on=()=>AC.seasonId==="s2";
+  const css=document.createElement("style"); css.textContent=
+   "body.s2vis #acBoard .accell>.actk{transform:scale("+F+");transform-origin:50% 50%}"+
+   "body.s2vis #acBoard.s2fight .accell{border-color:transparent!important;box-shadow:none!important;background:transparent!important}"+
+   "body.s2vis #acLayer .actk.bt{transform:scale("+F+");transition:left .32s ease-in-out,top .32s ease-in-out,opacity .4s}";
+  document.head.appendChild(css);
+  const mark=()=>{ document.body.classList.toggle("s2vis",on()); const b=document.getElementById("acBoard"); if(b) b.classList.toggle("s2fight",on()&&!!AC.st&&AC.st.phase==="battle"); };
+  const oR=AC.render; AC.render=function(){ const r=oR.apply(this,arguments); try{ mark(); }catch(e){} return r; };
+  const PX=AC.PX; if(!PX) return;
+  const oMk=PX.mk; PX.mk=function(m){ const U=oMk.apply(this,arguments); if(!on()) return U;
+    const s=U.sz*F; U.sz=s; U.img.setDisplaySize(s+8,s+8); if(U.aura) U.aura.setScale(F); U.ic.setPosition(s/2,-s/2+AC_CONFIG.hpBar.h); U.dirty=1; return U; };
+  const oSy=PX.sync; PX.sync=function(B){ const r=oSy.apply(this,arguments); try{ mark(); }catch(e){} if(!on()) return r;
+    for(const k in this.units){ const U=this.units[k]; if(U.tx==null) continue; if(U.gx!==U.tx||U.gy!==U.ty){ const d=Math.hypot(U.tx-U.c.x,U.ty-U.c.y)/Math.max(1,Math.min(this.cell().W,this.cell().H));
+      U.gx=U.tx; U.gy=U.ty; U.mx=U.c.x; U.my=U.c.y; U.mt=0; U.md=Math.min(600,Math.max(180,260*Math.sqrt(Math.max(d,0.01)))); } } return r; };
+  const oT=PX.tick; PX.tick=function(dt){ if(!on()) return oT.apply(this,arguments);
+    const rate=(AC.speed||1)*(AC_CONFIG.playRate||1);
+    for(const id in this.units){ const U=this.units[id]; if(U.tx==null) continue;
+      if(U.gx!==U.tx||U.gy!==U.ty||U.md==null){ U.gx=U.tx; U.gy=U.ty; U.mx=U.c.x; U.my=U.c.y; U.mt=0; U.md=260; }
+      U.mt=Math.min(U.md,U.mt+dt*rate); const p=U.mt/U.md, e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      U.c.x=U.mx+(U.tx-U.mx)*e; U.c.y=U.my+(U.ty-U.my)*e; }
+    if(this.B&&this.ready&&this.pendSync){ this.pendSync=0; this.sync(this.B); } };
+})();</script>
 </body>
 </html>
