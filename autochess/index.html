@@ -12377,5 +12377,24 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
     Object.defineProperty(s,"desc",{get:mk,set(){},configurable:true}); });
 }catch(e){ console.warn("S2 원문 설명",e); } })();
 </script>
+<script>
+/* ===== 시즌2 코스트 배경 (S1 gbg 방식: 초상화 뒤 이미지 레이어) · f=정사각(필드·대기석) · c=스탯창 ===== */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2") return;
+  const base=/\/autochess\/?/.test(location.pathname)?"img/heroes/s2bg/":"autochess/img/heroes/s2bg/";
+  const css=document.createElement("style"); css.textContent=`
+  .acface[data-s2cost]{background:none!important}
+  .acface[data-s2cost]>.s2bgf{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:0;pointer-events:none}
+  .acface[data-s2cost]>.s2bgc{position:absolute;inset:0;z-index:0;pointer-events:none;border-style:solid;border-width:0;border-image-slice:22% 15% fill;border-image-width:22% 10%;border-image-repeat:stretch}
+  .acface[data-s2cost][data-acart="f"]>.s2bgc,.acface[data-s2cost][data-acart="c"]>.s2bgf{display:none}
+  .acface[data-s2cost]>img.art{z-index:1}
+  .acface[data-s2cost][data-acart="f"]>img.art{inset:5%;width:90%;height:90%;border-radius:14%}
+  .acface[data-s2cost][data-acart="c"]>img.art{inset:3% 2%;width:96%;height:94%;border-radius:12px}
+  .acshop .acface[data-s2cost]>.s2bgf,.acshop .acface[data-s2cost]>.s2bgc{display:none}
+  .acshop .acface[data-s2cost]>img.art{inset:0!important;width:100%!important;height:100%!important;border-radius:0!important}`;
+  document.head.appendChild(css);
+  const oF=AC.face; AC.face=function(no,cls){ const r=oF.apply(AC,arguments); try{ const h=AC.hero(no); if(!h||!h.s2||r.indexOf("hiart")<0) return r; const c=Math.max(1,Math.min(5,AC.cost(no)||1));
+      return r.replace(/^<span class="acface hiart([^"]*)"/,`<span data-s2cost="${c}" class="acface hiart$1"`).replace(/(data-acart="[cf]">)/,`$1<img class="s2bgf" src="${base}f${c}.webp" alt=""><i class="s2bgc" style="border-image-source:url(${base}c${c}.webp)"></i>`); }catch(e){ return r; } };
+}catch(e){ console.warn("S2 코스트 배경",e); } })();
+</script>
 </body>
 </html>
