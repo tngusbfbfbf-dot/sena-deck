@@ -12154,7 +12154,8 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
   const storm=(B,u)=>{ if(!u||!u.alive||!u.s2bl||!B.s2st||!B.s2st[u.side]||AC._s2stIn) return; if(u.s2blCd>B.t) return; const F=foes(B,u); if(!F.length) return;
     const tg=(u.s1lastTg&&u.s1lastTg.alive&&u.s1lastTg.side!==u.side)?u.s1lastTg:F.sort((a,b)=>AC.dist(a,u)-AC.dist(b,u))[0]; u.s2blCd=B.t+0.4;
     AC._s2stIn=1; try{ magHit(B,u,tg,B.s2st[u.side]*u.s2bl*MA(u),"s2storm"); } finally{ AC._s2stIn=0; } };
-  const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ if(u&&tg&&tg.side!==u.side) u.s1lastTg=tg; const r=oSA.apply(AC,arguments); storm(B,u); return r; };
+  const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ if(u&&tg&&tg.side!==u.side) u.s1lastTg=tg; const r=oSA.apply(AC,arguments); return r; };
+  AC.s2Storm=storm;
   /* ---------- 피해 (흡혈·피격 칼날) ---------- */
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ const h0=t&&t.alive?t.hp+(t.shield||0):0; const r=oAD.apply(AC,arguments);
     try{ if(a&&t&&a.side!==t.side){ const dealt=Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); if(a.s2vamp&&a.alive&&dealt>0) AC.heal(B,a,dealt*a.s2vamp/100,"syn:신기루"); if(t.alive&&!(o&&o.id==="s2storm")) storm(B,t); } }catch(e){}
@@ -12249,7 +12250,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
         AC.reIv(u); } } };
 
   /* ---------- 전투 시작 (효과) ---------- */
-  const oSS=AC.skStart; AC.skStart=function(B){ const r=oSS.apply(AC,arguments); for(const u of B.units) if(!u.s1n&&!u.mon&&AC.S1MANA&&AC.S1MANA[u.name]) u.s1n=u.name;  /* 시즌2 임시 스킬 발동 키 */
+  const oSS=AC.skStart; AC.skStart=function(B){ const r=oSS.apply(AC,arguments); for(const u of B.units){ if(!u.mon&&!u.s2sold&&(window.S2HEROES||[]).some(h=>h.name===u.name)){ u.s2h=1; if(!u.s1n) u.s1n=u.name; } }  /* 시즌2 임시 스킬 발동 키 */
     for(const side of ["me","ai"]){ const U=allies(B,side).filter(u=>!u.golem); let l;
       // 등대지기
       if((l=lv(B,side,"등대지기"))!=null){ const sh=[200,350,500,800][l], ma=[15,25,40,60][l];
@@ -12306,11 +12307,13 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
   /* ---------- 공속 고정 (제독) ---------- */
   const oRI=AC.reIv; AC.reIv=function(u){ oRI.apply(AC,arguments); if(u&&u.s2adm) u.iv=1/0.55; };
   /* ---------- 기본 공격 ---------- */
-  const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ const r=oSA.apply(AC,arguments); let l;
+  const onBasic=(B,u,tg)=>{ let l; if(tg&&tg.side!==u.side) u.s1lastTg=tg;
+    if(u.s2h&&!u.s2adm) AC.s1MGain(B,u,10);  /* 시즌1 규칙: 기본 공격 마나 +10 */
     if((l=L_(B,u,"작살꾼"))!=null&&(u.s2hp||0)<8){ u.s2hp=(u.s2hp||0)+1; u.atkPct+=[7,13,25][l]; }
     if(L_(B,u,"음유시인")===2) AC.s1MGainD(B,u,5);
     if(u.s2adm){ u.mana=Math.min(8,(u.mana||0)+1); }
-    return r; };
+    if(AC.s2Storm) AC.s2Storm(B,u); };
+  const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ const r=oSA.apply(AC,arguments); if(u&&!u.s2h) onBasic(B,u,tg); return r; };  /* sk3 경로 영웅 */
   /* ---------- 마나 (제독: 일반 마나 획득 없음) ---------- */
   const oMG=AC.s1MGain; AC.s1MGain=function(B,u,v){ if(u&&(u.s2adm||u.s2sold)) return 0; return oMG.apply(this,arguments); };
   /* ---------- 피해 ---------- */
@@ -12320,6 +12323,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
       if(a.s2echoW>B.t&&isSk(o)) d*=1-(a.s2echoRed||0)/100;
       if((l=L_(B,t,"잠수부"))!=null){ const R=[[15,25],[20,35],[35,50]][l], m=1-Math.max(0,t.hp)/t.maxHp; d*=1-(R[0]+(R[1]-R[0])*m)/100; } }
     const h0=t&&t.alive?t.hp+(t.shield||0):0, al=t&&t.alive; const r=oAD.call(AC,B,a,t,d,o);
+    if(o.basic&&a&&a.alive&&a.s2h&&t&&a.side!==t.side&&!AC._s2bIn){ AC._s2bIn=1; try{ onBasic(B,a,t); }catch(e){} AC._s2bIn=0; }
     try{ if(a&&t&&a.side!==t.side){ const dealt=Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0));
       if(dealt>0&&a.alive&&L_(B,a,"낚시꾼")!=null) AC.heal(B,a,dealt*0.12,"syn:낚시꾼");
       if(has(B,a,"파도술사")) (t.s2wv=t.s2wv||{})[a.uid]=1;
