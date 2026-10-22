@@ -12297,7 +12297,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
       // 바다학살자 돌진
       if(!u.s2dive&&u.hp<u.maxHp*0.35&&has(B,u,"바다학살자")){ u.s2dive=1; u.untg=B.t+1; const F=foes(B,u).filter(x=>AC.dist(x,u)<=4); if(F.length){ const back=x=>u.side==="me"?-x.R:x.R; F.sort((a,b)=>back(a)-back(b)); dashTo(B,u,F[0]); } fx(B,u,"돌진","buff"); }
       // 출혈
-      if(u.s2bl&&u.s2bl.length){ u.s2bl=u.s2bl.filter(b=>{ const k=Math.min(dt,b.end-b.t0)/2.5; if(b.src&&b.src.alive!==undefined) AC.applyDmg(B,b.src,u,b.v*k*100/(100+Math.max(0,u.res||0)),{id:"s2bleed"}); b.t0+=dt; return b.t0<b.end&&u.alive; }); }
+      if(u.s2bleedL&&u.s2bleedL.length){ u.s2bleedL=u.s2bleedL.filter(b=>{ const k=Math.min(dt,b.end-b.t0)/2.5; if(b.src&&b.src.alive!==undefined) AC.applyDmg(B,b.src,u,b.v*k*100/(100+Math.max(0,u.res||0)),{id:"s2bleed"}); b.t0+=dt; return b.t0<b.end&&u.alive; }); }
       // 등대지기 보호막 만료
       if(u.s2lh&&B.t>=u.s2lh.end){ u.shield=Math.max(0,(u.shield||0)-u.s2lh.g); u.s2lh=null; }
       // 제독 공속 고정
@@ -12332,7 +12332,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
     try{ if(a&&t&&a.side!==t.side){ const dealt=Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0));
       if(dealt>0&&a.alive&&L_(B,a,"낚시꾼")!=null) AC.heal(B,a,dealt*0.12,"syn:낚시꾼");
       if(has(B,a,"파도술사")) (t.s2wv=t.s2wv||{})[a.uid]=1;
-      if(dealt>0&&(l=L_(B,a,"바다학살자"))!=null&&l>=1&&o.id!=="s2bleed"&&t.alive){ (t.s2bl=t.s2bl||[]).push({src:a,v:dealt*[0,55,100][l]/100,t0:0,end:2.5}); }
+      if(dealt>0&&(l=L_(B,a,"바다학살자"))!=null&&l>=1&&o.id!=="s2bleed"&&t.alive){ (t.s2bleedL=t.s2bleedL||[]).push({src:a,v:dealt*[0,55,100][l]/100,t0:0,end:2.5}); }
       if((l=L_(B,a,"포병대"))!=null&&isSk(o)&&dealt>0&&!AC._s2art){ a.s2artN=(a.s2artN||0)+1; a.s2artSum=(a.s2artSum||0)+dealt; if(a.s2artN>=2){ const v=a.s2artSum*[55,115,175][l]/100; a.s2artN=0; a.s2artSum=0; const tg=t.alive?t:foes(B,a).sort((x,y)=>AC.dist(x,a)-AC.dist(y,a))[0]; if(tg){ AC._s2art=1; try{ B.events.push({k:"hit",a:a.uid,b:tg.uid,d:Math.round(v),crit:false,sk:true,rg:true,aR:a.R,aC:a.C,bR:tg.R,bC:tg.C}); oAD.call(AC,B,a,tg,v,{id:"s2art"}); } finally{ AC._s2art=0; } } } }
       if(t.alive&&!t.mon&&!t.boss&&t.hp<t.maxHp*0.12&&has(B,a,"레비아탄")&&a.alive){ AC.kill(B,t,a); fx(B,t,"처형","dis"); AC.heal(B,a,400,"syn:레비아탄"); AC.s1MGainD(B,a,50); }
       else if(t.alive&&t.mon&&!t.boss&&t.hp<t.maxHp*0.12&&has(B,a,"레비아탄")&&a.alive){ AC.kill(B,t,a); AC.heal(B,a,400,"syn:레비아탄"); AC.s1MGainD(B,a,50); } } }catch(e){}
