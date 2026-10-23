@@ -12872,7 +12872,7 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
   const ev=(B,o)=>B.events.push(Object.assign({k:"sk3"},o));
   const endAt=(B,dt,key)=>{ (B.s2q=B.s2q||[]).push({at:B.t+dt,fn:()=>ev(B,{id:"s2fxEnd",key})}); };  /* 연출 종료 신호만 예약 (로직 영향 없음) */
   /* 스킬 이름·아이콘 (사용자 지정 · 효과 설명은 원문 그대로) */
-  const SN=AC.S2SKNAME||{}; for(const h in SN){ const k=N(h), S=(typeof S1SK1!=="undefined")&&S1SK1[k]; if(S){ S.name=SN[h][0]; S.img=SN[h][1]; } }
+  const SN=AC.S2SKNAME||{}; for(const h in SN){ const k=N(h), S=(typeof S1SK1!=="undefined")&&S1SK1[k]; if(S){ S.name=SN[h][0]; S.img=SN[h][1]; if(SN[h][1]&&AC_CONFIG.skillIcons) AC_CONFIG.skillIcons[k]=SN[h][1]; } }  /* 2.1.4v: 영웅 카드 스킬 아이콘 (skIco는 C.skillIcons만 봄 · S1 초기화 시점엔 S2 이미지가 비어 있었음) */
   const nameFix=(B,u,i0)=>{ const h=SN[Z(u.name)]; if(!h) return; for(let i=i0;i<B.events.length;i++){ const x=B.events[i]; if(x.k==="fx"&&x.b===u.uid&&x.cls==="sk5"&&x.txt!=="관통"){ x.txt=h[0]; break; } } };
   /* ★ 시즌2 전용 로직 변경 (사용자 승인 2026-10-23): 벨리카 '불의 구체' 피해·공격력 감소를 구체 착탄 순간으로 지연. 연출 비행 시간과 같은 상수 사용 */
   const VK_FL=AC.S2VK_FL=0.25;  /* 초 (전투 시간) */
