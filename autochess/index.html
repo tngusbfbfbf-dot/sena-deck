@@ -8441,7 +8441,7 @@ window.S2AUG_PATCH=function(A){ /* A=AC.S1AUG {실버,골드,프리즘} — 시�
   window.S2HEROES=S2ROSTER.map(([t,n],i)=>({no:90001+i,name:n,s2:1,grade:"",trait:"",atkType:"물리"})); S2HEROES.forEach(h=>heroDB.push(h));
   for(const k in S1ROLES.H) delete S1ROLES.H[k]; S2HEROES.forEach(h=>{ S1ROLES.H[h.name]=S2ROLE_MAP[h.name.replace(/\u200B/g,"")]||"공전사"; });
   for(const n in S2ART) AC.heroArt[S2N(n)]=S2ART[n];  /* 필드·대기석=f · 스탯창=c (기존 artSrc) */
-  { const css=document.createElement("style"); css.textContent=".acsc-face .acface img.art[src*='/s2/']{object-position:50% 50%}"; document.head.appendChild(css);
+  { const css=document.createElement("style"); css.textContent=".acsc-face .acface img.art[src*='/s2/']{object-position:50% 50%}"+" img.art[src*='heroes/s2/04c']{transform:translateX(-16%)} img.art[src*='heroes/s2/04s']{object-position:92% 50%!important}";  /* S2 실베스타: 얼굴이 오른쪽 끝에 붙어 있어 왼쪽으로 이동 (상점 s · 스탯창 c) */ document.head.appendChild(css);
     new MutationObserver(()=>{ document.querySelectorAll(".acshop img.art[src*='heroes/s2/']").forEach(i=>{ if(/f\.webp/.test(i.getAttribute("src"))){ i.setAttribute("src",i.getAttribute("src").replace("f.webp","s.webp")); } const af=i.getAttribute("data-artf"); if(af&&/f\.webp/.test(af)) i.setAttribute("data-artf",af.replace("f.webp","s.webp")); }); }).observe(document.documentElement,{childList:true,subtree:true}); }  /* 상점=s */
   AC.heroes=function(){ if(!AC._H){ const R=AC_CONFIG.roster; AC._miss=[]; AC._H=Object.entries(R).flatMap(([t,ns])=>ns.map(n=>{ const h=S2HEROES.find(x=>x.name===n); if(!h) AC._miss.push(n); return h&&{no:h.no,tier:+t}; }).filter(Boolean)); } return AC._H; };
 })();
