@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.1.6v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.1.7v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -12548,7 +12548,7 @@ AC.S2SK2TXT={"겔리두스": [["기본 지속 효과: 아군이 장착한 조합
     "겔리두스":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("겔리두스")); heal(B,u,L(u,[230,280,330])*MA(u),"겔리두스");
       [t].concat(foes(B,u).filter(x=>adj(x,t))).forEach(x=>{ phy(B,u,x,L(u,[150,225,350]),"겔리두스"); if(x.alive) redPct(B,x,"def",20,4,"def","파열"); }); },
     "하연":(B,u)=>{ cast(B,u,NM("하연")); allies(B,u).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp).slice(0,2).forEach(x=>shieldT(B,x,L(u,[80,100,135])*MA(u),4));
-      const E=near(u,foes(B,u)).slice(0,2); if(!E.length) return; const FLY=AC.S2HY_FL=0.3; for(let i=0;i<4;i++){ const x=E[i%E.length]; B.events.push({k:"sk3",id:"s2hy",a:u.uid,aR:u.R,aC:u.C,b:x.uid,bR:x.R,bC:x.C,i,dl:0.1*i,fl:FLY}); later(B,B.t+0.1*i+FLY,()=>{ mag(B,u,x,L(u,[130,195,310]),"하연"); }); } },
+      const E=near(u,foes(B,u)).slice(0,2); if(!E.length) return; const FLY=AC.S2HY_FL=0.3; for(let i=0;i<4;i++){ const x=E[i%E.length]; B.events.push({k:"sk3",id:"s2hy",a:u.uid,aR:u.R,aC:u.C,b:x.uid,bR:x.R,bC:x.C,i,dl:0.1*i,fl:FLY}); later(B,B.t+0.1*i+FLY,()=>{ const n0=B.events.length; mag(B,u,x,L(u,[130,195,310]),"하연"); for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2hy=1; } }); } },
     "콜트":(B,u)=>{ const t=near(u,foes(B,u))[0]; if(!t) return; cast(B,u,NM("콜트")); const close=cheb(t,u)<=2; phy(B,u,t,L(u,[265,400,660]),"콜트",L(u,[30,45,70]));
       if(close&&t.alive){ const dr=Math.sign(Math.round(t.R)-Math.round(u.R)), dc=Math.sign(Math.round(t.C)-Math.round(u.C)); let R=Math.round(t.R), c=Math.round(t.C);
         for(let s=0;s<2;s++){ const R2=R+dr, c2=c+dc; if((dr||dc)&&inB(R2,c2)&&!occ(B,R2,c2,t)){ R=R2; c=c2; } else break; } t.R=R; t.C=c; stun(B,t,0.5); } },
@@ -12678,11 +12678,17 @@ AC.S2SK3TXT={"에이스": [["기본 지속 효과: 세 번째 기본 공격을 �
       const hitOne=(x,i)=>{ vx(B,{id:"s2k3",h:"여포",a:u.uid,aR:a,aC:b,b:x.uid,bR:x.R,bC:x.C,i}); deal(B,u,x,raw*mitD(x)*amp(u,x),0,"여포"); return !x.alive; };
       const step=x=>{ const kill=hitOne(x,n); if(!kill||n>=12) return; n++; a=x.R; b=x.C; const nx=near({R:a,C:b},foes(B,u))[0]; if(!nx) return; raw*=k; later(B,B.t+0.15,()=>{ if(u.alive&&nx.alive) step(nx); }); };
       step(t); },
-    "오목":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("오목")); const R=t.R, Cc=t.C; vx(B,{id:"s2k3",h:"오목화차",a:u.uid,aR:u.R,aC:u.C,b:t.uid,R,C:Cc});
-      later(B,B.t+FL.omC,()=>{ const cR=t.alive?t.R:R, cC=t.alive?t.C:Cc; foes(B,u).filter(x=>x===t||Math.max(Math.abs(Math.round(x.R)-Math.round(cR)),Math.abs(Math.round(x.C)-Math.round(cC)))<=1).forEach(x=>mag(B,u,x,L(u,[230,345,550]),"오목")); }); },
-    "스쿨드":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("스쿨드")); const raw=L(u,[430,650,1100])*MA(u)*(1+0.5*Math.max(0,1-t.hp/t.maxHp)); const d=Math.max(1,Math.round(raw*mitR(t)*amp(u,t))); const h0=t.hp+(t.shield||0);
-      vx(B,{id:"s2k3",h:"스쿨드",a:u.uid,aR:u.R,aC:u.C,b:t.uid,bR:t.R,bC:t.C}); deal(B,u,t,d,1,"스쿨드");
-      if(!t.alive){ const over=Math.max(0,d-h0)*0.55, E=near(t,foes(B,u)).slice(0,2); if(E.length){ vx(B,{id:"s2k3",h:"스쿨드2",a:t.uid,aR:t.R,aC:t.C,tg:E.map(x=>x.uid)}); E.forEach(x=>{ if(over>0) magRaw(B,u,x,over/E.length,"스쿨드"); mag(B,u,x,L(u,[40,60,95]),"스쿨드"); }); } } },
+    "오목":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("오목")); const R=t.R, Cc=t.C;
+      const in3=(x,cR,cC)=>x===t||Math.max(Math.abs(Math.round(x.R)-Math.round(cR)),Math.abs(Math.round(x.C)-Math.round(cC)))<=1;
+      vx(B,{id:"s2om",a:u.uid,aR:u.R,aC:u.C,tg:[t].concat(foes(B,u).filter(x=>x!==t&&in3(x,R,Cc))).map(x=>[x.uid,x.R,x.C]),fl:FL.omC});   /* 연출: 탄 8발이 퍼졌다가 (시전 시점 예상) 피격 대상들에게 나뉘어 유도 */
+      later(B,B.t+FL.omC,()=>{ const cR=t.alive?t.R:R, cC=t.alive?t.C:Cc, n0=B.events.length; foes(B,u).filter(x=>in3(x,cR,cC)).forEach(x=>mag(B,u,x,L(u,[230,345,550]),"오목")); for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } }); },
+    "스쿨드":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("스쿨드")); const FL=AC.S2SKD_FL||(AC.S2SKD_FL={main:0.35,split:0.3});   /* 구체 비행 → 착탄 시 피해 (원래 수치·공식 그대로) */
+      vx(B,{id:"s2skd",a:u.uid,aR:u.R,aC:u.C,b:t.uid,bR:t.R,bC:t.C,fl:FL.main});
+      const tag=n0=>{ for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } };
+      later(B,B.t+FL.main,()=>{ if(!t.alive) return; const raw=L(u,[430,650,1100])*MA(u)*(1+0.5*Math.max(0,1-t.hp/t.maxHp)); const d=Math.max(1,Math.round(raw*mitR(t)*amp(u,t))); const h0=t.hp+(t.shield||0);
+        const n0=B.events.length; deal(B,u,t,d,1,"스쿨드"); tag(n0);
+        if(!t.alive){ const over=Math.max(0,d-h0)*0.55, E=near(t,foes(B,u)).slice(0,2); if(E.length){ const R=t.R, C=t.C; E.forEach(x=>{ vx(B,{id:"s2skd",a:null,aR:R,aC:C,b:x.uid,bR:x.R,bC:x.C,fl:FL.split,split:1});
+          later(B,B.t+FL.split,()=>{ if(!x.alive) return; const n1=B.events.length; if(over>0) magRaw(B,u,x,over/E.length,"스쿨드"); mag(B,u,x,L(u,[40,60,95]),"스쿨드"); tag(n1); }); }); } } }); },
     "아리스":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("아리스")); const A=[t].concat(foes(B,u).filter(x=>adj(x,t))); const E=near(u,foes(B,u)).slice(0,3);
       vx(B,{id:"s2k3",h:"아리스",a:u.uid,aR:u.R,aC:u.C,b:t.uid,bR:t.R,bC:t.C,tg:E.map(x=>x.uid)});
       A.forEach(x=>phy(B,u,x,L(u,[200,300,480]),"아리스",L(u,[20,30,50])));
@@ -13012,7 +13018,7 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
 /* ===== 시즌2 1코스트 스킬 연출 (AC.seasonId==="s2" 전용 · 연출만: 피해/로직 불변 · 실제 스프라이트 위치 추적 · Phaser Graphics 만 사용) ===== */
 (function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.PX||!AC.s1CF) return;
   const Z=s=>String(s||"").replace(/\u200B/g,""), N=n=>(typeof S2N==="function"?S2N(n):n);
-  const HS=["실베스타","리나","밀리아","라이en","벨리카","아킬라","카르마","루디","스파이크","발리스타","손오공","파이","유이"].map(x=>x==="라이en"?"라이언":x);
+  const HS=["실베스타","리나","밀리아","라이en","벨리카","아킬라","카르마","루디","스파이크","발리스타","손오공","파이"].map(x=>x==="라이en"?"라이언":x);
   const ev=(B,o)=>B.events.push(Object.assign({k:"sk3"},o));
   const endAt=(B,dt,key)=>{ (B.s2q=B.s2q||[]).push({at:B.t+dt,fn:()=>ev(B,{id:"s2fxEnd",key})}); };  /* 연출 종료 신호만 예약 (로직 영향 없음) */
   /* 스킬 이름·아이콘 (사용자 지정 · 효과 설명은 원문 그대로) */
@@ -13031,6 +13037,21 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
         if(t.alive){ t.atkPct=(t.atkPct||0); AC.debuff(B,t,"weak",()=>{ t.atkPct-=40; AC.reIv(t); B.s2q.push({at:B.t+4,fn:()=>{ t.atkPct+=40; AC.reIv(t); }}); }); }
         const hit=foes(B,u).filter(x=>x===t||Math.hypot(x.R-cR,x.C-cC)<1.5); hit.forEach(x=>mag(B,u,x,dmg)); }});
     }catch(e){ console.warn("S2 벨리카",e); } };
+  } }
+  /* 시즌2 유이 '음파': 수치·대상·감소 순서 원래 그대로, 피해만 파동이 지나가는 순간으로 지연 (연출: 0~0.3 생성 · 0.3~0.7 등속 전진 · 0.7~1.0 소멸) */
+  const YU=AC.S2YUI_FL={form:0.3,v:3.5,fade:0.3,d0:0.5};   /* v: 파동 등속 전진 속도(칸/초) */
+  { const k=N("유이"); if(AC.s1CF[k]&&AC.S2SK1&&AC.S2SK1["유이"]){
+    const L=(u,v)=>{ const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; }, MA=u=>1+(u.s1ma||0)/100, dist=(a,b)=>Math.hypot(a.R-b.R,a.C-b.C);
+    const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+    const onLine=(B,u,dir,F)=>{ const len=Math.hypot(dir[0],dir[1])||1, dx=dir[0]/len, dy=dir[1]/len; return F.filter(x=>{ const vx=x.R-u.R, vy=x.C-u.C, p=vx*dx+vy*dy; return p>0&&Math.abs(vx*dy-vy*dx)<0.6; }).sort((a,b)=>dist(a,u)-dist(b,u)); };
+    const mag=(B,u,t,v)=>{ if(!t||!t.alive) return; let d=v*MA(u)*100/(100+Math.max(0,t.res||0))*(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100); d=Math.max(1,Math.round(d)); B.events.push({k:"hit",mg:1,a:u.uid,b:t.uid,d,crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C,s2nofx:1}); AC.applyDmg(B,u,t,d,{id:"sk:유이"}); };
+    AC.s1CF[k]=(B,u)=>{ if(!AC.s1MUse(u)) return; try{ const t=AC.s1Tgt(B,u)||foes(B,u).sort((a,b)=>dist(a,u)-dist(b,u))[0]; if(!t) return;
+      B.events.push({k:"fx",b:u.uid,txt:(SN["유이"]||["음파"])[0],cls:"sk5"}); if(AC.s1HitLock) AC.s1HitLock(B,u,0.3);
+      const dR=t.R-u.R, dC=t.C-u.C, ln=Math.hypot(dR,dC)||1, line=onLine(B,u,[dR,dC],foes(B,u)), L2=line.includes(t)?line:[t].concat(line);
+      const ds=L2.map(x=>Math.max(YU.d0,(x.R-u.R)*dR/ln+(x.C-u.C)*dC/ln)), D=Math.max(3,Math.max.apply(null,ds)+1);   /* 파동 이동 거리(칸): 마지막 적 + 1칸, 최소 3칸 · 초당 YU.v칸 등속 */
+      const mv=(D-YU.d0)/YU.v; ev(B,{id:"s2yui",a:u.uid,aR:u.R,aC:u.C,uR:dR/ln,uC:dC/ln,D,hs:ds,mv});
+      const v=L(u,[250,375,585]); let kk=1; L2.forEach((x,i)=>{ const f=kk; kk*=0.6; (B.s2q=B.s2q||[]).push({at:B.t+YU.form+(ds[i]-YU.d0)/YU.v,fn:()=>mag(B,u,x,v*f)}); });
+    }catch(e){ console.warn("S2 유이",e); } };
   } }
   /* 시전 래퍼: 원래 스킬 실행 후 새로 생긴 피해/기절 이벤트로 연출 이벤트 1개 생성 */
   HS.forEach(n=>{ const k=N(n), f=AC.s1CF[k]; if(!f) return; AC.s1CF[k]=function(B,u){ const i0=B.events.length, R0=u.R, C0=u.C; const r=f.apply(this,arguments);
@@ -13135,7 +13156,7 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
       slash(e.a,e.aR,e.aC,t0,R0,C0,0xff8080,1.1); flash(t0,R0,C0,0xff7070,0.9,30);
       if(tg[1]!=null){ const [R2,C2]=tp[1], [sx,sy]=this.px(e.aR,e.aC), g=G(43), P={a:0.7}; const draw=()=>{ const [x,y]=pos(e.a,e.R1,e.C1); g.clear().setAlpha(P.a).lineStyle(Math.max(2,m*0.06),0xff9090,0.5).lineBetween(sx,sy,x,y).lineStyle(Math.max(1,m*0.02),0xffffff,0.8).lineBetween(sx,sy,x,y); };
         draw(); T.add({targets:P,a:0,delay:80*slow,duration:260*slow,onUpdate:draw,onComplete:()=>end(g)}); slash(e.a,e.R1,e.C1,tg[1],R2,C2,0xff8080,1,120); flash(tg[1],R2,C2,0xff7070,0.8,140); } return; }
-    if(h==="유이"){ /* 관통 음파: 시전자→직선 끝 대상까지 퍼지는 호 3개 · 적중 적마다 섬광 약해짐(피해 40% 감소) */
+    if(false&&h==="유이"){ /* (구) 관통 음파: 시전자→직선 끝 대상까지 퍼지는 호 3개 · 적중 적마다 섬광 약해짐(피해 40% 감소) */
       const lu=tg[tg.length-1], [lR,lC]=tp[tp.length-1]||[R0,C0];
       for(let k=0;k<3;k++){ const g=G(45), P={p:0}; const draw=()=>{ const [ax,ay]=pos(e.a,e.aR,e.aC), [x,y]=pos(lu,lR,lC), an=Math.atan2(y-ay,x-ax), L=Math.hypot(x-ax,y-ay)+m*0.3, d=L*P.p;
           g.clear().setPosition(ax+Math.cos(an)*d,ay+Math.sin(an)*d).setRotation(an).setAlpha(0.85*(1-P.p*0.6)).lineStyle(Math.max(1.5,m*0.04),0x80f0e0,1).beginPath().arc(0,0,m*(0.22+0.12*P.p),-0.9,0.9,false).strokePath(); };
@@ -13337,19 +13358,26 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
       for(let i=0;i<n;i++){ const k=Math.floor((i/n-t+1)*P.length)%P.length; U.mpb.fillStyle(P[k],1).fillRect(-sz/2+i*w,by,w+0.5,mh); } } }catch(e){} return r; }; }
 }catch(e){ console.warn("팔라누스 에너지 바",e); } })();
 
-/* 시즌2 하연 부적 4장: 사용자 이미지(hy_seal) 비행 · 피해는 착탄 시 (sk2.js AC.S2HY_FL) */
+/* 시즌2 하연 부적 4장: 사용자 이미지(hy_seal) · 진행 방향으로 세운 채 직선 비행 · 피해는 착탄 시 (sk2.js AC.S2HY_FL) */
 (function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.PX) return; const PX=AC.PX, oF=PX.sk3fx;
   PX.sk3fx=function(B,e,slow,light){ if(e.id!=="s2hy") return oF.apply(this,arguments); const S=this.scene; if(!S) return; slow=slow||1;
     const {W,H}=this.cell(), m=Math.min(W,H), T=S.tweens; const pos=(uid,R,C)=>{ const V=this.units[uid]; return uid!=null&&V&&V.c&&V.c.active?[V.c.x,V.c.y]:this.px(R,C); };
-    const [ax,ay]=pos(e.a,e.aR,e.aC), off=(e.i-1.5)*m*0.18, h=m*0.42, w=h*40/110, P={p:0};
-    let o; if(this.hyT&&this.hyT.seal) o=S.add.image(ax+off,ay,"hy_seal").setDisplaySize(w,h); else { o=S.add.graphics(); o.fillStyle(0xe8c070,1).fillRect(-w/2,-h/2,w,h).lineStyle(1,0xb03020,1).strokeRect(-w/2,-h/2,w,h); o.setPosition(ax+off,ay); }
-    o.setDepth(46).setAlpha(0);
-    T.add({targets:P,p:1,delay:(e.dl||0)*1000*slow,duration:(e.fl||0.3)*1000*slow,ease:"Sine.easeIn",
+    const [ax,ay]=pos(e.a,e.aR,e.aC), off=(e.i-1.5)*m*0.14, h=m*0.46, w=h*40/110, P={p:0}, sx=ax+off, sy=ay;
+    let o; if(this.hyT&&this.hyT.seal) o=S.add.image(sx,sy,"hy_seal").setDisplaySize(w,h); else { o=S.add.graphics(); o.fillStyle(0xe8c070,1).fillRect(-w/2,-h/2,w,h).lineStyle(1,0xb03020,1).strokeRect(-w/2,-h/2,w,h); o.setPosition(sx,sy); }
+    const aim=()=>{ const [bx,by]=pos(e.b,e.bR,e.bC); return [bx,by,Math.atan2(by-sy,bx-sx)+Math.PI/2]; };   /* 세로(긴 축)가 진행 방향 */
+    o.setDepth(46).setAlpha(0).setRotation(aim()[2]);
+    T.add({targets:P,p:1,delay:(e.dl||0)*1000*slow,duration:(e.fl||0.3)*1000*slow,ease:"Linear",
       onStart:()=>o.setAlpha(1),
-      onUpdate:()=>{ const [bx,by]=pos(e.b,e.bR,e.bC), p=P.p, x=ax+off+(bx-ax-off)*p, y=ay+(by-ay)*p-m*0.5*p*(1-p)*4; o.setPosition(x,y).setRotation(p*Math.PI*2+0.2); },
-      onComplete:()=>{ const [bx,by]=pos(e.b,e.bR,e.bC); T.add({targets:o,alpha:0,scaleX:o.scaleX*1.6,scaleY:o.scaleY*1.6,duration:160*slow,onComplete:()=>o.destroy()});
+      onUpdate:()=>{ const [bx,by,r]=aim(), p=P.p; o.setPosition(sx+(bx-sx)*p,sy+(by-sy)*p).setRotation(r); },
+      onComplete:()=>{ const [bx,by]=aim(); o.setPosition(bx,by); T.add({targets:o,alpha:0,duration:140*slow,onComplete:()=>o.destroy()});
         const f=S.add.graphics().setPosition(bx,by).setDepth(47).setBlendMode(1); f.fillStyle(0xffd27a,0.6).fillCircle(0,0,m*0.22).fillStyle(0xffffff,0.85).fillCircle(0,0,m*0.08); T.add({targets:f,alpha:0,scale:1.6,duration:200*slow,onComplete:()=>f.destroy()}); } });
   };
+  /* 하연 부적 피해의 기본 피격 연출(투사체·베기·보라 고리) 생략: 피해 숫자만 표시 */
+  const oFx=PX.fx; PX.fx=function(B,ev){ const H=(ev||[]).filter(e=>e.k==="hit"&&(e.s2hy||e.s2nofx)); if(!H.length) return oFx.apply(this,arguments);
+    const sv=H.map(e=>e.rg); H.forEach(e=>{ e.rg=true; }); const hits=(ev||[]).filter(e=>e.k==="hit").slice(-12).filter(e=>B.units.some(u=>u.uid===e.b)), all=hits.filter(e=>e.rg), wa=hits.filter(e=>B.units.some(u=>u.uid===e.a)); let i=0, j=0; const oP=this.proj, oR=this.ring, oL=this.lunge, self=this;
+    this.lunge=function(){ const e=wa[j++]; if(e&&(e.s2hy||e.s2nofx)) return; return oL.apply(self,arguments); };
+    this.proj=function(ax,ay,bx,by,side,sk,ms,land){ const e=all[i++]; if(e&&(e.s2hy||e.s2nofx)){ self.ring=()=>{}; try{ land(); }finally{ self.ring=oR; } return; } return oP.apply(self,arguments); };
+    try{ return oFx.apply(this,arguments); } finally{ this.proj=oP; this.ring=oR; this.lunge=oL; H.forEach((e,k)=>{ e.rg=sv[k]; }); } };
 }catch(e){ console.warn("S2 하연",e); } })();
 
 /* 시즌2: 이전 시즌 사용자 이미지 재사용 (녹스 nox_burst · 실베스타 sil_boom · 클레미스 clem_rewind · 동영 dy_sword) */
@@ -13366,6 +13394,59 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
         T.add({targets:o,y:y+m*0.2,alpha:1,duration:180*slow,ease:"Quad.easeIn",onComplete:()=>T.add({targets:o,alpha:0,delay:150*slow,duration:250*slow,onComplete:()=>o.destroy()})}); } }
     }catch(x){} return r; };
 }catch(e){ console.warn("S2 이미지 재사용",e); } })();
+
+/* 시즌2 스쿨드: 마법 구체가 대상에게 날아가 착탄 · 대상 사망 시 그 자리에서 구체 2개가 갈라져 가장 가까운 적 2명에게 떨어짐 (피해는 각 착탄 시, sk3.js AC.S2SKD_FL) */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.PX) return; const PX=AC.PX, oF=PX.sk3fx;
+  PX.sk3fx=function(B,e,slow,light){ if(e.id!=="s2skd") return oF.apply(this,arguments); const S=this.scene; if(!S) return; slow=slow||1;
+    const {W,H}=this.cell(), m=Math.min(W,H), T=S.tweens; const pos=(uid,R,C)=>{ const V=uid!=null&&this.units[uid]; return V&&V.c&&V.c.active?[V.c.x,V.c.y]:this.px(R,C); };
+    const [sx,sy]=pos(e.a,e.aR,e.aC), r=m*(e.split?0.09:0.13), g=S.add.graphics().setDepth(46).setBlendMode(1), P={p:0}; let px0=sx, py0=sy;
+    const draw=(x,y)=>{ const a=Math.atan2(y-py0,x-px0); g.clear().setPosition(x,y).setRotation(a).fillStyle(0x7a5cff,0.3).fillTriangle(-r*3.5,0,0,-r*0.7,0,r*0.7).fillStyle(0x8f78ff,0.95).fillCircle(0,0,r).fillStyle(0xffffff,0.9).fillCircle(0,0,r*0.42); px0=x; py0=y; };
+    draw(sx,sy);
+    T.add({targets:P,p:1,duration:(e.fl||0.3)*1000*slow,ease:e.split?"Quad.easeIn":"Linear",
+      onUpdate:()=>{ const [bx,by]=pos(e.b,e.bR,e.bC), p=P.p; draw(sx+(bx-sx)*p,sy+(by-sy)*p-(e.split?m*0.6*p*(1-p)*4:0)); },
+      onComplete:()=>{ const [bx,by]=pos(e.b,e.bR,e.bC); g.destroy(); if(light) return; const f=S.add.graphics().setPosition(bx,by).setDepth(47).setBlendMode(1);
+        f.fillStyle(0x8f78ff,0.5).fillCircle(0,0,r*2).fillStyle(0xffffff,0.8).fillCircle(0,0,r*0.8); T.add({targets:f,alpha:0,scale:1.5,duration:200*slow,onComplete:()=>f.destroy()}); } });
+  };
+}catch(e){ console.warn("S2 스쿨드",e); } })();
+
+/* 시즌2 오목 '화차' 화살비: 시전자가 위로 빛줄기 4발 쏘아 올림(0~0.15초) → 대상 중심 3×3 위 하늘에서 가느다란 빛 화살 18발이 같은 각도로 비스듬히 쏟아져 범위 안 무작위 지점에 꽂힘(대부분 피해 시점 FL.omC 무렵) · 무지개빛 · 꽂힌 자리 작은 불티 · 흔들림 없음 */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.PX) return; const PX=AC.PX, oF=PX.sk3fx;
+  PX.sk3fx=function(B,e,slow,light){ if(e.id!=="s2om") return oF.apply(this,arguments); const S=this.scene; if(!S) return; slow=slow||1;
+    const {W,H}=this.cell(), m=Math.min(W,H), T=S.tweens; const pos=(uid,R,C)=>{ const V=uid!=null&&this.units[uid]; return V&&V.c&&V.c.active?[V.c.x,V.c.y]:this.px(R,C); };
+    const tg=e.tg||[]; if(!tg.length) return; const cR=Math.round(tg[0][1]), cC=Math.round(tg[0][2]), FLm=(e.fl||0.45)*1000*slow, [sx,sy]=pos(e.a,e.aR,e.aC), COL=[0xb070ff,0xff70c8,0x60a8ff,0xffe070];
+    const bolt=(x0,y0,x1,y1,c,len,dur,dl,land)=>{ const g=S.add.graphics().setDepth(46).setBlendMode(1).setAlpha(0), an=Math.atan2(y1-y0,x1-x0), P={p:0};
+      const draw=()=>{ const x=x0+(x1-x0)*P.p, y=y0+(y1-y0)*P.p, ex=Math.cos(an), ey=Math.sin(an); g.clear().lineStyle(Math.max(1,m*0.05),c,0.35).lineBetween(x-ex*len*1.8,y-ey*len*1.8,x,y).lineStyle(Math.max(1,m*0.025),c,1).lineBetween(x-ex*len,y-ey*len,x,y).lineStyle(Math.max(1,m*0.012),0xffffff,1).lineBetween(x-ex*len*0.4,y-ey*len*0.4,x,y); };
+      T.add({targets:P,p:1,delay:dl,duration:dur,ease:"Linear",onStart:()=>g.setAlpha(1),onUpdate:draw,onComplete:()=>{ if(land){ draw(); T.add({targets:g,alpha:0,duration:160*slow,onComplete:()=>g.destroy()}); land(); } else g.destroy(); }}); };
+    for(let i=0;i<4;i++) bolt(sx+(i-1.5)*m*0.12,sy-m*0.2,sx+(i-1.5)*m*0.3,sy-m*3.2,COL[i],m*0.45,140*slow,i*25*slow,null);   /* 쏘아 올림 */
+    const n=light?10:18, AN=Math.PI*0.38, dx=-Math.cos(AN), dy=Math.sin(AN), far=m*2.6, fly=110*slow;   /* 모두 같은 각도(오른쪽 위에서 왼쪽 아래로) */
+    for(let i=0;i<n;i++){ const [x1,y1]=this.px(cR+Math.floor(i%9/3)-1+(Math.random()-0.5)*0.9,cC+(i%3)-1+(Math.random()-0.5)*0.9), c=COL[i%4];
+      const k=i/(n-1), arr=FLm+(k<0.15?-1:k>0.9?1:0)*90*slow+(Math.random()-0.5)*80*slow;   /* 착탄 시각: 대부분 FL.omC ±40ms, 일부 앞뒤로 */
+      bolt(x1-dx*far,y1-dy*far,x1,y1,c,m*0.55,fly,Math.max(0,arr-fly),()=>{ const f=S.add.graphics().setPosition(x1,y1).setDepth(47).setBlendMode(1); f.fillStyle(c,0.8).fillCircle(0,0,m*0.04).fillStyle(0xffffff,0.9).fillCircle(0,0,m*0.018); T.add({targets:f,alpha:0,scale:1.8,duration:160*slow,onComplete:()=>f.destroy()}); }); }
+  };
+}catch(e){ console.warn("S2 오목",e); } })();
+
+/* 시즌2 유이 '음파' 파동: 시전자 앞 넓은 직사각형 파동 생성(0~0.3초) → 등속 직진 관통(0.3~0.7초) → 투명해지며 소멸(0.7~1.0초) · 앞쪽·테두리 파랑/흰색, 안쪽 반투명 보라·분홍 + 별빛 · 통과 시 별빛 튐 · 발사/충돌 중간 흔들림 */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.PX) return; const PX=AC.PX, oF=PX.sk3fx;
+  PX.sk3fx=function(B,e,slow,light){ if(e.id!=="s2yui") return oF.apply(this,arguments); const S=this.scene; if(!S) return; slow=slow||1;
+    const Y=Object.assign({},AC.S2YUI_FL||{form:0.3,v:3.5,fade:0.3,d0:0.5},{move:e.mv||((e.D-0.5)/3.5)}), {W,H}=this.cell(), m=Math.min(W,H), T=S.tweens;
+    const [ox,oy]=this.px(e.aR,e.aC), [px1,py1]=this.px(e.aR+e.uR,e.aC+e.uC), ux=px1-ox, uy=py1-oy, cl=Math.hypot(ux,uy)||m, an=Math.atan2(uy,ux);   /* 1칸 = cl 픽셀 (방향 기준) */
+    const wid=m*2.4, th=m*0.55, at=d=>[ox+ux*d,oy+uy*d];
+    const g=S.add.graphics().setDepth(46), st=[]; for(let i=0;i<14;i++) st.push([(Math.random()-0.5)*th*0.8,(Math.random()-0.5)*wid*0.85,Math.random()*6.28]);
+    const P={t:0}, tot=(Y.form+Y.move+Y.fade)*1000*slow, done={}; let shk=0;
+    const draw=()=>{ const t=P.t*(Y.form+Y.move+Y.fade); let d,a,s;
+      if(t<Y.form){ d=Y.d0; s=t/Y.form; a=0.3+0.7*s; } else if(t<Y.form+Y.move){ const p=(t-Y.form)/Y.move; d=Y.d0+(e.D-Y.d0)*p; s=1; a=1; } else { d=e.D+(t-Y.form-Y.move)*(Y.v||3.5); s=1; a=Math.max(0,1-(t-Y.form-Y.move)/Y.fade); }
+      const [x,y]=at(d), hw=wid/2*(0.35+0.65*s); g.clear().setPosition(x,y).setRotation(an).setAlpha(a);
+      g.fillStyle(0xa050e0,0.28).fillRect(-th,-hw,th,hw*2).fillStyle(0xff80d0,0.22).fillRect(-th*0.6,-hw*0.85,th*0.6,hw*1.7);
+      g.lineStyle(Math.max(1.5,m*0.03),0x9fd8ff,0.9).strokeRect(-th,-hw,th,hw*2).fillStyle(0xdff2ff,0.95).fillRect(-m*0.05,-hw,m*0.08,hw*2).fillStyle(0xffffff,1).fillRect(-m*0.02,-hw*0.95,m*0.03,hw*1.9);
+      st.forEach(q=>{ const tw=0.5+0.5*Math.sin(q[2]+t*30); g.fillStyle(0xffffff,0.5+0.5*tw).fillCircle(q[0]-th*0.5,q[1]*s,m*(0.02+0.025*tw)); });
+      (e.hs||[]).forEach((h,i)=>{ if(!done[i]&&d>=h){ done[i]=1; const [hx,hy]=at(h); if(!light) for(let k=0;k<6;k++){ const sp=S.add.graphics().setPosition(hx,hy).setDepth(47).setBlendMode(1), r=an+(Math.random()-0.5)*2.4; sp.fillStyle(k%2?0xffffff:0xc8a0ff,1).fillCircle(0,0,m*0.04);
+            T.add({targets:sp,x:hx+Math.cos(r)*m*0.6,y:hy+Math.sin(r)*m*0.6,alpha:0,duration:260*slow,onComplete:()=>sp.destroy()}); }
+          if(!light&&S.cameras&&S.cameras.main&&S.time.now-shk>80){ shk=S.time.now; S.cameras.main.shake(90*slow,0.004); } } });
+    };
+    draw(); T.add({targets:P,t:1,duration:tot,ease:"Linear",onUpdate:draw,onComplete:()=>g.destroy()});
+    if(!light) S.time.delayedCall(Y.form*1000*slow,()=>{ if(S.sys&&S.sys.isActive&&S.sys.isActive()&&S.cameras&&S.cameras.main) S.cameras.main.shake(120*slow,0.005); });
+  };
+}catch(e){ console.warn("S2 유이 파동",e); } })();
 
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
