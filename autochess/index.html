@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.1.3v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.1.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -10202,15 +10202,19 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
 (function(){ if(AC.season!=="s1") return; const SK=S1SK1;
   const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const ICO={공:'<span class="s1i s1i-at" data-tip="공격력 계수: 공격력의 %" tabindex="0"><svg viewBox="0 0 16 16"><path d="M3 13C5 9 8 5 13 2c-2 4-4 7-8 11z M6 14c2-3 4-6 8-8-1 3-3 6-7 8z" fill="currentColor"/></svg></span>',
-           마:'<span class="s1i s1i-ma" data-tip="마법 공격력 비례: 값 × (1 + 마법 공격력/100)" tabindex="0"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.2" fill="currentColor"/><circle cx="6.3" cy="6.2" r="1.7" fill="#fff" opacity=".7"/></svg></span>'};
+           마:'<span class="s1i s1i-ma" data-tip="마법 공격력 비례: 값 × (1 + 마법 공격력/100)" tabindex="0"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.2" fill="currentColor"/><circle cx="6.3" cy="6.2" r="1.7" fill="#fff" opacity=".7"/></svg></span>',
+           방:'<span class="s1i s1i-df s1i-nt"><svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2v4.2c0 3.4-2.4 5.8-5.5 6.8-3.1-1-5.5-3.4-5.5-6.8V3.5z" fill="currentColor"/></svg></span>',
+           마저:'<span class="s1i s1i-rs s1i-nt"><svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2v4.2c0 3.4-2.4 5.8-5.5 6.8-3.1-1-5.5-3.4-5.5-6.8V3.5z" fill="currentColor"/><circle cx="8" cy="7.6" r="2.3" fill="#fff" opacity=".75"/></svg></span>',
+           생:'<span class="s1i s1i-hp s1i-nt"><svg viewBox="0 0 16 16"><path d="M8 14S1.5 9.8 1.5 5.6C1.5 3.5 3.1 2 5 2c1.3 0 2.4.7 3 1.7C8.6 2.7 9.7 2 11 2c1.9 0 3.5 1.5 3.5 3.6C14.5 9.8 8 14 8 14z" fill="currentColor"/></svg></span>'};
   // 1.0.13v: 문장(설명) / 계수 줄 분리. 계수 줄은 모두 가로줄 아래(rows)로. 텍스트는 원문 그대로.
   const isSent=l=>/니다|다\.?\s*$|\.\s*$/.test(l)||/^(기본 지속 효과|전투 시작)\s*:/.test(l);
   const NUMS=/^(.+?)\s*:?\s*(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){0,2})\s*(%|\(초\))?$/;
   function parse(n){ const S=SK[n]; if(S.rows) return S; const S2P=AC.seasonId==="s2", NZ=l=>!S2P?l:l.replace(/^(.+?:\s*)(\d+(?:\.\d+)?)%\s*\/\s*(\d+(?:\.\d+)?)%\s*\/\s*(\d+(?:\.\d+)?)%$/,"$1$2/$3/$4%").replace(/^(.+?:\s*\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){0,2})\s*\(%\)$/,"$1%");  /* S2 전용: (%)·a%/b%/c% 정규화 */ const out={name:S.name,img:S.img,desc:[],syn:[],rows:[]};
-    const HR=S.hr; String(S.desc).split("\n").map(x=>x.trim()).filter(Boolean).forEach((l,i)=>{ let m; const l0=l; l=NZ(l);
+    const HR=S.hr; String(S.desc).split("\n").map(x=>x.trim()).filter(Boolean).flatMap((l,i)=>S2P&&(HR==null||i>=HR)?l.split(/\s+\/\s+(?=[^\d\/\s(][^\/:]*:)/).map(x=>[x.replace(/(\d+(?:\.\d+)?)%(\s*\/\s*)(?=\d)/g,"$1$2"),i]):[[l,i]]).forEach(([l,i])=>{ let m; const l0=l; l=NZ(l);  /* S2: 한 줄에 붙은 계수 분리 · a%/b%/c% → a/b/c% */
       if(/^.{1,12} 추가 효과:/.test(l)&&(HR==null||i<HR)) { out.syn.push(l); return; }
       if(HR!=null?i<HR:isSent(l)) { out.desc.push(l); return; }  // 1.0.16v: hr(사용자 [가로선] 위치)가 있으면 그 위=설명, 아래=계수
-      if((m=l.match(NUMS))&&!/[:=+%]|[.다]$/.test(m[1].replace(/:\s*$/,""))){ let lb=m[1].replace(/:\s*$/,"").trim(), ty="none"; const k=lb.match(/\((공|물|마)\)/); if(k){ ty=k[1]==="물"?"공":k[1]; lb=lb.replace(k[0],"").trim(); } out.rows.push({label:lb,type:ty,values:m[2].split("/").map(x=>Number(x.trim())),unit:m[3]||""}); }
+      if(S2P&&(m=l.match(/^(.+?)\((물|공|방|생|최대 생명력)\+(마저|마)\)\s*:?\s*(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){0,2})\s*(%|\(%\))?\s*\+\s*(?:마\s*)?(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){0,2})\s*(%|\(%\))?$/))){ const K=x=>x==="물"?"공":x==="최대 생명력"?"생":x, U=x=>x?"%":""; out.rows.push({label:m[1].trim(),type:"none",values:[0,0,0],parts:[[K(m[2]),m[4].split("/").map(x=>Number(x.trim())),U(m[5])],[m[3],m[6].split("/").map(x=>Number(x.trim())),U(m[7])]]}); return; }  /* S2: (물+마)·(방+마저)·(생+마) 합성 줄 */
+      if((m=l.match(NUMS))&&!/[:=+%]|[.다]$/.test(m[1].replace(/:\s*$/,""))){ let lb=m[1].replace(/:\s*$/,"").trim(), ty="none"; const k=lb.match(S2P?/\((공|물|마|방|마법저항|마저|생)\)/:/\((공|물|마)\)/); if(k&&k[1]==="마법저항") k[1]="마저"; if(k){ ty=k[1]==="물"?"공":k[1]; lb=lb.replace(k[0],"").trim(); } out.rows.push({label:lb,type:ty,values:m[2].split("/").map(x=>Number(x.trim())),unit:m[3]||""}); }
       else if((m=l.match(/^(.+?)\((공|물)\+마\)\s*:\s*(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){0,2})\s*(%)?\s*\+\s*(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?){1,2})\s*(%)?$/))&&(S2P||/\//.test(m[3]))) out.rows.push({label:m[1].trim(),type:"none",values:[0,0,0],parts:[["공",m[3].split("/").map(x=>Number(x.trim())),m[4]||""],["마",m[5].split("/").map(x=>Number(x.trim())),m[6]||""]]});  // 1.3.9v (공+마) 합성 줄
       else out.rows.push({raw:l0}); }); return S.rows=out.rows, S.syn=out.syn, S.descL=out.desc, S; }
   AC.s1SkData=n=>SK[n]?parse(n):null;
@@ -10237,7 +10241,7 @@ AC.s1DarkCloud=function(ctx,S,x,y,m,slow){ slow=slow||1; const T=S.tweens;
 .s1tip .s1r .v .on,.s1tip .s1raw .on{color:#ffd36a;font-weight:700}
 .s1tip .s1tl{font-size:11px;color:#7e786b;text-align:right;margin-top:3px}
 .s1i{position:relative;display:inline-flex;vertical-align:-2px;width:14px;height:14px;margin:0 1px;cursor:help}.s1i svg{width:14px;height:14px}
-.s1i-at{color:#f08a2c}.s1i-ma{color:#7f7bff}
+.s1i-at{color:#f08a2c}.s1i-ma{color:#7f7bff}.s1i-df{color:#c9a46a}.s1i-rs{color:#5fb3e6}.s1i-hp{color:#e85a6a}.s1i-nt:hover::after,.s1i-nt:focus::after{display:none}
 .s1i:hover::after,.s1i:focus::after{content:attr(data-tip);position:absolute;bottom:135%;left:-6px;width:max-content;max-width:190px;white-space:normal;line-height:1.35;background:#1b1a17;border:1px solid #8a7444;color:#f3e6c4;font-size:11px;padding:3px 6px;border-radius:4px;z-index:99;pointer-events:none}
 .actk .acrg,.actk .s1tkb,.actk .acnm{display:none!important}
 @media(max-width:560px){#acRoot .achc-stats{padding-top:34px!important}}
