@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.1.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.1.5v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -8530,10 +8530,10 @@ window.S2AUG_PATCH=function(A){ /* A=AC.S1AUG {실버,골드,프리즘} — 시�
   // 기존 엔진이 이름으로 찾는 시너지 → 빈 자리 (판에 안 나옴)
   C.syn.forEach(s=>syn.push(Object.assign({},s,{members:[],stub:1})));
   C.syn=syn;
-  const symOf={}, TM={1:[2],2:[0,2],3:[0,1,2],4:[0,1,2,3],5:[0,1,1,2,3],6:[0,1,1,2,2,3],7:[0,0,1,1,2,2,3],8:[0,0,1,1,2,2,3,3]}; C.synTierIcons=Object.assign({},C.synTierIcons); syn.forEach(s=>{ if(s.stub) return; const f=s.name.replace(/[()\s]/g,""); if(D.sym[f]) symOf[s.id]=D.sym[f]; const U=AC.S1_SYN_ICONS[s.name]; if(U) C.synTierIcons[s.id]={tiers:[U.bronze,U.silver,U.gold,U.platinum].filter(Boolean),map:U.map||TM[s.bp.length]}; s.tmap=TM[s.bp.length]; });
+  const symOf=AC._symOf={}, TM={1:[2],2:[0,2],3:[0,1,2],4:[0,1,2,3],5:[0,1,1,2,3],6:[0,1,1,2,2,3],7:[0,0,1,1,2,2,3],8:[0,0,1,1,2,2,3,3]}; C.synTierIcons=Object.assign({},C.synTierIcons); syn.forEach(s=>{ if(s.stub) return; const f=s.name.replace(/[()\s]/g,""); if(D.sym[f]) symOf[s.id]=D.sym[f]; const U=AC.S1_SYN_ICONS[s.name]; if(U) C.synTierIcons[s.id]={tiers:[U.bronze,U.silver,U.gold,U.platinum].filter(Boolean),map:U.map||TM[s.bp.length]}; s.tmap=TM[s.bp.length]; });
   // 아이콘 없는 시즌1 시너지: 빈 칸 + 등급색 (동·은·금·백금)
   const TCOL=["linear-gradient(135deg,#8a5230,#d08a52)","linear-gradient(135deg,#8e939c,#e3e6ea)","linear-gradient(135deg,#a8781c,#f3cd5a)","linear-gradient(135deg,#7fd3ff,#d59cff,#ffe08a,#8fffc8)"];
-  const oSI=AC.synIco; AC.synIco=function(s,lv){ if(!s||!s.tmap||C.synTierIcons[s.id]) return oSI.apply(AC,arguments); const off=lv==null||lv<0; if(s.fac&&symOf[s.id]) return `<img class="acsyimg s1fac" src="${symOf[s.id]}" alt="" style="width:24px;height:28px;object-fit:contain;${off?"filter:grayscale(1) brightness(.6)":""}">`; const i=off?-1:s.tmap[Math.min(lv,s.tmap.length-1)]; return `<span class="acsyimg s1tier" data-acsytier="${off?"off":i}" style="display:inline-block;width:22px;height:25px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:${off?"#3a3d45":TCOL[i]};vertical-align:middle"></span>`; };
+  const oSI=AC.synIco; AC.synIco=function(s,lv){ if(!s||!s.tmap||C.synTierIcons[s.id]) return oSI.apply(AC,arguments); const off=lv==null||lv<0; if((s.fac||AC.seasonId==="s2")&&symOf[s.id]) return `<img class="acsyimg s1fac" src="${symOf[s.id]}" alt="" style="width:24px;height:28px;object-fit:contain;${off?"filter:grayscale(1) brightness(.6)":""}">`; const i=off?-1:s.tmap[Math.min(lv,s.tmap.length-1)]; return `<span class="acsyimg s1tier" data-acsytier="${off?"off":i}" style="display:inline-block;width:22px;height:25px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:${off?"#3a3d45":TCOL[i]};vertical-align:middle"></span>`; };
   // 영웅 배지: 그 영웅의 계열·직업 상징 (배경 제거)
   const heroSyms=no=>{ const h=AC.hero(no); if(!h) return []; return syn.filter(s=>!s.stub&&!s.sena&&s.members.includes(h.name)&&symOf[s.id]).map(s=>({n:s.name,i:symOf[s.id]})); };
   AC.s1Badges=(no,px)=>{ const L=heroSyms(no); return L.length?`<span class="s1bdg" data-s1bdg style="display:inline-flex;gap:1px;align-items:center;vertical-align:middle">${L.map(x=>`<img src="${x.i}" alt="${esc(x.n)}" title="${esc(x.n)}" style="width:${px}px;height:${px}px;object-fit:contain;filter:drop-shadow(0 0 1px #000)">`).join("")}</span>`:""; };
@@ -12072,7 +12072,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
     "신기루":["전장에 신기루 칸(내 진영 4칸)이 생깁니다. 전투 시작 시 신기루 칸 위의 아군 유닛(신기루 여부 무관)이 추가 효과:",["주는 피해 15%","+ 초당 마나 4","+ 입힌 모든 피해의 33% 생명력 회복","모든 추가 효과 2배"]]};
   C.syn.forEach(s=>{ const x=T[s.name]; if(!x||s.stub) return; s.s2=1; s.desc=s.bp.map((b,i)=>(i===0&&x[0]?x[0]+" ":"")+"("+b+") "+(x[1][i]||"")); });
   /* 시즌2 상징 아이템 (시즌1과 같은 형식 · k:"sym" · 시너지 패널/영웅 배지 아이콘은 그대로) */
-  { const G=AC.S1G, SY=window.S2SYM||{}; if(G){ Object.keys(G).forEach(k=>{ if(G[k].k==="sym") delete G[k]; }); C.syn.forEach(s=>{ if(s.stub||!SY[s.name]) return; G["s_"+s.id]={k:"sym",...(s.sena?{uni:1}:{}),id:"s_"+s.id,name:s.name+" 상징",syn:s.id,img:SY[s.name],st:{},sp:["장착한 영웅을 "+s.name+" 시너지로 취급"]}; C.ac010.items["g:s_"+s.id]={ico:"🧩",name:s.name+" 상징",tip:s.name+" 상징 · 장착한 영웅을 "+s.name+" 시너지로 취급"}; }); } }
+  { const G=AC.S1G, SY=window.S2SYM||{}; if(G){ Object.keys(G).forEach(k=>{ if(G[k].k==="sym") delete G[k]; }); C.syn.forEach(s=>{ if(s.stub||!SY[s.name]) return; G["s_"+s.id]={k:"sym",...(s.sena?{uni:1}:{}),id:"s_"+s.id,name:s.name+" 상징",syn:s.id,img:SY[s.name],st:{},sp:["장착한 영웅을 "+s.name+" 시너지로 취급"]}; if(AC._symOf) AC._symOf[s.id]=SY[s.name];  /* 2.1.5v: S2 시너지 아이콘 = 상징 그림 (시즌1과 같은 경로) */ C.ac010.items["g:s_"+s.id]={ico:"🧩",name:s.name+" 상징",tip:s.name+" 상징 · 장착한 영웅을 "+s.name+" 시너지로 취급"}; }); } }
   const lv=(B,side,id)=>{ const L=B.syn&&B.syn[side]; return L&&L[id]!=null&&L[id]>=0?L[id]:null; };
   const has=(B,u,id)=>{ if(!u||u.mon||u.golem||lv(B,u.side,id)==null) return false; const s=AC.synById(id); if(s&&s.members.includes(u.name)) return true; const src=B.refs&&B.refs[u.uid]; return !!(src&&(src.gear||[]).includes("s_"+id)); };
   const fx=(B,u,txt,cls)=>B.events.push({k:"fx",b:u.uid,txt,cls:cls||"buff"});
@@ -13133,6 +13133,7 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
     if(h==="멜키르표식"){ flash(e.a,e.aR,e.aC,0x9060e0,0.5); return; }
   };
 }catch(e){ console.warn("S2 4코 연출",e); } })();
+
 
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
