@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.2.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.0v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -14128,6 +14128,246 @@ window.S2FLD=function(d){ return 3+d*0.02; };
   AC.s1SkHtml=function(n,t){ if(!T5(n)) return o.apply(this,arguments); const tt=t||0, ti=AC.sk3Tier(tt), t2=ti===2?6:ti===1?3:0;
     return o.call(this,n,t2).replace("[ 0초월 / 3초월 / 6초월 ] · 현재 "+t2+"초월","[ 0초월 / 6초월 / 12초월 ] · 현재 "+tt+"초월"); };
 }catch(e){ console.warn("S2 5코 툴팁 0/6/12",e); } })();
+
+/* 시즌2 UI: 시너지 목록(좌) · 플레이어/체력 목록(우)을 TFT 스타일 연속 세로 목록으로 (S2 전용 CSS·렌더 래퍼 / 문구·툴팁·데이터 속성은 그대로) + 목록 폭을 뺀 만큼 보드 확대(칸 수 7×8 유지, 목록과 겹치지 않음) */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2") return;
+  const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const PAL=["#e8b04a","#5ea8ff","#c07cff","#4cc9a0","#ff7d6e","#8fd14f","#ff9ad1","#6fd6e8"];
+  const oPL=AC.plHTML;
+  AC.plHTML=function(st){ try{ if(!AC.isFfa(st)) return oPL.apply(this,arguments);
+    const P=st.players, open=AC.plOpen!=null?AC.plOpen:!AC.mob(), al=P.filter(p=>p.alive).length, hf=AC.hideFoe(st), mx=Math.max(100,...P.map(p=>p.hp));
+    const rows=[...P].sort((a,b)=>(b.alive-a.alive)||(a.alive?b.hp-a.hp:a.rank-b.rank)).map(p=>{ const nm=String(p.name||""), ini=p.me?"나":(nm.replace(/^봇\s*/,"")[0]||"?"), col=p.me?PAL[0]:PAL[(p.id*3+1)%PAL.length], hp=Math.max(0,p.hp), w=p.alive?Math.max(0,Math.min(100,hp/mx*100)):0;
+      return `<div class="acpr s2pr${p.me?" me":""}${!hf&&p.id===st.opp?" opp":""}${hf&&p.id===AC.scout?" scout":""}${p.alive?"":" dead"}" data-acpid="${p.id}"${hf&&!p.me&&p.alive?' title="눌러서 보드 정찰 (보기 전용)"':""}><span class="hpn">${p.alive?hp:"#"+p.rank}</span><span class="nm">${esc(nm)}${!hf&&p.id===st.opp&&st.oppGhost?" 👻":""}</span><i class="hpb"><i style="width:${w}%"></i></i><span class="pt" style="--pc:${col}">${esc(ini)}<em>${p.S?p.S.level:""}</em></span></div>`; }).join("");
+    return `<div class="acpl s2pl${open?" open":""}" data-acplayers><button type="button" class="acplh" data-acdo="plt">플레이어 ${al}/${P.length} ${open?"▾":"▸"}${open?"":(()=>{ const m=P.find(q=>q.me); return m?`<span class="s2hpm">❤${Math.max(0,m.hp)}</span>`:""; })()}</button>${open?`<div class="acplb">${rows}</div>`:""}</div>`;
+  }catch(e){ return oPL.apply(this,arguments); } };
+  const css=document.createElement("style"); css.id="s2ListUI"; css.textContent=`
+  /* ── 시너지 목록: 칸/테두리 없는 연속 세로 목록 · 활성은 아이콘/이름 강조, 비활성은 어둡게 ── */
+  #acRoot .a-syn .acsyn{border:0;background:none;padding:0 2px 0 0;gap:0;border-radius:0;scrollbar-width:thin;scrollbar-color:#3a3426 transparent}
+  #acRoot .a-syn .acsy{border:0;border-radius:0;background:none;box-shadow:none;opacity:.5;position:relative;border-left:2px solid transparent}
+  #acRoot .a-syn .acsy.on{opacity:1;border-left-color:var(--gold);background:linear-gradient(90deg,rgba(224,180,90,.16),rgba(224,180,90,0) 85%);box-shadow:none}
+  #acRoot .a-syn .acsy.sena.on{border-left-color:#c58bff;background:linear-gradient(90deg,rgba(197,139,255,.18),rgba(197,139,255,0) 85%)}
+  #acRoot .a-syn .acsy:hover{opacity:1;background:rgba(255,255,255,.05)}
+  #acRoot .a-syn .acsyh{display:grid;grid-template-columns:32px minmax(0,1fr);grid-template-areas:"ic nm" "ic ct";column-gap:6px;row-gap:0;align-items:center;width:100%;padding:3px 4px;text-align:left}
+  #acRoot .a-syn .acsyh .ic{grid-area:ic;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px}
+  #acRoot .a-syn .acsyh .ic img{width:30px!important;height:30px!important;object-fit:contain}
+  #acRoot .a-syn .acsy:not(.on) .ic img{filter:brightness(.7) saturate(.6)}
+  #acRoot .a-syn .acsy.on .ic{filter:drop-shadow(0 0 4px rgba(224,180,90,.55))}
+  #acRoot .a-syn .acsyh .nm{grid-area:nm;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-muted)} #acRoot .a-syn .acsy.on .nm{color:var(--gold-hi);font-weight:800}
+  #acRoot .a-syn .acsyh .ct{grid-area:ct;font-size:11px;font-weight:700;color:var(--text-muted)} #acRoot .a-syn .acsy.on .ct{color:#fff}
+  #acRoot .a-syn .acsyh .bp{display:none}
+  #acRoot .a-syn .acsy.open .acsyd{padding:0 6px 6px 40px}
+  /* ── 플레이어/체력 목록: 우측 연속 세로 목록 (체력 숫자 · 이름 · 얇은 체력바 · 원형 초상) ── */
+  /* 개인전(플레이어 목록 있음): 내 행이 목록에 있으므로 위쪽 체력 pill(내 체력/다음 상대)은 숨김 — 요소는 남겨 data-achp 갱신 로직 보호. 1:1은 목록이 없어 그대로 표시 */
+  #acRoot .a-side:has(.s2pl) .achud.acside{display:none!important}
+  #acRoot .s2pl .acplh .s2hpm{float:right;color:#ff8d9a;font-weight:800}
+  #acRoot .a-side .achud.acside{gap:0;margin:0 0 4px;width:100%}
+  #acRoot .a-side .achud .hi{border:0;background:none;border-radius:0;padding:2px 2px;gap:6px;width:100%;box-sizing:border-box}
+  #acRoot .a-side .achud .hpbig .hrt{font-size:15px} #acRoot .a-side .achud .hpbig b{font-size:17px;min-width:30px} #acRoot .a-side .achud .achpbar{height:5px;width:auto;flex:1;min-width:0}
+  #acRoot .a-side .acpl{width:100%;margin:0} #acRoot .a-side .acplh{background:none;border:0;border-bottom:1px solid rgba(255,255,255,.08);border-radius:0;padding:2px 2px 4px;font-size:11px;color:var(--text-muted)}
+  #acRoot .acplb{gap:0;margin-top:2px}
+  #acRoot .s2pr{display:grid;grid-template-columns:30px minmax(0,1fr) 34px;grid-template-areas:"hp nm pt" "hp bar pt";column-gap:6px;row-gap:1px;padding:4px 2px;border-radius:0;background:none;outline:0;align-items:center;position:relative;border-left:2px solid transparent}
+  #acRoot .s2pr .hpn{grid-area:hp;text-align:right;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;color:#e9e1c8}
+  #acRoot .s2pr .nm{grid-area:nm;text-align:right;font-size:12px;color:#d6d0be}
+  #acRoot .s2pr .hpb{grid-area:bar;display:block;height:5px;border-radius:3px;background:#1c1f28;overflow:hidden} #acRoot .s2pr .hpb>i{display:block;height:100%;background:linear-gradient(90deg,#c8324a,#ff7d8f)}
+  #acRoot .s2pr .pt{grid-area:pt;position:relative;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#1a1307;background:radial-gradient(circle at 35% 30%,#fff8,var(--pc,#e8b04a) 60%);box-shadow:0 0 0 2px #0008,0 0 0 3px var(--pc,#e8b04a)}
+  #acRoot .s2pr .pt em{position:absolute;right:-4px;bottom:-4px;font-style:normal;font-size:9px;line-height:11px;padding:0 3px;border-radius:6px;background:#000c;color:#fff;font-weight:700}
+  #acRoot .s2pr.me{background:linear-gradient(270deg,rgba(94,168,255,.2),rgba(94,168,255,0) 90%)} #acRoot .s2pr.me .nm{color:#bfe0ff;font-weight:800} #acRoot .s2pr.me .hpb>i{background:linear-gradient(90deg,#3f7fe0,#8cc4ff)}
+  #acRoot .s2pr.opp{border-left-color:#e66;background:linear-gradient(90deg,rgba(255,90,90,.2),rgba(255,90,90,0) 90%);outline:0} #acRoot .s2pr.scout{border-left-color:#7aa0ff;background:linear-gradient(90deg,rgba(90,140,255,.22),rgba(90,140,255,0) 90%);outline:0}
+  #acRoot .s2pr.dead{opacity:.45;text-decoration:none} #acRoot .s2pr.dead .nm{text-decoration:line-through} #acRoot .s2pr.dead .pt{filter:grayscale(1) brightness(.6)} #acRoot .s2pr.dead .hpn{color:#8a826e;font-size:13px}
+  #acRoot .s2pr:hover{background-color:rgba(255,255,255,.05)}
+  /* ── 데스크톱: 좌 시너지 · 중앙 보드(남는 폭 전부) · 우 플레이어 · 보드는 목록과 겹치지 않음 (칸 수 7×8 유지) ── */
+  @media (min-width:950px){
+    #acRoot .acL{grid-template-columns:clamp(136px,14vw,150px) minmax(0,1fr) clamp(156px,16vw,172px);grid-template-areas:"x round y" "syn board side" "ctl bench roster" "shop shop roster";gap:8px 14px}
+    #acRoot .a-board .acboard{max-width:none;margin:0}
+    #acRoot .a-syn{align-self:start} #acRoot .a-syn .acsyn{max-height:none;height:auto}
+    #acRoot .a-roster details[open]{left:auto;right:0;width:max(100%,300px)}
+  }
+  @media (max-width:949px) and (min-width:561px){ #acRoot .acL{grid-template-columns:136px minmax(0,1fr);grid-template-areas:"round round" "syn board" "side side" "ctl bench" "shop shop" "roster roster";gap:8px 10px} #acRoot .a-board .acboard{max-width:none;margin:0} #acRoot .a-syn .acsyn{max-height:none} #acRoot .a-side{flex-direction:row;flex-wrap:wrap;align-items:flex-start} #acRoot .a-side .acpl{width:min(100%,260px)} }
+  @media (max-width:560px){
+    #acRoot .a-syn .acsyn{display:grid;grid-template-columns:1fr 1fr;column-gap:8px} #acRoot .a-syn .acsyh{grid-template-columns:28px minmax(0,1fr)} #acRoot .a-syn .acsyh .ic{width:28px;height:28px} #acRoot .a-syn .acsyh .ic img{width:26px!important;height:26px!important}
+    #acRoot .a-syn .acsy.open{grid-column:1/-1}
+    #acRoot .a-side .acpl{width:100%} #acRoot .a-side .acside{width:100%}
+  }`;
+  document.head.appendChild(css);
+}catch(e){ console.warn("S2 목록 UI",e); } })();
+
+/* 시즌2: ① 상단 라운드/스테이지 바를 헤더(시뮬레이션 버튼 칸)로 이동 + 보드 확장  ② 🎲 임의배치 모드 (본 게임 상태·저장과 독립) — 모두 S2 전용 */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2") return;
+  const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const FP=AC.s2fp={on:false,units:[],sel:null,uid:1};
+  const box=()=>document.getElementById("acRoot");
+  /* ── 헤더: 라운드 바 이동 ── */
+  const simBtn=()=>document.getElementById("acSimBtn");
+  const host=()=>{ let h=document.getElementById("s2TopBar"); if(h) return h; const b=simBtn(); if(!b||!b.parentNode) return null; b.parentNode.classList.add("s2h2"); h=document.createElement("span"); h.id="s2TopBar"; h.className="s2topbar"; b.insertAdjacentElement("afterend",h); h.addEventListener("click",e=>{ try{ AC.onClick(e); }catch(_){} }); return h; };
+  const running=()=>{ const st=AC.st; return !!(st&&!AC.modeOpen&&!AC.simOn&&!FP.on&&!["over","win"].includes(st.phase)); };
+  const fixTop=h=>{ try{ if(AC.season!=="s1"||!AC.st||!AC.s1StageL) return; const r=AC.st.round; /* s1 fixHud 는 #acRoot 안만 고치므로 이동한 바에 같은 표기 적용 */
+    h.querySelectorAll('[data-ach="round"]').forEach(b=>{ const L=AC.s1StageL(r); if(b.textContent!==L) b.textContent=L; const p=b.previousSibling; if(p&&p.nodeType===3&&/라운드/.test(p.nodeValue)) p.nodeValue=p.nodeValue.replace("라운드","스테이지"); });
+    if(AC.s1IsEpic(r)) h.querySelectorAll("[data-acmode]").forEach(n=>{ if(n.textContent!=="에픽") n.textContent="에픽"; });
+    h.querySelectorAll("[data-acnext]").forEach(n=>{ const m=n.textContent.match(/R(\d+)$/); if(m) n.textContent=n.textContent.replace(/R\d+$/,AC.s1StageL(+m[1])).replace(/👹 BOSS|👾 PVE/,AC.s1IsEpic(+m[1])?"👹 에픽":"👾 PVE"); }); }catch(e){} };
+  const syncTop=()=>{ try{ const h=host(), b=box(); if(!h||!b) return; const rd=b.querySelector(".a-round"); if(rd){ if(running()) h.replaceChildren(rd); else { rd.remove(); h.replaceChildren(); } } else if(!running()) h.replaceChildren(); if(h.firstChild) fixTop(h); h.style.display=h.firstChild?"":"none"; }catch(e){ console.warn("S2 상단바",e); } };
+  /* ── 임의배치: 상태 ── */
+  const ROWS=()=>AC_CONFIG.rows, COLS=()=>AC_CONFIG.cols;
+  const at=(r,c)=>FP.units.find(u=>u.r===r&&u.c===c);
+  const byNo=no=>FP.units.find(u=>u.no===no);
+  const fake=()=>({phase:"prep",round:1,hp:100,mode:"ffa",me:{units:FP.units.map(u=>({uid:u.uid,no:u.no,t:0,copies:1,loc:"f"+u.r+","+u.c})),golem:null,embStk:0,level:10,gold:0,items:{}},ai:{units:[]}});
+  const synHTML=()=>{ const real=AC.st; AC.st=fake(); try{ return AC.synPanel(); }catch(e){ return `<div class="acsyn"><span class="muted">시너지 계산 오류</span></div>`; } finally{ AC.st=real; } };
+  const tok=u=>{ const h=AC.hero(u.no), tr=AC.tierNo(u.no); return `<div class="actk tier${tr}${FP.sel&&FP.sel.cell===u.uid?" sel":""}" data-s2fpu="${u.uid}" draggable="true" title="${esc(h.name)} · ${AC.cost(u.no)}코스트">${AC.face(u.no)}${AC.rbadge(u.no)}${AC.ubadge(u.no)}<span class="acnm">${esc(h.name)}</span><button type="button" class="s2fpx" data-s2fpx="${u.uid}" title="필드에서 제거">✕</button></div>`; };
+  const heroList=()=>{ const H=AC.heroes(), by={}; H.forEach(h=>(by[h.tier]=by[h.tier]||[]).push(h)); const names=n=>esc((AC.hero(n)||{}).name||"?");
+    return Object.keys(by).sort((a,b)=>a-b).map(t=>`<div class="s2fpg"><div class="s2fpgh tier${t}"><b>${AC_CONFIG.tierCost[t]||t}코스트</b><small>${by[t].filter(h=>byNo(h.no)).length}/${by[t].length}</small></div><div class="s2fpgl">${by[t].map(h=>{ const pl=!!byNo(h.no), sel=FP.sel&&FP.sel.hero===h.no; return `<button type="button" class="s2fph tier${t}${pl?" placed":""}${sel?" sel":""}" data-s2fph="${h.no}" draggable="true" title="${names(h.no)}${pl?" · 배치됨 (누르면 필드에서 제거)":""}">${AC.face(h.no)}<span class="nm">${names(h.no)}</span></button>`; }).join("")}</div></div>`).join(""); };
+  FP.render=function(){ const b=box(); if(!b) return; const R=ROWS(), C=COLS(); let g="";
+    for(let r=0;r<R;r++) for(let c=0;c<C;c++){ const u=at(r,c); g+=`<div class="accell me${r===0?" front":""}" data-s2fpc="${r},${c}">${u?tok(u):""}</div>`; }
+    const keep=b.querySelector("[data-s2fplist]"), st=keep?keep.scrollTop:0;
+    b.innerHTML=`<div class="acL s2fpL"><div class="s2fp-top"><b>🎲 임의배치</b><span class="s2fp-cnt">배치 ${FP.units.length}명</span><small class="muted">영웅을 고른 뒤 칸을 누르거나 끌어다 놓으세요 · 배치된 영웅을 눌러 선택해 이동 · ✕ 로 제거</small><span class="sp"></span><button type="button" data-s2fp="clear">🗑 필드 초기화</button><button type="button" data-s2fp="exit">← 나가기</button></div>
+      <div class="s2fp-heroes" data-s2fplist>${heroList()}</div>
+      <div class="a-board s2fp-board"><div class="acboard s2fpb" id="acBoard"><div class="acgrid">${g}</div><div class="aclayer" id="acLayer"></div></div></div>
+      <div class="a-syn">${synHTML()}</div></div>`;
+    b.classList.remove("acitemsel"); const nl=b.querySelector("[data-s2fplist]"); if(nl) nl.scrollTop=st; };
+  const redraw=()=>{ if(FP.on) AC.render(); };
+  const enter=()=>{ if(AC.anim) return AC.msg&&AC.msg("진행 중인 전투가 끝난 뒤에 열 수 있어요"); const st=AC.st; if(st&&st.vr==="time"&&st.phase==="prep"&&st.vSeen) return AC.msg&&AC.msg("시간 제한 중에는 열 수 없어요"); FP.on=true; FP.sel=null; AC.info=null; AC.sel=null; AC.render(); };
+  const exit=()=>{ FP.on=false; FP.sel=null; AC.render(); };
+  const placeHero=(no,r,c)=>{ if(byNo(no)) return; const o=at(r,c); if(o) FP.units.splice(FP.units.indexOf(o),1);
+    if(AC.isUnique(no)){ const x=FP.units.find(y=>AC.isUnique(y.no)); if(x) FP.units.splice(FP.units.indexOf(x),1); } /* (구)세나: 판에 1종만 — 새로 올리면 기존 것이 빠짐 */
+    FP.units.push({uid:FP.uid++,no,r,c}); };
+  const cellTo=(u,r,c)=>{ const o=at(r,c); if(o===u) return; if(o){ o.r=u.r; o.c=u.c; } u.r=r; u.c=c; };
+  const dropOn=(r,c)=>{ const s=FP.sel; if(!s) return; if(s.hero!=null) placeHero(s.hero,r,c); else { const u=FP.units.find(x=>x.uid===s.cell); if(u) cellTo(u,r,c); } FP.sel=null; redraw(); };
+  const rm=uid=>{ const u=FP.units.find(x=>x.uid===uid); if(u) FP.units.splice(FP.units.indexOf(u),1); if(FP.sel&&FP.sel.cell===uid) FP.sel=null; redraw(); };
+  const onClick=e=>{ const t=e.target; if(!t||!t.closest) return;
+    if(t.closest("[data-s2fp=open]")){ e.stopPropagation(); e.preventDefault(); return enter(); }
+    if(!FP.on) return; e.stopPropagation();
+    const a=t.closest("[data-s2fp]"); if(a){ const k=a.dataset.s2fp; if(k==="exit") return exit(); if(k==="clear"){ FP.units=[]; FP.sel=null; return redraw(); } }
+    const x=t.closest("[data-s2fpx]"); if(x){ e.preventDefault(); return rm(+x.dataset.s2fpx); }
+    const tg=t.closest("[data-acsytog]"); if(tg){ AC.synOpen=AC.synOpen||{}; const id=tg.dataset.acsytog; AC.synOpen[id]=!AC.synOpen[id]; return redraw(); }
+    const hb=t.closest("[data-s2fph]"); if(hb){ const no=+hb.dataset.s2fph, u=byNo(no); if(u) return rm(u.uid); FP.sel=FP.sel&&FP.sel.hero===no?null:{hero:no}; return redraw(); }
+    const cu=t.closest("[data-s2fpu]"), cl=t.closest("[data-s2fpc]");
+    if(cl){ const [r,c]=cl.dataset.s2fpc.split(",").map(Number), u=at(r,c);
+      if(FP.sel) return dropOn(r,c);
+      if(u){ FP.sel={cell:u.uid}; return redraw(); } return; }
+    if(cu===null&&FP.sel&&!t.closest("[data-s2fplist],.a-syn,.s2fp-presets")){ FP.sel=null; redraw(); } };
+  const drag={};
+  const onDrag=e=>{ if(!FP.on) return; const t=e.target; if(!t||!t.closest) return; e.stopPropagation();
+    if(e.type==="dragstart"){ const h=t.closest("[data-s2fph]"), u=t.closest("[data-s2fpu]"); drag.v=h?{hero:+h.dataset.s2fph}:u?{cell:+u.dataset.s2fpu}:null; if(drag.v&&drag.v.hero!=null&&byNo(drag.v.hero)){ drag.v={cell:byNo(drag.v.hero).uid}; } if(!drag.v) return e.preventDefault(); try{ e.dataTransfer.setData("text/plain","s2fp"); e.dataTransfer.effectAllowed="move"; }catch(_){} return; }
+    if(e.type==="dragover"){ if(drag.v&&(t.closest("[data-s2fpc]")||t.closest("[data-s2fplist]"))) e.preventDefault(); return; }
+    if(e.type==="drop"){ e.preventDefault(); const v=drag.v; drag.v=null; if(!v) return; const cl=t.closest("[data-s2fpc]");
+      if(cl){ const [r,c]=cl.dataset.s2fpc.split(",").map(Number); FP.sel=v; return dropOn(r,c); }
+      if(t.closest("[data-s2fplist]")&&v.cell!=null){ return rm(v.cell); } return; }
+    if(e.type==="dragend"){ drag.v=null; } };
+  /* ── AC.render 래퍼 ── */
+  const oR=AC.render;
+  AC.render=function(){ if(AC.simOn) FP.on=false; if(FP.on){ const r=FP.render(); syncTop(); return r; }
+    const r=oR.apply(this,arguments);
+    try{ const side=box()&&box().querySelector(".a-side"); if(side&&!AC.mob()&&!side.querySelector("[data-s2fp=open]")) side.insertAdjacentHTML("beforeend",`<div class="acctl s2fpwrap"><button type="button" class="s2fpbtn" data-s2fp="open" title="아군 필드만 열어 영웅을 자유롭게 배치해 보는 연습 모드 (본 게임과 별개)">🎲 임의배치</button></div>`); }catch(e){ console.warn("S2 임의배치 버튼",e); }
+    syncTop(); return r; };
+  const r0=box(); if(r0){ r0.addEventListener("click",onClick,true); ["dragstart","dragover","drop","dragend"].forEach(ev=>r0.addEventListener(ev,onDrag,true)); }
+  const css=document.createElement("style"); css.id="s2TopFpCss"; css.textContent=`
+  /* 헤더로 이동한 라운드/스테이지 바 */
+  #acSec h2.s2h2{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+  #acSec h2.s2h2 .s2topbar{margin-left:auto;display:inline-flex;font-size:13px;font-weight:400}
+  #acSec .s2topbar .a-round{margin:0;justify-content:flex-end}
+  @media (max-width:560px){ #acSec h2.s2h2 .s2topbar{margin-left:0;width:100%} #acSec .s2topbar .a-round{justify-content:center;width:100%} }
+  /* 상단 바가 빠진 자리만큼 보드를 위로 확장 (칸 수 7×8 그대로) — 그리드의 라운드 행 제거 */
+  @media (min-width:950px){ #acRoot .acL:not(.s2fpL){grid-template-areas:"syn board side" "ctl bench roster" "shop shop roster"} }
+  @media (max-width:949px) and (min-width:561px){ #acRoot .acL:not(.s2fpL){grid-template-areas:"syn board" "side side" "ctl bench" "shop shop" "roster roster"} }
+  @media (min-width:561px){ #acRoot .acL:not(.s2fpL) .a-board .acboard{aspect-ratio:7/8.4} }
+  /* 임의배치 버튼 */
+  #acRoot .s2fpwrap{width:100%} #acRoot .s2fpbtn{width:100%;padding:8px 10px;font-weight:800;border-radius:10px;border:1px dashed var(--gold-line,#a88a4a);background:rgba(224,180,90,.08);color:var(--gold-hi,#f0d08a);cursor:pointer} #acRoot .s2fpbtn:hover{background:rgba(224,180,90,.18)}
+  @media (max-width:560px){ #acRoot .s2fpwrap{display:none} }
+  /* 임의배치 화면: 좌 코스트별 영웅 목록 · 중앙 아군 필드(7×4) · 우 시너지 목록 */
+  #acRoot .s2fpL{display:grid;grid-template-columns:clamp(200px,22vw,240px) minmax(0,1fr) clamp(140px,15vw,160px);grid-template-areas:"top top top" "heroes board syn";gap:8px 14px;align-items:start}
+  #acRoot .s2fp-top{grid-area:top;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:4px 2px} #acRoot .s2fp-top .sp{flex:1} #acRoot .s2fp-top b{font-size:15px;color:var(--gold-hi,#f0d08a)} #acRoot .s2fp-cnt{padding:2px 10px;border-radius:12px;border:1px solid var(--gold-line);font-size:12px}
+  #acRoot .s2fp-top button{padding:6px 12px;border-radius:8px;border:1px solid var(--gold-line);background:rgba(14,17,25,.7);color:inherit;cursor:pointer;font-weight:700}
+  #acRoot .s2fp-heroes{grid-area:heroes;max-height:min(80vh,720px);overflow-y:auto;padding-right:4px;scrollbar-width:thin}
+  #acRoot .s2fpL .a-board{grid-area:board} #acRoot .s2fpL .a-syn{grid-area:syn;align-self:start}
+  #acRoot .s2fpL .acboard{aspect-ratio:7/4;max-width:none;margin:0} #acRoot .s2fpL .acboard{background:linear-gradient(180deg,#18202f,#121823)} #acRoot .s2fpL .acgrid{grid-template-rows:repeat(4,1fr)}
+  #acRoot .s2fpgh{display:flex;justify-content:space-between;align-items:baseline;position:sticky;top:0;z-index:2;background:#12151d;padding:4px 4px;border-bottom:2px solid var(--tc,#888);margin-top:6px} #acRoot .s2fpgh b{color:var(--tc,#fff);font-size:13px} #acRoot .s2fpgh small{color:var(--text-muted);font-size:11px}
+  #acRoot .s2fpgl{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px 0}
+  #acRoot .s2fph{display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px;border:1px solid transparent;border-radius:8px;background:none;color:inherit;cursor:pointer;min-width:0}
+  #acRoot .s2fph .acface{display:block;position:relative;width:100%;aspect-ratio:1;border:2px solid var(--tc);border-radius:8px;overflow:hidden;background:#121620}
+  #acRoot .s2fph .nm{font-size:10px;line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #acRoot .s2fph:hover{background:rgba(255,255,255,.08)} #acRoot .s2fph.sel{border-color:var(--gold-hi);box-shadow:0 0 10px #ffd98a88;background:rgba(224,180,90,.15)}
+  #acRoot .s2fph.placed{opacity:.35} #acRoot .s2fph.placed:hover{opacity:.7}
+  #acRoot .s2fpx{position:absolute;top:1px;right:1px;z-index:5;width:18px;height:18px;border-radius:50%;border:0;background:#000b;color:#fff;font-size:10px;line-height:18px;padding:0;cursor:pointer;display:none} #acRoot .actk:hover .s2fpx{display:block}
+  #acRoot .s2fpL .accell{cursor:pointer}
+  @media (max-width:949px){ #acRoot .s2fpL{grid-template-columns:minmax(0,1fr) 150px;grid-template-areas:"top top" "board syn" "heroes heroes"} #acRoot .s2fp-heroes{max-height:none} #acRoot .s2fpgl{grid-template-columns:repeat(auto-fill,minmax(54px,1fr))} }
+  @media (max-width:560px){ #acRoot .s2fpL{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "board" "syn" "heroes"} }`;
+  document.head.appendChild(css);
+  try{ if(AC.st&&box()&&box().firstChild) AC.render(); else syncTop(); }catch(e){ syncTop(); }
+}catch(e){ console.warn("S2 상단바/임의배치",e); } })();
+
+/* 시즌2: 임의배치 프리셋 저장/적용 + 인플레이 상점 강조 (표시 전용 · 전투/상점 확률 무관 · 저장소 7kr_ac_s2_presets 는 게임 저장과 분리) */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.s2fp) return;
+  const FP=AC.s2fp, KEY="7kr_ac_s2_presets", MAX=20;
+  const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const nz=s=>String(s==null?"":s).replace(/\u200B/g,"");
+  const box=()=>document.getElementById("acRoot");
+  const load=()=>{ try{ const o=JSON.parse(localStorage.getItem(KEY)||"null"); if(o&&Array.isArray(o.list)) return {list:o.list.filter(p=>p&&p.id&&Array.isArray(p.units)),active:o.active||null}; }catch(e){} return {list:[],active:null}; };
+  const save=D=>{ try{ localStorage.setItem(KEY,JSON.stringify(D)); }catch(e){} };
+  const heroNo=u=>{ try{ const h=AC.hero(u.no); if(h&&nz(h.name)===u.n) return u.no; }catch(e){} const f=AC.heroes().find(x=>{ const h=AC.hero(x.no); return h&&nz(h.name)===u.n; }); return f?f.no:null; };
+  const resolve=p=>p.units.map(u=>({no:heroNo(u),r:u.r,c:u.c})).filter(u=>u.no!=null);
+  const act=()=>{ const D=load(); return D.list.find(p=>p.id===D.active)||null; };
+  const actSet=()=>{ const p=act(); return p?new Set(resolve(p).map(u=>u.no)):null; };
+  let msgT; const say=t=>{ FP.pmsg=t; const m=box()&&box().querySelector("[data-s2prmsg]"); if(m) m.textContent=t; clearTimeout(msgT); msgT=setTimeout(()=>{ FP.pmsg=""; const e=box()&&box().querySelector("[data-s2prmsg]"); if(e) e.textContent=""; },3500); };
+  const autoName=D=>{ let i=1; while(D.list.some(p=>p.name==="프리셋 "+i)) i++; return "프리셋 "+i; };
+  const snap=()=>FP.units.map(u=>({n:nz((AC.hero(u.no)||{}).name),no:u.no,r:u.r,c:u.c}));
+  const panel=()=>{ const D=load(), a=D.list.find(p=>p.id===D.active), ed=D.list.find(p=>p.id===FP.editId);
+    const rows=D.list.map(p=>{ const us=resolve(p), isA=p.id===D.active, isE=p.id===FP.editId, ren=FP.renId===p.id;
+      return `<div class="s2prr${isA?" act":""}${isE?" edit":""}" data-s2prid="${esc(p.id)}"><span class="s2prr-nm">${ren?`<input type="text" maxlength="20" data-s2prrn value="${esc(p.name)}">`:`<b>${esc(p.name)}</b>`}${isA?`<i class="s2prr-b">★ 적용 중</i>`:""}${isE?`<i class="s2prr-e">편집 중</i>`:""}</span><span class="s2prr-f">${us.slice(0,10).map(u=>`<span class="s2prr-i tier${AC.tierNo(u.no)}" title="${esc((AC.hero(u.no)||{}).name)}">${AC.face(u.no)}</span>`).join("")}${us.length>10?`<small>+${us.length-10}</small>`:""}</span><small class="s2prr-n">${us.length}명</small><span class="s2prr-btn">${isA?`<button type="button" data-s2pr="unapply">적용 해제</button>`:`<button type="button" class="go" data-s2pr="apply">적용</button>`}<button type="button" data-s2pr="load" title="필드에 불러와 편집">불러오기</button><button type="button" data-s2pr="${ren?"renok":"ren"}">${ren?"확인":"이름변경"}</button><button type="button" class="${FP.delId===p.id?"warn":""}" data-s2pr="del">${FP.delId===p.id?"정말 삭제?":"삭제"}</button></span></div>`; }).join("");
+    return `<div class="s2fp-presets" data-s2prpanel><div class="s2pr-h"><b>💾 프리셋</b>${a?`<span class="s2pr-act">★ 인플레이 적용 중: <b>${esc(a.name)}</b> <button type="button" data-s2pr="unapply">적용 해제</button></span>`:`<span class="muted">적용 중인 프리셋 없음 · 적용하면 인플레이 상점에서 프리셋 영웅이 강조돼요 (한 번에 하나)</span>`}</div>
+      <div class="s2pr-save"><input type="text" maxlength="20" data-s2prname placeholder="프리셋 이름 (비우면 자동)" value="${esc(FP.nameDraft||"")}"><button type="button" class="go" data-s2pr="save">💾 배치 저장</button>${ed?`<button type="button" data-s2pr="over" title="현재 필드로 이 프리셋을 덮어씁니다">↻ “${esc(ed.name)}” 덮어쓰기</button>`:""}<small data-s2prmsg>${esc(FP.pmsg||"")}</small></div>
+      <div class="s2pr-list">${rows||`<p class="muted">저장된 프리셋이 없어요. 필드에 영웅을 올리고 ‘배치 저장’을 누르세요.</p>`}</div></div>`; };
+  const oFR=FP.render;
+  FP.render=function(){ const r=oFR.apply(this,arguments); try{ const b=box(), bd=b&&b.querySelector(".s2fp-board"); if(bd){ bd.insertAdjacentHTML("afterend",panel()); const ri=b.querySelector("[data-s2prrn]"); if(ri){ ri.focus(); ri.select(); } } }catch(e){ console.warn("S2 프리셋 패널",e); } return r; };
+  const decorate=()=>{ try{ if(FP.on) return; const b=box(), st=AC.st; if(!b||!st||!st.me) return; const set=actSet(), a=act(), shop=st.me.shop||[];
+    b.querySelectorAll(".acshop[data-acbuy]").forEach(el=>{ const hit=!!(set&&set.has(shop[+el.dataset.acbuy])), bd=el.querySelector(".s2prb"); el.classList.toggle("s2pre",hit); if(hit&&!bd) el.insertAdjacentHTML("beforeend",`<i class="s2prb" title="적용 중인 프리셋: ${esc(a.name)}">★프리셋</i>`); else if(!hit&&bd) bd.remove(); });
+    const top=b.querySelector(".acsb-top"), chip=top&&top.querySelector(".s2prchip");
+    if(top&&a){ if(!chip){ const sp=top.querySelector(".acsb-sp"); (sp?sp:top).insertAdjacentHTML(sp?"beforebegin":"beforeend",`<span class="s2prchip" title="적용 중인 프리셋 (임의배치에서 변경)">★ ${esc(a.name)}</span>`); } else if(chip.textContent!=="★ "+a.name) chip.textContent="★ "+a.name; } else if(chip) chip.remove();
+    const side=b.querySelector(".a-side"), sc=side&&side.querySelector(".s2prside");
+    if(side&&a&&!AC.mob()){ const h=`<div class="s2prside">★ 프리셋 적용 중<b>${esc(a.name)}</b><button type="button" data-s2pr="unapply">해제</button></div>`; if(!sc) side.insertAdjacentHTML("beforeend",h); else if(sc.firstElementChild&&sc.querySelector("b").textContent!==a.name) sc.outerHTML=h; } else if(sc) sc.remove();
+  }catch(e){ console.warn("S2 프리셋 강조",e); } };
+  const oR=AC.render; AC.render=function(){ const r=oR.apply(this,arguments); decorate(); return r; };
+  const refresh=()=>{ if(FP.on) AC.render(); else decorate(); };
+  const onClick=e=>{ const t=e.target; if(!t||!t.closest) return; const bt=t.closest("[data-s2pr]"); if(!bt) return; if(!FP.on&&bt.dataset.s2pr!=="unapply") return; e.stopPropagation(); e.preventDefault();
+    const k=bt.dataset.s2pr, row=bt.closest("[data-s2prid]"), id=row&&row.dataset.s2prid, D=load(), p=D.list.find(x=>x.id===id);
+    if(k!=="del"&&FP.delId) FP.delId=null;
+    if(k==="save"||k==="over"){ if(!FP.units.length){ say("빈 필드는 저장할 수 없어요 — 영웅을 먼저 올려 주세요"); return; }
+      if(k==="over"){ const q=D.list.find(x=>x.id===FP.editId); if(!q) return say("덮어쓸 프리셋이 없어요"); q.units=snap(); q.ts=Date.now(); save(D); say("“"+q.name+"”에 덮어썼어요"); return refresh(); }
+      if(D.list.length>=MAX) return say("프리셋은 최대 "+MAX+"개까지 저장할 수 있어요");
+      const inp=box().querySelector("[data-s2prname]"), nm=((inp?inp.value:FP.nameDraft)||"").trim().slice(0,20)||autoName(D), np={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:nm,units:snap(),ts:Date.now()}; D.list.push(np); save(D); FP.editId=np.id; FP.nameDraft=""; say("“"+nm+"” 저장됨 ("+np.units.length+"명)"); return refresh(); }
+    if(!p&&k!=="unapply") return;
+    if(k==="apply"){ D.active=p.id; save(D); say("“"+p.name+"” 적용됨 — 인플레이 상점에서 강조돼요"); return refresh(); }
+    if(k==="unapply"){ D.active=null; save(D); say("프리셋 적용을 해제했어요"); return refresh(); }
+    if(k==="load"){ FP.units=resolve(p).map(u=>({uid:FP.uid++,no:u.no,r:u.r,c:u.c})); FP.sel=null; FP.editId=p.id; const miss=p.units.length-FP.units.length; say("“"+p.name+"” 불러옴"+(miss?" (현재 로스터에 없는 영웅 "+miss+"명 제외)":"")); return refresh(); }
+    if(k==="ren"){ FP.renId=p.id; return refresh(); }
+    if(k==="renok"){ const inp=row.querySelector("[data-s2prrn]"), nm=(inp?inp.value:"").trim().slice(0,20); if(nm){ p.name=nm; save(D); } FP.renId=null; return refresh(); }
+    if(k==="del"){ if(FP.delId!==p.id){ FP.delId=p.id; return refresh(); } FP.delId=null; D.list.splice(D.list.indexOf(p),1); if(D.active===p.id) D.active=null; if(FP.editId===p.id) FP.editId=null; save(D); say("삭제했어요"); return refresh(); } };
+  const onInput=e=>{ const t=e.target; if(t&&t.matches&&t.matches("[data-s2prname]")) FP.nameDraft=t.value; };
+  const onKey=e=>{ const t=e.target; if(e.key!=="Enter"||!t||!t.matches) return; if(t.matches("[data-s2prname]")){ e.preventDefault(); const b=box().querySelector('[data-s2pr="save"]'); if(b) b.click(); } else if(t.matches("[data-s2prrn]")){ e.preventDefault(); const b=t.closest("[data-s2prid]").querySelector('[data-s2pr="renok"]'); if(b) b.click(); } };
+  const r0=box(); if(r0){ r0.addEventListener("click",onClick,true); r0.addEventListener("input",onInput,true); r0.addEventListener("keydown",onKey,true);
+    let q=0; new MutationObserver(()=>{ if(q) return; q=1; requestAnimationFrame(()=>{ q=0; decorate(); }); }).observe(r0,{childList:true,subtree:true}); }
+  window.addEventListener("storage",e=>{ if(e.key===KEY) refresh(); });
+  const css=document.createElement("style"); css.id="s2PresetCss"; css.textContent=`
+  /* 인플레이 상점: 프리셋 영웅 강조 (표시 전용 · 기존 테두리/뱃지와 겹치지 않게 바깥 링 + 좌상단 뱃지) */
+  #acRoot .acshop.s2pre{outline:2px solid #ffd36a;outline-offset:1px;box-shadow:0 0 10px 2px rgba(255,211,106,.55),inset 0 0 14px rgba(255,211,106,.2)!important;z-index:2}
+  #acRoot .acsb .acshop.s2pre{overflow:visible} #acRoot .acshop .s2prb{position:absolute;left:50%;top:-8px;transform:translateX(-50%);z-index:9;padding:0 7px;border-radius:9px;white-space:nowrap;background:linear-gradient(180deg,#ffe08a,#d6a032);color:#2a1c04;font:800 10px/15px system-ui,"Noto Sans KR",sans-serif;font-style:normal;pointer-events:none;box-shadow:0 1px 4px #000c}
+  #acRoot .s2prchip{color:#ffd36a;font-weight:800;font-size:12px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;line-height:34px}
+  #acRoot .s2prside{width:100%;box-sizing:border-box;padding:6px 8px;border-radius:8px;border:1px solid #d6a032;background:linear-gradient(90deg,rgba(255,211,106,.16),rgba(255,211,106,.04));font-size:11px;color:#ffd36a;display:flex;flex-direction:column;gap:2px} #acRoot .s2prside b{color:#fff;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} #acRoot .s2prside button{align-self:flex-start;margin-top:2px;padding:1px 8px;border-radius:6px;border:1px solid var(--gold-line);background:rgba(14,17,25,.7);color:inherit;font-size:11px;cursor:pointer}
+  @media (max-width:560px){ #acRoot .acshop .s2prb{top:-7px;left:2px;transform:none;font-size:9px;line-height:13px;padding:0 5px} #acRoot .s2prchip{max-width:100px;font-size:11px} }
+  /* 임의배치 모드 안의 프리셋 패널 (보드 아래) */
+  #acRoot .s2fpL{grid-template-areas:"top top top" "heroes board syn" "heroes presets syn"}
+  #acRoot .s2fp-presets{grid-area:presets;border:1px solid var(--gold-line);border-radius:10px;background:rgba(14,17,25,.55);padding:8px 10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+  #acRoot .s2pr-h{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:12px} #acRoot .s2pr-h>b{color:var(--gold-hi,#f0d08a);font-size:14px} #acRoot .s2pr-act{color:#ffd36a} #acRoot .s2pr-act b{color:#fff}
+  #acRoot .s2fp-presets button{padding:4px 10px;border-radius:7px;border:1px solid var(--gold-line);background:rgba(14,17,25,.8);color:inherit;cursor:pointer;font-size:12px;font-weight:700} #acRoot .s2fp-presets button.go{background:linear-gradient(180deg,#e8c46a,#b88a2c);color:#2a1c04;border-color:#e8c46a} #acRoot .s2fp-presets button.warn{background:#7a2230;border-color:#d44}
+  #acRoot .s2pr-save{display:flex;flex-wrap:wrap;gap:6px;align-items:center} #acRoot .s2pr-save input,#acRoot .s2prr input{min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--gold-line);background:#0d1018;color:inherit;font-size:12px} #acRoot .s2pr-save input{flex:1 1 160px;max-width:260px} #acRoot .s2pr-save small{color:#ffd36a;font-size:12px}
+  #acRoot .s2pr-list{display:flex;flex-direction:column;max-height:300px;overflow-y:auto;scrollbar-width:thin}
+  #acRoot .s2prr{display:grid;grid-template-columns:minmax(110px,1.1fr) minmax(0,2fr) auto auto;gap:6px 10px;align-items:center;padding:5px 6px;border-left:3px solid transparent;border-bottom:1px solid rgba(255,255,255,.06)}
+  #acRoot .s2prr.act{border-left-color:#ffd36a;background:linear-gradient(90deg,rgba(255,211,106,.16),rgba(255,211,106,0) 85%)} #acRoot .s2prr.edit .s2prr-nm b{text-decoration:underline dotted}
+  #acRoot .s2prr-nm{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:13px;min-width:0} #acRoot .s2prr-nm b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px} #acRoot .s2prr-b{font-style:normal;font-size:10px;padding:0 6px;border-radius:8px;background:#ffd36a;color:#2a1c04;font-weight:800} #acRoot .s2prr-e{font-style:normal;font-size:10px;padding:0 6px;border-radius:8px;border:1px solid #7aa0ff;color:#9fbcff}
+  #acRoot .s2prr-f{display:flex;gap:2px;align-items:center;flex-wrap:wrap;min-width:0} #acRoot .s2prr-i{display:block;position:relative;width:24px;height:24px} #acRoot .s2prr-i .acface{display:block;position:relative;width:100%;height:100%;border:1.5px solid var(--tc);border-radius:5px;overflow:hidden;background:#121620} #acRoot .s2prr-f small{font-size:10px;color:var(--text-muted)} #acRoot .s2prr-n{color:var(--text-muted);font-size:11px;white-space:nowrap}
+  #acRoot .s2prr-btn{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+  @media (max-width:949px){ #acRoot .s2fpL{grid-template-areas:"top top" "board syn" "presets presets" "heroes heroes"} #acRoot .s2prr{grid-template-columns:minmax(0,1fr) auto} #acRoot .s2prr-f{grid-column:1/-1;order:3} }
+  @media (max-width:560px){ #acRoot .s2fpL{grid-template-areas:"top" "board" "syn" "presets" "heroes"} }`;
+  document.head.appendChild(css);
+  decorate();
+}catch(e){ console.warn("S2 프리셋",e); } })();
 
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
