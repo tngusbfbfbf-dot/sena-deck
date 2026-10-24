@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.2.1v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.2.2v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -12193,7 +12193,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
   const oKi=AC.kill; AC.kill=function(B,t,a){ const al=t&&t.alive; const r=oKi.apply(AC,arguments);
     try{ if(al&&t&&!t.alive){
       if(a&&!t.mon&&a.side!==t.side&&has(B,a,"산호군락")){ (B.s2coral=B.s2coral||[]).push(a.uid); a.maxHp+=5; a.hp+=5; fx(B,a,"산호석 +5","buff"); }
-      if(t.s2bl>0){ const FL=AC.S2BL=AC.S2BL||{fl:0.15,mv:0.4,iv:0.4}, n=t.s2bl; t.s2bl=0; const xf=(tR,tC,fuid)=>{ const S=allies(B,t.side).filter(x=>x.alive&&has(B,x,"폭풍")); if(!S.length){ B.events.push({k:"sk3",id:"s2bl",ph:"gone",a:fuid,aR:tR,aC:tC,n}); return; } const x=S[Math.floor(AC.rnd(B)*S.length)]; B.events.push({k:"sk3",id:"s2bl",ph:"move",a:fuid,aR:tR,aC:tC,b:x.uid,fl:FL.mv,n}); (B.s2q=B.s2q||[]).push({at:B.t+FL.mv,fn:()=>{ if(x.alive){ x.s2bl=(x.s2bl||0)+n; fx(B,x,"폭풍칼날","buff"); } else xf(x.R,x.C,x.uid); }}); }; xf(t.R,t.C,t.uid); } } }catch(e){}   /* 시즌2: 이전 대상은 살아 있는 폭풍 유닛(이미 칼날이 있어도 가능) · 칼날 n개는 이동시간 후 도착 시 대상의 s2bl에 누적(중첩) · 갈 곳이 없으면 소멸 */
+      if(t.s2bl>0){ const FL=AC.S2BL=AC.S2BL||{fl:0.15,mv:0.4,iv:0.4}, n=t.s2bl; t.s2bl=0; const xf=(tR,tC,fuid)=>{ const all=lv(B,t.side,"폭풍")>=1, S=allies(B,t.side).filter(x=>x.alive&&(all||has(B,x,"폭풍"))); if(!S.length){ B.events.push({k:"sk3",id:"s2bl",ph:"gone",a:fuid,aR:tR,aC:tC,n}); return; } const x=S[Math.floor(AC.rnd(B)*S.length)]; B.events.push({k:"sk3",id:"s2bl",ph:"move",a:fuid,aR:tR,aC:tC,b:x.uid,fl:FL.mv,n}); (B.s2q=B.s2q||[]).push({at:B.t+FL.mv,fn:()=>{ if(x.alive){ x.s2bl=(x.s2bl||0)+n; fx(B,x,"폭풍칼날","buff"); } else xf(x.R,x.C,x.uid); }}); }; xf(t.R,t.C,t.uid); } } }catch(e){}   /* 시즌2: 이전 대상은 폭풍 시너지 1단계 이상이면 살아 있는 모든 아군, 0단계면 살아 있는 폭풍 유닛(이미 칼날이 있어도 가능) · 칼날 n개는 이동시간 후 도착 시 대상의 s2bl에 누적(중첩) · 갈 곳이 없으면 소멸 */
     return r; };
   /* ---------- 전투 종료 (산호석 영구 · 해적단 · 바다정령) ---------- */
   const oBE=AC.battleEnd; AC.battleEnd=function(B){ const r=oBE.apply(AC,arguments); if(!B.persist) return r;
