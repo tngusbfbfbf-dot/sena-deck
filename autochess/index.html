@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.0v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.1v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -14255,6 +14255,7 @@ window.S2FLD=function(d){ return 3+d*0.02; };
   const oR=AC.render;
   AC.render=function(){ if(AC.simOn) FP.on=false; if(FP.on){ const r=FP.render(); syncTop(); return r; }
     const r=oR.apply(this,arguments);
+    try{ const bx=box(), mb=AC.mob(), ft=bx&&bx.querySelector(".a-side .acfoot"), old=bx&&bx.querySelector(mb?".s2fpwrap":".s2fpbtn.s2fpm"); if(old) old.remove(); if(mb&&ft&&!ft.querySelector("[data-s2fp=open]")){ const hb=ft.querySelector("[data-acdo=hist]"); const h=`<button type="button" class="s2fpbtn s2fpm" data-s2fp="open" title="아군 필드만 열어 영웅을 자유롭게 배치해 보는 연습 모드 (본 게임과 별개)">🎲 임의배치</button>`; if(hb) hb.insertAdjacentHTML("afterend",h); else ft.insertAdjacentHTML("beforeend",h); } }catch(e){ console.warn("S2 임의배치 모바일 버튼",e); }
     try{ const side=box()&&box().querySelector(".a-side"); if(side&&!AC.mob()&&!side.querySelector("[data-s2fp=open]")) side.insertAdjacentHTML("beforeend",`<div class="acctl s2fpwrap"><button type="button" class="s2fpbtn" data-s2fp="open" title="아군 필드만 열어 영웅을 자유롭게 배치해 보는 연습 모드 (본 게임과 별개)">🎲 임의배치</button></div>`); }catch(e){ console.warn("S2 임의배치 버튼",e); }
     syncTop(); return r; };
   const r0=box(); if(r0){ r0.addEventListener("click",onClick,true); ["dragstart","dragover","drop","dragend"].forEach(ev=>r0.addEventListener(ev,onDrag,true)); }
@@ -14270,7 +14271,8 @@ window.S2FLD=function(d){ return 3+d*0.02; };
   @media (min-width:561px){ #acRoot .acL:not(.s2fpL) .a-board .acboard{aspect-ratio:7/8.4} }
   /* 임의배치 버튼 */
   #acRoot .s2fpwrap{width:100%} #acRoot .s2fpbtn{width:100%;padding:8px 10px;font-weight:800;border-radius:10px;border:1px dashed var(--gold-line,#a88a4a);background:rgba(224,180,90,.08);color:var(--gold-hi,#f0d08a);cursor:pointer} #acRoot .s2fpbtn:hover{background:rgba(224,180,90,.18)}
-  @media (max-width:560px){ #acRoot .s2fpwrap{display:none} }
+  @media (hover:none),(max-width:560px){ #acRoot .s2fpL .actk:not(.sel) .s2fpx{display:none!important} #acRoot .s2fpL .actk.sel .s2fpx{display:block!important;width:20px;height:20px;line-height:20px;font-size:11px;background:#c0392b} }
+  @media (max-width:560px){ #acRoot .s2fpwrap{display:none} #acRoot .s2fpbtn.s2fpm{width:auto;align-self:stretch;padding:4px 10px;font-size:12px;border-radius:6px;white-space:nowrap} }
   /* 임의배치 화면: 좌 코스트별 영웅 목록 · 중앙 아군 필드(7×4) · 우 시너지 목록 */
   #acRoot .s2fpL{display:grid;grid-template-columns:clamp(200px,22vw,240px) minmax(0,1fr) clamp(140px,15vw,160px);grid-template-areas:"top top top" "heroes board syn";gap:8px 14px;align-items:start}
   #acRoot .s2fp-top{grid-area:top;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:4px 2px} #acRoot .s2fp-top .sp{flex:1} #acRoot .s2fp-top b{font-size:15px;color:var(--gold-hi,#f0d08a)} #acRoot .s2fp-cnt{padding:2px 10px;border-radius:12px;border:1px solid var(--gold-line);font-size:12px}
@@ -14364,7 +14366,7 @@ window.S2FLD=function(d){ return 3+d*0.02; };
   #acRoot .s2prr-f{display:flex;gap:2px;align-items:center;flex-wrap:wrap;min-width:0} #acRoot .s2prr-i{display:block;position:relative;width:24px;height:24px} #acRoot .s2prr-i .acface{display:block;position:relative;width:100%;height:100%;border:1.5px solid var(--tc);border-radius:5px;overflow:hidden;background:#121620} #acRoot .s2prr-f small{font-size:10px;color:var(--text-muted)} #acRoot .s2prr-n{color:var(--text-muted);font-size:11px;white-space:nowrap}
   #acRoot .s2prr-btn{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
   @media (max-width:949px){ #acRoot .s2fpL{grid-template-areas:"top top" "board syn" "presets presets" "heroes heroes"} #acRoot .s2prr{grid-template-columns:minmax(0,1fr) auto} #acRoot .s2prr-f{grid-column:1/-1;order:3} }
-  @media (max-width:560px){ #acRoot .s2fpL{grid-template-areas:"top" "board" "syn" "presets" "heroes"} }`;
+  @media (max-width:560px){ #acRoot .s2fpL{grid-template-areas:"top" "board" "syn" "presets" "heroes"} #acRoot .s2prr-btn{grid-column:1/-1;order:4;justify-content:flex-start;flex-wrap:nowrap;gap:3px} #acRoot .s2fp-presets .s2prr-btn button{flex:1 1 0;padding:5px 2px;font-size:11px;white-space:nowrap;min-height:30px} }`;
   document.head.appendChild(css);
   decorate();
 }catch(e){ console.warn("S2 프리셋",e); } })();
