@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.2.0v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.2.1v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -12153,7 +12153,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
       if(lv(B,side,"바다괴수")!=null){ const E=B.units.filter(x=>x.alive&&x.side===o&&!x.s1imm&&!(B.immune&&B.immune[o]>B.t)).sort((a,b)=>b.maxHp-a.maxHp)[0];
         if(E){ E.stun=Math.max(E.stun||0,B.t+4); E.s2krk={hp:E.hp,end:B.t+4}; fx(B,E,"바다괴수","dis"); } }
       // 폭풍: 칼날 배분
-      if((l=lv(B,side,"폭풍"))!=null){ const hold=l===0?U.filter(u=>has(B,u,"폭풍")):U; hold.forEach(u=>{ u.s2bl=1; u.s2blCd=0.4; }); (B.s2st=B.s2st||{})[side]=[27,35,55,80][l]; }
+      if((l=lv(B,side,"폭풍"))!=null){ const hold=l===0?U.filter(u=>has(B,u,"폭풍")):U; hold.forEach(u=>{ u.s2bl=1; u.s2blCd=0; }); (B.s2st=B.s2st||{})[side]=[27,35,55,80][l]; }
       // 신기루
       if((l=lv(B,side,"신기루"))!=null){ const k=l>=3?2:1, on=new Set(AC.s2MirCells());
         U.filter(u=>on.has((((B.refs[u.uid]||{}).loc)||"").slice(1))).forEach(u=>{ u.ampAll=(u.ampAll||0)+15*k; if(l>=1) u.s1mReg=(u.s1mReg||0)+4*k; if(l>=2) u.s2vamp=33*k; fx(B,u,"신기루","sk5"); }); }
@@ -12178,14 +12178,14 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
       if(u.s2nv>0){ if(B.t<u.s2nv) AC.heal(B,u,u.maxHp*[4,7,10,18][u.s2nvL]/100*dt,"syn:해군"); else { u.asPct-=[15,40,80,200][u.s2nvL]; u.dr-=20; AC.reIv(u); u.s2nv=-1; } } }
     return r; };
   /* ---------- 폭풍칼날 ---------- */
-  const storm=(B,u)=>{ if(!u||!u.alive||!(u.s2bl>0)||!B.s2st||!B.s2st[u.side]||B.done) return; if(u.s2blCd>B.t+1e-9) return; const F=foes(B,u); if(!F.length) return;   /* 시즌2: 공격/피격 트리거 없이 칼날이 0.4초 주기로 자동 발동(칼날 n개면 0.4/n초마다 1개씩, 각 칼날은 0.4초 주기) */
-    const tg=(u.s1lastTg&&u.s1lastTg.alive&&u.s1lastTg.side!==u.side)?u.s1lastTg:F.sort((a,b)=>AC.dist(a,u)-AC.dist(b,u))[0]; const FL=AC.S2BL=AC.S2BL||{fl:0.15,mv:0.4,iv:0.4}, n=u.s2bl, k=u.s2blK=((u.s2blK||0)+1)%n; u.s2blCd=Math.max(u.s2blCd||0,B.t-0.05)+(FL.iv||0.4)/n;
-    const sid=u.side; B.events.push({k:"sk3",id:"s2bl",ph:"atk",a:u.uid,b:tg.uid,aR:u.R,aC:u.C,fl:FL.fl,i:k,n}); (B.s2q=B.s2q||[]).push({at:B.t+FL.fl,fn:()=>{ if(!u.alive||!u.s2bl||!tg.alive||!B.s2st||!B.s2st[sid]) return; const n0=B.events.length; AC._s2stIn=1; try{ magHit(B,u,tg,B.s2st[sid]*MA(u),"s2storm"); } finally{ AC._s2stIn=0; } for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } }}); };   /* 시즌2: 칼날 비행(FL.fl초) 후 도착 시 피해 · 숙주 사망/대상 사망 시 취소 · 공통 투사체 없음(s2nofx) */
+  const storm=(B,u)=>{ if(!u||!u.alive||!u.s2bl||!B.s2st||!B.s2st[u.side]||AC._s2stIn) return; if(u.s2blCd>B.t) return; const F=foes(B,u); if(!F.length) return;   /* 공격하거나 공격받을 때 발동 · 숙주 유닛별 재사용 0.4초 */
+    const tg=(u.s1lastTg&&u.s1lastTg.alive&&u.s1lastTg.side!==u.side)?u.s1lastTg:F.sort((a,b)=>AC.dist(a,u)-AC.dist(b,u))[0]; u.s2blCd=B.t+0.4; const FL=AC.S2BL=AC.S2BL||{fl:0.15,mv:0.4,gap:0.06}, n=u.s2bl;
+    const sid=u.side; for(let j=0;j<n;j++){ const dl=j*(FL.gap||0.06); B.events.push({k:"sk3",id:"s2bl",ph:"atk",a:u.uid,b:tg.uid,aR:u.R,aC:u.C,fl:FL.fl,i:j,n,dl}); (B.s2q=B.s2q||[]).push({at:B.t+FL.fl+dl,fn:()=>{ if(!u.alive||!u.s2bl||!tg.alive||!B.s2st||!B.s2st[sid]) return; const n0=B.events.length; AC._s2stIn=1; try{ magHit(B,u,tg,B.s2st[sid]*MA(u),"s2storm"); } finally{ AC._s2stIn=0; } for(let q=n0;q<B.events.length;q++){ const h=B.events[q]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } }}); } };   /* 발동 1회에 칼날 수(n)만큼 각각 도착 시 피해(약간 시차) · 숙주/대상 사망 시 취소 · s2nofx */
   const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ if(u&&tg&&tg.side!==u.side) u.s1lastTg=tg; const r=oSA.apply(AC,arguments); return r; };
-  AC.s2StormTick=storm;  /* 매 틱 skStep에서 호출 */
+  AC.s2Storm=storm;
   /* ---------- 피해 (흡혈·피격 칼날) ---------- */
   const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){ const h0=t&&t.alive?t.hp+(t.shield||0):0; const r=oAD.apply(AC,arguments);
-    try{ if(a&&t&&a.side!==t.side){ const dealt=Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); if(a.s2vamp&&a.alive&&dealt>0) AC.heal(B,a,dealt*a.s2vamp/100,"syn:신기루"); } }catch(e){}
+    try{ if(a&&t&&a.side!==t.side){ const dealt=Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); if(a.s2vamp&&a.alive&&dealt>0) AC.heal(B,a,dealt*a.s2vamp/100,"syn:신기루"); if(t.alive&&!(o&&o.id==="s2storm")) storm(B,t); } }catch(e){}
     return r; };
   /* ---------- 마나 (세이렌) ---------- */
   const oMG=AC.s1MGain; if(oMG) AC.s1MGain=function(B,u,v){ if(B&&u&&v>0&&has(B,u,"세이렌")) v*=1+[35,70,120][lv(B,u.side,"세이렌")]/100; return oMG.call(this,B,u,v); };
@@ -12340,7 +12340,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
     if((l=L_(B,u,"작살꾼"))!=null&&(u.s2hp||0)<8){ u.s2hp=(u.s2hp||0)+1; u.atkPct+=[7,13,25][l]; }
     if(L_(B,u,"음유시인")===2&&!emp) AC.s1MGainD(B,u,5);
     if(u.s2adm){ u.mana=Math.min(8,(u.mana||0)+1); }
-    };
+    if(AC.s2Storm) AC.s2Storm(B,u); };
   const oSA=AC.sk3Atk; AC.sk3Atk=function(B,u,tg){ const r=oSA.apply(AC,arguments); if(u&&!u.s2h) onBasic(B,u,tg); return r; };  /* sk3 경로 영웅 */
   /* ---------- 마나 (제독: 일반 마나 획득 없음) ---------- */
   const oMG=AC.s1MGain; AC.s1MGain=function(B,u,v){ if(u&&(u.s2adm||u.s2sold)) return 0; return oMG.apply(this,arguments); };
@@ -12489,7 +12489,7 @@ addEventListener("resize",()=>{ try{ if(typeof AC!=="undefined"&&AC._mob!=null&&
       if(n==="파이"){ const src=B.refs&&B.refs[u.uid]; const k=(src&&src.s2paiK)||0; if(k){ u.atkPct+=1.5*k; AC.reIv(u); } } } return r; };
   /* 매 틱: 예약 효과 · 카일 공속 · 연결 만료 */
   const oStep=AC.skStep; AC.skStep=function(B,dt){ const r=oStep.apply(AC,arguments);
-    if(B.s2q&&B.s2q.length){ const due=B.s2q.filter(x=>B.t>=x.at); B.s2q=B.s2q.filter(x=>B.t<x.at); due.forEach(x=>{ try{ x.fn(); }catch(e){} }); } if(AC.s2StormTick){ for(const u of B.units) try{ AC.s2StormTick(B,u); }catch(e){} }
+    if(B.s2q&&B.s2q.length){ const due=B.s2q.filter(x=>B.t>=x.at); B.s2q=B.s2q.filter(x=>B.t<x.at); due.forEach(x=>{ try{ x.fn(); }catch(e){} }); }
     for(const u of B.units){ if(!u.alive) continue; if(Z(u.name)==="카일"&&!u.mon&&!u.s2sold){ const v=Math.round((1-u.hp/u.maxHp)*100*L(u,[2,3,4])); if(v!==u.s2kyle){ u.asPct+=v-(u.s2kyle||0); u.s2kyle=v; AC.reIv(u); } } }
     return r; };
   /* 피해: 실베스타 강화 공격 · 카일 회복 · 밀리아 연결 회복 */
@@ -13869,7 +13869,7 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
   const gfx=S=>{ let g=PX.s2blG; if(!g||!g.scene||!g.active||g.scene!==S){ g=PX.s2blG=S.add.graphics().setDepth(45); } return g; };
   const posOf=(uid,R,C0)=>{ const V=PX.units&&PX.units[uid]; return V&&V.c&&V.c.active?[V.c.x,V.c.y]:PX.px(R,C0); };
   const oF=PX.sk3fx; PX.sk3fx=function(B,e,slow,light){ if(e.id!=="s2bl") return oF.apply(this,arguments); const S=this.scene; if(!S) return; slow=slow||1; const now=S.time.now;
-    if(e.ph==="atk"){ const key=e.a+":"+(e.i||0); if(AT[key]&&now-AT[key].t0<AT[key].fl+AT[key].ret) return; AT[key]={u:e.a,i:e.i||0,t0:now,fl:Math.max(0.05,e.fl||0.15)*1000*slow,ret:200*slow,b:e.b,slow,hit:false}; }
+    if(e.ph==="atk"){ const key=e.a+":"+(e.i||0); if(AT[key]&&now-AT[key].t0<AT[key].fl) return; AT[key]={u:e.a,i:e.i||0,t0:now+(e.dl||0)*1000*slow,fl:Math.max(0.05,e.fl||0.15)*1000*slow,ret:200*slow,b:e.b,slow,hit:false}; }
     else if(e.ph==="move"){ const p0=posOf(e.a,e.aR,e.aC); MV.push({x0:p0[0],y0:p0[1],to:e.b,t0:now,dur:Math.max(80,(e.fl||0.4)*1000*slow),slow}); for(const k in AT) if(AT[k].u===e.a) delete AT[k]; for(let j=1;j<(e.n||1)&&j<8;j++) MV.push({x0:p0[0]+(j%2?1:-1)*j*8,y0:p0[1]-j*6,to:e.b,t0:now+j*60*slow,dur:Math.max(80,(e.fl||0.4)*1000*slow),slow}); }
     else if(e.ph==="gone"){ const p0=posOf(e.a,e.aR,e.aC); GN.push({x:p0[0],y:p0[1],t0:now,slow}); for(const k in AT) if(AT[k].u===e.a) delete AT[k]; } };
   const oC=PX.clear; PX.clear=function(){ try{ for(const k in AT) delete AT[k]; for(const k in ARR) delete ARR[k]; for(const k in FD) delete FD[k]; for(const k in TR) delete TR[k]; MV.length=0; GN.length=0; IM.length=0; if(PX.s2blG&&PX.s2blG.active) PX.s2blG.clear(); }catch(e){} return oC.apply(this,arguments); };
@@ -13895,7 +13895,7 @@ AC.S2SKNAME={"실베스타": ["번뇌의 단죄", "data:image/webp;base64,UklGRt
         const bob=Math.sin(ts*3.2+ph)*m*0.05, sw=Math.cos(ts*2.3+ph)*m*0.04+off, back=m*(0.52+0.1*Math.abs(i-(nB-1)/2));
         const bx=hx-fx*back+(-fy)*sw, by=hy-fy*back-m*0.22+fx*sw+bob; const ang=Math.atan2(fy,fx)+Math.sin(ts*2.6+ph)*0.22;
         const a=AT[key];
-        if(a){ const k=(nw-a.t0)/a.fl; const tgU=B.units.find(x=>x.uid===a.b); const [tx,ty]=tgU?posOf(tgU.uid,tgU.R,tgU.C):[bx,by];
+        if(a&&nw>=a.t0){ const k=(nw-a.t0)/a.fl; const tgU=B.units.find(x=>x.uid===a.b); const [tx,ty]=tgU?posOf(tgU.uid,tgU.R,tgU.C):[bx,by];
           if(k<1){ const p=ei(k), x=bx+(tx-bx)*p, y=by+(ty-m*0.1-by)*p-Math.sin(Math.PI*p)*m*0.1, an=Math.atan2(ty-by,tx-bx); trail(g,key,x,y,L,1,nw,true); blade(g,x,y,an,L*1.05,1,ts); continue; }
           const k2=(nw-a.t0-a.fl)/a.ret; if(!a.hit){ a.hit=true; IM.push({x:tx,y:ty-m*0.1,t0:nw,slow:a.slow,m,an:Math.atan2(ty-by,tx-bx)}); }
           if(k2<1){ const p=ez(k2), x0=tx, y0=ty-m*0.1, x=x0+(bx-x0)*p, y=y0+(by-y0)*p-Math.sin(Math.PI*p)*m*0.12, an=Math.atan2(by-y0,bx-x0); trail(g,key,x,y,L,1,nw,true); blade(g,x,y,an,L,1,ts); continue; }
