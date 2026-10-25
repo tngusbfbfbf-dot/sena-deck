@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.5v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -14424,6 +14424,46 @@ window.S2FLD=function(d){ return 3+d*0.02; };
     try{ if(ok&&!t.alive&&h>0){ a.dealt=(a.dealt||0)+Math.round(h); if(B&&B.synStat&&B.synStat[a.side]) AC.sstat(B,a.side,"sk:레비아탄처형",h); } }catch(e){}
     return r; };
 }catch(e){ console.warn("S2 레비아탄 처형 통계",e); } })();
+
+/* ===== 시즌2 지옥봇 B(고레벨·저초월·고코스트) 의사결정 강화 (AC.seasonId==='s2' 전용 · 골드/스탯/리롤 보너스 없음 · A전략/전략 선택 불변 · 의사결정만) =====
+   이자(50골드) 확보 → 잉여로 레벨업(5스테이지 평균 9레벨 목표) → 9레벨 이후 핵심(3코 이상, 고코 우선) 1기물에 몰아서 초월. 위기(panic) 땐 레벨업보다 기물 보강. */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||typeof AC.aiSmart!=="function"||AC._s2hb) return; AC._s2hb=1;
+  const DEF={ bank:50, bankFrom:4, bankPre:10, floor:14, need:[[1,3],[4,5],[9,6],[11,7],[13,8],[17,9]], cap:9, rollKeep:10, coreN:1, coreMin:3, coreW:45, dupPen:40, deadline:99, urgent:0, endFloor:0, lazy:1, panicNoXp:1, lazyUntil:10 };
+  const P=r=>{ const q=Object.assign({},DEF); q.lz=!!q.lazy&&r<q.lazyUntil; return q; };
+  const oS=AC.aiSmart;
+  const needLv=(r,p)=>{ let v=1; for(const [a,l] of p.need) if(r>=a) v=l; return v; };
+  const coreB=(st,S,D,p)=>{ const pm=D.plan&&S.plan?AC.synById(S.plan).members:[], nos=S.units.map(u=>u.no), prev=S.core||[];
+    const c=S.units.filter(u=>AC.tierNo(u.no)>=p.coreMin&&u.t<AC_CONFIG.maxT).map(u=>({no:u.no,v:u.copies*4+AC.tierNo(u.no)*3+(pm.includes(AC.hero(u.no).name)?5:0)+AC.synCount(S,u.no,nos)*2+(prev.includes(u.no)?6:0)})).sort((a,b)=>b.v-a.v);
+    return st.round<4?[]:c.slice(0,p.coreN).map(x=>x.no); };
+  const aiB=function(st,S,D,foe,hp){ const C=AC_CONFIG, r=st.round, p=P(r);
+    const H=S.hb||(S.hb={xp:0,roll:0,buy:0}); if(D.plan) AC.aiPlan(st,S,D); const allIn=D.allIn&&AC.allIn(st,S,hp); const core=coreB(st,S,D,p); S.core=core;
+    const need=Math.min(p.cap,needLv(r,p)), panic=hp<=D.panicHp||allIn;
+    const lvlDone=S.level>=p.cap;
+    const bank=()=>panic?0:(r<p.bankFrom?p.bankPre:p.bank);
+    const keep=()=>panic?0:(lvlDone?p.rollKeep:bank());
+    const nos=()=>S.units.map(u=>u.no), bn=()=>S.units.filter(u=>u.loc[0]==="b").length;
+    /* 레벨업: 이자 한도(bank) 위의 잉여 골드는 경험치로, 목표 레벨보다 낮으면 floor 까지 */
+    const xpOk=()=>{ if(S.level>=Math.min(C.maxLevel,p.cap)||S.gold<C.xpBuyCost) return false; const left=S.gold-C.xpBuyCost; if(panic&&p.panicNoXp) return S.level<need&&left>=0; if(r>=p.deadline-p.urgent&&S.level<p.cap) return left>=p.endFloor; if(!p.lz&&left>=bank()) return true; if(p.lz&&S.level>=need) return false; return S.level<need&&left>=Math.min(p.floor,bank()); };
+    while(xpOk()){ const g0=S.gold; AC.buyXp(S); H.xp+=g0-S.gold; if(S.gold>=g0) break; }
+    const val=no=>{ const o=AC.owned(S,no), t=AC.tierNo(no); return (o?D.wDup+(o.t<C.maxT?0:-99):0)+AC.synCount(S,no,nos())*D.wSyn+t*5+t*4-(t<=2&&r>=6&&!o?10:0)+(AC.roleKey(no)[0]==="t"&&S.units.filter(u=>AC.roleKey(u.no)[0]==="t").length<2?8:0)+(D.plan&&S.plan&&AC.synById(S.plan).members.includes(AC.hero(no).name)?C.aiPlanW:0)-(D.contest&&!o?AC.contest(st,S,no)*C.aiContestW:0)+AC.aiFocus(st,S,D,no,o)
+      +(core.includes(no)?(o&&o.t>=C.maxT?0:p.coreW+(t>=4?15:0)):(o&&core.length>=p.coreN&&r>=8?-p.dupPen:0)); };
+    const rolls=(panic&&p.panicNoXp)?60:(r>=p.deadline-p.urgent&&S.level<p.cap)?0:lvlDone||(p.lz&&S.level>=need)||S.level>=need+1&&S.gold>=60?60:(S.gold>=bank()+C.rerollCost+20?3:0);
+    for(let i=0;i<=rolls+4;i++){ if(i>0||!S.shop||!S.shop.length) S.shop=AC.roll(st,S.level,S);
+      const order=S.shop.map((no,k)=>({no,i:k,v:no==null?-1:val(no)})).filter(x=>x.no!=null).sort((a,b)=>b.v-a.v);
+      for(const x of order){ const own=AC.owned(S,x.no), fill=!own&&S.units.length<S.level+(S.s1cap||0); if(!fill&&x.v<D.minVal&&!own) continue;
+        const isCore=core.includes(x.no); const res=(own||isCore)?Math.max(0,keep()-(AC.msNext(own||{no:x.no,t:0})<=2||r>=10?30:15)):keep();
+        if(!fill&&S.gold-AC.cost(x.no)<res) continue;
+        if(AC.canBuy(st,S,x.i)==="대기석 가득"){ const w=S.units.filter(u=>u.loc[0]==="b"&&u.copies<2).sort((a,b)=>val(a.no)-val(b.no))[0]; if(w&&val(w.no)<x.v) AC.sell(st,S,w.uid); }
+        if(!AC.canBuy(st,S,x.i)){ const g0=S.gold; AC.buy(st,S,x.i); H.buy+=g0-S.gold; } }
+      AC.aiTrimDead(st,S,D,core);
+      const short=S.units.length<S.level+(S.s1cap||0)&&S.gold>=C.rerollCost+1; if(!short&&(i>=rolls||S.gold-C.rerollCost<keep()+2)) break; if(i>=rolls+4) break; { const g0=S.gold; AC.payRoll(S); H.roll+=g0-S.gold; } }
+    while(xpOk()){ const g0=S.gold; AC.buyXp(S); H.xp+=g0-S.gold; if(S.gold>=g0) break; }
+    if(D.itemsSmart) AC.botItemsSmart(st,S); if(D.simPlace&&foe) AC.simPlace(st,S,foe,D); else AC.smartPlace(S,D.adapt?foe:null,{plan:S.plan,pw:true}); };
+  AC.aiSmart=function(st,S,D,foe,hp){ if(!D||D.id!=="hell"||S.s2old) return oS.apply(AC,arguments);
+    if(!S.strat) S.strat=AC.rnd(st)<0.5?"A":"B";
+    if(S.strat!=="B") return oS.apply(AC,arguments);
+    return aiB.apply(AC,arguments); };
+}catch(e){ console.warn("S2 지옥봇 B",e); } })();
 
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
