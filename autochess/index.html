@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.2v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.3v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -14412,6 +14412,16 @@ window.S2FLD=function(d){ return 3+d*0.02; };
   if(dv&&dv.get){ const g=dv.get; Object.defineProperty(s,"vlines",{get(){ const v=g.call(s); if(!Array.isArray(v)) return v; const i=v.indexOf(KEY); if(i<0) return v; const r=v.slice(); r.splice(i+1,0,line()); return r; },configurable:true}); }
   if(dd&&dd.get){ const g=dd.get; Object.defineProperty(s,"desc",{get(){ const d=g.call(s); if(!Array.isArray(d)) return d; return d.map(t=>typeof t==="string"&&t.indexOf(KEY)>=0?t.replace(KEY,KEY+"\n"+line()):t); },set(){},configurable:true}); }
 }catch(e){ console.warn("S2 산호군락 툴팁",e); } })();
+
+/* ===== 시즌2 레비아탄 처형 통계: 처형 직전 대상 생명력을 처형한 영웅의 가한 피해(u.dealt)에 합산 (아멜리아 처형과 같은 방식 · S2 전용 · 집계만, 전투 로직 불변) ===== */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.kill) return;
+  const zw=s=>String(s||"").replace(/[\u200B-\u200D\uFEFF]/g,"");
+  const oK=AC.kill; AC.kill=function(B,t,a){ let h=0, ok=false;
+    try{ if(a&&t&&t.alive&&t.hp>0&&a.side!==t.side&&!t.boss&&t.hp<t.maxHp*0.12){ const s=AC.synById("레비아탄"); if(s&&(s.members||[]).some(m=>zw(m)===zw(a.name))){ h=t.hp; ok=true; } } }catch(e){}
+    const r=oK.apply(AC,arguments);
+    try{ if(ok&&!t.alive&&h>0){ a.dealt=(a.dealt||0)+Math.round(h); if(B&&B.synStat&&B.synStat[a.side]) AC.sstat(B,a.side,"sk:레비아탄처형",h); } }catch(e){}
+    return r; };
+}catch(e){ console.warn("S2 레비아탄 처형 통계",e); } })();
 
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
