@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.3v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.4v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -14269,6 +14269,8 @@ window.S2FLD=function(d){ return 3+d*0.02; };
   @media (min-width:950px){ #acRoot .acL:not(.s2fpL){grid-template-areas:"syn board side" "ctl bench roster" "shop shop roster"} }
   @media (max-width:949px) and (min-width:561px){ #acRoot .acL:not(.s2fpL){grid-template-areas:"syn board" "side side" "ctl bench" "shop shop" "roster roster"} }
   @media (min-width:561px){ #acRoot .acL:not(.s2fpL) .a-board .acboard{aspect-ratio:7/8.4} }
+  /* 렌더 직후 syncTop 이 .a-round 를 헤더로 옮기기 전, 일치하는 grid-area 가 없어 생기는 임시 5열 레이아웃(문서 높이 축소→스크롤 0 clamp) 방지 */
+  #acRoot .acL:not(.s2fpL) > .a-round{display:none!important}
   /* 임의배치 버튼 */
   #acRoot .s2fpwrap{width:100%} #acRoot .s2fpbtn{width:100%;padding:8px 10px;font-weight:800;border-radius:10px;border:1px dashed var(--gold-line,#a88a4a);background:rgba(224,180,90,.08);color:var(--gold-hi,#f0d08a);cursor:pointer} #acRoot .s2fpbtn:hover{background:rgba(224,180,90,.18)}
   @media (hover:none),(max-width:560px){ #acRoot .s2fpL .actk:not(.sel) .s2fpx{display:none!important} #acRoot .s2fpL .actk.sel .s2fpx{display:block!important;width:20px;height:20px;line-height:20px;font-size:11px;background:#c0392b} }
