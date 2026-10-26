@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.7v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.8v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -12523,11 +12523,11 @@ AC.S2SK2TXT={"겔리두스": [["기본 지속 효과: 아군이 장착한 조합
   const NF=(B,u,fn)=>{ const n0=B.events.length; const r=fn(); for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } return r; };   /* 지속/지연/범위 피해: 시전자가 기본공격처럼 돌진·투사체를 쏘지 않게 (데미지·피격 연출은 유지) */
   const hitEv=(B,u,t,d,mg,fix)=>B.events.push({k:"hit",mg:mg?1:0,fix:fix?true:undefined,a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
-  const deal=(B,u,t,d,mg,id,fix)=>{ d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,{id:"sk:"+id}); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
+  const deal=(B,u,t,d,mg,id,fix,nc)=>{ d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,fix?{id:"sk:"+id,s2fix:1}:nc?{id:"sk:"+id,s2nc:1}:{id:"sk:"+id}); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
   /* (마) 값 × 마공 배율 → 마법 저항 */
   const mag=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; return deal(B,u,t,v*MA(u)*100/(100+Math.max(0,t.res||0))*amp(u,t),1,id); };
   /* (공) % + (마) 추가 → 방어력 (시즌1 phyHit 동일) */
-  const phy=(B,u,t,coef,id,add,crit)=>{ if(!t||!t.alive) return 0; let d=AC._s1oCH.call(AC,B,u,t,coef,!!crit,true); if(add) d+=add*MA(u)*100/(100+Math.max(0,t.def||0)); return deal(B,u,t,d,0,id); };
+  const phy=(B,u,t,coef,id,add,crit)=>{ if(!t||!t.alive) return 0; let d=AC._s1oCH.call(AC,B,u,t,coef,!!crit,true); if(add) d+=add*MA(u)*100/(100+Math.max(0,t.def||0)); return deal(B,u,t,d,0,id,0,!!crit); };
   const heal=(B,u,v,id)=>AC.heal(B,u,v,"sk:"+id);
   const stun=(B,t,d,txt)=>{ if(t&&t.alive) AC.debuff(B,t,"stun",()=>{ t.stun=Math.max(t.stun||0,B.t+d); fx(B,t,txt||"기절","dis"); }); };
   const later=(B,at,fn)=>{ (B.s2q=B.s2q||[]).push({at,fn}); };
@@ -12557,7 +12557,7 @@ AC.S2SK2TXT={"겔리두스": [["기본 지속 효과: 아군이 장착한 조합
       later(B,B.t+FLY,()=>{ if(!t.alive) return; const n0=B.events.length; phy(B,u,t,L(u,[265,400,660]),"콜트",L(u,[30,45,70])); for(let k=n0;k<B.events.length;k++){ const h=B.events[k]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; }
       if(close&&t.alive){ const dr=Math.sign(Math.round(t.R)-Math.round(u.R)), dc=Math.sign(Math.round(t.C)-Math.round(u.C)); let R=Math.round(t.R), c=Math.round(t.C);
         for(let s=0;s<2;s++){ const R2=R+dr, c2=c+dc; if((dr||dc)&&inB(R2,c2)&&!occ(B,R2,c2,t)){ R=R2; c=c2; } else break; } t.R=R; t.C=c; stun(B,t,0.5); } }); },
-    "지크":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("지크")); [0,0.15,0.3].forEach((dt,i)=>later(B,B.t+dt,()=>{ if(!u.alive||!t.alive) return; deal(B,u,t,basicD(B,u,t),u.mag,"지크");
+    "지크":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("지크")); [0,0.15,0.3].forEach((dt,i)=>later(B,B.t+dt,()=>{ if(!u.alive||!t.alive) return; deal(B,u,t,basicD(B,u,t),u.mag,"지크",0,1);
       if(i===2&&t.alive){ mag(B,u,t,L(u,[200,275,375]),"지크"); stun(B,t,1.5,"공중에 뜸!"); } })); },
     "녹스":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("녹스")); const d=mag(B,u,t,L(u,[400,600,1000]),"녹스"); B.events.push({k:"sk3",id:"s2img",img:"nox_burst",b:t.uid,bR:t.R,bC:t.C,sz:0.75,ms:380}); if(d>0) allies(B,u).filter(x=>x!==u&&adj(x,u)).forEach(x=>heal(B,x,d*0.5,"녹스")); },
     "데이지":(B,u)=>{ const t=tgt(B,u); if(!t) return; cast(B,u,NM("데이지")); const F=foes(B,u); const cand=[t].concat(F.filter(x=>adj(x,t)));
@@ -12583,7 +12583,7 @@ AC.S2SK2TXT={"겔리두스": [["기본 지속 효과: 아군이 장착한 조합
       const d1=phy(B,u,t,L(u,[39,59,88]),"아일린",L(u,[4,6,9]),cr);
       const chain=[t].concat(near(t,foes(B,u).filter(x=>x!==t&&adj(x,t)))).slice(0,5), AF=AC.S2AIL_FL=0.075;   /* 번개: 아일린 → 첫 적 → 다음 적… 적 간 0.075초 · 피해는 번개 도착 시점 */
       B.events.push({k:"sk3",id:"s2ail",a:u.uid,aR:u.R,aC:u.C,tg:chain.map(x=>[x.uid,x.R,x.C]),per:AF});
-      chain.forEach((x,i)=>{ later(B,B.t+AF*(i+1),()=>{ if(!x.alive) return; const n0=B.events.length; deal(B,u,x,d1*0.4*100/(100+Math.max(0,x.def||0))*(100+Math.max(0,t.def||0))/100,0,"아일린"); for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } if(x.alive){ x.def=(x.def||0)-(cr?2:1); } }); }); },
+      chain.forEach((x,i)=>{ later(B,B.t+AF*(i+1),()=>{ if(!x.alive) return; const n0=B.events.length; deal(B,u,x,d1*0.4*100/(100+Math.max(0,x.def||0))*(100+Math.max(0,t.def||0))/100,0,"아일린",0,cr); for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } if(x.alive){ x.def=(x.def||0)-(cr?2:1); } }); }); },
     "델론즈":()=>{}, "선란":()=>{} };
   AC.s1CF=AC.s1CF||{};
   for(const n in CF){ const f=CF[n]; AC.s1CF[N(n)]=(B,u)=>{ if(PAS[n]) return; if(!AC.s1MUse(u)) return; try{ f(B,u); }catch(e){ console.warn("S2 스킬 "+n,e); } }; }
@@ -12632,7 +12632,7 @@ AC.S2SK3TXT={"에이스": [["기본 지속 효과: 세 번째 기본 공격을 �
   const hitEv=(B,u,t,d,mg,fix)=>B.events.push({k:"hit",mg:mg?1:0,fix:fix?true:undefined,a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
   const mitR=t=>100/(100+Math.max(0,t.res||0)), mitD=t=>100/(100+Math.max(0,t.def||0));
-  const deal=(B,u,t,d,mg,id,fix)=>{ if(!t||!t.alive) return 0; d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,{id:"sk:"+id}); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
+  const deal=(B,u,t,d,mg,id,fix,nc)=>{ if(!t||!t.alive) return 0; d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,fix?{id:"sk:"+id,s2fix:1}:nc?{id:"sk:"+id,s2nc:1}:{id:"sk:"+id}); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
   const mag=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; return deal(B,u,t,v*MA(u)*mitR(t)*amp(u,t),1,id); };
   const magRaw=(B,u,t,raw,id)=>{ if(!t||!t.alive) return 0; return deal(B,u,t,raw*mitR(t)*amp(u,t),1,id); };
   const phy=(B,u,t,coef,id,add)=>{ if(!t||!t.alive) return 0; let d=AC._s1oCH.call(AC,B,u,t,coef,false,true); if(add) d+=add*MA(u)*mitD(t); return deal(B,u,t,d,0,id); };
@@ -12748,8 +12748,8 @@ AC.S2SK3TXT={"에이스": [["기본 지속 효과: 세 번째 기본 공격을 �
       if(is(a,"오목")){ const F=foes(B,a), vR=t.R-a.R, vC=t.C-a.C, L2=vR*vR+vC*vC||1;
         const first=F.filter(x=>{ const k=((x.R-a.R)*vR+(x.C-a.C)*vC)/L2; return k>0&&k<=1.05&&Math.hypot(x.R-(a.R+vR*k),x.C-(a.C+vC*k))<=0.6; }).sort((x,y)=>dist(x,a)-dist(y,a))[0]||t;
         const bd=d; vx(B,{id:"s2k3",h:"오목",a:a.uid,aR:a.R,aC:a.C,b:first.uid,bR:first.R,bC:first.C});
-        later(B,B.t+FL.om,()=>{ if(!first.alive||!a.alive) return; NF(B,a,()=>deal(B,a,first,(bd+L(a,[50,75,120])*MA(a))*mitR(first)*amp(a,first),1,"오목")); }); }
-      if(is(a,"칼 헤론")&&a.s2khN>0&&t.alive&&d>0){ a.s2khN--; deal(B,a,t,d*0.2,0,"칼 헤론"); }
+        later(B,B.t+FL.om,()=>{ if(!first.alive||!a.alive) return; NF(B,a,()=>deal(B,a,first,(bd+L(a,[50,75,120])*MA(a))*mitR(first)*amp(a,first),1,"오목",0,1)); }); }
+      if(is(a,"칼 헤론")&&a.s2khN>0&&t.alive&&d>0){ a.s2khN--; deal(B,a,t,d*0.2,0,"칼 헤론",0,1); }
     } finally{ AC._s2sk3In=0; } } }catch(e){}
     return r; };
   /* 태오: 스킬 사용 중(시전~영혼 상태 종료)에 나가는 기본 공격은 마나를 채우지 않음(기본 +10 · 음유시인 · 장비 마나 모두 · 피격/기타 마나는 그대로) */
@@ -12779,7 +12779,7 @@ AC.S2SK4TR={"파스칼": ["산호군락", "파도술사"], "세인": ["산호군
   const hitEv=(B,u,t,d,mg,fix)=>B.events.push({k:"hit",mg:mg?1:0,fix:fix?true:undefined,a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
   const mitR=t=>100/(100+Math.max(0,t.res||0)), mitD=t=>100/(100+Math.max(0,t.def||0));
-  const deal=(B,u,t,d,mg,id,fix)=>{ if(!t||!t.alive) return 0; d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,{id:"sk:"+id}); if(id==="멜키르") mark(B,u,t); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
+  const deal=(B,u,t,d,mg,id,fix)=>{ if(!t||!t.alive) return 0; d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,fix?{id:"sk:"+id,s2fix:1}:{id:"sk:"+id}); if(id==="멜키르") mark(B,u,t); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
   const mag=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; return deal(B,u,t,v*MA(u)*mitR(t)*amp(u,t),1,id); };
   const phy=(B,u,t,coef,id,add)=>{ if(!t||!t.alive) return 0; let d=AC._s1oCH.call(AC,B,u,t,coef,false,true); if(add) d+=add*MA(u)*mitD(t); return deal(B,u,t,d,0,id); };
   const heal=(B,u,v,id)=>AC.heal(B,u,v,"sk:"+id);
@@ -12919,7 +12919,7 @@ AC.S2SK5TR={"오르카": ["산호군락", "사냥꾼", "포세이돈"], "클레�
   const hitEv=(B,u,t,d,mg,fix)=>B.events.push({k:"hit",mg:mg?1:0,fix:fix?true:undefined,a:u.uid,b:t.uid,d:Math.round(d),crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C});
   const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
   const mitR=t=>100/(100+Math.max(0,t.res||0)), mitD=t=>100/(100+Math.max(0,t.def||0));
-  const deal=(B,u,t,d,mg,id,fix)=>{ if(!t||!t.alive) return 0; d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,{id:"sk:"+id}); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
+  const deal=(B,u,t,d,mg,id,fix,nc)=>{ if(!t||!t.alive) return 0; d=Math.max(1,Math.round(d)); const h0=t.hp+(t.shield||0); hitEv(B,u,t,d,mg,fix); AC.applyDmg(B,u,t,d,fix?{id:"sk:"+id,s2fix:1}:nc?{id:"sk:"+id,s2nc:1}:{id:"sk:"+id}); return Math.max(0,h0-(t.alive?t.hp+(t.shield||0):0)); };
   const mag=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; return deal(B,u,t,v*MA(u)*mitR(t)*amp(u,t),1,id); };
   const magRaw=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; return deal(B,u,t,v*mitR(t)*amp(u,t),1,id); };
   const tru=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; return deal(B,u,t,v*amp(u,t),0,id,true); };
@@ -12986,14 +12986,15 @@ AC.S2SK5TR={"오르카": ["산호군락", "사냥꾼", "포세이돈"], "클레�
           NF(B,u,()=>mag(B,u,x,L(u,[250,400,1000])*0.5,"아멜리아")); stun(B,x,STUN.jjalge); });
         if(t.alive&&u.alive){ const p=nearFree(B,Math.round(t.R),Math.round(t.C),u,u); if(p){ vx(B,{h:"아멜리아추격",a:u.uid,aR:u.R,aC:u.C,R:p[0],C:p[1]}); u.R=p[0]; u.C=p[1]; } } }); },
     "브란즈 & 브란셀":(B,u)=>{ cast(B,u,NM("브란즈 & 브란셀"),0.2); const was=u.s2bz>B.t; bzOn(B,u,4); if(was) vx(B,{h:"광전사",a:u.uid,aR:u.R,aC:u.C}); u.s2bzSk=B.t+4; },   /* 이미 광전사 중이어도 재사용 시 강화 섬광 */
-    "팔라누스":(B,u)=>{ const F=foes(B,u); if(!F.length) return; const d=L(u,[2,3,30]), P=AC.S2PAL||{}, K=P.k||1, dl=(P.delay==null?0.75:P.delay)*K, dd=d*K; cast(B,u,NM("팔라누스"),0.4); vx(B,{h:"팔라누스중력",a:u.uid,tg:F.map(x=>x.uid),dur:dd,del:dl,tk:K});   /* 0.75초 딜레이(전장 분홍 오오라) → 모두 dd초 부양 → 일괄 낙하 */
+    "팔라누스":(B,u)=>{ const F=foes(B,u); if(!F.length) return; const d=L(u,[2,3,30]), P=AC.S2PAL||{}, K=P.k||1, dl=(P.delay==null?0.75:P.delay)*K, dd=d*K; cast(B,u,NM("팔라누스"),0.4); u.cd=Math.max(u.cd||0,dl+dd+0.2);   /* 시전 중(중력장·부양·낙하 피해까지) 기본 공격 정지 · 연출 시간(dl·dd) 그대로 따라감 */
+      vx(B,{h:"팔라누스중력",a:u.uid,tg:F.map(x=>x.uid),dur:dd,del:dl,tk:K});   /* 0.75초 딜레이(전장 분홍 오오라) → 모두 dd초 부양 → 일괄 낙하 */
       later(B,B.t+dl,()=>{ const G=F.filter(x=>x.alive); if(!G.length) return; G.forEach(x=>air(B,x,dd,1)); vx(B,{h:"팔라누스부양",a:u.uid,tg:G.map(x=>({uid:x.uid,R:Math.round(x.R),C:Math.round(x.C)})),dur:dd,tk:K});
         later(B,B.t+dd,()=>{ if(!u.alive&&!u.s2palDeadOk) {} G.forEach(x=>{ if(!x.alive) return; vx(B,{h:"팔라누스낙하",b:x.uid,bR:x.R,bC:x.C,tk:K}); NF(B,u,()=>magRaw(B,u,x,L(u,[150,500,9999])*MA(u)+x.maxHp*L(u,[3,10,100])/100,"팔라누스")); }); }); }); },
     "트루드":(B,u)=>{ cast(B,u,NM("트루드"),0.4); vx(B,{h:"트루드",a:u.uid,aR:u.R,aC:u.C});
       foes(B,u).filter(x=>cheb(x,u)<=2).forEach(x=>{ phy(B,u,x,L(u,[100,100,3000]),"트루드",L(u,[260,400,500])); if(x.alive) AC.debuff(B,x,"burn",()=>{ const o=x.s1ib&&x.s1ib.until>B.t; x.s1ib={until:Math.max(o?x.s1ib.until:0,B.t+5),src:u,acc:o?x.s1ib.acc:0,pct:1}; x.s1wd=Math.max(x.s1wd||0,B.t+5); }); });
       const g=L(u,[400,650,10000]); u.maxHp+=g; u.hp+=g; u.s2trN=(u.s2trN||0)+1; u.s2trF=u.s2trN>=2?3:2; fx(B,u,u.s2trF===3?"광분 3회":"광분 2회","sk5");
       if(u.s2trN>=2){ u.s1mMax=0; u.mana=0; } },
-    "비스킷":(B,u)=>{ const F=foes(B,u); if(!F.length) return; const f=F.slice().sort((a,b)=>dist(b,u)-dist(a,u))[0]; cast(B,u,NM("비스킷"),0.4);
+    "비스킷":(B,u)=>{ const F=foes(B,u); if(!F.length) return; const f=F.slice().sort((a,b)=>dist(b,u)-dist(a,u))[0]; cast(B,u,NM("비스킷"),0.4); u.cd=Math.max(u.cd||0,2+FL.bs2+0.2);   /* 시전 중(기둥 소환 → 2초 → 박치기 피해까지) 기본 공격 정지 · 연출 시간(FL.bs2) 그대로 따라감 */
       const dR=sgn(Math.round(f.R)-Math.round(u.R)), dC=sgn(Math.round(f.C)-Math.round(u.C)); let P={R:Math.round(f.R)+dR,C:Math.round(f.C)+dC}; if(!inB(P.R,P.C)) P={R:Math.round(f.R),C:Math.round(f.C)};
       vx(B,{h:"비스킷기둥",a:u.uid,R:P.R,C:P.C,dur:2,rise:FL.bsR});   /* 얼음 기둥이 솟는 동안(FL.bsR)은 피해 없음 · 다 솟는 시점에 1차 피해 */
       const tagNo=n0=>{ for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid) h.s2nofx=1; } };
@@ -13012,7 +13013,7 @@ AC.S2SK5TR={"오르카": ["산호군락", "사냥꾼", "포세이돈"], "클레�
     vx(B,{h:"란드타격",a:u.uid,aR,aC,bR:u.R,bC:u.C,b:t.uid,tR:t.R,tC:t.C,n:o.sk?o.n:0,last:o.last?1:0,sk:o.sk?1:0,sd:u.side});
     /* 급소 타격 피해 = 기본 공격 피해(물리·방어 적용) + 고정 피해 37/56/777%(방어 무시) */
     const crit=AC.rnd(B)*100<(u.crit||0), bd=Math.max(1,Math.round(AC.calcHit(B,u,t,100,crit,false)));
-    const d=deal(B,u,t,bd,0,"란드그리드")+tru(B,u,t,atk(B,u)*L(u,[37,56,777])/100,"란드그리드"); if(d>0&&u.alive) heal(B,u,d*0.15,"란드그리드");
+    const d=deal(B,u,t,bd,0,"란드그리드",0,1)+tru(B,u,t,atk(B,u)*L(u,[37,56,777])/100,"란드그리드"); if(d>0&&u.alive) heal(B,u,d*0.15,"란드그리드");
     if(!o.sk) lgMark(B,t,t.alive?(t.s2lgW||0):0,0,null,t.alive&&t.s2lgW>0?0:1); }
   function lgAura(B,u,t){ if(!u.alive) return; const o={R:Math.round(t.R),C:Math.round(t.C)}, tot=L(u,[200,250,999])*MA(u); vx(B,{h:"란드오라",R:o.R,C:o.C,dur:5,sd:u.side});   /* 마지막 급소 타격 대상 칸 중심 3×3 */
     for(let k=1;k<=5;k++) later(B,B.t+k,()=>allies(B,u).filter(x=>cheb(x,o)<=1).forEach(x=>heal(B,x,tot/5,"란드그리드"))); }
@@ -13063,6 +13064,25 @@ AC.S2SK5TR={"오르카": ["산호군락", "사냥꾼", "포세이돈"], "클레�
   const oTg=AC.s1Tgt; if(oTg) AC.s1Tgt=function(B,u){ const t=oTg.apply(AC,arguments); try{ if(t&&u&&u.s2trF&&is(u,"트루드")&&u.s2trL!==t.uid){ u.s2trL=t.uid; if(cheb(u,t)>1){ const p=nearFree(B,Math.round(t.R),Math.round(t.C),u,u); if(p){ vx(B,{h:"트루드돌진",a:u.uid,aR:u.R,aC:u.C,R:p[0],C:p[1]}); u.R=p[0]; u.C=p[1]; } } } }catch(e){} return t; };
 }catch(e){ console.warn("S2 5코 스킬",e); } })();
 
+/* 스킬 치명타 보정(S2 한정): ① 고정 피해(deal ...fix=true)는 치명타 제외 — 해당 호출 동안만 s1skCrit 를 꺼서 S1 래퍼의 굴림을 막음(S1 코드·AC._fix 미사용)
+   ② 사신의 분노: 스킬 치명타 적중 시에도 평타 치명과 동일하게 대상에게 3초간 방어력·마법저항 20% 감소(같은 s1g16d 필드·값·갱신 규칙) */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2") return;
+  const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){
+    if(o&&(o.s2fix||o.s2nc)&&a&&a.s1skCrit){ a.s1skCrit=false; try{ return oAD.apply(this,arguments); } finally{ a.s1skCrit=true; } }
+    const S=AC.s1SkCritStat, c0=S?S.crit:0, r=oAD.apply(this,arguments);
+    try{ if(S&&S.crit>c0&&a&&a.s1g16&&t&&t.alive&&a._s1cr&&a._s1cr.c&&a._s1cr.uid===t.uid&&a._s1cr.t===B.t){
+      if(!t.s1g16d||t.s1g16d.until<=B.t){ const dd=(t.def||0)*0.2, dr=(t.res||0)*0.2; t.def-=dd; t.res-=dr; t.s1g16d={dd,dr,until:B.t+3}; } else t.s1g16d.until=B.t+3; } }catch(e){}
+    return r; };
+}catch(e){ console.warn("S2 스킬 치명 보정",e); } })();
+
+/* 시전 중 기본 공격 정지(S2 한정, 사용자 규칙: 스킬이 기본 공격을 강화하거나 시전자 자신을 강화하는 영웅 외에는 스킬 시전 중 기본 공격 금지)
+   — 멜키르·란드그리드처럼 시전 순간에 기본 공격 쿨다운(u.cd)을 시전~효과 종료 길이만큼 밀어 둠(종료 후 자동 재개). 길이는 시뮬로 잰 시전~마지막 피해 구간(초). */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.s1CF||typeof S2N!=="function") return;
+  const CW={"데이지":0.75,"동영":0.25,"레긴레이프":0.6,"리나":0.35,"린":0.5,"벨리카":0.35,"비담":0.95,"빅토리아":1.35,"손오공":0.35,"스쿨드":0.45,"아리스":0.4,"아멜리아":0.45,"아일린":0.4,"에스파다":1.25,"연희":0.65,"오르카":0.55,"오를리":3.1,"오목":0.55,"쥬리":1.35,"지크":0.4,"카구라":0.55,"카론":0.55,"콜트":0.8,"파스칼":0.75,"프레이야":1.2,"하연":0.65};
+  for(const n in CW){ const k=S2N(n), f0=AC.s1CF[k]; if(!f0) continue;
+    AC.s1CF[k]=function(B,u){ const c0=u.s1mCast||0, r=f0.apply(this,arguments); try{ if((u.s1mCast||0)>c0) u.cd=Math.max(u.cd||0,CW[n]); }catch(e){} return r; }; }
+}catch(e){ console.warn("S2 시전 중 기본 공격 정지",e); } })();
+
 </script>
 <script>
 /* 생성: gen_s2names.py */
@@ -13108,6 +13128,7 @@ window.S2FLD=function(d){ return 3+d*0.02; };
       const ds=L2.map(x=>Math.max(YU.d0,(x.R-u.R)*dR/ln+(x.C-u.C)*dC/ln)), D=Math.max(3,Math.max.apply(null,ds)+1);   /* 파동 이동 거리(칸): 마지막 적 + 1칸, 최소 3칸 · 초당 YU.v칸 등속 */
       const mv=(D-YU.d0)/YU.v; ev(B,{id:"s2yui",a:u.uid,aR:u.R,aC:u.C,uR:dR/ln,uC:dC/ln,D,hs:ds,mv});
       const v=L(u,[250,375,585]); let kk=1; L2.forEach((x,i)=>{ const f=kk; kk*=0.6; (B.s2q=B.s2q||[]).push({at:B.t+YU.form+(ds[i]-YU.d0)/YU.v,fn:()=>mag(B,u,x,v*f)}); });
+      u.cd=Math.max(u.cd||0,YU.form+(Math.max.apply(null,ds)-YU.d0)/YU.v+0.1);   /* 시전 중(파동이 마지막 적을 지날 때까지) 기본 공격 정지 */
     }catch(e){ console.warn("S2 유이",e); } };
   } }
   /* 시즌2 손오공 '강타': 대상·고립 판정·수치 원래 그대로(시전 시점), 피해만 시즌1 오공 여의봉 내려치기 타격 순간(0.3초)으로 지연 · 연출은 시즌1 s1wkClone(근두운 분신 + 여의봉) 그대로 재사용 */
