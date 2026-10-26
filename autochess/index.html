@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.8v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.9v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -13018,7 +13018,7 @@ AC.S2SK5TR={"오르카": ["산호군락", "사냥꾼", "포세이돈"], "클레�
   function lgAura(B,u,t){ if(!u.alive) return; const o={R:Math.round(t.R),C:Math.round(t.C)}, tot=L(u,[200,250,999])*MA(u); vx(B,{h:"란드오라",R:o.R,C:o.C,dur:5,sd:u.side});   /* 마지막 급소 타격 대상 칸 중심 3×3 */
     for(let k=1;k<=5;k++) later(B,B.t+k,()=>allies(B,u).filter(x=>cheb(x,o)<=1).forEach(x=>heal(B,x,tot/5,"란드그리드"))); }
   /* 브란즈 광전사 */
-  function bzOn(B,u,dur){ const till=dur===Infinity?Infinity:B.t+dur; if(!(u.s2bz>B.t)){ u.asPct=(u.asPct||0)+40; u.s2bzLs=L(u,[20,25,110]); u.ls=(u.ls||0)+u.s2bzLs; AC.reIv(u); vx(B,{h:"광전사",a:u.uid,aR:u.R,aC:u.C}); fx(B,u,"광전사","sk5"); }
+  function bzOn(B,u,dur){ const till=dur===Infinity?Infinity:B.t+dur; if(!(u.s2bz>B.t)){ u.s2bzA=0; u.asPct=(u.asPct||0)+40; u.s2bzLs=L(u,[20,25,110]); u.ls=(u.ls||0)+u.s2bzLs; AC.reIv(u); vx(B,{h:"광전사",a:u.uid,aR:u.R,aC:u.C}); fx(B,u,"광전사","sk5"); }
     u.s2bz=Math.max(u.s2bz||0,till); }
   function bzOff(B,u){ u.asPct-=40; u.ls-=u.s2bzLs||0; u.s2bzLs=0; u.s2bz=0; AC.reIv(u); }
   AC.s1CF=AC.s1CF||{};
@@ -13032,7 +13032,7 @@ AC.S2SK5TR={"오르카": ["산호군락", "사냥꾼", "포세이돈"], "클레�
       if(a&&a!==t&&a.side!==t.side&&is(a,"팔라누스")) B.events.push({k:"sk3",id:"s2k5",h:"팔라누스사망",s2nofx:1,b:t.uid,bR:t.R,bC:t.C});   /* 시각 전용: 팔라누스가 직접 입힌 피해로 사망 → 붉은 알갱이 소멸 연출(사망 판정 불변) */
       if(t.s2rgS){ const u=B.units.find(x=>x.uid===t.s2rgS); t.s2rgS=0; if(u&&u.alive){ const n=rgFree(B,u,t); if(n) rgThrow(B,u,t,n,0); } }
       if(t.s2lgW) t.s2lgW=0;
-      if(a&&a.alive&&a.side!==t.side&&is(a,"브란즈 & 브란셀")){ a.s2bzK=(a.s2bzK||0)+1; if(a.s2bzSk>B.t) foes(B,a).filter(x=>cheb(x,t)<=1).forEach(x=>stun(B,x,1));
+      if(a&&a.alive&&a.side!==t.side&&is(a,"브란즈 & 브란셀")){ a.s2bzK=(a.s2bzK||0)+1; if(a.s2bz>B.t) foes(B,a).filter(x=>cheb(x,t)<=1).forEach(x=>stun(B,x,1));
         if(a.s2bzK===5){ a.s2bzImm=1; bzOn(B,a,Infinity); fx(B,a,"군중 제어 면역","imm"); } } } }catch(e){} return r; };
   /* 레비아탄 처형 연출용 이벤트(시각 전용): 시너지 회복(syn:레비아탄) 직전에 처형된 대상 위치에 푸른 물보라 */
   const oHlv=AC.heal; AC.heal=function(B,u,n,id){ try{ if(id==="syn:레비아탄"&&B&&B.events){ for(let j=B.events.length-1;j>=0&&j>=B.events.length-12;j--){ const q=B.events[j]; if(q.k==="die"){ const t=B.units.find(x=>x.uid===q.b); vx(B,{h:"레비아탄처형",a:u.uid,aR:u.R,aC:u.C,b:q.b,R:t?t.R:u.R,C:t?t.C:u.C}); break; } } } }catch(e){} return oHlv.apply(AC,arguments); };
@@ -13058,7 +13058,7 @@ AC.S2SK5TR={"오르카": ["산호군락", "사냥꾼", "포세이돈"], "클레�
   const oStep=AC.skStep; AC.skStep=function(B,dt){ for(const u of B.units) if(u.alive&&u.s2bz>B.t&&u.mv>0) u.mv-=(dt||0.05)*AC.S2BZ_MV/100;
     const r=oStep.apply(AC,arguments);
     for(const u of B.units){ if(!u.alive||!u.s2bz) continue; if(u.s2bz!==Infinity&&B.t>=u.s2bz){ bzOff(B,u); continue; }
-      u.s2bzA=(u.s2bzA||0)+(dt||0.05); if(u.s2bzA>=1){ u.s2bzA-=1; const t=tgt(B,u); if(t){ const as=1/(u.iv||1); vx(B,{h:"광전사베기",b:t.uid,bR:t.R,bC:t.C}); NF(B,u,()=>phy(B,u,t,L(u,[200,375,2500])*as,"브란즈 & 브란셀",L(u,[180,300,1088])*as/MA(u))); } } }
+      u.s2bzA=(u.s2bzA||0)+(dt||0.05); if(u.s2bzA>=1){ u.s2bzA-=1; let t=tgt(B,u); if(!t||AC.dist(u,t)>1) t=near(u,foes(B,u).filter(x=>AC.dist(u,x)<=1))[0]; /* 근접 전용: 기본 근접 사거리(1) 안의 적에게만 */ if(t){ const as=1/(u.iv||1); vx(B,{h:"광전사베기",b:t.uid,bR:t.R,bC:t.C}); NF(B,u,()=>phy(B,u,t,L(u,[200,375,2500])*as,"브란즈 & 브란셀",L(u,[180,300,1088])*as/MA(u))); } } }
     return r; };
   /* 트루드 광분: 새 대상 돌진 */
   const oTg=AC.s1Tgt; if(oTg) AC.s1Tgt=function(B,u){ const t=oTg.apply(AC,arguments); try{ if(t&&u&&u.s2trF&&is(u,"트루드")&&u.s2trL!==t.uid){ u.s2trL=t.uid; if(cheb(u,t)>1){ const p=nearFree(B,Math.round(t.R),Math.round(t.C),u,u); if(p){ vx(B,{h:"트루드돌진",a:u.uid,aR:u.R,aC:u.C,R:p[0],C:p[1]}); u.R=p[0]; u.C=p[1]; } } } }catch(e){} return t; };
@@ -14554,6 +14554,237 @@ window.S2FLD=function(d){ return 3+d*0.02; };
     if(S.strat!=="B") return oS.apply(AC,arguments);
     return aiB.apply(AC,arguments); };
 }catch(e){ console.warn("S2 지옥봇 B",e); } })();
+
+</script>
+<script>
+/* ===== 시즌2 발전 개선표 (2026-10-26 · 사용자 표 신규 52종 전부: 확정 43종 + 보류였던 9종) · AC.seasonId==="s2" 전용 · 시즌1/pre 불변 =====
+   툴팁(desc)은 사용자 표 원문 그대로(오타 포함). 보류였던 9종(s34 s49 g69 g73 g75 p53 p54 p57 p58)은 사용자 답변(pt1789u)대로 구현. */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s2"||!AC.S1AUG||!AC.s1ItemFx) return;
+  const C=AC_CONFIG, el=AC.s1ItemFx.el, hpAdd=(u,n)=>{ u.maxHp+=n; u.hp+=n; };
+  const has=(S,id)=>!!(S&&(S.s1aug||[]).some(a=>a.id===id));
+  const allS=st=>st.players?st.players.filter(p=>p.alive!==false).map(p=>p.S):[st.me,st.ai].filter(Boolean);
+  const gain=(st,S,no,t)=>{ if(no==null) return null; const u=AC.gainHero(st,S,no,1,[]); if(u&&t){ u.t=Math.max(u.t||0,t); u.copies=Math.max(u.copies||1,t>=6?9:t>=3?4:1); } return u; };
+  /* ---- 발전 정의 (t 등급, id, 이름, 원문 툴팁) ---- */
+  const L=[
+   ["실버","s33","작은 친구들 I","아군 1단계 및 2단계 영웅이 25%의 공격 속도 및 이동 속도를 얻습니다"],
+   ["실버","s35","벼려진 칼날 I","전방 2열에서 전투를 시작하는 아군 유닛이 15의 공격력을 얻습니다."],
+   ["실버","s36","개인주의자 I","활성화된 시너지가 없는 아군 유닛이 스테이지에 비례한 생명력과 공격 속도를 얻습니다. [250/300/350/400, 40%/50%/60%/70% 생명력 및 공격 속도, 2~5스테이지]"],
+   ["실버","s37","전체주의자 I","아군 유닛이 전체적으로 활성화된 시너지 하나당 2의 공격력과 마법 공격력을 획득합니다."],
+   ["실버","s38","무소유 I","아이템을 장착하지 않은 아군 유닛이 매초 5의 마나를 회복합니다."],
+   ["실버","s39","포스트 휴머니즘 I","아이템을 가진 아군 유닛이 125의 생명력과 8의 공격력을 얻습니다."],
+   ["실버","s40","트랜스 휴머니즘 I","아이템을 가진 아군 유닛이 125의 생명력 얻고 매초 2의 마나를 회복합니다."],
+   ["실버","s41","약점 공격 I","아군 유닛이 공격 시 5초 동안 대상 방어력의 20%를 무시하고 대상이 받는 회복 효과를 50% 감소시킵니다."],
+   ["실버","s42","신속 연사 I","아군 유닛이 처치 시 25 마나를 획득합니다."],
+   ["실버","s43","구급상자 I","아군 유닛이 받는 모든 회복 효과와 보호막 효과가 25% 증가합니다."],
+   ["실버","s44","파죽지세","연승 및 연패 보너스 골드를 2배로 받습니다.",{s21:true}],
+   ["실버","s45","가외성 I","아이템이 없는 아군 유닛이 30의 방어력과 마법 저항을 얻습니다."],
+   ["실버","s46","최후의 저항 I","전투 시작 10초 후 아군 유닛이 잃은 생명력의 40%를 회복합니다."],
+   ["실버","s47","마전사 I","전방 2열에서 전투를 시작하는 아군 유닛이 15의 방어력과 10의 마법 공격력을 얻습니다."],
+   ["실버","s48","군계일학 I","인접한 아군 없이 전투를 시작하는 아군은 10초 동안 최대 생명력의 25%에 해당하는 보호막을 획득합니다."],
+   ["골드","g57","벼려진 칼날 II","전방 2열에서 전투를 시작하는 아군 유닛이 25의 공격력을 얻습니다."],
+   ["골드","g58","개인주의자 II","활성화된 시너지가 없는 아군 유닛이 스테이지에 비례한 생명력과 공격 속도를 얻습니다. [300/400/500/600, 50%/60%/70%/80% 생명력 및 공격 속도, 2~5스테이지]"],
+   ["골드","g59","전체주의자 II","아군 유닛이 전체적으로 활성화된 시너지 하나당 3의 공격력과 마법 공격력을 획득합니다."],
+   ["골드","g60","무소유 II","아이템이 없는 아군 유닛이 초당 7의 마나를 회복합니다."],
+   ["골드","g61","포스트 휴머니즘 II","아이템을 가진 영웅이 200의 생명력과 15의 공격력을 얻습니다."],
+   ["골드","g62","트랜스 휴머니즘 II","아이템을 가진 영웅이 200의 생명력을 얻고 초당 3의 마나를 회복합니다."],
+   ["골드","g63","약점 공격 II","아군 유닛이 공격 시 5초 동안 대상 방어력의 40%를 무시하고 대상이 받는 회복 효과를 50% 감소시킵니다."],
+   ["골드","g64","신속 연사 II","아군 유닛이 적 처치 시 30의 마나를 회복합니다."],
+   ["골드","g65","가외성 II","아이템이 없는 아군 유닛이 55의 방어력과 마법 저항을 얻습니다."],
+   ["골드","g66","최후의 저항 II","전투 10초 후 아군 유닛이 잃은 생명력의 60%만큼 회복합니다."],
+   ["골드","g67","마전사 II","전방 2열에서 전투를 시작하는 아군 유닛이 25의 방어력과 20의 주문력을 얻습니다."],
+   ["골드","g68","군계일학 II","인접한 아군 없이 전투를 시작하는 아군은 10초 동안 최대 생명력의 35%에 해당하는 보호막을 획득합니다."],
+   ["골드","g70","작은 친구들 II","비용이 1과 2인 영웅이 40%의 공격 속도와 이동 속도를 획득합니다."],
+   ["골드","g71","구급상자 II","아군 유닛이 받는 모든 회복 효과와 보호막 효과가 35% 증가합니다."],
+   ["골드","g72","승부조작","전투에서 패배한 후 2골드와 무료 상점 새로고침 1회를 획득합니다."],
+   ["골드","g74","곱빼기","무작위 6초월 1단계 유닛 하나와 무작위 6초월 2단계 유닛 하나를 획득합니다.",{on:(st,S)=>{ const ex=[]; for(const [tier,t] of [[1,6],[2,6]]){ const no=AC.pickHero(st,tier,ex); if(no==null) continue; ex.push(no); gain(st,S,no,t); } AC._csl=null; }}],
+   ["골드","g76","삼총사","무작위 3단계 영웅 셋을 획득합니다.",{on:(st,S)=>{ const ex=S.units.map(u=>u.no); for(let i=0;i<3;i++){ const no=AC.pickHero(st,3,ex); if(no!=null){ ex.push(no); gain(st,S,no); } } }}],
+   ["골드","g77","꾸준함 I","아군 영웅이 적 유닛을 처치할 때마다 영구적으로 1의 공격력을 획득합니다. 8의 추가 공격력을 가지고 시작합니다."],
+   ["골드","g78","초월","전투 15초 후 아군 유닛의 피해량이 50% 증가합니다."],
+   ["프리즘","p48","꾸준함 II","아군 영웅이 적 유닛을 처치할 때마다 영구적으로 3의 공격력을 획득합니다. 6의 추가 공격력을 가지고 시작합니다."],
+   ["프리즘","p49","뜻밖의 횡재","40골드를 획득합니다.",{on:(st,S)=>{ S.gold+=40; }}],
+   ["프리즘","p50","포스트 휴머니즘 III","아이템을 가진 영웅이 300의 생명력과 25의 공격력을 얻습니다."],
+   ["프리즘","p51","트랜스 휴머니즘 III","아이템을 가진 영웅이 300의 생명력을 얻고 매초 4의 마나를 회복합니다."],
+   ["프리즘","p52","반제곱방어부스터","아군 유닛이 전투 시작 후 15초 동안 군중 제어 효과에 면역이 됩니다."],
+   ["프리즘","p55","천리 길도 한걸음부터","라운드마다 추가로 5의 경험치를 획득합니다. 더는 골드를 사용해 레벨 업할 수 없습니다.",{s21:true}],
+   ["프리즘","p56","군계일학 III","인접한 아군없이 전투를 시작하는 아군은 10초 동안 최대생명력의 50%에 해당하는 보호막을 획득합니다."],
+   ["프리즘","p59","특등사수","후방 2열에서 전투를 시작하는 아군 유닛이 10%의 공격 속도가 증가하고 공격 사거리가 무제한이 됩니다."],
+   ["프리즘","p60","상징 보관소","무작위 상징 5종 중 선택 기회 1번을 총 2번에 걸쳐 획득합니다.",{on:(st,S)=>{ AC.s1PickNow(st,S,"sym"); AC.s1PickNow(st,S,"sym"); }}],
+   /* ---- 보류였던 9종 (사용자 답변 pt1789u) ---- */
+   ["실버","s34","고슴도치 I","아군 유닛이 치명타를 입으면 주변 적에게 스테이지에 비례한 마법 피해[50/70/90/110(2/3/4/5 스테이지)]를 입힙니다. (재사용 대기시간 1초)"],
+   ["실버","s49","보조 배터리 I","모든 아군이 마법 공격력 10 얻습니다. 스킬 사용 후 시전자가 10의 마나 상태가 됩니다."],
+   ["골드","g69","보조 배터리 II","모든 아군이 마법 공격력을 20 얻습니다. 스킬 사용 후 시전자가 15의 마나 상태가 됩니다."],
+   ["골드","g73","고슴도치 II","아군 유닛이 치명타를 입으면 주변 적에게 스테이지에 비례한 [85/105/125/145(2/3/4/5 스테이지)] 마법 피해를 입힙니다. (재사용 대기시간 1초)"],
+   ["골드","g75","보석 건틀릿","아군 유닛이 스킬로 입히는 마법 및 고정 피해가 치명타로 적중할 수 있습니다. 아군의 치명타 확률이 25% 증가합니다."],
+   ["프리즘","p53","악마의 계약","경험치를 골드 대신 6의 플레이어 체력으로 구매합니다. 라운드당 3의 플렝어 체력을 회복합니다"],
+   ["프리즘","p54","왕관의 무게","최대 팀 인원 수가 +2 증가하지만, 전투에서 패배 시 플레이어의 전략가가 받는 피해가 100% 증가합니다.",{on:(st,S)=>{ S.s1cap=(S.s1cap||0)+2; }}],
+   ["프리즘","p57","특혜","현재 플레이어 레벨보다 1레벨 높을 때 나오는 영웅 확률로 상점이 변경됩니다. 5골드를 획득합니다.",{on:(st,S)=>{ S.gold+=5; }}],
+   ["프리즘","p58","무지개 펫 알","11턴 안에 부화하는 무지개 펫 알을 획득합니다. 플레이어 대상 전투에서 승리하면 부화기 타이머를 한 턴만큼 더 가속합니다.\n보상 목록(확률): \n- 인원 배치 +1, 75골드 (10%)\n- 인원 배치+2, 망자의 묵주 2개, 20골드 (15%)\n- 토벌의 반지, 저주의 반지, 샐러맨더의 반지, 기합의 반지, 20골드 (10%)\n- 지옥쌍검 3개, 챔피언 복제기, 자석 제거기 2개, 15골드 (10%)\n- 인원 배치 +1, 고급 영웅 복제기, 망자의 묵주, 묘비지기의 묵주, 15골드 (15%)\n- 신화 장비 1개, 유물 1개, 완성 장비 1개, 5코스트 기물 2개, 장비 제거기, 20골드 (15%)\n- 인원배치 +1, 고급 영웅 복제기 2개, 카론, 밀리아, 지크, 란드그리드, 15골드 (10%)\n- 신화 장비 2개, 장비 제거기 2개, 5코스트 기물 4개, 20골드 (15%)",{on:(st,S)=>{ S.s2egg={n:0,need:11,done:0,r0:st.round,res:""}; }}]
+  ];
+  AC.S2AUG_NEW=L.map(x=>x[1]);
+  for(const [t,id,name,desc,o] of L){ const A=AC.S1AUG[t]; if(!A||A.some(a=>a.id===id)) { console.warn("S2 발전 id 중복",id); continue; } A.push(Object.assign({id,name,desc,only:undefined},o||{})); }
+
+  /* ---- 전투 시작: 스탯 (applySynergies 뒤 · 팀당 1회) ---- */
+  const IDS=new Set(L.map(x=>x[1]));
+  const oAS=AC.applySynergies; AC.applySynergies=function(B){ const r=oAS.apply(AC,arguments); try{ if(!B||!B.Sref||!B.units) return r;
+    for(const side of ["me","ai"]){ const S=B.Sref[side]; if(!S||!(S.s1aug||[]).length||!S.s1aug.some(a=>IDS.has(a.id))) continue;
+      const U=B.units.filter(u=>u.side===side&&!u.mon&&!u.golem&&!u.clone&&u.alive); if(!U.length||U.some(u=>u._s2augG)) continue;
+      const h=id=>has(S,id), ref=u=>(B.refs&&B.refs[u.uid])||{}, gear=u=>ref(u).gear||[], cost=u=>AC.cost?AC.cost(u.no):0;
+      const synN=Object.keys(B.syn&&B.syn[side]||{}).length, rd=B.round||(AC.st&&AC.st.round)||1, stg=Math.min(5,Math.max(2,(AC.s1Stage(rd)||{}).s||2))-2;
+      const inSyn=(u,id)=>{ const s=AC.synById(id); if(s&&s.members.includes(u.name)) return true; if(id==="sword"&&u.emb) return true; if(u.gEmb&&u.gEmb.includes(id)) return true; return gear(u).includes("s_"+id); };
+      const noSyn=u=>!Object.keys(B.syn&&B.syn[side]||{}).some(id=>inSyn(u,id));
+      const near=(u)=>B.units.some(x=>x!==u&&x.alive&&x.side===side&&!x.mon&&Math.max(Math.abs(Math.round(x.R)-Math.round(u.R)),Math.abs(Math.round(x.C)-Math.round(u.C)))<=1);
+      const kI=(h("g77")?1:0)+(h("p48")?3:0), kB=(h("g77")?8:0)+(h("p48")?6:0);
+      const wkP=(h("s41")?20:0)+(h("g63")?40:0), wkH=Math.pow(0.5,(h("s41")?1:0)+(h("g63")?1:0));
+      const shP=(h("s48")?25:0)+(h("g68")?35:0)+(h("p56")?50:0);
+      for(const u of U){ u._s2augG=1; const noItem=!gear(u).length, c=cost(u), front=u.row!=null&&u.row<=1, rear=u.row!=null&&u.row>=C.rows-2;
+        let fa=0, hp=0, as=0, ma=0, df=0, rs=0, mr=0, mv=0;
+        if(h("s33")&&c<=2){ as+=25; mv+=25; } if(h("g70")&&c<=2){ as+=40; mv+=40; }
+        if(front){ if(h("s35")) fa+=15; if(h("g57")) fa+=25; if(h("s47")){ df+=15; ma+=10; } if(h("g67")){ df+=25; ma+=20; } }
+        if(h("s36")&&noSyn(u)){ hp+=[250,300,350,400][stg]; as+=[40,50,60,70][stg]; } if(h("g58")&&noSyn(u)){ hp+=[300,400,500,600][stg]; as+=[50,60,70,80][stg]; }
+        if(h("s37")){ fa+=2*synN; ma+=2*synN; } if(h("g59")){ fa+=3*synN; ma+=3*synN; }
+        if(noItem){ if(h("s38")) mr+=5; if(h("g60")) mr+=7; if(h("s45")){ df+=30; rs+=30; } if(h("g65")){ df+=55; rs+=55; } }
+        else { if(h("s39")){ hp+=125; fa+=8; } if(h("g61")){ hp+=200; fa+=15; } if(h("p50")){ hp+=300; fa+=25; }
+               if(h("s40")){ hp+=125; mr+=2; } if(h("g62")){ hp+=200; mr+=3; } if(h("p51")){ hp+=300; mr+=4; } }
+        if(rear&&h("p59")){ as+=10; u.range=99; }
+        if(kB||kI){ fa+=kB+(ref(u).s2st||0); u.s2ki=kI; }
+        if(fa) u.s2fa=(u.s2fa||0)+fa; if(hp) hpAdd(u,hp); if(as){ u.asPct+=as; AC.reIv(u); } if(ma) u.s1ma=(u.s1ma||0)+ma; if(df) u.def=(u.def||0)+df; if(rs) u.res=(u.res||0)+rs;
+        if(mr) u.s2mr=(u.s2mr||0)+mr; if(mv) u.s2mv=(u.s2mv||0)+mv;
+        if(h("s42")) u.s2km=(u.s2km||0)+25; if(h("g64")) u.s2km=(u.s2km||0)+30;
+        if(wkP){ u.s2wkP=wkP; u.s2wkH=wkH; } if(h("p52")) u.s2cc=1;
+        /* 보류였던 발전: 보조 배터리(마법 공격력 · 시전 후 마나 고정) · 고슴도치(치명타 피해 반사) · 보석 건틀릿(치명타 확률 · 스킬 치명타) */
+        if(h("s49")||h("g69")){ u.s1ma=(u.s1ma||0)+(h("s49")?10:0)+(h("g69")?20:0); u.s2bat=h("g69")?15:10; }
+        if(h("s34")||h("g73")){ u.s2hg=[]; if(h("s34")) u.s2hg.push(["s34",[50,70,90,110][stg]]); if(h("g73")) u.s2hg.push(["g73",[85,105,125,145][stg]]); }
+        if(h("g75")){ u.crit=(u.crit||0)+25; u.s1skCrit=true; u.s2gm=1; if(u._s1){ const ov=Math.max(0,u.crit-100), dd=ov-(u._s1ovC||0); if(dd>0){ u.cdAdd=(u.cdAdd||0)+dd*0.5; u._s1ovC=ov; } } } }
+      if(shP) for(const u of U) if(!near(u)) AC.tShield(B,u,u.maxHp*shP/100,10);
+    } }catch(e){ console.error("S2 발전",e); } return r; };
+
+  /* ---- 공격력(평면) ---- */
+  const oAN=AC.atkNow; AC.atkNow=function(B,u){ const v=oAN.apply(AC,arguments); return u&&u.s2fa?v+u.s2fa:v; };
+
+  /* ---- 전투 중 틱: 매초 마나 · 10초 최후의 저항 · 15초 초월 ---- */
+  const oBS=AC.battleStep; AC.battleStep=function(B){ const r=oBS.apply(AC,arguments); try{ if(!B||!B.units||!B.Sref) return r; const e=el(B); if(e<1) return r; const k=Math.floor(e);
+    if(k>(B.s2k||0)){ const n=k-(B.s2k||0); B.s2k=k; for(let i=0;i<n;i++) for(const u of B.units) if(u.alive&&u.s2mr&&AC.s1MGain) AC.s1MGain(B,u,u.s2mr); }
+    B.s2fire=B.s2fire||{};
+    for(const side of ["me","ai"]){ const S=B.Sref[side]; if(!S||!(S.s1aug||[]).length) continue;
+      if(e>=10&&!B.s2fire[side+"L"]){ B.s2fire[side+"L"]=1; const p=(has(S,"s46")?40:0)+(has(S,"g66")?60:0); if(p) for(const u of B.units) if(u.alive&&u.side===side&&!u.mon&&!u.golem&&!u.clone&&u.hp<u.maxHp) AC.heal(B,u,(u.maxHp-u.hp)*Math.min(100,p)/100,"s2last"); }
+      if(e>=15&&!B.s2fire[side+"T"]){ B.s2fire[side+"T"]=1; if(has(S,"g78")) for(const u of B.units) if(u.alive&&u.side===side&&!u.mon&&!u.golem&&!u.clone){ u.ampAll=(u.ampAll||0)+50; B.events.push({k:"fx",b:u.uid,txt:"초월 +50%",cls:"buff"}); } } }
+  }catch(e){ console.error("S2 발전 틱",e); } return r; };
+
+  /* ---- 이동 속도 ---- */
+  const oSS=AC.skStep; AC.skStep=function(B,dt){ for(const u of B.units) if(u.alive&&u.s2mv&&u.mv>0) u.mv-=(dt||0.05)*u.s2mv/100; return oSS.apply(AC,arguments); };
+
+  /* ---- 처치: 신속 연사(마나) · 꾸준함(영구 공격력) ---- */
+  const oK=AC.kill; AC.kill=function(B,t,a){ const al=t&&t.alive; const r=oK.apply(AC,arguments); try{ if(al&&t&&!t.alive&&a&&a.uid&&a.side!==t.side&&!a.mon&&!a.clone&&!a.golem){
+      if(a.alive&&a.s2km&&AC.s1MGain) AC.s1MGain(B,a,a.s2km);
+      if(a.s2ki){ a.s2fa=(a.s2fa||0)+a.s2ki; const src=B.refs&&B.refs[a.uid]; if(src&&B.persist!==false) src.s2st=(src.s2st||0)+a.s2ki; B.events.push({k:"fx",b:a.uid,txt:"공격력 +"+a.s2ki,cls:"buff"}); } } }catch(e){} return r; };
+
+  /* ---- 약점 공격: 5초간 대상 방어력 일부 무시 + 회복 감소 ---- */
+  const oCH=AC.calcHit; AC.calcHit=function(B,a,t,coef,crit,sk){ let d=0; try{ if(a&&a.s2wkP&&t&&t.alive&&a.side!==t.side){ if(!(t.s2wkU>B.t)){ t.s2wkP=0; t.s2wkH=1; } t.s2wkU=B.t+5; t.s2wkP=Math.max(t.s2wkP||0,a.s2wkP); t.s2wkH=Math.min(t.s2wkH||1,a.s2wkH); }
+      if(a&&!a.mag&&t&&t.s2wkU>B.t&&t.s2wkP){ d=(t.def||0)*Math.min(100,t.s2wkP)/100; t.def-=d; } }catch(e){ d=0; }
+    try{ return oCH.apply(AC,arguments); } finally{ if(d) t.def+=d; } };
+  const oHL=AC.heal; AC.heal=function(B,u,n,id){ if(u&&u.s2wkU>B.t&&u.s2wkH<1&&n>0) arguments[2]=n*u.s2wkH; return oHL.apply(AC,arguments); };
+
+  /* ---- 구급상자: 받는 회복·보호막 증가 (heal/addShield 공통 배율 hsMul에 합산) ---- */
+  const oHS=AC.hsMul; AC.hsMul=function(B,side){ let v=oHS.apply(AC,arguments); try{ const S=B&&B.Sref&&B.Sref[side]; if(S&&(S.s1aug||[]).length){ const p=(has(S,"s43")?25:0)+(has(S,"g71")?35:0); if(p) v+=p/100; } }catch(e){} return v; };
+
+  /* ---- 반제곱방어부스터: 전투 시작 15초 군중 제어 면역 (브브 광전사와 같은 CC 묶음) ---- */
+  const CCK={stun:1,air:1,slow:1,freeze:1,conf:1,petr:1};
+  const oDb=AC.debuff; AC.debuff=function(B,t,kind,fn){ if(t&&t.s2cc&&CCK[kind]&&el(B)<15){ B.events.push({k:"fx",b:t.uid,txt:"면역",cls:"imm"}); return false; } return oDb.apply(AC,arguments); };
+
+  /* ---- 라운드 시작: 천리 길 경험치 · 승부조작 ---- */
+  const rs=(st,S)=>{ if(has(S,"p55")) AC.addXp(S,5);
+    if(has(S,"p53")&&AC.s1NcHealP) AC.s1NcHealP(st,S,3);
+    if(S.s2egg&&!S.s2egg.done&&st.round>S.s2egg.r0){ const g=S.s2egg; g.n+=1+(S.lastWin===true?1:0); if(g.n>=g.need) eggHatch(st,S); }
+    if(has(S,"g72")){ const lost=S.lastWin===false||(S===st.me&&st.last&&st.last.round===st.round-1&&st.last.won===false); if(lost){ S.gold+=2; AC.buf(S).free+=1; } } };
+  const oNR=AC.nextRound; AC.nextRound=function(st){ const r=oNR.apply(AC,arguments); try{ if(st&&st.phase==="prep"&&st.s2augRS!==st.round){ st.s2augRS=st.round; for(const S of allS(st)) if((S.s1aug||[]).length) rs(st,S); } }catch(e){ console.error(e); } return r; };
+
+  /* ---- 파죽지세: 연승/연패 보너스 골드 2배 (income 호출은 nextRound 안: 골드·연속 값으로 플레이어 식별 · S1 이자 발전과 같은 방식) ---- */
+  let incQ=null; const oIn=AC.income; AC.income=function(gold,streak,won){ let v=oIn.apply(AC,arguments); try{ if(incQ){ const i=incQ.findIndex(S=>S.gold===gold&&S.streak===streak); if(i>=0){ const S=incQ.splice(i,1)[0]; if(has(S,"s44")) v+=AC.streakGold(streak); } } }catch(e){} return v; };
+  const oNR2=AC.nextRound; AC.nextRound=function(st){ try{ incQ=st?allS(st).filter(S=>has(S,"s44")):null; return oNR2.apply(AC,arguments); } finally{ incQ=null; } };
+
+  /* ---- 천리 길: 사람 플레이어는 골드로 XP 구매 불가 (봇은 구매 루프가 막히지 않게 영향 없음 · 봇은 이 발전을 고르지 않음) ---- */
+  let hpBuy=0; const oBX=AC.buyXp; AC.buyXp=function(S){ if(!hpBuy&&S&&AC.st&&S===AC.st.me&&has(S,"p55")) return "천리 길: 골드로 레벨 업할 수 없습니다"; return oBX.apply(AC,arguments); };
+  const oBot=AC.s1AugBot; if(oBot) AC.s1AugBot=function(st,S,c){ const i=oBot.apply(AC,arguments); if(c.op[i]==="p55"||c.op[i]==="p53"||c.op[i]==="p54"){ const j=c.op.findIndex(x=>x!=="p55"&&x!=="p53"&&x!=="p54"); if(j>=0) return j; } return i; };
+
+  /* ================= 보류였던 9종 구현 (사용자 답변 pt1789u) ================= */
+  const adj1=(x,t)=>Math.max(Math.abs(Math.round(x.R)-Math.round(t.R)),Math.abs(Math.round(x.C)-Math.round(t.C)))<=1;
+  const plOf=(st,S)=>st&&st.players?st.players.find(p=>p.S===S):null;
+
+  /* ---- 보석 건틀릿(스킬 고정 피해 치명타) + 고슴도치(치명타를 입으면 주변 적에게 마법 피해) ---- */
+  const oAD=AC.applyDmg; AC.applyDmg=function(B,a,t,d,o){
+    try{ if(o&&o.s2fix&&a&&a.s2gm&&a.s1skCrit&&!a.s1nocrit&&t&&t.alive&&d>0&&(a.crit||0)>0&&AC.rnd(B)*100<a.crit){
+        const m=((a.s&&a.s.cdmg)||C.critDmg)+(a.cdAdd||0), d0=Math.max(1,Math.round(d)); let ev=null;
+        for(let i=B.events.length-1,n=0;i>=0&&n<12;i--,n++){ const e=B.events[i]; if(e.k==="hit"&&e.a===a.uid&&e.b===t.uid){ if(!e.crit&&e.d===d0) ev=e; break; } }
+        d=d*m/100; arguments[3]=d; a._s1cr={uid:t.uid,c:true,t:B.t}; if(ev){ ev.crit=true; ev.d=Math.max(1,Math.round(d)); } } }catch(e){}
+    const r=oAD.apply(this,arguments);
+    try{ if(t&&t.s2hg&&a&&a.side!==t.side&&t.alive&&r>0&&!(o&&o.id==="s2hog")){
+        let crit=!!(a._s1cr&&a._s1cr.uid===t.uid&&a._s1cr.c&&a._s1cr.t===B.t);
+        if(!crit&&o&&(o.basic||(typeof o.id==="string"&&o.id.indexOf("sk:")===0))){ for(let i=B.events.length-1,n=0;i>=0&&n<12;i--,n++){ const e=B.events[i]; if(e.k==="hit"&&e.a===a.uid&&e.b===t.uid){ crit=!!e.crit&&!e.dodge; break; } } }
+        if(crit) for(const [id,v] of t.s2hg){ const key="s2hgT"+id; if(B.t-(t[key]===undefined?-9:t[key])<1) continue;
+          const F=B.units.filter(x=>x.alive&&x.side!==t.side&&!x.untg&&adj1(x,t)); if(!F.length) continue; t[key]=B.t;
+          for(const x of F){ if(!x.alive) continue; const dd=v*100/(100+Math.max(0,x.res||0)); B.events.push({k:"hit",mg:1,a:t.uid,b:x.uid,d:Math.max(1,Math.round(dd)),crit:false,sk:true,s2hog:1}); AC.applyDmg(B,t,x,dd,{id:"s2hog"}); } } } }catch(e){}
+    return r; };
+
+  /* ---- 보조 배터리: 스킬 시전 직후 현재 마나를 10(I)/15(II)로 (모든 시전은 AC.s1MUse를 거침) ---- */
+  const oMU=AC.s1MUse; if(oMU) AC.s1MUse=function(u){ const r=oMU.apply(AC,arguments); try{ if(r&&u&&u.s2bat&&u.s1mMax>0) u.mana=u.s2bat; }catch(e){} return r; };
+
+  /* ---- 악마의 계약: 경험치를 골드 대신 체력 6으로 (4경험치 · 체력이 6 이하면 구매 불가) ---- */
+  const oBX2=AC.buyXp; AC.buyXp=function(S){ const st=AC.st;
+    if(S&&st&&S===st.me&&has(S,"p53")){ if(S.level>=C.maxLevel) return oBX2.apply(AC,arguments);
+      const p=plOf(st,S), hp=p?p.hp:st.hp; if(!(hp>6)) return "체력이 부족합니다 (악마의 계약: 체력 6 필요)";
+      const k=AC.s1XpCut?AC.s1XpCut(S):0, c0=C.xpBuyCost; let r; C.xpBuyCost=k; hpBuy++; try{ r=oBX2.apply(AC,arguments); } finally{ hpBuy--; C.xpBuyCost=c0; }
+      if(!r){ if(p){ p.hp-=6; st.hp=p.hp; } else st.hp-=6; } return r; }
+    return oBX2.apply(AC,arguments); };
+
+  /* ---- 특혜: 상점 확률을 (플레이어 레벨+1) 기준으로 ---- */
+  const oRO=AC.rollOne; if(oRO) AC.rollOne=function(st,level,S){ if(S&&has(S,"p57")&&level>=1) arguments[1]=Math.min(C.odds.length,level+1); return oRO.apply(AC,arguments); };
+
+  /* ---- 왕관의 무게: 패배 시 전략가가 받는 피해 100% 증가 (FFA PvP · 1v1 PvP · PvE) ---- */
+  const oDO=AC.dmgOf; if(oDO) AC.dmgOf=function(B,st){ let n=oDO.apply(AC,arguments); try{ const S=B&&B.Sref&&B.Sref[B.winner==="me"?"ai":"me"]; if(S&&has(S,"p54")) n*=2; }catch(e){} return n; };
+  const oAR=AC.applyResult; AC.applyResult=function(st,B){ const sv=[C.lossBase,C.lossPerUnit,C.pveLossBase,C.pveLossPerMon]; let dbl=0;
+    try{ if(st&&!AC.isFfa(st)&&B&&st.me&&has(st.me,"p54")){ if(AC.isPve(st)){ C.pveLossBase*=2; C.pveLossPerMon*=2; dbl=1; } else if(B.winner!=="me"){ C.lossBase*=2; C.lossPerUnit*=2; dbl=1; } } }catch(e){}
+    try{ return oAR.apply(AC,arguments); } finally{ if(dbl){ C.lossBase=sv[0]; C.lossPerUnit=sv[1]; C.pveLossBase=sv[2]; C.pveLossPerMon=sv[3]; } } };
+  const oFR=AC.ffaResolve; if(oFR) AC.ffaResolve=function(st,myB){ let extra=0, p=null;
+    try{ if(st&&st.players&&myB&&AC.isPve(st)&&has(st.me,"p54")){ p=plOf(st,st.me); if(p&&p.alive!==false){ const won=myB.winner==="me"||(C.pveSafeRounds.includes(st.round)&&myB.units.some(u=>u.alive&&u.side==="me")); if(!won){ const left=myB.units.filter(u=>u.alive&&u.side==="ai").length; extra=C.pveLossBase+C.pveLossPerMon*left; p.hp-=extra; } } } }catch(e){ extra=0; }
+    const r=oFR.apply(AC,arguments); try{ if(extra&&st.last&&st.last.pve) st.last.loss+=extra; if(extra&&p) st.hp=p.hp; }catch(e){} return r; };
+
+  /* ---- 무지개 펫 알: 11턴 부화(PvP 승리 시 +1턴 가속) · 8종 보상 풀 ---- */
+  const EGG=[
+   [10,"인원 배치 +1, 75골드",[["cap",1],["gold",75]]],
+   [15,"인원 배치+2, 망자의 묵주 2개, 20골드",[["cap",2],["g","i33",2],["gold",20]]],
+   [10,"토벌의 반지, 저주의 반지, 샐러맨더의 반지, 기합의 반지, 20골드",[["g","r15"],["g","r13"],["g","r12"],["g","r11"],["gold",20]]],
+   [10,"지옥쌍검 3개, 챔피언 복제기, 자석 제거기 2개, 15골드",[["g","a6",3],["it","hi",1],["it","rm",2],["gold",15]]],
+   [15,"인원 배치 +1, 고급 영웅 복제기, 망자의 묵주, 묘비지기의 묵주, 15골드",[["cap",1],["it","hi",1],["g","i33"],["g","m33"],["gold",15]]],
+   [15,"신화 장비 1개, 유물 1개, 완성 장비 1개, 5코스트 기물 2개, 장비 제거기, 20골드",[["pool","myth",1],["pool","acc",1],["pool","items",1],["h5",2],["it","rm",1],["gold",20]]],
+   [10,"인원배치 +1, 고급 영웅 복제기 2개, 카론, 밀리아, 지크, 란드그리드, 15골드",[["cap",1],["it","hi",2],["hn","카론"],["hn","밀리아"],["hn","지크"],["hn","란드그리드"],["gold",15]]],
+   [15,"신화 장비 2개, 장비 제거기 2개, 5코스트 기물 4개, 20골드",[["pool","myth",2],["it","rm",2],["h5",4],["gold",20]]]
+  ];
+  const eggGrant=(st,S,idx)=>{ const R=EGG[idx], I=AC.items(S);
+    for(const q of R[2]){ const k=q[0];
+      if(k==="gold") S.gold+=q[1]; else if(k==="cap") S.s1cap=(S.s1cap||0)+q[1];
+      else if(k==="g") AC.s1Give(S,q[1],q[2]||1);
+      else if(k==="it") I[q[1]]=(I[q[1]]||0)+q[2];
+      else if(k==="pool"){ const L2=(S1DATA[q[1]]||[]).slice(); for(let i=0;i<q[2]&&L2.length;i++){ const j=Math.floor(AC.rnd(st)*L2.length); AC.s1Give(S,L2.splice(j,1)[0].id,1); } }
+      else if(k==="h5"){ const got=[]; for(let i=0;i<q[1];i++){ const no=AC.pickHero(st,5,got); if(no==null) break; got.push(no); gain(st,S,no); } }
+      else if(k==="hn"){ const h=AC.heroes().find(x=>String((AC.hero(x.no)||{}).name).replace(/\u200B/g,"")===q[1]); if(h) gain(st,S,h.no); } }
+    return R[1]; };
+  const eggHatch=(st,S,forceIdx)=>{ const g=S.s2egg; if(!g||g.done) return; let idx=forceIdx;
+    if(idx==null){ let q=AC.rnd(st)*100; idx=0; for(let i=0;i<EGG.length;i++){ q-=EGG[i][0]; if(q<0){ idx=i; break; } idx=i; } }
+    g.done=1; g.n=g.need; g.res=eggGrant(st,S,idx);
+    if(S===st.me&&AC.msg) AC.msg("🐣 무지개 펫 알 부화! "+g.res); };
+  AC.s2EggHatch=eggHatch; AC.s2EggN=EGG.length;
+
+  /* ---- 화면: 악마의 계약(경험치 버튼 체력 6) · 특혜(확률표) · 무지개 펫 알(진행 바) · 발전 카드 줄바꿈 ---- */
+  try{ if(!document.getElementById("s2augcss")){ const sty=document.createElement("style"); sty.id="s2augcss"; sty.textContent="[data-s1augpop] .s1pkb small{white-space:pre-line}"; document.head.appendChild(sty); } }catch(e){}
+  const oRD=AC.render; if(oRD) AC.render=function(){ const r=oRD.apply(AC,arguments);
+    try{ const st=AC.st, S=st&&st.me; if(S&&(S.s1aug||[]).length&&st.phase!=="over"){ const root=document.getElementById("acRoot"); if(!root) return r;
+        if(has(S,"p53")){ root.querySelectorAll('[data-acdo="xp"]').forEach(b=>{ const c=b.querySelector(".c"); if(c) c.textContent="❤6"; b.title="악마의 계약: 체력 6으로 경험치 +"+(C.xpBuyAmount||4)+" 구매"; }); }
+        if(has(S,"p57")){ const lv=Math.min(C.odds.length,(S.level||1)+1), od=C.odds[lv-1]; root.querySelectorAll(".acsb-odds").forEach(e=>{ if(od){ e.innerHTML=od.map((p,i)=>`<i class="tier${i+1}"><em>•</em>${p}%</i>`).join(""); e.title="특혜: 레벨 "+lv+" 확률로 상점이 나옵니다"; } }); }
+        root.querySelectorAll("[data-s2egg]").forEach(e=>e.remove());
+        if(S.s2egg){ const g=S.s2egg, an=root.querySelector(".a-board"); if(an){ const d=document.createElement("div"); d.className="s1ncbar"; d.setAttribute("data-s2egg","");
+            d.textContent=g.done?"🐣 무지개 펫 알 부화 완료 · "+g.res:"🥚 무지개 펫 알 "+Math.min(g.n,g.need)+"/"+g.need+" 턴 (PvP 승리 시 +1턴 가속)"; d.title=d.textContent; an.insertBefore(d,an.firstChild); } } } }catch(e){}
+    return r; };
+}catch(e){ console.warn("S2 발전 개선표",e); } })();
 
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
