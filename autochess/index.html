@@ -1602,7 +1602,7 @@
 
 <div id="tab-ac" class="hidden">
 <section id="acSec">
-  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.10v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
+  <h2>오토체스 <span class="muted" style="font-size:12px;font-weight:400">2.3.11v</span> <button type="button" id="acSimBtn" class="acsimbtn" data-acsimbtn>🧪 시뮬레이션</button></h2>
   <div id="acRoot"></div>
 </section>
 </div>
@@ -14785,6 +14785,123 @@ window.S2FLD=function(d){ return 3+d*0.02; };
             d.textContent=g.done?"🐣 무지개 펫 알 부화 완료 · "+g.res:"🥚 무지개 펫 알 "+Math.min(g.n,g.need)+"/"+g.need+" 턴 (PvP 승리 시 +1턴 가속)"; d.title=d.textContent; an.insertBefore(d,an.firstChild); } } } }catch(e){}
     return r; };
 }catch(e){ console.warn("S2 발전 개선표",e); } })();
+
+</script>
+<script>
+/* ===== 봇 장비 배정 — 시즌2 데이터 (역할군별 장비 목록 · 개별 영웅 예외). 엔진: s2botgear.js (시즌 id로 이 설정을 찾음)
+   새 시즌: ① AC.botGearCfg["<새 시즌 id>"] 를 추가(역할군 키가 같으면 lists/tier를 AC.botGearDefault 로 재사용, 영웅 이름 예외만 heroes에) ② 영웅의 역할군은 AC_CONFIG.heroRole 로 지정 ③ 빌드에 이 파일과 엔진을 넣음 ===== */
+(function(){ if(typeof AC==="undefined") return;
+  /* 역할군별 장비 목록 (앞이 우선순위 높음 · 배열은 "또는": 둘 중 하나만) */
+  const TANK=["i16","i15","i35","i21","i20","i19","i31","i23","i24","i17","i22","i18"];   /* 히드라 비늘/드래곤 비늘/대현자의 로브/우마왕의 갑옷/여제의 갑옷/황혼망토/신전사제의 장신구/수정룡의 의복/대마법사의 망토/푸른 밤의 거울/마법사의 수정/밤의 수호자 방패 */
+  const MAGE=["i4","i27","i29","i30","i26","i6","i28","i1"];                                  /* 히드라 검/대마법사의 머리핀/보석 여의보주/마법 응축 수정구/파괴신의 가면/금강전/현자의 기록판/거인 학살자 */
+  const LIST={
+    "s1_공암살자":["i2","i32","i7","i25","i3","i34"],
+    "s1_마암살자":["i29","i30","i34","i27"],
+    "s1_공원딜":["i11","i14","i10","i0","i1","i8"],
+    "s1_마원딜":MAGE, "s1_마마법사":MAGE,
+    "s1_공마법사":["i4","i30",["i29","i7"],"i32","i11","i1","i0"],
+    "s1_마전사":["i13","i17","i9","i12","i23","i26","i0","i25","i22"],
+    "s1_공전사":["i3","i5","i9","i2","i34","i32","i25"],
+    "t_공탱커":TANK, "t_마탱커":TANK };
+  const TIER={"s1_공암살자":0,"s1_마암살자":0,"s1_공원딜":0,"s1_마원딜":0,"s1_마마법사":0,"s1_공마법사":0,"s1_마전사":1,"s1_공전사":1,"t_공탱커":2,"t_마탱커":2};   /* 딜러 → 전사 → 탱커 */
+  AC.botGearDefault={ lists:LIST, tier:TIER };
+  AC.botGearCfg=AC.botGearCfg||{};
+  AC.botGearCfg.s2=Object.assign({},AC.botGearDefault,{ heroes:{ "팔라누스":["i11","i8","i25","i27","i28"] } });   /* 팔라누스: 여제의 창/황혼의 쌍검/용의 수호/대마법사의 머리핀/현자의 기록판 */
+})();
+/* ===== 시즌2 봇 장비 배정 (시즌 설정이 있는 시즌에서만 · 어려움/악몽/지옥(itemsSmart)만 · 쉬움/보통은 기존 s1BotGear 그대로)
+   봇이 받는 장비의 수·종류는 그대로, 장착 대상·조합만 역할군 목록 기준으로 결정. 완성 장비·신화 변환만 대상(유물·장신구·상징·신화 장비는 기존 방식). 망자의 묵주·묘비지기의 묵주는 장착하지 않음. */
+(function(){ try{
+  if(typeof AC==="undefined"||typeof AC.s1BotGear!=="function"||!AC.s1G||!AC.s1Recipe||!AC.s1MythConvHero) return;
+  const G=AC.s1G, RC=AC.s1Recipe, MYB={}; ((typeof S1DATA!=="undefined"&&S1DATA.myth)||[]).forEach(m=>MYB[m.base]=m.id);
+  const oBG=AC.s1BotGear;
+  /* 시즌 설정: AC.botGearCfg[시즌id] = { lists:{역할군키:[장비 id...]}, tier:{역할군키:0딜러|1전사|2탱커}, heroes:{영웅 이름:[장비 id...]}, noGear:[...], cap, force } — 데이터는 s2botgear_data.js 처럼 시즌별 파일에 둠 */
+  const CFG=(AC.botGearCfg||{})[AC.seasonId]; if(!CFG) return;
+  const LIST=CFG.lists||{}, TIER=CFG.tier||{}, HERO=CFG.heroes||{};
+  const NOGEAR=new Set(CFG.noGear||["i33","m33"]);
+  const CAP=CFG.cap||4, FORCE=CFG.force||25;
+  const nm=u=>String((AC.hero(u.no)||{}).name||"").replace(/\u200B/g,"");
+  const listOf=u=>HERO[nm(u)]||LIST[AC.roleKey(u.no)]||null;
+  const base=x=>(G[x]&&G[x].base)||x, isItem=x=>G[x]&&G[x].k==="item", isComp=x=>G[x]&&G[x].k==="comp";
+  const fieldOf=u=>u.loc&&u.loc[0]==="f";
+  const diffOf=(st,S)=>{ let d=st.diff; if(st.players){ const p=st.players.find(x=>x.S===S); if(p&&p.diff!=null) d=p.diff; } return AC_CONFIG.difficulty[d==null?1:d]; };
+  const hasRos=u=>(u.gear||[]).some(x=>NOGEAR.has(x)), pendOf=u=>(u.gear||[]).find(isComp);
+  const owns=(u,id)=>(u.gear||[]).some(x=>base(x)===id);
+  /* 지옥 적응: 상대(남은 다른 플레이어) 필드의 물리/마법 비중 → 방어력/마법 저항 장비를 앞으로 */
+  const foeKind=(st,S)=>{ try{ const L=st.players?st.players.filter(p=>p.alive&&p.S!==S).map(p=>p.S):[st.me&&st.me!==S?st.me:st.ai]; let m=0,p=0;
+      for(const T of L){ if(!T) continue; for(const u of T.units){ if(u.pend||!fieldOf(u)) continue; const r=AC.role(u.no), w=(AC.tierNo(u.no)||1)*(1+(u.t||0)*0.15); if(!r) continue; if(r.dmg==="magic") m+=w; else p+=w; } }
+      if(m+p<=0) return null; const s=m/(m+p); return s>=0.6?"magic":s<=0.4?"phys":null; }catch(e){ return null; } };
+  const defTier=(id,kind)=>{ if(!kind) return 1; const s=(G[id]&&G[id].st)||{}, d=s.def||0, r=s.res||0; return (kind==="phys"?d>r:r>d)?0:1; };
+  const listFor=(u,kind)=>{ const L=listOf(u); if(!L) return null; if(!kind) return L; return L.map((e,i)=>({e,i,t:defTier(Array.isArray(e)?e[0]:e,kind)})).sort((a,b)=>a.t-b.t||a.i-b.i).map(x=>x.e); };
+  const entryOwned=(u,e)=>Array.isArray(e)?e.some(x=>owns(u,x)):owns(u,e);
+  const cands=e=>Array.isArray(e)?e:[e];
+  const use=(st,S,id,u)=>!AC.useItem(st,S,"g:"+id,u.uid);
+  /* 한 유닛에서 id를 지금 가진 재료·장비로 만들 수 있는지 → 실행 함수 반환 */
+  const route=(st,S,u,id)=>{ const I=AC.items(S), c=x=>I["g:"+x]||0, g=u.gear||(u.gear=[]); if(hasRos(u)||owns(u,id)) return null; const pend=pendOf(u), rec=G[id].rec;
+    if(c(id)>0&&g.length<3) return ()=>use(st,S,id,u);
+    if(!rec) return null;
+    if(pend){ if(pend!==rec[0]&&pend!==rec[1]) return null; const o=pend===rec[0]?rec[1]:rec[0]; return c(o)>0?()=>use(st,S,o,u):null; }
+    if(g.length>=3) return null;
+    const [a,b]=rec; if(a===b?c(a)>=2:(c(a)>0&&c(b)>0)) return ()=>use(st,S,a,u)&&use(st,S,b,u);
+    return null; };
+  const ordered=S=>S.units.filter(u=>!u.pend&&listOf(u)).sort((a,b)=>TIER[AC.roleKey(a.no)]-TIER[AC.roleKey(b.no)]||(fieldOf(b)-fieldOf(a))||AC.score(b)-AC.score(a));
+  const rankOf=U=>{ const m=new Map(); U.forEach((u,i)=>m.set(u,i)); return m; };
+  /* 1) 같은 역할군에서 더 높은 영웅(필드·코스트·초월)이 빈 칸이 있으면, 낮은 영웅이 낀 '목표 장비'를 물려줌 (목표 외 장비는 건드리지 않음) */
+  const transfer=(st,S,U,kind)=>{ const R=rankOf(U); let n=0;
+    for(const hi of U){ const L=listFor(hi,kind); for(const lo of U){ if(R.get(lo)<=R.get(hi)||AC.roleKey(lo.no)!==AC.roleKey(hi.no)||hasRos(hi)) continue;
+      for(let guard=0;guard<3;guard++){ if((hi.gear||(hi.gear=[])).length>=3) break; let best=-1,bi=-1;
+        (lo.gear||[]).forEach((x,i)=>{ if(!isItem(x)&&!(G[x]&&G[x].k==="myth")) return; const b=base(x); if(NOGEAR.has(x)||owns(hi,b)) return; const k=L.findIndex(e=>cands(e).includes(b)); if(k>=0&&(best<0||k<best)){ best=k; bi=i; } });
+        if(bi<0) break; hi.gear.push(lo.gear.splice(bi,1)[0]); n++; AC._csl=null; } } }
+    return n; };
+  /* 2) 목록 우선순위대로, 지금 만들 수 있는 장비를 먼저 장착 */
+  const allocate=(st,S,U,kind)=>{ let n=0;
+    for(const u of U){ if(hasRos(u)) continue; const L=listFor(u,kind);   /* 앞 영웅부터 3칸이 찰 때까지 (딜러→전사→탱커, 같은 역할군은 코스트·초월 높은 순) */
+      for(let guard=0;guard<8;guard++){ let did=false;
+        for(const e of L){ if(entryOwned(u,e)) continue; let f=null; for(const id of cands(e)){ f=route(st,S,u,id); if(f) break; } if(f&&f()!==false){ did=true; n++; break; } }
+        if(!did) break; } }
+    return n; };
+  /* 3) 인벤토리 재료가 4개를 넘으면 목표 장비를 만드는 재료부터 먼저 장착해 둠 (짝이 오면 완성) */
+  const trim=(st,S,U,kind)=>{ const I=AC.items(S), comps=()=>Object.keys(I).filter(k=>k.startsWith("g:")&&isComp(k.slice(2))).reduce((s,k)=>s+(I[k]||0),0); let n=0;
+    while(comps()>CAP){ let done=false;
+      for(const u of U){ if(hasRos(u)||pendOf(u)||(u.gear||[]).length>=3) continue;
+        for(const e of listFor(u,kind)){ if(entryOwned(u,e)) continue; const r=G[cands(e)[0]].rec||[]; const c=r.find(x=>(I["g:"+x]||0)>0); if(c&&use(st,S,c,u)){ done=true; n++; break; } } if(done) break; }
+      if(!done) break; }
+    return n; };
+  /* 4) 25라운드부터: 남은 재료·완성 장비를 남은 칸에 강제 장착 (묵주는 만들지/끼지 않음, 같은 장비 중복 최소화) */
+  const force=(st,S,U,kind)=>{ const I=AC.items(S); let n=0, prog=true;
+    const comps=()=>Object.keys(I).filter(k=>k.startsWith("g:")&&(I[k]||0)>0&&isComp(k.slice(2))).map(k=>k.slice(2));
+    while(prog){ prog=false;
+      for(const c of comps()){ let ok=false;
+        for(const u of U){ const p=pendOf(u); if(!p||hasRos(u)) continue; const r=RC[[p,c].sort().join("+")]; if(r&&!NOGEAR.has(r)&&!owns(u,r)&&use(st,S,c,u)){ ok=true; break; } }
+        if(!ok) for(const u of U){ if(hasRos(u)||pendOf(u)||(u.gear||[]).length>=3) continue; if(use(st,S,c,u)){ ok=true; break; } }
+        if(ok){ prog=true; n++; break; } } }
+    for(const k of Object.keys(I).filter(k=>k.startsWith("g:")&&(I[k]||0)>0&&isItem(k.slice(2))&&!NOGEAR.has(k.slice(2)))){ const id=k.slice(2);
+      while((I[k]||0)>0){ let ok=false;
+        for(const pass of [1,2]) { for(const u of U){ if(hasRos(u)||(u.gear||[]).length>=3||owns(u,id)) continue; if(pass===1&&!listFor(u,kind).some(e=>cands(e).includes(id))) continue; if(use(st,S,id,u)){ ok=true; break; } } if(ok) break; }
+        if(!ok) break; n++; } }
+    return n; };
+  /* 5) 신화 변환(mc): 목록에 있는 완성 장비를 낀 영웅 중 역할군 우선순위(딜러→전사→탱커, 코스트·초월 높은 순)가 높은 영웅에게, 그 영웅의 목록 우선순위가 높은 장비를 변환 */
+  const myth=(st,S,U,kind)=>{ const I=AC.items(S); let n=0;
+    while(I.mc>0){ let tu=null, tj=-1;
+      for(const u of U){ const L=listFor(u,kind); let best=-1,bj=-1; (u.gear||[]).forEach((x,j)=>{ if(!isItem(x)||!MYB[x]||NOGEAR.has(x)) return; const k=L.findIndex(e=>cands(e).includes(x)); if(k>=0&&(best<0||k<best)){ best=k; bj=j; } }); if(bj>=0){ tu=u; tj=bj; break; } }
+      if(!tu&&st.round>=FORCE){ for(const u of S.units){ if(u.pend) continue; const j=(u.gear||[]).findIndex(x=>isItem(x)&&MYB[x]&&!NOGEAR.has(x)); if(j>=0){ tu=u; tj=j; break; } } }
+      if(!tu) break; const before=I.mc; AC.s1MythConvHero(S,tu,()=>tj); if(I.mc>=before) break; n++; }
+    return n; };
+  /* 유물·장신구·상징·신화 장비: 기존 방식 그대로 (필드 먼저·코스트 높은 영웅부터 첫 성공) */
+  const legacy=(st,S)=>{ const I=AC.items(S); const F=()=>S.units.filter(u=>!u.pend).sort((a,b)=>(b.loc[0]==="f")-(a.loc[0]==="f")||AC.score(b)-AC.score(a));
+    for(const k of Object.keys(I).filter(k=>k.startsWith("g:"))){ const id=k.slice(2); if(!G[id]||isItem(id)||isComp(id)||NOGEAR.has(id)) continue;
+      while(I[k]>0){ let ok=false; for(const u of F()){ if(!AC.useItem(st,S,k,u.uid)){ ok=true; break; } } if(!ok) break; } } };
+  AC.botGearLog=[];
+  AC.s1BotGear=function(st,S){ let D=null; try{ D=diffOf(st,S); }catch(e){}
+    if(!D||!D.itemsSmart) return oBG.apply(AC,arguments);   /* 쉬움·보통: 기존 방식 */
+    try{
+      const I0=AC.items(S); for(const k of ["bxItem","bxAcc"]) while((AC.items(S)[k]||0)>0) AC.s1OpenBox(st,S,k);
+      const kind=D.id==="hell"?foeKind(st,S):null, U=ordered(S), log={r:st.round,d:D.id,kind};
+      log.tr=transfer(st,S,U,kind); log.al=allocate(st,S,U,kind); log.tm=trim(st,S,U,kind); log.al2=allocate(st,S,U,kind);
+      if(st.round>=FORCE) log.fo=force(st,S,U,kind);
+      log.my=myth(st,S,U,kind); legacy(st,S);
+      AC.botGearLog.push(log); if(AC.botGearLog.length>60) AC.botGearLog.shift();
+    }catch(e){ console.warn("봇 장비 배정",e); return oBG.apply(AC,arguments); } };
+}catch(e){ console.warn("봇 장비 배정 로드",e); } })();
 
 </script>
 <script>/* S2 시각 전용 (0.12.x): 전투 중 격자 숨김 · 칸 이동 보간 · 필드 초상화 78% — 로직 무관 */
