@@ -8443,7 +8443,8 @@ window.S3SYN0={"FAC": ["일렉트로닉", "신스팝", "고스", "데스페라�
 (function(){ let s; try{ s=localStorage.getItem("7kr_ac_season"); }catch(e){} if(s!=="s3") return;
   const X=window.S3SYN0, R=window.S3ROSTER_RAW, ro=window.S2ROLE_MAP, art=window.S2ART, fbRole=[], fbArt=[], nro={}, nart={};
   const alias={"엘리스":"앨리스","손오공":"오공"};
-  R.forEach(([t,n])=>{ if(ro[n]) nro[n]=ro[n]; else { const k=S1ROLES.H[n]||S1ROLES.H[alias[n]]; if(k) nro[n]=k; else { nro[n]="공전사"; fbRole.push(n); } }
+  const ROVR={"트루드":"마탱커","동영":"마암살자","에스파다":"공원딜","카일":"공원딜","파이":"공탱커","바네사":"마탱커","선란":"마암살자","레이":"공전사","파스칼":"마탱커","실비아":"마마법사","룩":"마탱커","쥬리":"마마법사","클로에":"마탱커","팔라누스":"공원딜","비스킷":"공전사","델론즈":"공전사","손오공":"공탱커","카르마":"마전사","블랙로즈":"공마법사","린":"마마법사","루리":"공원딜","백각":"마마법사","아리스":"마탱커","레긴레이프":"마원딜","크리스":"마암살자","지크":"공탱커","엘리스":"공마법사","실베스타":"공전사","플라튼":"마원딜","레이첼":"마탱커","엘리시아":"마탱커","노호":"마탱커","로지":"마마법사","오를리":"마탱커","쥬피":"공마법사","콜트":"공원딜","챈슬러":"마탱커","발리스타":"공마법사","카린":"마탱커","키리엘":"공원딜","아일린":"공암살자","유신":"마원딜","미스트":"공탱커","라이언":"마탱커","녹스":"마마법사","멜키르":"공전사","리":"마탱커"};  /* 사용자 지정 직군: 트루드 = 마법력 탱커 */
+  R.forEach(([t,n])=>{ if(ROVR[n]) nro[n]=ROVR[n]; else if(ro[n]) nro[n]=ro[n]; else { const k=S1ROLES.H[n]||S1ROLES.H[alias[n]]; if(k) nro[n]=k; else { nro[n]="공전사"; fbRole.push(n); } }
     if(art[n]) nart[n]=art[n]; else if(AC.heroArt&&AC.heroArt[n]) nart[n]=AC.heroArt[n]; else fbArt.push(n); });
   window.S3_FALLBACK={role:fbRole,art:fbArt};
   window.S2ROSTER=R.map(([t,n,g])=>[t,S2N(n),g]); window.S2ROLE_MAP=nro; window.S2ART=nart;
@@ -15182,7 +15183,8 @@ const psyGain=r=>({2:[1,10],3:[1,18],4:[1,25],5:[2,32]}[Math.max(2,Math.min(5,r)
         // 신스팝: 전투 참여 후 다음 첫 새로고침 혜택
         if(lv(B,side,"신스팝")!=null) S.s3first=1;
         // 히피(동영)
-        if(pv&&lv(B,side,"히피")!=null){ if(win){ const g=3+Math.floor(AC.rnd(B)*3); S.gold+=g; say(st,S,`☮️ 히피: 전리품 +${g}골드`); } else if(st) healP(st,S,1); }
+        if(pv&&lv(B,side,"히피")!=null){ const dss=B.units.some(x=>x.side===side&&x.s3ss&&String(x.name).replace(/\u200B/g,"")==="동영");   /* 슈퍼스타 동영: 전리품 +2골드 · 회복 +1 */
+          if(win){ const g=3+Math.floor(AC.rnd(B)*3)+(dss?2:0); S.gold+=g; say(st,S,`☮️ 히피: 전리품 +${g}골드`); } else if(st) healP(st,S,1+(dss?1:0)); }
         // 사이키델릭
         const l=lv(B,side,"사이키델릭"); S.s3pvp=(S.s3pvp||0)+(pv?1:0);
         if(l!=null){ const k=Zb.psyK[side], [a,b]=psyGain(sg), mul=[1,2,5.5,18][l]; let add=(sg>=2?k*a:0)+(pv&&!win?b:0); add=Math.round(add*mul*10)/10; S.s3psy=(S.s3psy||0)+add; S.s3psyAdd=add;
@@ -15250,7 +15252,7 @@ S3.horseCast=(B,h)=>{ const tl=h.s3tl, F=B.units.filter(x=>x.alive&&x.side!==h.s
       for(const side of ["me","ai"]){ if(Zb.horse[side]) continue; const l=lv(B,side,"데스페라도"); if(l==null||!Zb.hp0[side]) continue; let cur=0; for(const u of B.units) if(u.side===side&&u.alive&&!u.mon&&!u.golem&&!u.s3horse) cur+=u.hp; if(1-cur/Zb.hp0[side]>=0.3) S3.spawnHorse(B,side,Math.min(2,l)); }
       for(const h of B.units){ if(!h.alive||!h.s3horse) continue; if(h.s3mana>=70&&!(h.stun>B.t)) S3.horseCast(B,h); }
       /* 폭죽 */ if(!Zb.fwInit){ Zb.fwInit=1; for(const u of B.units){ if(!u.s3fw) continue; const tr=B.units.find(x=>x.side===u.side&&!x.mon&&unitName2(x)==="트루드"); if(tr){ const ed=Math.max(0,(tr.def||0)-((tr.s&&tr.s.def)||0)), er=Math.max(0,(tr.res||0)-((tr.s&&tr.s.res)||0)); u.def+=ed; u.res+=er; u.s3fwTr=tr; } } }
-      for(const u of B.units){ if(!u.alive||!u.s3fw) continue; u.s3fwT=u.s3fwT||B.t+S3.K.fwEvery; if(B.t>=u.s3fwT){ u.s3fwT+=S3.K.fwEvery; S3.fwVolley(B,u,"박자"); } }
+      for(const u of B.units){ if(!u.alive||!u.s3fw) continue; u.s3fwT=u.s3fwT||B.t+(u.s3fwEv||S3.K.fwEvery); if(B.t>=u.s3fwT){ u.s3fwT+=(u.s3fwEv||S3.K.fwEvery); S3.fwVolley(B,u,"박자"); } }
       for(const tr of B.units){ if(!tr.alive||unitName2(tr)!=="트루드") continue; const c=tr.s1mCast||0; if(c>(tr.s3fwSeen||0)){ tr.s3fwSeen=c; for(const u of B.units) if(u.alive&&u.s3fw&&u.side===tr.side) S3.fwVolley(B,u,"스킬 박자"); } }
     }catch(e){ console.error(e); } return r; }; }
 const unitName2=u=>String(u.name||"").replace(/\u200B/g,"");
@@ -17186,9 +17188,10 @@ window.S3AUGL=[
 
   /* 주먹과 발차기 — 파열(방어력 30% 감소)·파쇄(마법 저항력 30% 감소) 3초. 기본 규칙(TFT 용어: tftips.app/ko/specs/battle)에 따라 같은 효과는 중첩되지 않고 지속시간만 갱신.
      물리 피해(기본 공격 포함)를 입히면 파열, 마법 피해(스킬·마법 기본 공격)를 입히면 파쇄. 실제 방어력/마법 저항 스탯을 깎았다가 만료 시 복구한다(마법 스킬 magHit 도 같은 스탯을 읽음). */
-  const s3shred=(B,t,kind)=>{ const key=kind==="sp"?"def":"res"; t.s3sh=t.s3sh||{}; const e=t.s3sh[kind];
-    if(e&&e.until>B.t){ e.until=B.t+3; return; }
-    const v=Math.max(0,t[key]||0)*0.3; t[key]-=v; t.s3sh[kind]={key,v,until:B.t+3}; B.events.push({k:"fx",b:t.uid,txt:kind==="sp"?"파열":"파쇄",cls:"frz"}); };
+  const s3shred=(B,t,kind,dur)=>{ dur=dur||3; const key=kind==="sp"?"def":"res"; t.s3sh=t.s3sh||{}; const e=t.s3sh[kind];
+    if(e&&e.until>B.t){ e.until=Math.max(e.until,B.t+dur); return; }
+    const v=Math.max(0,t[key]||0)*0.3; t[key]-=v; t.s3sh[kind]={key,v,until:B.t+dur}; B.events.push({k:"fx",b:t.uid,txt:kind==="sp"?"파열":"파쇄",cls:"frz"}); };
+  S3.shred=s3shred;
   const s3shExp=(B)=>{ for(const t of B.units){ const m=t.s3sh; if(!m) continue; for(const k of ["sp","sh"]){ const e=m[k]; if(e&&e.until<=B.t){ t[e.key]+=e.v; m[k]=null; } } } };
   const oBS2=AC.battleStep; AC.battleStep=function(B){ const r=oBS2.apply(AC,arguments); try{ if(B&&B.units) s3shExp(B); }catch(e){} return r; };
   const oCH=AC.calcHit; AC.calcHit=function(B,a,t,coef,crit,sk){
@@ -17272,6 +17275,904 @@ window.S3AUGL=[
 #acRoot .s3s.z b{color:#8a93a6}#acRoot .s3s.nr b{color:#ffb347}#acRoot .s3s.mx b{color:#ffd23f}`; document.head.appendChild(css);
   console.log("[S3] 전투 유닛 오버레이(아이템·스택) 활성");
 }catch(e){ console.error("S3 UI 초기화 실패",e); } })();
+/* 피날레 소총 이미지 (생성: mk_rifle.py · 320x115 WebP) */
+(function(){ if(typeof AC!=="undefined"&&AC.seasonId==="s3") AC.S3_RIFLE_IMG="data:image/webp;base64,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"; })();
+
+/* ===== S3 영웅 스킬: 오르카 — 환상적 죽음 협주곡 라단조 (AC.seasonId==="s3" 에서만 동작 · 임시 이미지/연출) ===== */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, Z=H.Z, fx=H.fx, MA=H.MA;
+  const nm0=s=>String(s||"").replace(/\u200B/g,"");
+  const KEY="오르카\u200B", SKN="환상적 죽음 협주곡 라단조";
+  const L=(u,v)=>{ const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; };
+  const CNT=u=>(u.t||0)>=12?4:1;                 /* 스킬 사용 1회당 소총: 0/6/12초월 = 1/1/4 */
+  const isO=u=>!!(u&&!u.mon&&!u.golem&&!u.clone&&nm0(u.name)==="오르카");
+  /* ---- 사용자 원문 툴팁 (줄 구분: 원문의 " / " 구획 = 줄바꿈 · hr=위 3줄이 설명) ---- */
+  const T1="기본 지속 효과: 기본 공격 시 추가로 10의 마나를 얻습니다. 대기석에 피날레 소총이 4개 있으면 공격 대신 지휘를 시작합니다. 각 소총은 거장과 같은 속도로 발사되고 물리 피해를 입힙니다. 4번째 지휘마다 200%의 피해를 입힙니다.";
+  const T2="사용 시: 피날레 소총 1개를 빈 대기석 슬롯에 놓습니다.";
+  const T3="슈퍼스타 효과: 공격력 +10%, 전투 시작: 빈 대기석 슬롯에 피날레 소총을 1개를 놓습니다.";
+  const R1="스킬 사용 1회당 소총:1 / 1 / 4 개", R2="피해량(물+마):60 / 60 / 444 (%)+ 15 / 25 / 144";
+  S3.ORCA_TIP=[T1,T2,T3,R1,R2];
+  if(typeof S1SK1!=="undefined") S1SK1[KEY]={name:SKN,img:"",desc:[T1,T2,T3,R1,R2].join("\n"),hr:3};
+  if(AC.S1MANA) AC.S1MANA[KEY]=[0,50];
+  /* ---- 공격 속도 0.58 (직군 마법사 = 기존 마마법사 역할, 공속만 지정) ---- */
+  { const oS=AC.statsOf; AC.statsOf=function(no,t){ const r=oS.apply(this,arguments); try{ if(r&&r.aspd!==0.58){ const h=AC.hero(no); if(h&&nm0(h.name)==="오르카") r.aspd=0.58; } }catch(e){} return r; }; }
+  /* ---- 소총 보관: S(플레이어 상태) → 점유 대기석 슬롯 목록 (저장되지 않음 · 전투 종료 시 제거) ---- */
+  const RF=new Map(), FB={};
+  const SOf=(B,side)=>(B.Sref&&B.Sref[side])||(FB[side]||(FB[side]={units:[],_fb:1}));
+  const rifs=S=>{ let a=RF.get(S); if(!a){ a=[]; RF.set(S,a); } return a; };
+  const nBench=()=>C.bench||8;
+  const freeSlots=S=>{ const r=rifs(S), o=[]; for(let i=0;i<nBench();i++) if(!(S.units||[]).some(u=>u.loc==="b"+i)&&!r.includes(i)) o.push(i); return o; };
+  const css=()=>{ if(typeof document==="undefined"||document.getElementById("s3rfcss")) return; const s=document.createElement("style"); s.id="s3rfcss";
+    s.textContent=".acbs:has(.s3rf){position:relative;overflow:visible}"
+      +".s3rf{position:absolute;inset:2px;pointer-events:none;z-index:4;background:none;border:0;box-shadow:none}"
+      /* 원반 단상(참고 이미지): .pd = 옆면(두께·금빛 테두리·그림자) · ::after = 연한 크림/백금 윗면 · 칸을 거의 채움 · 소총은 윗면 중심에 눕혀 놓임 · 단상은 회전·반동 없음 */
+      +".s3rf .pd{position:absolute;left:1%;right:1%;top:21%;bottom:13%;border-radius:50%;background:linear-gradient(180deg,#8a6a2a 0%,#6e5222 55%,#5a431c 100%);border:1px solid #b8913a;box-shadow:-3px 5px 6px rgba(52,30,8,.62),0 1px 0 rgba(243,217,138,.35) inset}"
+      +".s3rf .pd::after{content:'';position:absolute;left:-1px;right:-1px;top:-1px;bottom:5px;border-radius:50%;background:radial-gradient(ellipse 22% 16% at 30% 24%,rgba(255,244,200,.55) 0%,rgba(255,244,200,0) 100%),radial-gradient(ellipse 30% 20% at 70% 68%,rgba(90,67,28,.30) 0%,rgba(90,67,28,0) 100%),repeating-linear-gradient(112deg,rgba(90,67,28,0) 0 5px,rgba(90,67,28,.10) 5px 6px,rgba(243,217,138,.06) 6px 8px),conic-gradient(from 20deg at 50% 52%,#e6c768,#c39a38 14%,#8f6e2c 28%,#d9b755 42%,#f3d98a 52%,#bf9733 66%,#8a6a2a 80%,#d4af37 92%,#e6c768);border:1.5px solid #f3d98a;box-shadow:inset 0 1px 2px rgba(255,244,200,.7),inset 0 -2px 4px rgba(90,67,28,.5)}"
+      +".s3rf .rk{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;will-change:transform;filter:drop-shadow(-2px 4px 2px rgba(40,22,4,.72))}"
+      +".s3rf img{width:90%;height:auto;max-width:none;flex:none;transform-origin:50% 50%;will-change:transform}"
+      +".s3rf.p .pd{animation:s3pdp .25s ease-out}@keyframes s3pdp{0%{filter:brightness(1.08);box-shadow:0 0 10px 3px rgba(255,226,130,.95),-3px 5px 6px rgba(52,30,8,.62)}100%{filter:none}}"; document.head.appendChild(s); };
+  const IMG=()=>'<span class="pd"></span><span class="rk"><img alt="피날레 소총" draggable="false" src="'+(AC.S3_RIFLE_IMG||"")+'"></span>';   /* 총구 = 이미지 왼쪽 끝 */
+  const isMe=S=>typeof AC!=="undefined"&&AC.st&&AC.st.me===S;
+  /* ---- 조준: 대기석 소총 이미지의 총구(왼쪽)가 오르카의 현재 대상을 매 프레임 따라감 ----
+     대상 오른쪽: 이미지를 좌우 반전(scaleX(-1))한 뒤 회전 · 왼쪽: 그대로 회전 → 바이올린이 뒤집히지 않음. 대상이 없으면 마지막 각도 유지 */
+  const AIM={B:null,ang:0,flip:false,raf:0,x:0,y:0,has:false};
+  const unitXY=(B,t)=>{ try{ const L=document.getElementById("acLayer"); if(!L) return null; const r=L.getBoundingClientRect(), PX=AC.PX, U=PX&&PX.units&&PX.units[t.uid];
+      if(U&&U.c&&isFinite(U.c.x)&&isFinite(U.c.y)) return [r.left+U.c.x,r.top+U.c.y];
+      return [r.left+(t.C+0.5)*r.width/C.cols, r.top+(t.R+0.5)*r.height/(C.rows*2)]; }catch(e){ return null; } };
+  const curTarget=(B)=>{ const o=B.units.find(x=>x.s3orca&&x.side==="me"&&x.alive); if(!o) return null;
+    if(o.s3ct&&o.s3ct.alive&&B.t-(o.s3ctT||-9)<0.3) return o.s3ct;          /* 방금 지휘한 대상 */
+    let tg=null,bd=1e9; for(const f of B.units){ if(!f.alive||f.side===o.side||f.disabled) continue; const d=Math.hypot(f.R-o.R,f.C-o.C); if(d<bd){ bd=d; tg=f; } } return tg; };
+  /* 아이콘별 각도(el._a 도·el._f 반전)를 보관 → 대상이 없으면 각자의 마지막 각도 유지 */
+  const setAim=(el,cx,cy,tx,ty)=>{ const dx=tx-cx, dy=ty-cy; if(Math.abs(dx)<1&&Math.abs(dy)<1) return; let f=!!el._f; if(dx>4) f=true; else if(dx<-4) f=false;
+    el._f=f; el._a=(f?Math.atan2(dy,dx):Math.atan2(-dy,-dx))*180/Math.PI; AIM.ang=el._a; AIM.flip=f; };
+  const apply=(el)=>{ const img=el.querySelector("img"); if(img) img.style.transform="rotate("+(el._a||0).toFixed(2)+"deg)"+(el._f?" scaleX(-1)":""); };
+  const aim1=(el)=>{ try{ apply(el); }catch(e){} };
+  /* ---- 사격 연출: 반동(.rk 에 translate — 회전은 img 에 있어 분리) + 푸른 탄환/황금 궤적(캔버스 오버레이). 피해 계산·타이밍은 그대로 ---- */
+  const spd=()=>Math.max(0.05,(AC.speed||1)*((C&&C.playRate)||1));        /* 게임 속도 배율 */
+  const BUL=[]; let CV=null, CX=null;
+  const cv=()=>{ if(CV&&CV.isConnected) return CV; CV=document.createElement("canvas"); CV.id="s3rfcv"; CV.style.cssText="position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:99990"; document.body.appendChild(CV); CX=CV.getContext("2d"); return CV; };
+  const fitCv=()=>{ const dpr=Math.min(2,window.devicePixelRatio||1), w=window.innerWidth, h=window.innerHeight; if(CV.width!==Math.round(w*dpr)||CV.height!==Math.round(h*dpr)){ CV.width=Math.round(w*dpr); CV.height=Math.round(h*dpr); } CX.setTransform(CV.width/w,0,0,CV.height/h,0,0); };
+  const iconEls=()=>Array.from(document.querySelectorAll("#acRoot .s3rf"));
+  const mDir=el=>{ const a=(el._a||0)*Math.PI/180, m=el._f?1:-1; return [m*Math.cos(a),m*Math.sin(a)]; };
+  const recoil=(el,big)=>{ try{ const rk=el.querySelector(".rk"); if(!rk||!rk.animate) return; const d=mDir(el), k=big?9:5, T="translate("+(-d[0]*k).toFixed(2)+"px,"+(-d[1]*k).toFixed(2)+"px)", s=spd(), tot=Math.max(40,(70+190)/s);
+      rk.animate([{transform:"translate(0,0)",easing:"ease-out"},{transform:T,offset:70/260,easing:"cubic-bezier(.25,.6,.3,1)"},{transform:"translate(0,0)"}],{duration:tot}); }catch(e){} };
+  const fire=(B,u,t,n,big)=>{ try{ if(typeof document==="undefined"||u.side!=="me"||!AC.anim||AC.anim.B!==B) return; const els=iconEls(), now=performance.now(), tp=unitXY(B,t); if(!tp) return; cv();
+      for(let i=0;i<Math.min(n,els.length);i++){ const el=els[i], r=(el.querySelector('.rk')||el).getBoundingClientRect(), img=el.querySelector("img"), cx=r.left+r.width/2, cy=r.top+r.height/2, d=mDir(el), L=((img&&img.offsetWidth)||r.width)*0.48;
+        if(now-(el._rt||0)>40){ el._rt=now; recoil(el,big); } if(BUL.length>=32) continue; const x0=cx+d[0]*L, y0=cy+d[1]*L, dist=Math.hypot(tp[0]-x0,tp[1]-y0); BUL.push({x0,y0,t,tx:tp[0],ty:tp[1],t0:now,dur:Math.min(220,Math.max(70,dist/3*1))/spd()}); } }catch(e){} };
+  const drawBul=()=>{ if(!CV||!CV.isConnected) return; try{ fitCv(); CX.clearRect(0,0,window.innerWidth,window.innerHeight); const now=performance.now(), B=AIM.B;
+      for(let i=BUL.length-1;i>=0;i--){ const b=BUL[i], k=(now-b.t0)/b.dur; if(k>=1.45){ BUL.splice(i,1); continue; }
+        const q=(B&&b.t&&b.t.alive!==undefined)?unitXY(B,b.t):null; if(q){ b.tx=q[0]; b.ty=q[1]; }
+        const P=f=>[b.x0+(b.tx-b.x0)*f, b.y0+(b.ty-b.y0)*f], h=Math.min(1,k), tl=Math.max(0,k-0.45), H=P(h), T=P(Math.min(1,tl)); const fade=k>1?Math.max(0,1-(k-1)/0.45):1;
+        CX.save(); CX.globalAlpha=fade; CX.lineCap="round"; const g=CX.createLinearGradient(T[0],T[1],H[0],H[1]); g.addColorStop(0,"rgba(255,200,60,0)"); g.addColorStop(0.6,"rgba(255,208,80,.85)"); g.addColorStop(1,"rgba(255,244,176,1)");
+        CX.strokeStyle=g; CX.lineWidth=3.2; CX.shadowColor="rgba(255,190,40,.9)"; CX.shadowBlur=8; CX.beginPath(); CX.moveTo(T[0],T[1]); CX.lineTo(H[0],H[1]); CX.stroke();
+        if(k<1){ CX.shadowColor="#3aa0ff"; CX.shadowBlur=12; CX.fillStyle="#2f8cff"; CX.beginPath(); CX.arc(H[0],H[1],4.2,0,6.2832); CX.fill(); CX.shadowBlur=0; CX.strokeStyle="#c9e6ff"; CX.lineWidth=1.3; CX.stroke(); }
+        CX.restore(); } }catch(e){} };
+  const bulStop=()=>{ BUL.length=0; try{ if(CV){ CV.remove(); } CV=null; CX=null; document.querySelectorAll("#acRoot .s3rf .rk").forEach(r=>{ r.getAnimations&&r.getAnimations().forEach(a=>a.cancel()); }); }catch(e){} };
+  const frame=()=>{ AIM.raf=0; const B=(AC.anim&&AC.anim.B&&!AC.anim.B.done)?AC.anim.B:AIM.B; if(!B||B.done||typeof document==="undefined") return;
+    try{ const els=document.querySelectorAll("#acRoot .s3rf"); if(els.length){ const t=curTarget(B), xy=t&&unitXY(B,t);
+        els.forEach(el=>{ if(xy){ const r=(el.querySelector('.rk')||el).getBoundingClientRect(); setAim(el,r.left+r.width/2,r.top+r.height/2,xy[0],xy[1]); } apply(el); }); } }catch(e){}
+    drawBul(); AIM.raf=requestAnimationFrame(frame); };
+  const aimStart=(B)=>{ AIM.B=B; AIM.ang=0; AIM.flip=false; if(typeof requestAnimationFrame!=="undefined"&&!AIM.raf) AIM.raf=requestAnimationFrame(frame); };
+  const aimStop=()=>{ bulStop(); AIM.B=null; if(AIM.raf&&typeof cancelAnimationFrame!=="undefined") cancelAnimationFrame(AIM.raf); AIM.raf=0; AIM.ang=0; AIM.flip=false; try{ document.querySelectorAll("#acRoot .s3rf").forEach(e=>{ e._a=0; e._f=false; apply(e); }); }catch(e){} };
+  S3.orcaAim=AIM;
+  const sync=()=>{ try{ if(typeof document==="undefined") return; css(); const S=AC.st&&AC.st.me, r=S&&RF.get(S)||[]; document.querySelectorAll("#acRoot .acbs[data-acloc]").forEach(e=>{ const i=+String(e.getAttribute("data-acloc")).slice(1); const has=r.includes(i), cur=e.querySelector(".s3rf"); if(has&&!cur){ const d=document.createElement("div"); d.className="s3rf"; d.title="피날레 소총"; d.innerHTML=IMG(); aim1(d); e.appendChild(d); } else if(!has&&cur) cur.remove(); }); }catch(e){} };
+  const pulse=()=>{ try{ if(typeof document==="undefined") return; document.querySelectorAll("#acRoot .s3rf").forEach(e=>{ e.classList.remove("p"); void e.offsetWidth; e.classList.add("p"); }); }catch(e){} };
+  S3.orca={ rifles:S=>(RF.get(S)||[]).slice(), free:freeSlots, sync, KEY, reset:()=>{ RF.clear(); sync(); } };
+  /* 빈 대기석에 소총 놓기 (자리 없으면 못 놓음) */
+  const place=(B,u,n)=>{ const S=SOf(B,u.side), f=freeSlots(S); let k=0; const r=rifs(S); while(k<n&&k<f.length){ r.push(f[k]); k++; } if(k&&isMe(S)) sync(); return k; };
+  S3.orca.place=place; S3.orca.conduct=(B,u,t,n)=>conduct(B,u,t,n); S3.orca.bul=()=>BUL.map(b=>[b.x0,b.y0,b.tx,b.ty,b.dur,performance.now()-b.t0]);
+  const nRif=(B,side)=>{ const S=SOf(B,side); return (RF.get(S)||[]).length; };
+  /* 대기석 점유: 소총이 있는 칸은 빈 칸이 아님 */
+  { const o=AC.benchFree; AC.benchFree=function(S){ const r=o.apply(this,arguments); if(r>=0&&S&&RF.has(S)){ const R=RF.get(S); if(R.includes(r)){ for(let i=r+1;i<nBench();i++) if(!(S.units||[]).some(u=>u.loc==="b"+i)&&!R.includes(i)) return i; return -1; } } return r; }; }
+  { const o=AC.move; AC.move=function(S,uid,loc){ try{ if(S&&RF.has(S)&&typeof loc==="string"&&loc[0]==="b"&&RF.get(S).includes(+loc.slice(1))) return "피날레 소총이 놓인 대기석"; }catch(e){} return o.apply(this,arguments); }; }
+  { const o=AC.render; if(o) AC.render=function(){ const r=o.apply(this,arguments); sync(); return r; }; }
+  /* ---- 전투 ---- */
+  { const o=AC.battleInit; AC.battleInit=function(){ RF.clear(); const B=o.apply(this,arguments); sync(); aimStart(B); return B; }; }
+  { const o=AC.battleEnd; AC.battleEnd=function(B){ const r=o.apply(this,arguments); try{ aimStop(); if(RF.size){ RF.clear(); sync(); } }catch(e){} return r; }; }
+  { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!isO(u)) continue; u.s3orca=1; u.s1n=u.name; u.s3cn=0;
+        if(u.s3ss){ u.atkPct+=10; place(B,u,1); } } }catch(e){ console.error(e); } return r; }; }
+  /* 스킬: 마나 50 → 소총 놓기 */
+  AC.s1CF=AC.s1CF||{};
+  AC.s1CF[KEY]=(B,u)=>{ if(!AC.s1MUse(u)) return; const n=place(B,u,CNT(u)); fx(B,u,n?SKN+" · 소총 +"+n:SKN+" · 빈 슬롯 없음","sk5"); };
+  /* 공격: 소총 ≥4 → 기본 공격 대신 지휘 · 기본 공격마다 마나 +10(추가) */
+  const gN=(u,id)=>{ const l=(u.s1gl&&u.s1gl.length)?u.s1gl:u.s1gear; return l?l.filter(x=>x===id).length:0; };
+  /* 피해 규약(사용자 확정): '(물+마)' = 두 계수 부분이 합쳐진 하나의 물리 피해. [공격력 비례 계수 %] + [고정 기준값 × (1+마법공격력/100)] 를 합산해 기존 물리 경로(방어력 100/(100+방어력) · 주는 피해/받는 피해/증폭 등 피해 증감)를 한 번만 적용. 마법 저항은 사용하지 않음. */
+  const phys=(B,u,t,coef,add)=>{ const m=u.mag; u.mag=false; let d,atk; try{ d=AC._s1oCH.call(AC,B,u,t,coef,false,true); atk=AC.atkNow(B,u); } finally{ u.mag=m; }
+    const base=atk*coef/100, k=(base>0&&isFinite(d))?d/base:100/(100+Math.max(0,t.def||0));     /* k = 물리 경로 총 배율(방어력·피해 증감) */
+    return d+add*MA(u)*k; };
+  const conduct=(B,u,t,n)=>{ u.s3cn=(u.s3cn||0)+1; u.s3ct=t; u.s3ctT=B.t; const x4=u.s3cn%4===0, mul=x4?2:1, coef=L(u,[60,60,444]), add=L(u,[15,25,144]);
+    fx(B,u,x4?"지휘 ×2 (4번째)":"지휘","sk5"); pulse();
+    let fired=0; for(let i=0;i<n;i++){ if(!t.alive) break; fired++; const d=Math.max(1,Math.round(phys(B,u,t,coef,add)*mul));
+      B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit:false,sk:true,rg:true,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); AC.applyDmg(B,u,t,d,{id:"sk:s3rifle",s3:1}); } fire(B,u,t,fired,x4); };
+  const mana=(B,u)=>{ AC._mT=B.t; AC.s1MGain(B,u,10+5*gN(u,"i4")+2*gN(u,"i13")+10*gN(u,"m4")+4*gN(u,"m13")); AC.s1MGain(B,u,10); };
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ if(a&&a.s3orca&&op&&op.basic&&t&&t.side!==a.side){
+        const n=nRif(B,a.side); let r;
+        if(n>=4){ const ev=B.events[B.events.length-1]; if(ev&&ev.k==="hit"&&ev.a===a.uid&&ev.b===t.uid&&!ev.sk) B.events.pop(); conduct(B,a,t,n); r=0; }
+        else r=o.apply(this,arguments);
+        try{ mana(B,a); }catch(e){} return r; }
+      return o.apply(this,arguments); }; }
+}catch(e){ console.error("s3h_orca",e); } })();
+
+/* ===== S3 영웅 스킬: 트루드 — 음악적 카타르시스 (AC.seasonId==="s3" 에서만 동작 · 임시 연출) ===== */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, Z=H.Z, fx=H.fx, MA=H.MA;
+  const nm0=s=>String(s||"").replace(/\u200B/g,"");
+  const KEY="트루드\u200B", SKN="음악적 카타르시스";
+  const L=(u,v)=>{ const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; };
+  const isT=u=>!!(u&&!u.mon&&!u.golem&&!u.clone&&nm0(u.name)==="트루드");
+  /* ---- 사용자 원문 툴팁 ---- */
+  const T1="기본 지속 효과: 3초마다 트루드의 폭죽이 주변 적에게 마법 피해를 입힙니다.";
+  const T2="사용 시: 3.5초 동안 트루드가 방어력과 마법 저항이 증가합니다. 생명력이 가장 낮은 폭죽을 완전히 회복시키거나 생성합니다. 가장 가까운 적에게 도약한 후 넓은 범위에 마법 피해를 3회 입힙니다. 폭죽은 해당 피해의 박자에 따라 추가 피해를 가합니다.";
+  const T3="슈퍼스타 효과: 마법공격력 +10%, 방어력 +5, 마법 저항 +5, 폭죽이 2초마다 공격을 가합니다.";
+  const R1="폭죽 마법 피해량(방+마저): 60%/60%/500% + 60%/60%/500%", R2="방어력 및 마법 저항 증가량: 100/150/400", R3="범위 피해량(마): 100/150/4000";
+  S3.TRUDE_TIP=[T1,T2,T3,R1,R2,R3];
+  if(typeof S1SK1!=="undefined") S1SK1[KEY]={name:SKN,img:"",desc:S3.TRUDE_TIP.join("\n"),hr:3};
+  if(AC.S1MANA) AC.S1MANA[KEY]=[70,150];
+  /* ---- 폭죽 피해: 폭죽 방어력×X% + 폭죽 마법 저항×X% (X=60/60/500, 트루드 초월 기준) → 마법 피해(적 마법 저항 적용) · 사거리 3 ---- */
+  S3.fwVolley=(B,u,tag)=>{ const tr=u.s3fwTr||(u.s3fwTr=B.units.find(x=>x.side===u.side&&isT(x))); const X=tr?L(tr,[60,60,500]):60;
+    const F=B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg)&&H.cheb(x,u)<=3); fx(B,u,"🎆 "+tag,"sk5");
+    const v=((u.def||0)+(u.res||0))*X/100; for(const x of F) H.magHit(B,u,x,v,"s3fw"); };
+  /* ---- 전투 시작 ---- */
+  { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!isT(u)) continue; u.s3trude=1; u.s1n=u.name;
+        const fw=B.units.filter(x=>x.s3fw&&x.side===u.side); u.s3fwCap=fw.length;
+        if(u.s3ss){ u.s1ma=(u.s1ma||0)+10; u.def+=5; u.res+=5; fw.forEach(x=>{ x.s3fwEv=2; }); } } }catch(e){ console.error(e); } return r; }; }
+  /* ---- 스킬 ---- */
+  const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
+  const magA=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; const d=Math.max(1,Math.round(v*MA(u)*100/(100+Math.max(0,t.res||0))*amp(u,t)));
+    B.events.push({k:"hit",mg:1,a:u.uid,b:t.uid,d,crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+id,s3:1}); };
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  const nearest=(B,u)=>foes(B,u).sort((a,b)=>AC.dist(a,u)-AC.dist(b,u))[0];
+  const inB=(R,c)=>R>=0&&R<C.rows*2&&c>=0&&c<C.cols;
+  const freeC=(B,R,c)=>inB(R,c)&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===c);
+  const nearFree=(B,R0,C0,ref)=>{ let best=null,bd=1e9; for(let R=0;R<C.rows*2;R++) for(let c=0;c<C.cols;c++){ if(!freeC(B,R,c)) continue; const d=Math.max(Math.abs(R-R0),Math.abs(c-C0))*100+Math.max(Math.abs(R-ref.R),Math.abs(c-ref.C)); if(d<bd){ bd=d; best=[R,c]; } } return best; };
+  /* 폭죽 회복/생성: 생명력이 가장 낮은 폭죽(죽은 폭죽 = 0) → 죽었으면 다시 생성, 아니면 완전 회복 */
+  const fwTend=(B,u)=>{ const all=B.units.filter(x=>x.s3fw&&x.side===u.side); if(!all.length) return null; const dead=all.filter(x=>!x.alive);
+    if(dead.length&&all.filter(x=>x.alive).length<(u.s3fwCap||all.length)){ const x=dead[0]; AC.cleanse&&AC.cleanse(x); const p=freeC(B,x.R0,x.C0)?[x.R0,x.C0]:nearFree(B,u.R,u.C,u); if(!p) return null;
+      x.alive=true; x.hp=x.maxHp; x.shield=0; x.disabled=false; x.burnFix=0; x.revEnd=0; x.curse=null; x.stun=1e9; x.R=p[0]; x.C=p[1]; x.s3fwT=B.t+(x.s3fwEv||S3.K.fwEvery); fx(B,x,"폭죽 생성","buff"); return x; }
+    const al=all.filter(x=>x.alive).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]; if(al){ al.hp=al.maxHp; B.events.push({k:"heal",b:al.uid,n:0}); fx(B,al,"폭죽 완전 회복","buff"); } return al||null; };
+  AC.s1CF=AC.s1CF||{};
+  AC.s1CF[KEY]=(B,u)=>{ if(!AC.s1MUse(u)) return; u.s3fwSeen=u.s1mCast;   /* 기존 '스킬 박자' 일괄 일제사격 훅 대신 3회 박자에 맞춰 발사 */
+    fx(B,u,SKN,"sk5"); fwTend(B,u);
+    /* 방어력·마법 저항 증가 3.5초 (트루드 + 폭죽 같이) */
+    const v=Math.round(L(u,[100,150,400])), tg=[u].concat(B.units.filter(x=>x.alive&&x.s3fw&&x.side===u.side)); tg.forEach(x=>{ x.def+=v; x.res+=v; }); fx(B,u,"방어·마저 +"+v,"buff"); S3.q(B,B.t+3.5,()=>{ tg.forEach(x=>{ x.def-=v; x.res-=v; }); });
+    /* 가장 가까운 적에게 도약 */
+    const t0=nearest(B,u); if(!t0) return; if(H.cheb(u,t0)>1){ let best=null,bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=Math.round(t0.R)+dr, c=Math.round(t0.C)+dc; if(!freeC(B,R,c)) continue; const d=Math.abs(R-u.R)+Math.abs(c-u.C); if(d<bd){ bd=d; best=[R,c]; } } if(best){ u.R=best[0]; u.C=best[1]; fx(B,u,"도약","buff"); } }
+    /* 3×3 범위 마법 피해 3회: 도약 착지 후 0 / 0.6 / 1.2초 (1.2초에 걸쳐 균등 간격) · 박자마다 폭죽 일제 추가 공격 */
+    const dmg=L(u,[100,150,4000]); let ct=t0;
+    [0,0.6,1.2].forEach((dt,i)=>{ const beat=()=>{ if(!u.alive) return; if(!ct||!ct.alive) ct=nearest(B,u); if(!ct) return; const c=ct;
+        fx(B,u,"박자 "+(i+1),"sk5"); foes(B,u).filter(x=>H.cheb(x,c)<=1).forEach(x=>magA(B,u,x,dmg,"s3trude"));
+        B.units.filter(x=>x.alive&&x.s3fw&&x.side===u.side).forEach(x=>S3.fwVolley(B,x,"박자 "+(i+1))); };
+      if(dt===0) beat(); else S3.q(B,B.t+dt,beat); }); };
+  /* ---- 기본 공격 마나 +10 ---- */
+  const gN=(u,id)=>{ const l=(u.s1gl&&u.s1gl.length)?u.s1gl:u.s1gear; return l?l.filter(x=>x===id).length:0; };
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ const r=o.apply(this,arguments); try{ if(a&&a.s3trude&&op&&op.basic&&t&&t.side!==a.side){ AC._mT=B.t; AC.s1MGain(B,a,10+5*gN(a,"i4")+2*gN(a,"i13")+10*gN(a,"m4")+4*gN(a,"m13")); } }catch(e){} return r; }; }
+}catch(e){ console.error("s3i_trude",e); } })();
+
+/* ===== S3 영웅 스킬: 하연 — 모드 선택(발라드/즉흥곡/에튜드) (AC.seasonId==="s3" 에서만 동작 · 임시 연출) ===== */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, fx=H.fx, MA=H.MA;
+  const nm0=s=>String(s||"").replace(/\u200B/g,"");
+  const KEY="하연\u200B", NAMES=["발라드","즉흥곡","에튜드"], GLY=["♪","♬","♫"], COL=["#ffb3c7","#ffe27a","#8fd3ff"];
+  const L=(u,v)=>{ const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; };
+  const isH=u=>!!(u&&!u.mon&&!u.golem&&!u.clone&&nm0(u.name)==="하연");
+  /* ---- 사용자 원문 툴팁 (모드별 · 줄 구분: 원문의 " / " 구획 = 줄바꿈 · hr=위 3줄이 설명) ---- */
+  const SS="슈퍼스타 효과: 공격 속도 +5%, 공격할 때마다 공격 속도가 1% 증가합니다.";
+  const TIP=[
+    ["기본 지속 효과: 공격 시 아군에게 화음을 보내 최대 생명력의 일부를 회복시킵니다.","사용 시: 모든 아군에게 3도 화음을 보내 보호막을 부여합니다.",SS,"최대 생명력 회복(%): 6 / 9 / 100","보호막(마): 350 / 550 / 3333","보호막 지속 시간: 2.5 / 2.5 / 30"],
+    ["기본 지속 효과: 공격 시 아군에게 화음을 보내 4초 동안 공격 속도를 증가시킵니다.","사용 시: 6초 동안 모든 아군의 공격 속도를 증가시키고, 공격 시 마법 피해를 입힙니다.",SS,"기본 지속 효과 공격 속도: 25% / 35% / 500%","사용 시 공격 속도: 75% / 115% / 777%","마법 피해량(마): 90 / 135 / 777"],
+    ["기본 지속 효과: 공격 시 아군에게 화음을 보냅니다. 하연과 아군 모두 마법공격력이 증가합니다.","사용 시: 다수의 가장 가까운 적에게 마법 피해를 입힙니다.",SS,"1회당 마법 공격력 증가량: 2 / 3 / 100","피해량(마): 450 / 675 / 7777","대상 수: 5 / 5 / 11"] ];
+  S3.HAYEON_TIP=TIP; S3.HAYEON_MODES=NAMES;
+  const SKS=NAMES.map((n,i)=>({name:n,img:"",desc:TIP[i].join("\n"),hr:3}));
+  if(typeof S1SK1!=="undefined") S1SK1[KEY]=SKS[0];
+  if(AC.S1MANA) AC.S1MANA[KEY]=[0,170];
+  const modeOf=su=>(su&&su.s3hym===1)?1:(su&&su.s3hym===2)?2:0;
+  /* ---- 모드 표시(툴팁) · 선택 UI ---- */
+  const ctx=()=>{ try{ const I=AC.info, st=AC.st; if(!I||!st||!st.me) return null;
+      if(I.bt&&AC.anim){ const u=AC.anim.B.units.find(x=>x.uid===I.bt); return u?{m:u.s3hym!=null?u.s3hym:0,bt:1,side:u.side}:null; }
+      if(I.side==="ai") return {m:0,ai:1,side:"ai"};
+      if(I.uid!=null){ const su=st.me.units.find(x=>x.uid===I.uid); if(su) return {m:modeOf(su),uid:su.uid,side:"me"}; }
+    }catch(e){} return null; };
+  const isHno=no=>{ const h=AC.hero(no); return !!(h&&nm0(h.name)==="하연"); };
+  { const oSL=AC.skillLine; AC.skillLine=function(no,t){ if(!isHno(no)) return oSL.apply(this,arguments); const c=ctx(), m=c?c.m:0; const o=S1SK1[KEY]; S1SK1[KEY]=SKS[m]; try{ return oSL.apply(this,arguments); } finally{ S1SK1[KEY]=o; } }; }
+  const rowHTML=()=>{ const c=ctx(), st=AC.st; if(!c) return ""; const can=!!(c.uid!=null&&st&&st.phase==="prep"&&!AC.anim);
+    return '<div class="s3hym" data-s3hymrow><span class="l">모드</span>'+(c.ai?'<em>전투 시작 시 무작위</em>':NAMES.map((n,i)=>'<button type="button" data-s3hym="'+i+'" class="'+(c.m===i?"on":"")+'"'+(can?"":' disabled title="준비 단계에서만 변경할 수 있습니다"')+'>'+n+'</button>').join(""))+'</div>'; };
+  { const oC=AC.cardHTML; if(oC) AC.cardHTML=function(I,no,t,X){ const h=oC.apply(this,arguments); try{ if(isHno(no)){ const r=rowHTML(); if(r){ const k='<div class="achc-low">'; const i=h.indexOf(k); if(i>=0) return h.slice(0,i)+r+h.slice(i); } } }catch(e){ console.error(e); } return h; }; }
+  { const oI=AC.infoHTML; if(oI) AC.infoHTML=function(){ const h=oI.apply(this,arguments); try{ const I=AC.info; if(h&&I&&!/data-achc/.test(h)&&I.no!=null&&isHno(I.no)){ const r=rowHTML(); if(r){ const k='<button type="button" class="x"'; const i=h.lastIndexOf(k); if(i>=0) return h.slice(0,i)+r+h.slice(i); } } }catch(e){} return h; }; }
+  document.addEventListener("click",e=>{ if(AC.seasonId!=="s3") return; const b=e.target.closest&&e.target.closest("[data-s3hym]"); if(!b) return; e.stopPropagation(); e.preventDefault();
+    const st=AC.st, I=AC.info; if(!st||!I||I.uid==null||st.phase!=="prep"||AC.anim||b.disabled) return; const su=st.me.units.find(x=>x.uid===I.uid); if(!su) return;
+    su.s3hym=+b.getAttribute("data-s3hym"); I.s3m=su.s3hym; AC.save&&AC.save(); AC.render(); },true);
+  if(typeof document!=="undefined"&&!document.getElementById("s3hycss")){ const s=document.createElement("style"); s.id="s3hycss";
+    s.textContent=".s3hym{display:flex;align-items:center;gap:4px;margin:4px 6px;flex-wrap:nowrap}.s3hym .l{font-size:11px;color:#9d978a;margin-right:2px}.s3hym em{font-style:normal;font-size:11px;color:#d9c98f}"
+      +".s3hym button{flex:1;min-width:0;padding:4px 2px;font-size:12px;border-radius:5px;border:1px solid #6b5c3a;background:#1a1d22;color:#d9d4c7;cursor:pointer}.s3hym button.on{background:#7a5f1f;border-color:#f3d98a;color:#fff6d6;font-weight:700}.s3hym button:disabled{cursor:default;opacity:.75}.s3hym button.on:disabled{opacity:1}"
+      +".s3hyn{position:fixed;z-index:99991;pointer-events:none;font-size:22px;font-weight:700;-webkit-text-stroke:1px #000;text-shadow:0 1px 3px #000,0 0 8px currentColor;transform:translate(-50%,-50%);animation:s3hyn 1s ease-out forwards}@keyframes s3hyn{0%{opacity:0;margin-top:6px}15%{opacity:1}100%{opacity:0;margin-top:-26px}}"; document.head.appendChild(s); }
+  /* ---- 간단 화음 표시 (임시 · 모드별 음표/색) ---- */
+  const spd=()=>Math.max(0.05,(AC.speed||1)*((C&&C.playRate)||1));
+  const unitXY=(B,t)=>{ try{ const Ly=document.getElementById("acLayer"); if(!Ly) return null; const r=Ly.getBoundingClientRect(), PX=AC.PX, U=PX&&PX.units&&PX.units[t.uid];
+      if(U&&U.c&&isFinite(U.c.x)&&isFinite(U.c.y)) return [r.left+U.c.x,r.top+U.c.y];
+      return [r.left+(t.C+0.5)*r.width/C.cols, r.top+(t.R+0.5)*r.height/(C.rows*2)]; }catch(e){ return null; } };
+  const chord=(B,list,m,glyph)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B) return; const live=document.querySelectorAll(".s3hyn"); if(live.length>40) return; const d=Math.min(6000,1000/spd());
+      for(const x of list){ const p=unitXY(B,x); if(!p) continue; const el=document.createElement("div"); el.className="s3hyn"; el.textContent=glyph||GLY[m]; el.style.cssText="left:"+p[0].toFixed(1)+"px;top:"+(p[1]-10).toFixed(1)+"px;color:"+COL[m]+";animation-duration:"+d+"ms"; document.body.appendChild(el); setTimeout(()=>el.remove(),d+120); } }catch(e){} };
+  /* ---- 전투 시작: 모드 확정(내 유닛 = 저장된 모드, 상대 = 무작위) + 슈퍼스타 ---- */
+  { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!isH(u)) continue; u.s3hay=1; u.s1n=u.name; u.s3hyN=0;
+        const src=B.refs&&B.refs[u.uid]; u.s3hym=u.side==="me"?modeOf(src):Math.min(2,Math.floor(AC.rnd(B)*3));
+        if(u.s3ss){ H.addAS(u,5); } } }catch(e){ console.error(e); } return r; }; }
+  /* ---- 공통 계산 ---- */
+  const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
+  const magA=(B,u,t,v,id,vis)=>{ if(!t||!t.alive) return 0; const d=Math.max(1,Math.round(v*MA(u)*100/(100+Math.max(0,t.res||0))*amp(u,t))), a=vis||u;
+    B.events.push({k:"hit",mg:1,a:a.uid,b:t.uid,d,crit:false,sk:true,rg:true,aR:a.R,aC:a.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+id,s3:1}); };
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  /* 정정: 원문에 "하연과"가 없으면 "아군"에서 하연 본인 제외 (에튜드 기본 지속만 inc=true 로 하연 포함) */
+  const ally=(B,u,inc)=>B.units.filter(x=>x.alive&&x.side===u.side&&!x.mon&&!x.disabled&&(inc||x!==u));
+  const asBuf=(B,u,x,key,val,dur)=>{ const m=x.s3hyAB||(x.s3hyAB={}), k=key+u.uid; let e=m[k]; if(e&&e.end>B.t+1e-9){ e.end=B.t+dur; return false; }     /* 재적용 = 지속시간만 갱신(중첩 없음) */
+    e=m[k]={v:val,end:B.t+dur}; H.addAS(x,val); const ck=()=>{ if(e.end>B.t+1e-9){ S3.q(B,e.end,ck); return; } H.addAS(x,-e.v); e.end=0; }; S3.q(B,e.end,ck); return true; };
+  const gN=(u,id)=>{ const l=(u.s1gl&&u.s1gl.length)?u.s1gl:u.s1gear; return l?l.filter(x=>x===id).length:0; };
+  /* ---- 스킬 (마나 170) ---- */
+  AC.s1CF=AC.s1CF||{};
+  AC.s1CF[KEY]=(B,u)=>{ if(!AC.s1MUse(u)) return; const m=u.s3hym|0, A=ally(B,u,false);
+    if(m===0){ const v=L(u,[350,550,3333])*MA(u), dur=L(u,[2.5,2.5,30]); fx(B,u,"발라드 · 3도 화음 🛡","sk5");
+      A.forEach(x=>(AC.s1Src||((s,f)=>f()))(u,()=>AC.tShield(B,x,v,dur))); chord(B,A,0,"♪♪"); }
+    else if(m===1){ const v=L(u,[75,115,777]); fx(B,u,"즉흥곡 · 공속 +"+Math.round(v)+"% (6초)","sk5");
+      A.forEach(x=>asBuf(B,u,x,"sk",v,6)); u.s3hyImp=B.t+6; chord(B,A,1,"♬"); }
+    else { const n=Math.round(L(u,[5,5,11])), v=L(u,[450,675,7777]); const T=foes(B,u).sort((a,b)=>AC.dist(a,u)-AC.dist(b,u)).slice(0,n); fx(B,u,"에튜드 · "+T.length+"명 마법 피해","sk5");
+      chord(B,[u],2,"♫♫"); T.forEach(t=>magA(B,u,t,v,"s3hy")); } };
+  /* ---- 공격 시: 모드별 기본 지속 효과 · 슈퍼스타 · 마나 / 즉흥곡 스킬 중 아군 공격의 추가 마법 피해 ---- */
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ const r=o.apply(this,arguments);
+      try{ if(op&&op.basic&&a&&a.alive&&t&&t.side!==a.side){
+          for(const c of B.units){ if(!c.s3hay||c===a||!c.alive||c.side!==a.side||!(c.s3hyImp>B.t)||!t.alive) continue; magA(B,c,t,L(c,[90,135,777]),"s3hy",a); }   /* 즉흥곡 스킬: 6초 동안 모든 아군(하연 제외)의 기본 공격마다 */
+          if(a.s3hay){ const m=a.s3hym|0, A=ally(B,a,m===2); a.s3hyN++;
+            if(m===0){ const p=L(a,[6,9,100]); A.forEach(x=>(AC.s1Src||((s,f)=>f()))(a,()=>AC.heal(B,x,x.maxHp*p/100,"sk:하연"))); }
+            else if(m===1){ const v=L(a,[25,35,500]); A.forEach(x=>asBuf(B,a,x,"ba",v,4)); }
+            else { const v=L(a,[2,3,100]); A.forEach(x=>H.addMA(x,v)); }
+            chord(B,A,m);
+            if(a.s3ss) H.addAS(a,1);
+            AC._mT=B.t; AC.s1MGain(B,a,10+5*gN(a,"i4")+2*gN(a,"i13")+10*gN(a,"m4")+4*gN(a,"m13")); } } }catch(e){ console.error(e); }
+      return r; }; }
+  S3.hayeon={modeOf,ctx,isH,KEY,NAMES,L};
+}catch(e){ console.error("s3j_hayeon",e); } })();
+
+/* ===== S3 영웅 스킬: 동영 (히피) — 돌진·휘두르기·동상 (AC.seasonId==="s3" 에서만 동작 · 임시 연출 · 스킬명은 사용자가 주기 전까지 임시) ===== */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, fx=H.fx, MA=H.MA;
+  const nm0=s=>String(s||"").replace(/\u200B/g,"");
+  const KEY="동영\u200B", SKN="동영 스킬", MAXRE=20;
+  const L=(u,v)=>{ const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; };
+  const isD=u=>!!(u&&!u.mon&&!u.golem&&!u.clone&&nm0(u.name)==="동영");
+  /* ---- 사용자 원문 툴팁 ('우선' 포함 원문 그대로) ---- */
+  const T1="돌진한 후 우선을 휘둘러 자신과 인접한 모든 적에게 마법 피해를 입히고 3초 동안 동상 효과를 부여합니다. 동영의 공격이 한 대상에게만 적중할 경우 즉시 스킬을 다시 사용합니다.";
+  const T2="동상: 공격 속도를 20% 감소시킵니다.";
+  const T3="슈퍼스타 효과: 마법공격력 +5%, 전리품이 2골드를 추가로 제공합니다. 플레이어 회복 시 1을 추가로 제공합니다.";
+  const R1="피해량(마): 400 / 600 / 4000";
+  S3.DONGYOUNG_TIP=[T1,T2,T3,R1];
+  if(typeof S1SK1!=="undefined") S1SK1[KEY]={name:SKN,img:"",desc:S3.DONGYOUNG_TIP.join("\n"),hr:3};
+  if(AC.S1MANA) AC.S1MANA[KEY]=[0,50];
+  /* ---- 공통 ---- */
+  const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
+  const magA=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; const d=Math.max(1,Math.round(v*MA(u)*100/(100+Math.max(0,t.res||0))*amp(u,t)));
+    B.events.push({k:"hit",mg:1,a:u.uid,b:t.uid,d,crit:false,sk:true,rg:false,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+id,s3:1}); };
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  const nearest=(B,u)=>foes(B,u).sort((a,b)=>AC.dist(a,u)-AC.dist(b,u))[0];
+  const inB=(R,c)=>R>=0&&R<C.rows*2&&c>=0&&c<C.cols;
+  const freeC=(B,R,c)=>inB(R,c)&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===c);
+  /* ---- 동상: 공속 -20% · 3초 · 재적용 = 지속시간만 갱신(중첩 없음) · 간단한 푸른 틴트/❄ 표시 ---- */
+  const frost=(B,u,x,pct,dur)=>{ pct=pct||20; dur=dur||3; const e=x.s3dyF; if(e&&e.end>B.t+1e-9){ e.end=Math.max(e.end,B.t+dur); if(pct>(e.pct||20)){ H.addAS(x,-(pct-(e.pct||20))); e.pct=pct; } return; }
+    const n=x.s3dyF={end:B.t+dur,pct}; H.addAS(x,-pct); const ck=()=>{ if(n.end>B.t+1e-9){ S3.q(B,n.end,ck); return; } H.addAS(x,n.pct); n.end=0; }; S3.q(B,n.end,ck); fx(B,x,"동상 ❄","buff"); mark(B,x); };
+  S3.frost=frost;
+  const MK=new Map(); let raf=0;
+  const unitXY=(B,t)=>{ try{ const Ly=document.getElementById("acLayer"); if(!Ly) return null; const r=Ly.getBoundingClientRect(), PX=AC.PX, U=PX&&PX.units&&PX.units[t.uid];
+      if(U&&U.c&&isFinite(U.c.x)&&isFinite(U.c.y)) return [r.left+U.c.x,r.top+U.c.y];
+      return [r.left+(t.C+0.5)*r.width/C.cols, r.top+(t.R+0.5)*r.height/(C.rows*2)]; }catch(e){ return null; } };
+  const loop=()=>{ raf=0; try{ const B=AC.anim&&AC.anim.B; for(const [uid,m] of [...MK]){ const x=m.u, ok=B&&m.B===B&&x.alive&&x.s3dyF&&x.s3dyF.end>B.t; if(!ok){ m.el.remove(); MK.delete(uid); continue; } const p=unitXY(B,x); if(p){ m.el.style.left=p[0].toFixed(1)+"px"; m.el.style.top=p[1].toFixed(1)+"px"; } }
+      if(MK.size) raf=requestAnimationFrame(loop); }catch(e){} };
+  const mark=(B,x)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B||MK.has(x.uid)) return; const el=document.createElement("div"); el.className="s3dyf"; el.textContent="❄"; document.body.appendChild(el); MK.set(x.uid,{u:x,el,B}); if(!raf) raf=requestAnimationFrame(loop); }catch(e){} };
+  if(typeof document!=="undefined"&&!document.getElementById("s3dycss")){ const s=document.createElement("style"); s.id="s3dycss";
+    s.textContent=".s3dyf{position:fixed;z-index:99990;pointer-events:none;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:radial-gradient(circle,rgba(120,190,255,.55) 0%,rgba(80,150,255,.35) 55%,rgba(80,150,255,0) 72%);box-shadow:0 0 12px 2px rgba(120,200,255,.7);color:#e8f6ff;font-size:16px;line-height:46px;text-align:center;text-shadow:0 0 4px #4aa8ff,0 1px 2px #002}"; document.head.appendChild(s); }
+  /* ---- 전투 시작: 슈퍼스타 = 마법공격력 +5% ---- */
+  { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!isD(u)) continue; u.s3dy=1; u.s1n=u.name; u.s3dyN=0; if(u.s3ss) H.addMA(u,5); } }catch(e){ console.error(e); } return r; }; }
+  /* ---- 스킬: 돌진(대상 옆 1칸) → 인접 8칸 모든 적 마법 피해 + 동상 → 정확히 1명만 적중하면 마나 소모 없이 즉시 재사용 (시전당 최대 20회) ---- */
+  const strike=(B,u)=>{ const t0=nearest(B,u); if(!t0) return -1;
+    if(H.cheb(u,t0)>1){ let best=null,bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=Math.round(t0.R)+dr, c=Math.round(t0.C)+dc; if(!freeC(B,R,c)) continue; const d=Math.abs(R-u.R)+Math.abs(c-u.C); if(d<bd){ bd=d; best=[R,c]; } }
+      if(best){ u.R=best[0]; u.C=best[1]; fx(B,u,"돌진","buff"); } }
+    const dmg=L(u,[400,600,4000]), T=foes(B,u).filter(x=>H.cheb(x,u)<=1); u.s3dyN++; fx(B,u,SKN+" · "+T.length+"명","sk5");
+    T.forEach(x=>{ magA(B,u,x,dmg,"s3dy"); if(x.alive) frost(B,u,x); }); return T.length; };
+  const chain=(B,u,k)=>{ if(!u.alive||(u.stun&&B.t<u.stun)||(u.frz&&B.t<u.frz)||u.disabled){ u.s3dyBusy=0; return; } const n=strike(B,u);
+    if(n===1&&k+1<MAXRE){ fx(B,u,"단일 적중 · 스킬 재사용","buff"); S3.q(B,B.t+0.25,()=>chain(B,u,k+1)); } else u.s3dyBusy=0; };
+  AC.s1CF=AC.s1CF||{};
+  AC.s1CF[KEY]=(B,u)=>{ if(u.s3dyBusy) return; /* 재사용 연쇄 진행 중에는 새 시전(연쇄)을 시작하지 않음 → 시전당 최대 20회 보장 */ if(!AC.s1MUse(u)) return; u.s3dyBusy=1; chain(B,u,0); };
+  /* ---- 기본 공격 마나 +10 (+장비) ---- */
+  const gN=(u,id)=>{ const l=(u.s1gl&&u.s1gl.length)?u.s1gl:u.s1gear; return l?l.filter(x=>x===id).length:0; };
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ const r=o.apply(this,arguments); try{ if(a&&a.s3dy&&op&&op.basic&&t&&t.side!==a.side){ AC._mT=B.t; AC.s1MGain(B,a,10+5*gN(a,"i4")+2*gN(a,"i13")+10*gN(a,"m4")+4*gN(a,"m13")); } }catch(e){} return r; }; }
+  S3.dongyoung={KEY,isD,L,MAXRE};
+}catch(e){ console.error("s3k_dongyoung",e); } })();
+
+/* ===== S3 영웅 스킬: 에스파다 — 아르페지오 타격 (AC.seasonId==="s3" 에서만 동작 · 임시 이미지/연출) ===== */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, fx=H.fx, MA=H.MA;
+  const nm0=s=>String(s||"").replace(/\u200B/g,"");
+  const KEY="에스파다\u200B", SKN="아르페지오 타격", SPAN=1.75, BASE=14;
+  const L=(u,v)=>{ const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; };
+  const isE=u=>!!(u&&!u.mon&&!u.golem&&!u.clone&&nm0(u.name)==="에스파다");
+  /* ---- 사용자 원문 툴팁 (원문 그대로 · 줄 구분은 원문 단락, hr=3: 위 3줄 설명 / 아래 3줄 수치) ---- */
+  const T1="가장 먼 적을 향해 일정 횟수 사격합니다. 각 탄환은 처음 적에게 적중하면 폭발하여 대상 및 대상과 인접한 모든 적에게 물리 피해를 입히고, 전투가 끝날 때까지 방어력을 감소시킵니다.";
+  const T2="아르페지오 타격이 일찍 끝나면 발사하지 않은 사격 횟수에 따라 마나를 얻습니다.";
+  const T3="슈퍼스타 효과: 공격력 +5%, 아르페지오 타격 시 추가로 3회 사격합니다.";
+  const R1="탄환 횟수: 14+추가 공격 속도 20%당 1", R2="방어력 감소: 3 / 5 / 20", R3="탄환 하나당 물리 피해(물+마): 55% / 55% / 1000%+ 20 / 30 / 100";
+  S3.ESPADA_TIP=[T1,T2,T3,R1,R2,R3];
+  if(typeof S1SK1!=="undefined") S1SK1[KEY]={name:SKN,img:"",desc:S3.ESPADA_TIP.join("\n"),hr:3};
+  if(AC.S1MANA) AC.S1MANA[KEY]=[50,125];
+  /* ---- 공통 ---- */
+  const gN=(u,id)=>{ const l=(u.s1gl&&u.s1gl.length)?u.s1gl:u.s1gear; return l?l.filter(x=>x===id).length:0; };
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  const farthest=(B,u)=>foes(B,u).sort((a,b)=>(AC.dist(b,u)-AC.dist(a,u))||(a.uid-b.uid))[0];
+  const shotsOf=u=>BASE+Math.floor(Math.max(0,u.asPct||0)/20)+(u.s3ss?3:0);   /* 추가 공격 속도(asPct 합) 20%당 +1 · 슈퍼스타 +3 */
+  /* 탄환 경로: 시전자 → 조준점 직선 (칸 중심 기준 반경 0.5 이내) 위에서 처음 만나는 적 */
+  const rayHit=(B,u,ax,ay)=>{ const ox=u.C, oy=u.R; let dx=ax-ox, dy=ay-oy, n=Math.hypot(dx,dy); if(n<1e-6){ dx=0; dy=(u.side==="me"?-1:1); n=1; } dx/=n; dy/=n; let best=null,bp=1e9;
+    for(const x of foes(B,u)){ const rx=x.C-ox, ry=x.R-oy, pr=rx*dx+ry*dy; if(pr<=1e-6) continue; const pp=Math.abs(rx*dy-ry*dx); if(pp>0.5+1e-9) continue; if(pr<bp-1e-9||(Math.abs(pr-bp)<=1e-9&&best&&x.uid<best.uid)){ bp=pr; best=x; } } return best; };
+  /* 피해 규약(사용자 확정): '(물+마)' = 두 계수 부분이 합쳐진 하나의 물리 피해. [공격력 비례 계수 %] + [고정 기준값 × (1+마법공격력/100)] 를 합산해 기존 물리 경로(방어력 100/(100+방어력) · 주는 피해/받는 피해/증폭 등 피해 증감)를 한 번만 적용. 마법 저항은 사용하지 않음. */
+  const physT=(B,u,t,coef,add)=>{ const m=u.mag; u.mag=false; let d,atk; try{ d=AC._s1oCH.call(AC,B,u,t,coef,false,true); atk=AC.atkNow(B,u); } finally{ u.mag=m; }
+    const base=atk*coef/100, k=(base>0&&isFinite(d))?d/base:100/(100+Math.max(0,t.def||0));     /* k = 물리 경로 총 배율(방어력·피해 증감) */
+    return d+add*MA(u)*k; };
+  /* ---- 연출: 밝은 탄환 선 + 폭발 링 (캔버스 오버레이, 임시) · 방어력 감소 배지 ---- */
+  const spd=()=>Math.max(0.05,(AC.speed||1)*((C&&C.playRate)||1));
+  const unitXY=(B,t)=>{ try{ const Ly=document.getElementById("acLayer"); if(!Ly) return null; const r=Ly.getBoundingClientRect(), PX=AC.PX, U=PX&&PX.units&&PX.units[t.uid];
+      if(U&&U.c&&isFinite(U.c.x)&&isFinite(U.c.y)) return [r.left+U.c.x,r.top+U.c.y];
+      return [r.left+(t.C+0.5)*r.width/C.cols, r.top+(t.R+0.5)*r.height/(C.rows*2)]; }catch(e){ return null; } };
+  const VF=[]; let CV=null, CX=null, raf=0, VB=null; const BD=new Map();
+  const cv=()=>{ if(CV&&CV.isConnected) return CV; CV=document.createElement("canvas"); CV.id="s3escv"; CV.style.cssText="position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:99991"; document.body.appendChild(CV); CX=CV.getContext("2d"); return CV; };
+  const fit=()=>{ const dpr=Math.min(2,window.devicePixelRatio||1), w=window.innerWidth, h=window.innerHeight; if(CV.width!==Math.round(w*dpr)||CV.height!==Math.round(h*dpr)){ CV.width=Math.round(w*dpr); CV.height=Math.round(h*dpr); } CX.setTransform(CV.width/w,0,0,CV.height/h,0,0); };
+  if(typeof document!=="undefined"&&!document.getElementById("s3escss")){ const s=document.createElement("style"); s.id="s3escss";
+    s.textContent=".s3esb{position:fixed;z-index:99992;pointer-events:none;margin:-34px 0 0 6px;padding:0 4px;border-radius:8px;background:rgba(40,16,0,.82);border:1px solid #ffb347;color:#ffd27a;font:700 11px/16px sans-serif;text-shadow:0 1px 1px #000;white-space:nowrap}"; document.head.appendChild(s); }
+  const vis=(B,u,hit,list)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B) return; const p0=unitXY(B,u), p1=unitXY(B,hit); if(!p0||!p1) return; cv(); VB=B; if(VF.length>120) return;
+      VF.push({k:"b",x0:p0[0],y0:p0[1],x1:p1[0],y1:p1[1],t0:performance.now(),dur:Math.min(240,Math.max(90,Math.hypot(p1[0]-p0[0],p1[1]-p0[1])/2.5))/spd(),hit,list}); if(!raf) raf=requestAnimationFrame(loop); }catch(e){} };
+  const loop=()=>{ raf=0; try{ const B=AC.anim&&AC.anim.B; if(!CV||!CV.isConnected) return; fit(); CX.clearRect(0,0,window.innerWidth,window.innerHeight); const now=performance.now();
+      for(let i=VF.length-1;i>=0;i--){ const f=VF[i], k=(now-f.t0)/f.dur; if(f.k==="b"){
+          if(k>=1){ const c=B&&unitXY(B,f.hit); VF.splice(i,1); VF.push({k:"x",t0:now,dur:420/spd(),hit:f.hit,list:f.list,c:c||[f.x1,f.y1]}); continue; }
+          const q=B&&unitXY(B,f.hit); if(q){ f.x1=q[0]; f.y1=q[1]; } const hx=f.x0+(f.x1-f.x0)*k, hy=f.y0+(f.y1-f.y0)*k, tk=Math.max(0,k-0.5), tx=f.x0+(f.x1-f.x0)*tk, ty=f.y0+(f.y1-f.y0)*tk;
+          CX.save(); CX.lineCap="round"; const g=CX.createLinearGradient(tx,ty,hx,hy); g.addColorStop(0,"rgba(255,170,40,0)"); g.addColorStop(1,"rgba(255,246,190,1)"); CX.strokeStyle=g; CX.lineWidth=3; CX.shadowColor="rgba(255,160,30,.95)"; CX.shadowBlur=9; CX.beginPath(); CX.moveTo(tx,ty); CX.lineTo(hx,hy); CX.stroke();
+          CX.fillStyle="#fff7c8"; CX.beginPath(); CX.arc(hx,hy,3.6,0,6.2832); CX.fill(); CX.restore();
+        } else { if(k>=1){ VF.splice(i,1); continue; } const a=1-k; CX.save(); CX.globalAlpha=a;
+          const cc=B&&unitXY(B,f.hit)||f.c; const r0=14+36*k;
+          const gr=CX.createRadialGradient(cc[0],cc[1],2,cc[0],cc[1],r0); gr.addColorStop(0,"rgba(255,250,200,.95)"); gr.addColorStop(.55,"rgba(255,170,40,.65)"); gr.addColorStop(1,"rgba(255,110,20,0)"); CX.fillStyle=gr; CX.beginPath(); CX.arc(cc[0],cc[1],r0,0,6.2832); CX.fill();
+          CX.strokeStyle="#ffd24a"; CX.lineWidth=2.4; CX.shadowColor="#ff9a1f"; CX.shadowBlur=8; CX.beginPath(); CX.arc(cc[0],cc[1],r0+4,0,6.2832); CX.stroke();
+          for(const x of (f.list||[])){ if(x===f.hit) continue; const p=B&&unitXY(B,x); if(!p) continue; CX.globalAlpha=a*.75; CX.strokeStyle="#ffe27a"; CX.lineWidth=2; CX.beginPath(); CX.arc(p[0],p[1],10+26*k,0,6.2832); CX.stroke(); }
+          CX.restore(); } }
+      /* 방어력 감소 배지 */
+      for(const [uid,m] of [...BD]){ const x=m.u, ok=B&&m.B===B&&x.alive&&(x.s3esD||0)>0; if(!ok){ m.el.remove(); BD.delete(uid); continue; } const p=unitXY(B,x); if(p){ m.el.style.left=p[0].toFixed(1)+"px"; m.el.style.top=p[1].toFixed(1)+"px"; } const tx="🛡−"+Math.round(x.s3esD*10)/10; if(m.tx!==tx){ m.tx=tx; m.el.textContent=tx; } }
+      if(VF.length||BD.size) raf=requestAnimationFrame(loop); }catch(e){} };
+  const badge=(B,x)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B||BD.has(x.uid)) return; const el=document.createElement("div"); el.className="s3esb"; document.body.appendChild(el); BD.set(x.uid,{u:x,el,B}); if(!raf) raf=requestAnimationFrame(loop); }catch(e){} };
+  const clean=()=>{ try{ VF.length=0; for(const m of BD.values()) m.el.remove(); BD.clear(); if(CV){ CV.remove(); CV=null; CX=null; } if(raf&&typeof cancelAnimationFrame!=="undefined") cancelAnimationFrame(raf); raf=0; }catch(e){} };
+  { const o=AC.battleEnd; AC.battleEnd=function(B){ const r=o.apply(this,arguments); clean(); return r; }; }
+  { const o=AC.battleInit; AC.battleInit=function(){ clean(); return o.apply(this,arguments); }; }
+  /* ---- 전투 시작: 슈퍼스타 = 공격력 +5% ---- */
+  { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!isE(u)) continue; u.s3es=1; u.s1n=u.name; u.s3esN=0; u.s3esBusy=0; if(u.s3ss) u.atkPct+=5; } }catch(e){ console.error(e); } return r; }; }
+  /* ---- 폭발: 처음 맞은 적 + 인접 8칸의 모든 적에게 물리 피해 1회씩 → 방어력 고정값 감소(누적, 0 미만 불가) ---- */
+  const explode=(B,u,h)=>{ const coef=L(u,[55,55,1000]), add=L(u,[20,30,100]), red=L(u,[3,5,20]);
+    const T=foes(B,u).filter(x=>x===h||H.cheb(x,h)<=1); vis(B,u,h,T);
+    for(const x of T){ if(!x.alive) continue; const d=Math.max(1,Math.round(physT(B,u,x,coef,add)));
+      B.events.push({k:"hit",a:u.uid,b:x.uid,d,crit:false,sk:true,rg:true,aR:u.R,aC:u.C,bR:x.R,bC:x.C}); AC.applyDmg(B,u,x,d,{id:"sk:s3es",s3:1});
+      if(x.alive){ const cur=Math.max(0,x.def||0), dec=Math.min(cur,red); if(dec>0){ x.def=cur-dec; x.s3esD=(x.s3esD||0)+dec; if(B.t-(x.s3esFx||-9)>0.4){ x.s3esFx=B.t; fx(B,x,"방어력 −"+Math.round(x.s3esD*10)/10,"debuff"); } } badge(B,x); } }
+    return T.length; };
+  /* ---- 스킬: 가장 먼 적(시전 시점) 방향으로 N발을 1.75초에 걸쳐 균등 발사 · 궤적에 적이 없으면 중단 → 미발사 1발당 마나 1 ---- */
+  const cast=(B,u)=>{ const tg=farthest(B,u); if(!tg){ u.s3esBusy=0; return; } const N=shotsOf(u), gap=N>1?SPAN/(N-1):0; let ax=tg.C, ay=tg.R; u.s3esN++; u.s3esLast={N,fired:0,unfired:0,gain:0,t:B.t}; fx(B,u,SKN+" · "+N+"발","sk5");
+    const shot=i=>{ if(!u.alive){ u.s3esBusy=0; return; } if(tg.alive){ ax=tg.C; ay=tg.R; } const h=rayHit(B,u,ax,ay);
+      if(!h){ const un=N-i; u.s3esLast.unfired=un; u.s3esLast.gain=un; u.s3esBusy=0; if(un>0){ AC._mT=B.t; const n23=gN(u,"i23"), m23=gN(u,"m23"); AC.s1MGain(B,u,un/(1+0.15*n23+0.30*m23)); /* 일반 고정값: 미발사 1발당 정확히 마나 1 (수정룡의 의복 +15% 등 마나 획득 보정은 사전 상쇄) */ fx(B,u,"사격 중단 · 마나 +"+un,"buff"); } return; }
+      u.s3esLast.fired++; explode(B,u,h);
+      if(i+1<N) S3.q(B,B.t+gap,()=>shot(i+1)); else u.s3esBusy=0; };
+    shot(0); };
+  AC.s1CF=AC.s1CF||{};
+  AC.s1CF[KEY]=(B,u)=>{ if(u.s3esBusy) return; /* 사격 진행 중에는 새 시전 시작 안 함 */ if(!AC.s1MUse(u)) return; u.s3esBusy=1; cast(B,u); };
+  /* ---- 기본 공격 마나 +10 (+장비) ---- */
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ const r=o.apply(this,arguments); try{ if(a&&a.s3es&&op&&op.basic&&t&&t.side!==a.side){ AC._mT=B.t; AC.s1MGain(B,a,10+5*gN(a,"i4")+2*gN(a,"i13")+10*gN(a,"m4")+4*gN(a,"m13")); } }catch(e){} return r; }; }
+  S3.espada={KEY,isE,L,shotsOf,rayHit,farthest};
+}catch(e){ console.error("s3l_espada",e); } })();
+
+/* ===== S3 영웅 스킬: 카일 (AC.seasonId==="s3" 에서만 동작 · 이미지/연출은 시즌1 카일 스킬 것 참조) ===== */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, fx=H.fx;
+  const nm0=s=>String(s||"").replace(/\u200B/g,"");
+  const KEY="카일\u200B", SKN="인더스트리얼 킥", COEF=320, DUR=5, HEAL=0.67;
+  const isK=u=>!!(u&&!u.mon&&!u.golem&&!u.clone&&nm0(u.name)==="카일");
+  /* ---- 사용자 원문 툴팁 (hr=3: 위 3줄 설명 / 아래 수치) ---- */
+  const T1="대상 및 대상과 인접한 적에게 물리 피해를 입히고, 5초 동안 상처를 입힙니다.";
+  const T2="상처: 회복량 33% 감소";
+  const T3="슈퍼스타 효과: 공격력 +20%";
+  const R1="피해량(물):320%";
+  S3.KYLE_TIP=[T1,T2,T3,R1];
+  /* 스킬 이미지: 시즌1 카일 스킬(사슬의 무덤) 아이콘을 런타임에 참조 (S1 데이터는 수정하지 않음 · 영웅 이름 ZWSP 키로만 추가) */
+  const S1IMG=(typeof S1SK1!=="undefined"&&S1SK1["카일"]&&S1SK1["카일"].img)||(C.skillIcons&&C.skillIcons["카일"])||"";
+  if(typeof S1SK1!=="undefined") S1SK1[KEY]={name:SKN,img:S1IMG,desc:S3.KYLE_TIP.join("\n"),hr:3};
+  if(S1IMG&&C.skillIcons) C.skillIcons[KEY]=S1IMG;
+  if(AC.S1MANA) AC.S1MANA[KEY]=[15,60];
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  const gN=(u,id)=>{ const l=(u.s1gl&&u.s1gl.length)?u.s1gl:u.s1gear; return l?l.filter(x=>x===id).length:0; };
+  /* ---- 상처: 회복량 33% 감소(보호막 제외) · 재적중 시 중첩 없이 지속시간만 5초로 갱신 ---- */
+  { const o=AC.glMul; AC.glMul=function(B,u,k){ let m=o.apply(this,arguments); try{ if(k==="heal"&&u&&u.s3kw>B.t) m*=HEAL; }catch(e){} return m; }; }
+  /* 상처 표시: 시즌2 상처와 같은 부유 문구 fx(B,x,"상처","dis") (상처 전용 배지 없음 · 시즌1에는 상처 연출이 없음) */
+  const wound=(B,x)=>{ x.s3kw=Math.max(x.s3kw||0,B.t+DUR); fx(B,x,"상처","dis"); };
+  /* ---- 전투 시작: 슈퍼스타 = 공격력 +20% ---- */
+  { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!isK(u)) continue; u.s3ky=1; u.s1n=u.name; u.s3kyN=0; if(u.s3ss) u.atkPct+=20; } }catch(e){ console.error(e); } return r; }; }
+  /* ---- 스킬: 대상(현재 공격 대상, 없으면 가장 가까운 적) + 인접 8칸 적 전원에게 물리 일반 피해 320% (방어력 감소 · 스킬 치명타는 s1skCrit 보유 시에만) → 상처 5초
+     연출: 시즌1 카일 스킬(사슬의 무덤) 연출을 그대로 호출 — 이벤트 sk3/s1kyAnim(사슬 타격 26프레임 잔상 + 검은 구름 연기) → 0.4초 뒤 sk3/s1kyHit(피격 칸 바닥 섬광 + 피격 적마다 AC.s1KyleHitFx) 후 피해.
+     (시즌1 코드는 수정하지 않고 같은 PX.sk3fx 렌더러를 참조만 함) ---- */
+  const target=(B,u)=>{ const c=u.tgUid!=null&&B.units.find(x=>x.uid===u.tgUid&&x.alive&&x.side!==u.side&&!x.disabled); if(c) return c; return foes(B,u).sort((a,b)=>(AC.dist(a,u)-AC.dist(b,u))||(a.uid-b.uid))[0]; };
+  const rc=x=>[Math.round(x.R),Math.round(x.C)], inb=p=>p[0]>=0&&p[1]>=0&&p[0]<C.rows*2&&p[1]<C.cols;
+  const cellsOf=c=>{ const L=[]; for(let r=c[0]-1;r<=c[0]+1;r++) for(let q=c[1]-1;q<=c[1]+1;q++) if(inb([r,q])) L.push([r,q]); return L; };
+  const IMPACT=0.4;   /* S1: 사슬이 뻗는 15번째 프레임(0.4초)에 피해 */
+  AC.s1CF=AC.s1CF||{};
+  AC.s1CF[KEY]=(B,u)=>{ if(!AC.s1MUse(u)) return; const tg=target(B,u); if(!tg) return; u.s3kyN++;
+    fx(B,u,SKN,"sk5");
+    /* S1 시전 위치 규칙 그대로: 대상 방향(dR,dC)의 옆 칸에 잔상 등장 · 대상이 위쪽이면 대상 위/대각 위에 무작위로 나타나 아래로 내려침 */
+    const dR=Math.sign(Math.round(tg.R-u.R)), dC=Math.sign(Math.round(tg.C-u.C)), R=Math.round(u.R), Cc=Math.round(u.C), cen=rc(tg);
+    const free=p=>!B.units.some(x=>x.alive&&x!==u&&Math.round(x.R)===p[0]&&Math.round(x.C)===p[1]);
+    const cand=dR&&dC?[[R-dR,Cc],[R,Cc-dC]]:dR?[[R,Cc+1],[R,Cc-1]]:[[R-1,Cc],[R+1,Cc]];
+    let an=cand.find(p=>inb(p)&&free(p))||cand.find(inb)||cand[0];
+    if(dR<0){ const ch=[-1,0,1][Math.floor(Math.random()*3)]; an=[Math.max(0,cen[0]-1),Math.min(C.cols-1,Math.max(0,cen[1]+ch))]; }
+    B.events.push({k:"sk3",id:"s1kyAnim",a:u.uid,R:an[0],C:an[1],cR:cen[0],cC:cen[1],cells:cellsOf(cen)});
+    if(AC.s1HitLock) AC.s1HitLock(B,u,0.45);
+    S3.q(B,B.t+IMPACT,()=>{ if(!u.alive) return; const c2=tg.alive?rc(tg):cen; const T=foes(B,u).filter(x=>x===tg||H.cheb(x,{R:c2[0],C:c2[1]})<=1);
+      B.events.push({k:"sk3",id:"s1kyHit",cells:cellsOf(c2),hits:T.map(x=>[x.R,x.C,x.uid])}); u.s3kyHitN=(u.s3kyHitN||0)+1; u.s3kyLast=T.length; fx(B,u,SKN+" · "+T.length+"명","sk5");
+      for(const x of T){ if(!x.alive) continue; const crit=!!u.s1skCrit&&AC.rnd(B)*100<Math.min(100,u.crit||0); const d=Math.max(1,Math.round(AC.calcHit(B,u,x,COEF,crit,true)));
+        B.events.push({k:"hit",a:u.uid,b:x.uid,d,crit,sk:true,rg:true,aR:u.R,aC:u.C,bR:x.R,bC:x.C}); AC.applyDmg(B,u,x,d,{id:"sk:s3ky",s3:1}); if(x.alive) wound(B,x); } }); };
+  /* ---- 기본 공격 마나 +10 (+장비) ---- */
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ const r=o.apply(this,arguments); try{ if(a&&a.s3ky&&op&&op.basic&&t&&t.side!==a.side){ AC._mT=B.t; AC.s1MGain(B,a,10+5*gN(a,"i4")+2*gN(a,"i13")+10*gN(a,"m4")+4*gN(a,"m13")); } }catch(e){} return r; }; }
+  S3.kyle={KEY,isK,COEF,DUR,HEAL};
+}catch(e){ console.error("s3m_kyle",e); } })();
+
+/* ===== S3 영웅 스킬: 1코스트 12명 — 파이·바네사·선란·레이·파스칼·실비아·룩·쥬리·클로에·팔라누스·비스킷·델론즈 (AC.seasonId==="s3" 에서만 동작 · 임시 이미지/연출) =====
+   ★ 툴팁 문구: 아래 TIP 표 (영웅별 [설명 줄들, 수치 줄들]). 사용자 원문(t1916u)이 실행 쪽에 전달되지 않아 확정 스펙을 바탕으로 같은 서식으로 작성 → 원문으로 이 표만 교체하면 됨. */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, fx=H.fx, MA=H.MA;
+  const nm0=s=>String(s||"").replace(/\u200B/g,"");
+  const L=(u,v)=>{ const t=Math.min(12,u.t||0); return t>=6?v[1]+(v[2]-v[1])*(t-6)/6:v[0]+(v[1]-v[0])*t/6; };   /* 초월 0/6/12 값 사이 선형 보간 (다른 S3 영웅과 동일) */
+  const gN=(u,id)=>{ const l=(u.s1gl&&u.s1gl.length)?u.s1gl:u.s1gear; return l?l.filter(x=>x===id).length:0; };
+  const foes=(B,u)=>B.units.filter(x=>x.alive&&x.side!==u.side&&!x.disabled&&!(x.untg&&B.t<x.untg));
+  const rc=x=>[Math.round(x.R),Math.round(x.C)];
+  const cheb=(a,b)=>Math.max(Math.abs(Math.round(a.R)-Math.round(b.R)),Math.abs(Math.round(a.C)-Math.round(b.C)));
+  const target=(B,u)=>{ const c=u.tgUid!=null&&B.units.find(x=>x.uid===u.tgUid&&x.alive&&x.side!==u.side&&!x.disabled); if(c) return c; return foes(B,u).sort((a,b)=>(AC.dist(a,u)-AC.dist(b,u))||(a.uid-b.uid))[0]; };
+  const amp=(u,t)=>(1+((u.ampAll||0)+(u.skAmp||0))/100)*Math.max(0,1-(t.dr||0)/100);
+  /* (마) 피해: 수치 × (1+마법공격력/100) → 마법 저항으로 감소 (마법 일반 피해) */
+  const magA=(B,u,t,v,id)=>{ if(!t||!t.alive) return 0; const d=Math.max(1,Math.round(v*MA(u)*100/(100+Math.max(0,t.res||0))*amp(u,t)));
+    B.events.push({k:"hit",mg:1,a:u.uid,b:t.uid,d,crit:false,sk:true,rg:true,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+id,s3:1}); };
+  /* (물) 피해: 공격력 계수 × 방어력 감소 (물리 일반 피해). 스킬 치명타는 s1skCrit 보유 시에만 (카일과 동일 규약) */
+  const phys=(B,u,t,coef,id)=>{ if(!t||!t.alive) return 0; const crit=!!u.s1skCrit&&AC.rnd(B)*100<Math.min(100,u.crit||0); const d=Math.max(1,Math.round(AC.calcHit(B,u,t,coef,crit,true)));
+    B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+id,s3:1}); };
+  /* (물+마) = 하나의 물리 피해: [공격력 계수] + [기준값×(1+마법공격력/100)] 를 합쳐 방어력만 한 번 적용 (오르카/에스파다 방식) */
+  const physT=(B,u,t,coef,add)=>{ const m=u.mag; u.mag=false; let d,atk; try{ d=AC._s1oCH.call(AC,B,u,t,coef,false,true); atk=AC.atkNow(B,u); } finally{ u.mag=m; }
+    const base=atk*coef/100, k=(base>0&&isFinite(d))?d/base:100/(100+Math.max(0,t.def||0)); return d+add*MA(u)*k; };
+  const physHit=(B,u,t,d,id)=>{ d=Math.max(1,Math.round(d)); B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit:false,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); return AC.applyDmg(B,u,t,d,{id:"sk:"+id,s3:1}); };
+  const stun=(B,x,sec)=>{ if(!x||!x.alive) return; AC.debuff(B,x,"stun",()=>{ x.stun=Math.max(x.stun||0,B.t+sec); fx(B,x,"기절","stn"); }); };
+  const heal=(B,u,n,id)=>AC.heal(B,u,n,"sk:"+id);
+  const asDyn=(u,key,val)=>{ const d=val-(u[key]||0); if(Math.abs(d)<1e-9) return; u[key]=val; u.asPct+=d; AC.reIv(u); };
+  const allyOf=(B,u)=>H.heroes(B,u.side).filter(x=>x!==u&&x.alive);
+  /* 합주 보너스: 오케스트라 시너지 활성 + 오케스트라 영웅 + 아이템(상징 제외) 보유 (시너지 원문: "아이템을 보유 중일 경우 스킬에 고유 합주 보너스") · 플래티넘(9명)이면 기존 효과 2배 */
+  const holdsItem=u=>((u.s1gear||[]).concat(u.s1gl||[])).some(id=>id&&!/^s_/.test(id));
+  const ensembleLv=(B,u)=>{ const l=H.lv(B,u.side,"오케스트라"); if(l==null||!H.has(B,u,"오케스트라")||!holdsItem(u)) return 0; return l>=3?2:1; };
+  const gain10=(B,a)=>{ AC._mT=B.t; AC.s1MGain(B,a,10+5*gN(a,"i4")+2*gN(a,"i13")+10*gN(a,"m4")+4*gN(a,"m13")); };
+
+  /* ---- 영웅 정의 ---- */
+  const HERO={};
+  const reg=(name,o)=>{ o.name=name; o.KEY=name+"\u200B"; HERO[name]=o; };
+  /* TIP: [설명 줄들, 수치 줄들] — 임시 문구 (원문 교체 지점) */
+  /* 1) 파이 */ reg("파이",{ skn:"접근 금지", mana:[0,40], need:1,
+    tip:[["방어 태세를 취하여 2.5초 동안 받는 피해가 감소합니다. 그 후, 대상에게 물리 피해를 입힙니다.", "슈퍼스타 효과: 생명력 +225"], ["받는 피해 감소: ((최대 75%)40% = 20% + (마)20/20/25%)", "물리 피해(물): 999%"]],
+    red:(B,t)=>{ const p=t.s3pie; return p&&B.t<p.until?p.pct:0; },
+    ss:(B,u)=>H.addHp(u,225),
+    cast:(B,u,tg)=>{ const pct=Math.min(75,20+L(u,[20,20,25])*MA(u)), rec={until:B.t+2.5,pct}; u.s3pie=rec; fx(B,u,"받는 피해 −"+Math.round(pct)+"%","buff"); const tid=tg.uid;
+      S3.q(B,rec.until,()=>{ if(u.s3pie===rec) u.s3pie=null; if(!u.alive) return; const t=B.units.find(x=>x.uid===tid&&x.alive&&!x.disabled&&x.side!==u.side)||target(B,u); if(t) phys(B,u,t,999,"s3pi"); }); } });
+  /* 2) 바네사 */ reg("바네사",{ skn:"반향음", mana:[60,110],
+    tip:[["인접한 적에게 마법 피해를 입힙니다. 바네사가 생명력을 회복하고 가장 가까운 아군의 생명력도 회복시킵니다.", "슈퍼스타 효과: 생명력 +100, 바네사의 스킬 생명력 회복량이 20% 증가합니다."], ["피해량(마)): 180 / 270 / 400", "자가 회복량(마): 180 / 220 / 260", "아군 회복량(마): 90 / 110 / 130"]],
+    ss:(B,u)=>H.addHp(u,100),
+    cast:(B,u)=>{ foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>magA(B,u,x,L(u,[180,270,400]),"s3va")); const k=u.s3ss?1.2:1;
+      heal(B,u,L(u,[180,220,260])*MA(u)*k,"s3va"); const al=allyOf(B,u).sort((a,b)=>(AC.dist(a,u)-AC.dist(b,u))||(a.uid-b.uid))[0]; if(al) heal(B,al,L(u,[90,110,130])*MA(u)*k,"s3va"); } });
+  /* 3) 선란 */ reg("선란",{ skn:"프렐류드 앤 소네트", mana:[30,90], need:1,
+    tip:[["대상에게 마법 피해를 입힙니다. 4초 동안 공격 속도가 150% 증가하고 서서히 감소합니다. 지속 시간 동안 매 공격 시 생명력을 회복합니다.", "슈퍼스타 효과: 생명력 +100, 마법 공격력 +20"], ["피해량(마): 200 / 300 / 450", "회복량: 25 / 30 / 35"]],
+    ss:(B,u)=>{ H.addHp(u,100); H.addMA(u,20); },
+    tick:(B,u)=>{ asDyn(u,"s3snAS",u.s3snE>B.t?150*(u.s3snE-B.t)/4:0); },
+    atk:(B,u)=>{ if(u.s3snE>B.t) heal(B,u,L(u,[25,30,35]),"s3sr"); },
+    cast:(B,u,tg)=>{ magA(B,u,tg,L(u,[200,300,450]),"s3sr"); u.s3snE=B.t+4; asDyn(u,"s3snAS",150); fx(B,u,"공속 +150%","buff"); } });
+  /* 4) 레이 */ reg("레이",{ skn:"아첼레란도", mana:[0,50], need:1,
+    tip:[["기본 지속 효과: 레이가 적 영웅을 처치할 때마다 영구적으로 공격력이 1.5% 증가합니다.", "사용 시: 현재 대상에게 물리 피해를 입힙니다.", "합주 보너스: 스킬 사용 시 현재 생명력 비율이 15% 아래인 적을 처형합니다.", "슈퍼스타 효과: 생명력 +200, 모든 피해 흡혈 +10%"], ["물리피해(물+마): 280% + 20"]],
+    ss:(B,u)=>{ H.addHp(u,200); u.ls=(u.ls||0)+10; },
+    cast:(B,u,tg)=>{ physHit(B,u,tg,physT(B,u,tg,280,20),"s3ra"); const e=ensembleLv(B,u), thr=15*e;
+      if(e&&tg.alive&&tg.hp<tg.maxHp*thr/100){ fx(B,tg,"처형!","exec"); tg.hp=0; AC.lethal(B,tg,u,true); } } });
+  /* 5) 파스칼 */ reg("파스칼",{ skn:"파괴적 리듬", mana:[30,90],
+    tip:[["2초 동안 충격을 2회 방출합니다. 충격을 방출할 때마다 사거리 내 무작위 적 1명에게 마법 피해를 입히고 0.75초 동안 기절시킵니다.", "합주 보너스: 추가 대상 1명에게 충격을 방출해 50%의 피해를 입히고 기절시킵니다.", "슈퍼스타 효과: 생명력 +75, 충격이 최대 생명력의 2%에 해당하는 자신의 생명력을 회복시킵니다."], ["피해량(마): 145 / 215 / 325"]],
+    ss:(B,u)=>H.addHp(u,75),
+    cast:(B,u)=>{ const imp=()=>{ if(!u.alive) return; const R=foes(B,u).filter(x=>cheb(x,u)<=(u.range||1)); if(!R.length) return; const e=ensembleLv(B,u), L1=[]; let i=Math.floor(AC.rnd(B)*R.length); L1.push([R.splice(i,1)[0],1]);
+        if(e&&R.length){ i=Math.floor(AC.rnd(B)*R.length); L1.push([R.splice(i,1)[0],0.5*e]); }
+        for(const [x,k] of L1){ magA(B,u,x,L(u,[145,215,325])*k,"s3pa"); stun(B,x,0.75); if(u.s3ss) heal(B,u,u.maxHp*0.02,"s3pa"); } u.s3paN=(u.s3paN||0)+1; };
+      imp(); S3.q(B,B.t+1,imp); } });
+  /* 6) 실비아 */ reg("실비아",{ skn:"디크레센도", mana:[15,60], need:1,
+    tip:[["대상에게 마법 피해를 입히고 1.25초 동안 기절시킵니다.", "슈퍼스타 효과: 마법 공격력 +20"], ["피해량(마):  300 / 450 / 675"]],
+    ss:(B,u)=>H.addMA(u,20),
+    cast:(B,u,tg)=>{ magA(B,u,tg,L(u,[300,450,675]),"s3sy"); stun(B,tg,1.25); } });
+  /* 7) 룩 */ reg("룩",{ skn:"매니지먼트 전문가", mana:[50,140],
+    tip:[["4초 동안 보호막을 얻습니다. 룩이 사용하는 다음 2회의 공격이 추가 마법 피해를 입힙니다.", "슈퍼스타 효과: 생명력 +100, 방어력 +15"], ["피해량(마):245 / 375 / 565", "보호막(마+생): 240 / 290 / 340  + 6%"]],
+    ss:(B,u)=>{ H.addHp(u,100); u.def+=15; },
+    atk:(B,u,t)=>{ if(u.s3lkN>0&&t.alive){ u.s3lkN--; magA(B,u,t,L(u,[245,375,565]),"s3lk"); } },
+    cast:(B,u)=>{ if(u.s3lkSh){ u.shield-=Math.min(u.shield,u.s3lkSh); u.s3lkSh=0; } const g=AC.addShield(B,u,L(u,[240,290,340])*MA(u)+u.maxHp*0.06)||0; u.s3lkSh=g; u.s3lkE=B.t+4; if(g) fx(B,u,"🛡 +"+Math.round(g),"buff"); u.s3lkN=2;
+      const e=u.s3lkE; S3.q(B,e,()=>{ if(u.s3lkE===e&&u.s3lkSh){ u.shield-=Math.min(u.shield,u.s3lkSh); u.s3lkSh=0; } }); } });
+  /* 8) 쥬리 */ reg("쥬리",{ skn:"반사회적 멜로디", mana:[0,50], need:1,
+    tip:[["기본 지속 효과: 스킬을 4회 사용한 후, 공격 속도가 40% 증가하고 스킬 사용 시 1명의 적에게 추가 마법 피해를 입힙니다.", "사용 시: 화염구를 던져 대상에게 마법 피해를 입힙니다.", "슈퍼스타 효과: 마법공격력 +20"], ["피해량(마): 220 / 330 / 495", "추가 피해량(마): 80 / 120 / 180"]],
+    ss:(B,u)=>H.addMA(u,20),
+    cast:(B,u,tg)=>{ magA(B,u,tg,L(u,[220,330,495]),"s3ju"); const n=u.s3n;
+      if(n>=5){ const o=foes(B,u).filter(x=>x!==tg); if(o.length) magA(B,u,o[Math.floor(AC.rnd(B)*o.length)],L(u,[80,120,180]),"s3ju"); }
+      if(n>=4&&!u.s3juAS){ u.s3juAS=1; H.addAS(u,40); fx(B,u,"공속 +40%","buff"); } } });
+  /* 9) 클로에 (마나 없음) */ reg("클로에",{ skn:"대장 고양이", mana:null,
+    tip:[["기본 지속 효과: 받는 모든 피해량이 감소합니다.", "슈퍼스타 효과: 생명력 +300"], ["피해 감소(마): 12% / 15% / 25% "]],
+    red:(B,t)=>Math.min(100,L(t,[12,15,25])*MA(t)),
+    ss:(B,u)=>H.addHp(u,300) });
+  /* 10) 팔라누스 */ reg("팔라누스",{ skn:"즉흥 변주", mana:[0,50],
+    tip:[["팔라누스는 두 가지 무기를 가지며, 검격을 들고 시작합니다.", "검격 기본 지속 효과: 기본 공격 시 공격 속도를 얻습니다.", "에네르게이아 포화 기본 지속 효과: 기본 공격이 추가 물리 피해를 입힙니다.", "활성화: 사용 중인 무기를 교체합니다.", "슈퍼스타 효과: 검격의 추가 공격 속도가 1% 증가하고, 에네르게이아 포화의 추가 피해량이 10% 증가합니다."], ["공격 속도(마): 4%", "추가 물리 피해(물): 50%"]],
+    ss:()=>{},
+    init:(B,u)=>{ u.s3plM=0; },
+    atk:(B,u,t)=>{ if(!u.s3plM){ const g=4*MA(u)+(u.s3ss?1:0); H.addAS(u,g); u.s3plG=(u.s3plG||0)+g; } else if(t.alive){ const k=50+(u.s3ss?10:0); physHit(B,u,t,AC.calcHit(B,u,t,k,false,false),"s3pl"); } },
+    cast:(B,u)=>{ u.s3plM=u.s3plM?0:1; fx(B,u,u.s3plM?"에네르게이아 포화":"검격","sk5"); } });
+  /* 11) 비스킷 */ reg("비스킷",{ skn:"펑키 펀치", mana:[40,70], need:1,
+    tip:[["현재 대상에게 물리 피해를 입힙니다. 대상의 생명력이 비스킷보다 더 높은 경우 추가 물리 피해를 입힙니다. 적을 잠시 기절시킵니다. 또한 전투가 끝날 때까지 방어력을 감소시킵니다.", "슈퍼스타 효과: 생명력 +250, 공격력 +15"], ["물리 피해(물): 330%", "추가 물리 피해(물): 450%", "방어력 감소(마): 15% / 18% / 20% ", "기절 지속 시간: 1.5 / 1.75 / 2"]],
+    ss:(B,u)=>{ H.addHp(u,250); u.yeo=(u.yeo||0)+15; },
+    cast:(B,u,tg)=>{ const hi=tg.hp>u.hp; phys(B,u,tg,330,"s3bi"); if(hi&&tg.alive) phys(B,u,tg,450,"s3bi");
+      if(tg.alive){ stun(B,tg,L(u,[1.5,1.75,2]));
+        if(!tg.s3bkD) AC.debuff(B,tg,"def",()=>{ const a=Math.max(0,tg.def)*Math.min(100,L(u,[15,18,20])*MA(u))/100; tg.s3bkD=a; tg.def-=a; fx(B,tg,"방어력↓","dis"); }); } } });
+  /* 12) 델론즈 (마나 없음) */ reg("델론즈",{ skn:"불타오르는 기타 리프", mana:null,
+    tip:[["기본 지속 효과: 공격 시 생명력을 회복합니다. 생명력이 1% 감소할 때마다 공격 속도가 0.15% 증가합니다.", "슈퍼스타 효과: 생명력 +150, 방어력 +15, 마법 저항 +15"], ["회복량(마): 20 / 25 / 30"]],
+    ss:(B,u)=>{ H.addHp(u,150); u.def+=15; u.res=(u.res||0)+15; },
+    tick:(B,u)=>{ asDyn(u,"s3deAS",Math.max(0,100*(1-u.hp/Math.max(1,u.maxHp)))*0.15); },
+    atk:(B,u)=>{ heal(B,u,L(u,[20,25,30])*MA(u),"s3de"); } });
+
+  /* ---- 툴팁 · 마나 · 스킬 훅 설치 ---- */
+  S3.T1TIP={}; AC.s1CF=AC.s1CF||{};
+  const inst=n=>{ const o=HERO[n]; S3.T1TIP[n]=o.tip;
+    if(typeof S1SK1!=="undefined") S1SK1[o.KEY]={name:o.skn,img:"",desc:o.tip[0].concat(o.tip[1]).join("\n"),hr:o.tip[0].length};
+    /* 표시 보정: 원문 문자열은 그대로 두고 렌더 행만 조정 (레이 (물+마) 합성 줄 · 바네사 '(마))' 오타 줄은 원문 그대로 raw 표시) */
+    try{ if(AC.s1SkData){ const D=AC.s1SkData(o.KEY); if(D&&D.rows){ D.rows.forEach((r,i)=>{
+        if(r.raw&&/^물리피해\(물\+마\):\s*280%\s*\+\s*20$/.test(r.raw)) D.rows[i]={label:"물리피해",type:"none",values:[0,0,0],parts:[["공",[280],"%"],["마",[20],""]]};
+        if(!r.raw&&r.label==="피해량)"&&n==="바네사") D.rows[i]={raw:"피해량(마)): 180 / 270 / 400"}; }); if(o.rowfix) o.rowfix(D); } } }catch(e){ console.error(e); }
+    if(o.mana&&AC.S1MANA) AC.S1MANA[o.KEY]=o.mana;
+    if(o.mana) AC.s1CF[o.KEY]=(B,u)=>{ const tg=o.pick?o.pick(B,u):target(B,u); if(o.need&&!tg) return; if(!AC.s1MUse(u)) return; u.s3n=(u.s3n||0)+1; fx(B,u,o.skn,"sk5"); o.cast(B,u,tg); }; };
+  for(const n in HERO) inst(n);
+  const defOf=u=>{ if(!u||u.mon||u.golem||u.clone) return null; const o=HERO[nm0(u.name)]; return o&&u.s3t1===o.name?o:null; };
+  /* ---- 전투 시작: 표식 · 초기화 · 슈퍼스타 (고정 증가) ---- */
+  { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(u.mon||u.golem||u.clone) continue; const d=HERO[nm0(u.name)]; if(!d) continue; u.s3t1=d.name; u.s1n=u.name; u.s3n=0;
+        if(d.init) d.init(B,u); if(u.s3ss&&d.ss) d.ss(B,u); } }catch(e){ console.error(e); } return r; }; }
+  /* ---- 피해 훅: 받는 피해 감소(파이·클로에) / 기본 공격 훅(마나 +10 · 선란·룩·팔라누스·델론즈) ---- */
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ try{ const pd=defOf(a); if(pd&&pd.pre&&op&&op.basic&&t&&t.side!==a.side&&d>0){ const nd=pd.pre(B,a,t,d,op); if(nd!=null) d=nd; } }catch(e){ console.error(e); }
+      try{ const td=defOf(t); if(td&&td.taken) td.taken(B,t,a,d,op); if(td&&td.red){ const p=td.red(B,t); if(p>0) d*=1-Math.min(100,p)/100; } }catch(e){}
+      const r=o.call(this,B,a,t,d,op);
+      try{ const ad=defOf(a); if(ad&&op&&op.basic&&t&&t.side!==a.side){ if(ad.mana) gain10(B,a); if(ad.atk&&r>0) ad.atk(B,a,t,r); } }catch(e){ console.error(e); }
+      return r; }; }
+  /* ---- 레이: 적 영웅 처치마다 공격력 +1.5% 누적 (처형 포함) ---- */
+  { const o=AC.kill; AC.kill=function(B,t,a){ const r=o.apply(this,arguments); try{ if(a&&a.alive&&defOf(a)&&defOf(a).name==="레이"&&t&&t.side!==a.side&&!t.mon&&!t.golem&&!t.clone&&!t.s3horse){ a.atkPct+=1.5; a.s3raK=(a.s3raK||0)+1; fx(B,a,"공격력 +1.5%","buff"); } }catch(e){} return r; }; }
+  /* ---- 매 틱: 동적 공격 속도 (선란 감소 · 델론즈 잃은 생명력) ---- */
+  { const o=AC.skStep; AC.skStep=function(B,dt){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!u.alive) continue; const d=defOf(u); if(d&&d.tick) d.tick(B,u); } }catch(e){} return r; }; }
+  S3.t1={HERO,L,ensembleLv};
+  S3.t1x={reg:(n,o)=>{ reg(n,o); inst(n); },HERO,L,MA,fx,nm0,gN,foes,rc,cheb,target,amp,magA,phys,physT,physHit,stun,heal,asDyn,allyOf,gain10,ensembleLv};
+}catch(e){ console.error("s3n_t1",e); } })();
+
+/* ===== S3 영웅 스킬: 2코스트 13명 — 손오공·카르마·블랙로즈·린·루리·백각·아리스·레긴레이프·크리스·지크·엘리스·실베스타·플라튼 (AC.seasonId==="s3" 에서만 동작 · 임시 이미지/연출)
+   ★ 툴팁 문구: 사용자 원문(t1928u) 그대로 (gen_t2.py 가 test/t2_tips.py 에서 생성). s3n_t1.js 의 영웅 프레임워크(S3.t1x)에 등록한다. */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3||!AC.S3.t1x) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, X=S3.t1x, fx=X.fx, MA=X.MA, L=X.L, foes=X.foes, cheb=X.cheb, rc=X.rc, target=X.target, magA=X.magA, phys=X.phys, physT=X.physT, physHit=X.physHit, stun=X.stun, heal=X.heal, allyOf=X.allyOf, ensembleLv=X.ensembleLv, reg=X.reg;
+  const TIP={"손오공": [["최대 생명력이 증가합니다. 손오공의 다음 공격이 추가 물리 피해를 입힙니다.", "슈퍼스타 효과: 생명력 +350"], ["생명력 증가(마): 215 / 245 / 275", "피해량(물+생): 160% + 10%"]], "카르마": [["사거리 내의 생명력이 가장 높은 적에게 도약하여 마법 피해를 입힙니다. 이후 금강전을 회전시켜 인접한 모든 적에게 마법 피해를 입힙니다. 전투가 끝날 때까지 공격력과 마법 공격력이 10%만큼 증가합니다.", "슈퍼스타 효과: 생명력 +200, 마법 공격력 +20%"], ["도약 피해량(마): 240 / 360 / 560", "회전 피해량(마): 140 / 210 / 315"]], "블랙로즈": [["현재 대상에게 물리 피해 그리고 대상 적과 인접한 적에게 물리 피해를 입힙니다. 해당 스킬로 원래 대상이 사망할 경우 해당 대상과 인접한 적을 1초 동안 기절시킵니다.", "슈퍼스타 효과: 공격력 +20%"], ["물리 피해: 725%", "인접 물리 피해(마): 725%의 10%", "기절 시간: 1.5 / 1.5 / 2"]], "린": [["린이 자신의 고음을 사거리 내 가장 큰 유닛 무리로 보냅니다. 적에게 적중 시 마법 피해를 입힙니다. 아군에게 적중 시 생명력을 회복시킵니다.", "슈퍼스타 효과: 스킬을 2번 사용할 때마다 또 다른 고음을 보내 40%의 피해를 입히고 40%의 생명력을 회복시킵니다."], ["피해량(마): 140 / 210 / 315", "회복량(마): 80 / 120 / 160"]], "루리": [["최대 2칸 돌진한 후 현재 대상에게 미사일을 발사합니다. 처음 적중하는 적에게 물리 피해를 입힙니다.", "슈퍼스타 효과: 공격력 +25%, +2칸 더 멀리 돌진합니다."], ["물리 피해(물+마): 290 / 290 / 300 (%) + 40 / 60 / 90"]], "백각": [["현재 대상의 위치에 소리 폭발을 일으킵니다. 폭발은 3회 파동을 방출하며, 파동을 방출할 때마다 대상 및 대상과 인접한 적에게 마법 피해를 입힙니다.", "합주 보너스: -15의 최대 마나", "슈퍼스타 효과: 마법공격력 +5%, 파동을 방출할 때마다 다음 파동의 횟수가 1씩 증가합니다."], ["피해량(마): 110 / 165 / 255"]], "아리스": [["2초 동안 생명력을 회복합니다. 이후 인접한 적에게 마법 피해를 입히고 3초 동안 동상 효과를 부여합니다.", "동상: 공격 속도가 30% 감소합니다.", "슈퍼스타 효과 :아리스가 받는 피해가 10% 감소하고 피해량은 18% 증가합니다."], ["피해량(마): 190 / 285 / 440", "회복량(고정): 500 / 575 / 650"]], "레긴레이프": [["3가지 종류의 음표를 무작위로 사용해 음표 4개로 구성된 곡을 연주합니다.", "아방그르드 - 현재 대상에게 마법 피해를 입힙니다.", "애시드- 가장 생명력이 낮은 아군의 생명력을 회복시킵니다.", "라틴 - 1골드를 얻고 다른 곡을 연주합니다. ", "슈퍼스타 효과: 레긴레이프가 이번 게임에서 스킬을 8회 사용할 때마다 매 전투에서 처음 사용하는 스킬의 마지막 음표는 음표를 추가로 퍼뜨립니다. 음표는 대상과 인접한 적에게 95의 마법 피해를 입힙니다."], ["아방가르드(마): 200 / 300 / 450", "애시드(마): 120 / 150 / 180", "라틴: 1% / 1% / 3%"]], "크리스": [["현재 대상에게 칼날을 투척합니다. 칼날은 3회 튕기며 튕길 때마다 마법 피해를 입히고 6초 동안 상처를 남깁니다.", "상처: 회복량이 33% 감소합니다.", "슈퍼스타 효과: 생명력 +200, 마지막 칼날이 튕길 때 25%의 추가 피해를 입힙니다."], ["피해량(마): 150 / 225 / 340"]], "지크": [["방어 태세를 취하여 2.5초 동안 받는 피해가 감소합니다. 이후 지속시간 동안 지크에게 가장 큰 피해를 입힌 적 3명에게 물리 피해를 입힙니다.", "슈퍼스타 효과: 생명력 +250, 방어력 +20, 마법 저항 +20"], ["받는 피해 감소 :최대 70%: 20% +(마) 25%/25%/30%", "물리 피해(물): 200%"]], "엘리스": [["현재 대상에게 병을 투척해 대상 및 대상과 인접한 적에게 물리 피해를 입힙니다. 이후 병은 4개의 파편으로 폭발해 각 파편이 2칸 내의 무작위 적에게 마법 피해를 입힙니다. 병 투척이 치명타로 적중한 적 하나당 파편 1개를 추가로 생성합니다.", "슈퍼스타 효과: 공격력 +15%, 치명타 확률 +20%"], ["물리 피해(물): 250%", "마법 피해(마): 35 / 50 / 80"]], "실베스타": [["현재 대상 위로 도약한 후 전투가 끝날 때까지 변신합니다. 생명력이 증가하고, 공격력이 70%만큼 증가합니다. 이후 사용 시 현재 대상에게 물리 피해를 입힙니다.", "슈퍼스타 효과: 전투 시작 시 즉시 변신합니다."], ["생명력 증가(마): 500 / 550 / 600 ", "피해량(물): 335% / 335% / 335% "]], "플라튼": [["기본 지속 효과: 기본 공격 시 현재 대상과 그 뒤 1칸을 향해 여러 차례 파동을 날려 추가 마법 피해를 입힙니다.", "사용 시: 대상과 인접한 적에게 마법 피해를 입힙니다. 적중한 적을 4초 동안 파쇄시킵니다.", "파쇄: 마법 저항 30% 감소", "슈퍼스타 효과: 공격 속도 +25%"], ["후방 추가 피해량(마): 35 / 52 / 75", "인접 피해량(마): 240 / 360 / 540"]]};
+  const inB=(R,c)=>R>=0&&R<C.rows*2&&c>=0&&c<C.cols;
+  const freeC=(B,R,c)=>inB(R,c)&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===c);
+  const cdist=(R,c,x)=>Math.max(Math.abs(R-Math.round(x.R)),Math.abs(c-Math.round(x.C)));
+  const rnd=B=>AC.rnd(B);
+  /* 트루드 도약과 같은 규칙: 대상 옆(인접) 빈 칸 중 가장 가까운 칸으로 이동 */
+  const leapAdj=(B,u,t0,txt)=>{ if(!t0||cheb(u,t0)<=1) return false; let best=null,bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=Math.round(t0.R)+dr, c=Math.round(t0.C)+dc; if(!freeC(B,R,c)) continue; const d=Math.abs(R-u.R)+Math.abs(c-u.C); if(d<bd){ bd=d; best=[R,c]; } }
+    if(best){ u.R=best[0]; u.C=best[1]; fx(B,u,txt||"도약","buff"); return true; } return false; };
+  const q=(B,dt,fn)=>S3.q(B,B.t+dt,fn);
+
+  /* 1) 손오공 */ reg("손오공",{ skn:"럼블 베이스 강화", mana:[40,90], tip:TIP["손오공"],
+    ss:(B,u)=>H.addHp(u,350), init:(B,u)=>{ u.s3sgC=0; },
+    cast:(B,u)=>{ const g=Math.round(L(u,[215,245,275])*MA(u)); H.addHp(u,g); fx(B,u,"최대 생명력 +"+g,"buff"); u.s3sgC=(u.s3sgC||0)+1; fx(B,u,"다음 공격 강화","buff"); },
+    atk:(B,u,t)=>{ if(!(u.s3sgC>0)||!t||!t.alive) return; u.s3sgC--; physHit(B,u,t,physT(B,u,t,160,u.maxHp*0.10/MA(u)),"s3sg"); } });
+  /* 2) 카르마 */ reg("카르마",{ skn:"금강전 재주넘기", mana:[50,120], need:1, tip:TIP["카르마"],
+    pick:(B,u)=>foes(B,u).filter(x=>cheb(x,u)<=1+(u.range||1)).sort((a,b)=>(b.hp-a.hp)||(a.uid-b.uid))[0],
+    ss:(B,u)=>{ H.addHp(u,200); H.addMA(u,20); },
+    cast:(B,u,tg)=>{ leapAdj(B,u,tg); magA(B,u,tg,L(u,[240,360,560]),"s3ka");
+      q(B,0.75,()=>{ if(!u.alive) return; fx(B,u,"금강전 회전","sk5"); foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>magA(B,u,x,L(u,[140,210,315]),"s3ka")); u.atkPct+=10; H.addMA(u,10); fx(B,u,"공격력·마공 +10%","buff"); }); } });   /* 원문 순서: 도약 → 회전 → 전투 종료까지 +10% (시전마다 누적) */
+  /* 3) 블랙로즈 */ reg("블랙로즈",{ skn:"위험한 앙상블", mana:[40,135], need:1, tip:TIP["블랙로즈"],
+    ss:(B,u)=>{ u.atkPct+=20; },
+    cast:(B,u,tg)=>{ const adj=foes(B,u).filter(x=>x!==tg&&cheb(x,tg)<=1); phys(B,u,tg,725,"s3br"); const died=!tg.alive;
+      adj.forEach(x=>{ if(x.alive) phys(B,u,x,72.5*MA(u),"s3br"); });          /* 인접: 725%의 10% × (1+마공/100) = 물리(방어력만) */
+      if(died) adj.forEach(x=>{ if(x.alive) stun(B,x,L(u,[1.5,1.5,2])); }); } });
+  /* 4) 린 */ (()=>{ const best=(B,u,ex)=>{ let b=null; const U=B.units.filter(x=>x.alive&&x!==u&&!x.disabled&&!x.s3horse);
+      for(const c of U){ if(ex&&ex.some(e=>e[0]===Math.round(c.R)&&e[1]===Math.round(c.C))) continue; if(cheb(c,u)>(u.range||1)) continue; if(c.side!==u.side&&(c.disabled||(c.untg&&B.t<c.untg))) continue;
+        const A=U.filter(x=>cheb(x,c)<=1), n=A.length, e=A.filter(x=>x.side!==u.side&&!(x.untg&&B.t<x.untg)).length; if(!e) continue; const k=[n,e,-AC.dist(c,u),-c.uid]; if(!b||k[0]>b.k[0]||(k[0]===b.k[0]&&(k[1]>b.k[1]||(k[1]===b.k[1]&&(k[2]>b.k[2]||(k[2]===b.k[2]&&k[3]>b.k[3])))))) b={c:rc(c),k}; } return b&&b.c; };
+    const volley=(B,u,c,m)=>{ fx(B,u,"하이노트","sk5"); foes(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>magA(B,u,x,L(u,[140,210,315])*m,"s3li"));
+      allyOf(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>heal(B,x,L(u,[80,120,160])*MA(u)*m,"s3li")); };
+    reg("린",{ skn:"하이노트", mana:[0,60], need:1, tip:TIP["린"], pick:(B,u)=>best(B,u), ss:()=>{},
+      cast:(B,u,c)=>{ volley(B,u,c,1); if(u.s3ss&&u.s3n%2===0) q(B,0.4,()=>{ if(!u.alive) return; const c2=best(B,u,[c])||best(B,u); if(c2) volley(B,u,c2,0.4); }); } }); })();
+  /* 5) 루리 */ reg("루리",{ skn:"저돌적 보컬", mana:[0,30], need:1, tip:TIP["루리"],
+    ss:(B,u)=>{ u.atkPct+=25; u.s3ruN=4; }, init:(B,u)=>{ u.s3ruN=2; },
+    cast:(B,u,tg)=>{ const N=u.s3ruN||2, adjE=foes(B,u).some(x=>cheb(x,u)<=1); let best=null,bk=null; const r0=Math.round(u.R), c0=Math.round(u.C), F=foes(B,u);
+      for(let dr=-N;dr<=N;dr++) for(let dc=-N;dc<=N;dc++){ if(!dr&&!dc) continue; const R=r0+dr, c=c0+dc; if(!freeC(B,R,c)) continue; const st=Math.max(Math.abs(dr),Math.abs(dc));
+        const k=adjE?[Math.min(...F.map(x=>cdist(R,c,x))),-st,0]:[-Math.max(1,cdist(R,c,tg)),-Math.hypot(R-tg.R,c-tg.C),-st]; if(!bk||k[0]>bk[0]||(k[0]===bk[0]&&(k[1]>bk[1]||(k[1]===bk[1]&&k[2]>bk[2])))){ bk=k; best=[R,c]; } }
+      if(best&&(adjE||cdist(best[0],best[1],tg)<cheb(u,tg))){ u.R=best[0]; u.C=best[1]; fx(B,u,"돌진","buff"); }   /* 적이 인접: 빈칸으로 돌진 · 아니면 대상 쪽으로 최대 N칸 */
+      q(B,0.25,()=>{ if(!u.alive) return; const t=(tg&&tg.alive&&!tg.disabled)?tg:target(B,u); if(!t) return; fx(B,u,"미사일","sk5"); const o=[Math.round(u.R),Math.round(u.C)], d=Math.max(1,cheb(u,t));
+        q(B,0.08*d,()=>{ const tt=t.alive?t:target(B,u); if(!tt) return; const e=[Math.round(tt.R),Math.round(tt.C)], n=Math.max(1,Math.max(Math.abs(e[0]-o[0]),Math.abs(e[1]-o[1]))); let hit=null;
+          for(let i=1;i<=n&&!hit;i++){ const R=Math.round(o[0]+(e[0]-o[0])*i/n), c=Math.round(o[1]+(e[1]-o[1])*i/n); hit=foes(B,u).find(x=>Math.round(x.R)===R&&Math.round(x.C)===c); }
+          hit=hit||tt; physHit(B,u,hit,physT(B,u,hit,L(u,[290,290,300]),L(u,[40,60,90])),"s3ru"); }); }); } });
+  /* 6) 백각 */ reg("백각",{ skn:"환상적 스케일 폭탄", mana:[30,90], need:1, tip:TIP["백각"],
+    ss:(B,u)=>H.addMA(u,5),
+    init:(B,u)=>{ const e=ensembleLv(B,u); if(e&&u.s1mMax){ u.s1mMax=Math.max(1,u.s1mMax-15*e); u.mana=Math.min(u.mana||0,u.s1mMax); } },
+    cast:(B,u,tg)=>{ const c=rc(tg);
+      for(let k=0;k<3;k++){ const wave=()=>{ if(!u.alive) return; fx(B,u,"파동 "+(k+1),"sk5"); const n=u.s3ss?k+1:1;
+          for(let h=0;h<n;h++) foes(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>magA(B,u,x,L(u,[110,165,255]),"s3bg")); };
+        if(k===0) wave(); else q(B,k,wave); } } });
+  /* 7) 아리스 */ reg("아리스",{ skn:"댄스 타임", mana:[40,80], tip:TIP["아리스"],
+    red:(B,t)=>t.s3ss?10:0, ss:(B,u)=>{ u.ampAll=(u.ampAll||0)+18; },
+    cast:(B,u)=>{ const tot=L(u,[500,575,650]); for(let i=1;i<=4;i++) q(B,0.5*i,()=>{ if(u.alive) heal(B,u,tot/4,"s3ar"); });
+      q(B,2,()=>{ if(!u.alive) return; fx(B,u,"댄스 타임 폭발","sk5"); foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>{ magA(B,u,x,L(u,[190,285,440]),"s3ar"); if(x.alive) S3.frost(B,u,x,30,3); }); }); } });
+  /* 8) 레긴레이프 */ reg("레긴레이프",{ skn:"실험적 스케일", mana:[30,90], need:1, tip:TIP["레긴레이프"],
+    init:(B,u)=>{ u.s3rgF=0; },
+    cast:(B,u,tg)=>{ const src=B.refs&&B.refs[u.uid], base=src?(src.s3rgN||0):0; if(src) src.s3rgN=base+1;
+      const sp=(u.s3ss&&!u.s3rgF)?Math.floor(base/8):0; u.s3rgF=1; const rec={songs:1,end:B.t+0.9}; const pl=L(u,[1,1,3])/100;
+      const note=(last)=>{ if(!u.alive) return; const t=target(B,u); if(!t) return; const r=rnd(B); let ty;
+        if(r<pl){ ty="라틴"; B.s3rgG=B.s3rgG||{me:0,ai:0}; B.s3rgG[u.side]=(B.s3rgG[u.side]||0)+1; fx(B,u,"라틴 · +1골드","buff"); if(rec.songs<20){ rec.songs++; play(rec.end+0.3,false); } }
+        else if(r<pl+(1-pl)/2){ ty="아방가르드"; fx(B,u,"♪ 아방가르드","sk5"); magA(B,u,t,L(u,[200,300,450]),"s3rg"); }
+        else { ty="애시드"; const al=allyOf(B,u).sort((a,b)=>(a.hp-b.hp)||(a.uid-b.uid))[0]; fx(B,u,"♪ 애시드","sk5"); if(al) heal(B,al,L(u,[120,150,180])*MA(u),"s3rg"); }
+        if(last&&sp>0){ fx(B,t,"음표 퍼짐 ×"+sp,"sk5"); for(let k=0;k<sp;k++) foes(B,u).filter(x=>x!==t&&cheb(x,t)<=1).forEach(x=>magA(B,u,x,95,"s3rg")); } };
+      const play=(t0,first)=>{ for(let i=0;i<4;i++){ const dt=Math.max(0,t0-B.t)+0.3*i, last=first&&i===3; if(dt<=1e-9) note(last); else q(B,dt,()=>note(last)); } rec.end=Math.max(rec.end,B.t+Math.max(0,t0-B.t)+0.9); };
+      play(B.t,true); } });
+  /* 9) 크리스 */ reg("크리스",{ skn:"죽음의 메리 고 라운드", mana:[0,60], need:1, tip:TIP["크리스"],
+    ss:(B,u)=>H.addHp(u,200),
+    cast:(B,u,tg)=>{ let cur=tg; const hit=i=>{ if(!u.alive) return; if(!cur||!cur.alive) cur=target(B,u); if(!cur) return; const t=cur; let v=L(u,[150,225,340]); if(i===2&&u.s3ss) v*=1.25;
+        magA(B,u,t,v,"s3kr"); if(t.alive){ t.s3kw=Math.max(t.s3kw||0,B.t+6); fx(B,t,"상처","dis"); }
+        const nx=foes(B,u).filter(x=>x!==t).sort((a,b)=>(cheb(a,t)-cheb(b,t))||(AC.dist(a,t)-AC.dist(b,t))||(a.uid-b.uid))[0]; cur=nx||t; };
+      hit(0); q(B,0.25,()=>hit(1)); q(B,0.5,()=>hit(2)); } });
+  /* 10) 지크 */ reg("지크",{ skn:"팝의 정신", mana:[0,60], need:1, tip:TIP["지크"],
+    ss:(B,u)=>{ H.addHp(u,250); u.def+=20; u.res+=20; },
+    red:(B,t)=>{ const p=t.s3zk; return p&&B.t<p.until?p.pct:0; },
+    taken:(B,t,a,d)=>{ const p=t.s3zk; if(p&&B.t<p.until&&a&&a.side!==t.side&&d>0) p.dmg[a.uid]=(p.dmg[a.uid]||0)+d; },
+    cast:(B,u)=>{ const pct=Math.min(70,20+L(u,[25,25,30])*MA(u)), rec={until:B.t+2.5,pct,dmg:{}}; u.s3zk=rec; fx(B,u,"받는 피해 −"+Math.round(pct)+"%","buff");
+      q(B,2.5,()=>{ if(u.s3zk===rec) u.s3zk=null; if(!u.alive) return; const T=Object.entries(rec.dmg).sort((a,b)=>b[1]-a[1]).map(e=>B.units.find(x=>x.uid==e[0]&&x.alive&&!x.disabled&&x.side!==u.side)).filter(Boolean).slice(0,3); T.forEach(x=>phys(B,u,x,200,"s3zk")); }); } });
+  /* 11) 엘리스 */ reg("엘리스",{ skn:"물병 던지기!", mana:[20,70], need:1, tip:TIP["엘리스"],
+    ss:(B,u)=>{ u.atkPct+=15; u.crit=(u.crit||0)+20; },
+    cast:(B,u,tg)=>{ const c=rc(tg), T=foes(B,u).filter(x=>cheb(x,tg)<=1); let cr=0;
+      T.forEach(x=>{ if(!x.alive) return; const ck=rnd(B)*100<Math.min(100,u.crit||0); const d=Math.max(1,Math.round(AC._s1oCH.call(AC,B,u,x,250,ck,true)));
+        B.events.push({k:"hit",a:u.uid,b:x.uid,d,crit:ck,sk:true,rg:u.range>1,aR:u.R,aC:u.C,bR:x.R,bC:x.C}); AC.applyDmg(B,u,x,d,{id:"sk:s3el",s3:1}); if(ck) cr++; });
+      const n=4+cr; fx(B,u,"파편 ×"+n,"sk5");
+      q(B,0.4,()=>{ if(!u.alive) return; for(let i=0;i<n;i++){ const P=foes(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=2); if(!P.length) break; magA(B,u,P[Math.floor(rnd(B)*P.length)],L(u,[35,50,80]),"s3el"); } }); } });
+  /* 12) 실베스타 */ (()=>{ const tf=(B,u)=>{ if(u.s3svT) return; u.s3svT=1; const g=Math.round(L(u,[500,550,600])*MA(u)); H.addHp(u,g); u.atkPct+=70; fx(B,u,"변신! 생명력 +"+g+" · 공격력 +70%","buff"); };
+    reg("실베스타",{ skn:"광적 팬덤", mana:[0,70], need:1, tip:TIP["실베스타"], init:(B,u)=>{ u.s3svT=0; }, ss:(B,u)=>tf(B,u),
+      cast:(B,u,tg)=>{ if(!u.s3svT){ leapAdj(B,u,tg); tf(B,u); } else phys(B,u,tg,335,"s3sv"); } }); })();
+  /* 13) 플라튼 */ reg("플라튼",{ skn:"천상을 향한 로큰롤", mana:[0,120], need:1, tip:TIP["플라튼"],
+    ss:(B,u)=>H.addAS(u,25),
+    atk:(B,u,t)=>{ const dr=Math.sign(Math.round(t.R)-Math.round(u.R)), dc=Math.sign(Math.round(t.C)-Math.round(u.C)), R=Math.round(t.R)+dr, c=Math.round(t.C)+dc; const v=L(u,[35,52,75]);
+      const rear=foes(B,u).find(x=>x!==t&&Math.round(x.R)===R&&Math.round(x.C)===c); if(t.alive) magA(B,u,t,v,"s3pl"); if(rear&&rear.alive) magA(B,u,rear,v,"s3pl"); },
+    cast:(B,u,tg)=>{ foes(B,u).filter(x=>cheb(x,tg)<=1).forEach(x=>{ magA(B,u,x,L(u,[240,360,540]),"s3pl"); if(x.alive) S3.shred(B,x,"sh",4); }); } });
+  /* 레긴레이프 라틴 골드 (전투 종료 시 정산 · 저장되는 실제 전투에서만) */
+  { const o=AC.battleEnd; AC.battleEnd=function(B){ const r=o.apply(this,arguments); try{ if(B&&B.persist&&B.s3rgG){ for(const side of ["me","ai"]){ const n=B.s3rgG[side]||0, S=B.Sref&&B.Sref[side]; if(n&&S){ S.gold=(S.gold||0)+n; if(side==="me"&&AC.msg) AC.msg("🎵 라틴 음표: +"+n+"골드"); } } B.s3rgG=null; } }catch(e){ console.error(e); } return r; }; }
+  S3.t2={HERO:X.HERO};
+}catch(e){ console.error("s3o_t2",e); } })();
+
+/* ===== S3 영웅 스킬: 3코스트 13명 — 여포·리나·레이첼·타카·엘리시아·노호·로지·오를리·쥬피·콜트·칼 헤론·챈슬러·세라 (AC.seasonId==="s3" 에서만 동작 · 임시 이미지/연출)
+   ★ 툴팁 문구: 사용자 원문(/workspace/s3/t3_tooltips_verbatim.txt) 그대로 (gen_t3.py 가 parse_t3.py 로 읽어 생성). s3n_t1.js 의 영웅 프레임워크(S3.t1x)에 등록한다. */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3||!AC.S3.t1x) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, X=S3.t1x, fx=X.fx, MA=X.MA, L=X.L, foes=X.foes, cheb=X.cheb, rc=X.rc, target=X.target, magA=X.magA, phys=X.phys, physT=X.physT, physHit=X.physHit, stun=X.stun, heal=X.heal, asDyn=X.asDyn, allyOf=X.allyOf, ensembleLv=X.ensembleLv, reg=X.reg;
+  const TIP={"여포": [["다음 6초 동안 보호막을 얻습니다. 또한 기본 공격 시 대상 및 대상과 인접한 적에게 추가 물리 피해를 입힙니다.  ", "슈퍼스타 효과: 생명력 +100, 공격력 +10%, 방어력 +10%, 마법 저항 +10%"], ["보호막(물+마): 250% + 100 / 120 / 140", "추가 물리 피해(물): 85%"]], "리나": [["가장 먼 적에게 광선 형태의 음파를 발사합니다. 적중하는 모든 적에게 마법 피해를 입힙니다.  ", "슈퍼스타 효과: 치명타 확률 +15%, 이 스킬에는 치명타가 적용될 수 있습니다."], ["피해량(마): 260 / 390 / 575"]], "레이첼": [["2초 동안 보호막을 얻으며, 잃은 체력 4당 보호막이 1만큼 증가합니다. 현재 대상에게 마법 피해를, 전방 원뿔 범위의 적에게는 마법 피해를 입힙니다.  ", "슈퍼스타 효과: 생명력 +250, 생명력이 50%일 때 최대 생명력이 영구적으로 50 증가합니다."], ["기본 보호막(고정): 375 / 425 / 475", "피해량(마): 250 / 375 / 600", "원뿔 범위 피해량(마): 120 / 180 / 290"]], "타카": [["전투가 끝날 때까지 이동 속도와 모든 피해 흡혈을 얻습니다. 이 효과는 중첩됩니다. 두 번 베기 공격을 날려 원뿔 범위의 적에게 각각 물리 피해를 입힙니다.  ", "모든 피해 흡혈: 입힌 피해량의 일부만큼 생명력을 회복합니다.  ", "슈퍼스타 효과: 생명력 +150, 공격력 +15%  "], ["이동 속도 및 피해 흡혈(마): 8%", "피해량(물): 210% / 210% / 215% "]], "엘리시아": [["4초 동안 보호막 + 생명력이 가장 높은 아군의 생명력의 5%에 해당하는 보호막을 얻습니다. 보호막이 사라질 때 주변 적에게 최초 보호막 수치의 일정 %에 해당하는 마법 피해를 입힙니다.  ", "슈퍼스타 효과: 생명력 +200, 엘리시아가 스킬을 사용할 때 생명력이 가장 높은 아군에게 20의 마나를 부여합니다."], ["기본 보호막(마): 250 / 300 / 350", "피해량 %: 70% / 90% / 115% "]], "노호": [["2칸 내의 적에게 마법 피해를 입힙니다. 이후 1.5초 동안 기절시킵니다. 4초 동안 보호막을 얻습니다.  ", "합주 보너스: 보호막이 활성화된 동안 매초 100의 생명력을 회복합니다.  ", "슈퍼스타 효과: 생명력 +200, 마법공격력 +20%."], ["보호막(마): 400 / 450 / 550", "피해량(마): 60 / 90 / 145"]], "로지": [["현재 대상에게 그림자를 보냅니다. 그림자는 대상 및 대상과 인접한 적을 0.75초 동안 기절시키며, 이후 마법 피해를 입힙니다.  ", "슈퍼스타 효과 : 마법공격력 +25%"], ["피해량(마): 255 / 380 / 610"]], "오를리": [["기본 지속 효과: 공격받으면 4의 방어력을 얻으며, 최대 25회까지 중첩됩니다.  ", "사용 시: 인접한 적에게 마법 피해를 입힙니다. 3번 사용할 때마다 인접한 적에게 적중해 1.5초 동안 기절시킵니다.  ", "슈퍼스타 효과: 생명력 +150, 공격을 받으면 추가로 마법 저항을 함께 얻습니다."], ["피해량(마+방): 80 / 120 / 190 + 150% / 175% / 200% "]], "쥬피": [["현재 대상에게 물리 피해를 입히고, 그 뒤에 가장 가까운 적에게 물리 피해를 입힙니다. 둘 중 하나라도 죽으면 4초 동안 공격 속도가 증가합니다.  ", "슈퍼스타 효과: 공격력 +25%  "], ["1차 피해량(물): 295% / 295% / 305% ", "2차 피해량(물): 180% / 180% / 180% ", "공격속도 증가(마): 40%"]], "콜트": [["기본 지속 효과: 공격이 치명타로 적중하면 데스페라도 중첩을 얻으며, 최대 6회 중첩됩니다. 중첩 하나당 공격 속도가 증가합니다.  ", "사용 시: 현재 대상에게 물리 피해를 입힙니다. 이때 데스페라도 중첩 하나당 물리 피해를 추가로 입히고, 중첩이 초기화됩니다.  ", "슈퍼스타 효과: 공격력 +15, 치명타 확률 +10%  "], ["공격속도 증가(마): 20%", "기본 피해량(물): 300% / 300% / 310% ", "중첩당 추가 물리 피해(물): 110%"]], "칼 헤론": [["8초 동안 추가 공격 속도를 공격력으로 전환합니다. 공격 시 전방 원뿔 범위에 물리 피해를 입히고 칼 헤론이 5초 뒤 그동안 입힌 피해의 20%에 해당하는 보호막을 얻습니다. 칼 헤론의 공격이 한 대상에게만 적중하면 50%의 추가 피해를 입힙니다.  ", "슈퍼스타 효과: 공격력 +15%, 모든 피해 흡혈 +10%"], ["피해량(물+마): 160% / 160% / 165% + 15 / 25 / 40"]], "챈슬러": [["3초 동안 보호막을 얻고 인접한 적에게 마법 피해를 입힙니다. 이후 해당 적에게 마법 피해를 추가로 입힙니다.  ", "해당 스킬로 적을 처치하면 마법공격력과 공격력이 4%만큼, 방어력 및 마법 저항이 4만큼 증가합니다.  ", "슈퍼스타 효과: 생명력 +100, 미법공격력 +5, 이 스킬로 적을 처치하면 영구적으로 1%의 마법공격력을 얻습니다."], ["보호막(마): 500 / 575 / 650", "피해량(마): 200 / 300 / 480", "2차 피해량(마): 200 / 300 / 480"]], "세라": [["현재 대상 방향으로 마법화살을 발사합니다. 처음 관통하는 적에게 마법 피해를 입히고 두 번째로 적중하는 적에게는 마법 피해를 입힙니다. 3번 사용할 때마다 가장 가까운 적 3명을 1.25초 동안 기절시키고 마법 피해를 입힙니다.  ", "슈퍼스타 효과: 마법공격력 +25"], ["피해량(마): 240 / 360 / 575", "2차 피해량(마): 150 / 225 / 360", "3번째 시전 피해(마): 150 / 225 / 360"]], "$": {"여포": {"skn": "고막 강타", "mana": [50, 100]}, "리나": {"skn": "전통적 살상 운지법", "mana": [15, 75]}, "레이첼": {"skn": "쉐도우 챌린지", "mana": [30, 90]}, "타카": {"skn": "속전속결", "mana": [30, 70]}, "엘리시아": {"skn": "우상숭배", "mana": [0, 90]}, "노호": {"skn": "가이드 레코딩", "mana": [50, 125]}, "로지": {"skn": "그대의 장례식", "mana": [25, 75]}, "오를리": {"skn": "공허, 불안, 그리고 우울", "mana": [0, 45]}, "쥬피": {"skn": "더블 스윙", "mana": [0, 60]}, "콜트": {"skn": "전율적 데스페라도", "mana": [0, 100]}, "칼 헤론": {"skn": "무자비한 돌림노래", "mana": [0, 30]}, "챈슬러": {"skn": "안면 강타 베이스", "mana": [70, 120]}, "세라": {"skn": "공포의 일렉트로닉 감전", "mana": [0, 40]}}};
+  const q=(B,dt,fn)=>S3.q(B,B.t+dt,()=>{ try{ fn(); }catch(e){ console.error("s3p_t3 q",e); } });
+  const inB=(R,c)=>R>=0&&R<C.rows*2&&c>=0&&c<C.cols;
+  const rnd=B=>AC.rnd(B);
+  const dstEu=(a,b)=>Math.hypot(Math.round(a.R)-Math.round(b.R),Math.round(a.C)-Math.round(b.C));
+  /* 원뿔: 시전자→대상 방향 반각 45°, 반경 rad칸(+0.25 여유). 대상 본인 포함 */
+  const cone=(B,u,t,rad)=>{ const vr=Math.round(t.R)-Math.round(u.R), vc=Math.round(t.C)-Math.round(u.C), vl=Math.hypot(vr,vc);
+    return foes(B,u).filter(x=>{ if(x===t) return true; const r=Math.round(x.R)-Math.round(u.R), c=Math.round(x.C)-Math.round(u.C), l=Math.hypot(r,c); if(l<1e-9||l>rad+0.25) return false; if(vl<1e-9) return true;
+      return (r*vr+c*vc)/(l*vl)>=Math.cos(Math.PI/4)-1e-6; }); };
+  /* 직선(광선): 시전자 칸에서 방향으로 0.25칸씩 전진하며 지나는 칸의 적을 거리순으로 수집 (한 칸 폭) */
+  const rayHits=(B,u,vr,vc,maxLen)=>{ const l=Math.hypot(vr,vc); if(l<1e-9) return []; const F=foes(B,u), seen=new Set(), out=[], r0=Math.round(u.R), c0=Math.round(u.C);
+    for(let s=0.25;s<=maxLen+1e-9;s+=0.25){ const R=Math.round(r0+vr/l*s), c=Math.round(c0+vc/l*s); if(!inB(R,c)) break; const k=R*100+c; if(seen.has(k)) continue; seen.add(k); F.filter(x=>Math.round(x.R)===R&&Math.round(x.C)===c).forEach(x=>{ if(!out.includes(x)) out.push(x); }); }
+    return out; };
+  /* 스킬 치명타(마법): 슈퍼스타/스킬 치명 보유 시 적마다 개별 판정 */
+  const magC=(B,u,x,v,id,can)=>{ if(!x||!x.alive) return 0; let ck=false, k=1; if(can){ ck=rnd(B)*100<Math.min(100,u.crit||0); if(ck){ const a=AC._s1oCH.call(AC,B,u,x,100,true,true), b=AC._s1oCH.call(AC,B,u,x,100,false,true); if(b>0&&isFinite(a)) k=a/b; } }
+    const d=Math.max(1,Math.round(v*MA(u)*100/(100+Math.max(0,x.res||0))*X.amp(u,x)*k)); B.events.push({k:"hit",mg:1,a:u.uid,b:x.uid,d,crit:ck,sk:true,rg:true,aR:u.R,aC:u.C,bR:x.R,bC:x.C}); return AC.applyDmg(B,u,x,d,{id:"sk:"+id,s3:1}); };
+
+  /* 1) 여포 */ reg("여포",{ skn:TIP.$.여포.skn, mana:TIP.$.여포.mana, tip:TIP["여포"],
+    ss:(B,u)=>{ H.addHp(u,100); u.atkPct+=10; u.def*=1.1; u.res=(u.res||0)*1.1; },
+    cast:(B,u)=>{ const n=AC.atkNow(B,u)*2.5+L(u,[100,120,140])*MA(u); const g=AC.tShield(B,u,n,6); u.s3lbE=B.t+6; fx(B,u,"보호막 +"+Math.round(g||0),"buff"); },
+    atk:(B,u,t)=>{ if(!(B.t<u.s3lbE)||!t) return; foes(B,u).filter(x=>cheb(x,t)<=1).forEach(x=>phys(B,u,x,85,"s3lb")); } });
+  /* 2) 리나 */ reg("리나",{ skn:TIP.$.리나.skn, mana:TIP.$.리나.mana, need:1, tip:TIP["리나"],
+    ss:(B,u)=>{ u.crit=(u.crit||0)+15; },
+    pick:(B,u)=>foes(B,u).sort((a,b)=>(dstEu(b,u)-dstEu(a,u))||(a.uid-b.uid))[0],
+    cast:(B,u,far)=>{ fx(B,u,"음파 광선","sk5"); const hits=rayHits(B,u,Math.round(far.R)-Math.round(u.R),Math.round(far.C)-Math.round(u.C),dstEu(far,u)+0.3); if(!hits.includes(far)) hits.push(far);
+      hits.forEach(x=>magC(B,u,x,L(u,[260,390,575]),"s3ln",!!u.s3ss||!!u.s1skCrit)); } });
+  /* 3) 레이첼 */ reg("레이첼",{ skn:TIP.$.레이첼.skn, mana:TIP.$.레이첼.mana, need:1, tip:TIP["레이첼"],
+    init:(B,u)=>{ u.s3rcF=0; const src=B.refs&&B.refs[u.uid]; if(src&&src.s3rcHp>0){ H.addHp(u,src.s3rcHp); } },
+    ss:(B,u)=>{ H.addHp(u,250); },
+    tick:(B,u)=>{ if(u.s3ss&&!u.s3rcF&&u.hp<=u.maxHp*0.5){ u.s3rcF=1; H.addHp(u,50); const src=B.refs&&B.refs[u.uid]; if(src) src.s3rcHp=(src.s3rcHp||0)+50; fx(B,u,"최대 생명력 영구 +50","buff"); } },
+    cast:(B,u,tg)=>{ const lost=Math.max(0,u.maxHp-u.hp); const g=AC.tShield(B,u,L(u,[375,425,475])+lost/4,2); fx(B,u,"보호막 +"+Math.round(g||0),"buff");
+      const cn=cone(B,u,tg,2).filter(x=>x!==tg); magA(B,u,tg,L(u,[250,375,600]),"s3rc"); fx(B,u,"원뿔","sk5"); cn.forEach(x=>magA(B,u,x,L(u,[120,180,290]),"s3rc")); } });
+  /* 4) 타카 */ reg("타카",{ skn:TIP.$.타카.skn, mana:TIP.$.타카.mana, need:1, tip:TIP["타카"],
+    ss:(B,u)=>{ H.addHp(u,150); u.atkPct+=15; },
+    cast:(B,u,tg)=>{ const v=8*MA(u); u.ls=(u.ls||0)+v; u.s2mv=(u.s2mv||0)+v; u.s3tkN=(u.s3tkN||0)+1; fx(B,u,"이동 속도·흡혈 +"+Math.round(v*10)/10+"% (×"+u.s3tkN+")","buff");
+      const slash=(i)=>{ if(!u.alive) return; let t=tg&&tg.alive&&!tg.disabled?tg:target(B,u); if(!t) return; fx(B,u,"베기 "+(i+1),"sk5"); cone(B,u,t,2).forEach(x=>phys(B,u,x,L(u,[210,210,215]),"s3tk")); };
+      slash(0); q(B,0.25,()=>slash(1)); } });
+  /* 5) 엘리시아 */ reg("엘리시아",{ skn:TIP.$.엘리시아.skn, mana:TIP.$.엘리시아.mana, tip:TIP["엘리시아"],
+    ss:(B,u)=>{ H.addHp(u,200); },
+    tick:(B,u)=>{ const r=u.s3elR; if(!r||r.done) return; if(B.t>=r.end||(B.t>r.t0+0.05&&(u.shield||0)<=0)){ r.done=1; u.s3elR=null; fx(B,u,"보호막 소멸 · 폭발","sk5"); const v=r.n*r.pct/100/MA(u); foes(B,u).filter(x=>cheb(x,u)<=2).forEach(x=>magA(B,u,x,v,"s3el3")); } },
+    cast:(B,u)=>{ const best=allyOf(B,u).sort((a,b)=>(b.hp-a.hp)||(a.uid-b.uid))[0]; const n=L(u,[250,300,350])*MA(u)+(best?best.hp*0.05:0); const g=AC.tShield(B,u,n,4)||n;
+      u.s3elR={n:g,pct:L(u,[70,90,115]),end:B.t+4,t0:B.t,done:0}; fx(B,u,"보호막 +"+Math.round(g),"buff");
+      if(u.s3ss&&best){ AC._mT=B.t; AC.s1MGain(B,best,20); fx(B,best,"마나 +20","buff"); } } });
+  /* 6) 노호 */ reg("노호",{ skn:TIP.$.노호.skn, mana:TIP.$.노호.mana, tip:TIP["노호"],
+    ss:(B,u)=>{ H.addHp(u,200); H.addMA(u,20); },
+    cast:(B,u)=>{ foes(B,u).filter(x=>cheb(x,u)<=2).forEach(x=>{ magA(B,u,x,L(u,[60,90,145]),"s3nh"); stun(B,x,1.5); });
+      const g=AC.tShield(B,u,L(u,[400,450,550])*MA(u),4); fx(B,u,"보호막 +"+Math.round(g||0),"buff"); const e=ensembleLv(B,u);
+      if(e) for(let i=1;i<=4;i++) q(B,i-(i===4?0.02:0),()=>{ if(u.alive&&(u.shield||0)>0) heal(B,u,100*e,"s3nh"); }); } });
+  /* 7) 로지 */ reg("로지",{ skn:TIP.$.로지.skn, mana:TIP.$.로지.mana, need:1, tip:TIP["로지"],
+    ss:(B,u)=>{ H.addMA(u,25); },
+    cast:(B,u,tg)=>{ const T=foes(B,u).filter(x=>x===tg||cheb(x,tg)<=1); fx(B,u,"그림자","sk5"); T.forEach(x=>{ stun(B,x,0.75); fx(B,x,"그림자","dis"); });
+      q(B,0.75,()=>{ if(!u.alive) return; T.forEach(x=>{ if(x.alive&&!x.disabled) magA(B,u,x,L(u,[255,380,610]),"s3rj"); }); }); } });
+  /* 8) 오를리 */ reg("오를리",{ skn:TIP.$.오를리.skn, mana:TIP.$.오를리.mana, tip:TIP["오를리"],
+    ss:(B,u)=>{ H.addHp(u,150); },
+    taken:(B,t,a,d,op)=>{ if(!a||a.side===t.side||!(d>0)) return; const n=t.s3orN||0; if(n>=25) return; t.s3orN=n+1; t.def+=4; if(t.s3ss) t.res=(t.res||0)+4; },
+    cast:(B,u)=>{ const T=foes(B,u).filter(x=>cheb(x,u)<=1); const base=L(u,[80,120,190]), dp=L(u,[150,175,200])/100;
+      T.forEach(x=>magA(B,u,x,(base*MA(u)+Math.max(0,u.def||0)*dp)/MA(u),"s3or")); if(u.s3n%3===0){ fx(B,u,"기절","sk5"); T.forEach(x=>stun(B,x,1.5)); } } });
+  /* 9) 쥬피 */ reg("쥬피",{ skn:TIP.$.쥬피.skn, mana:TIP.$.쥬피.mana, need:1, tip:TIP["쥬피"],
+    ss:(B,u)=>{ u.atkPct+=25; },
+    cast:(B,u,tg)=>{ phys(B,u,tg,L(u,[295,295,305]),"s3jp"); const d1=!tg.alive;
+      q(B,0.3,()=>{ if(!u.alive) return; const nx=foes(B,u).filter(x=>x!==tg).sort((a,b)=>(dstEu(a,u)-dstEu(b,u))||(a.uid-b.uid))[0]; let d2=false; if(nx){ phys(B,u,nx,180,"s3jp"); d2=!nx.alive; }
+        if(d1||d2){ u.s3jpE=B.t+4; asDyn(u,"s3jpAS",40*MA(u)); fx(B,u,"공격 속도 +"+Math.round(40*MA(u))+"%","buff"); const e=u.s3jpE; q(B,4,()=>{ if(u.s3jpE===e&&u.s3jpE<=B.t+1e-9) asDyn(u,"s3jpAS",0); }); } }); } });
+  /* 10) 콜트 */ reg("콜트",{ skn:TIP.$.콜트.skn, mana:TIP.$.콜트.mana, need:1, tip:TIP["콜트"],
+    ss:(B,u)=>{ u.yeo=(u.yeo||0)+15; u.crit=(u.crit||0)+10; },
+    init:(B,u)=>{ u.s3cl=0; },
+    atk:(B,u,t)=>{ let ev=null; for(let i=B.events.length-1;i>=0&&i>=B.events.length-12;i--){ const e=B.events[i]; if(e.k==="hit"&&e.a===u.uid&&e.b===t.uid&&e.sk===false){ ev=e; break; } }
+      if(ev&&ev.crit&&(u.s3cl||0)<6){ u.s3cl=(u.s3cl||0)+1; asDyn(u,"s3clAS",u.s3cl*20*MA(u)); fx(B,u,"데스페라도 ×"+u.s3cl,"buff"); } },
+    cast:(B,u,tg)=>{ const n=u.s3cl||0; phys(B,u,tg,L(u,[300,300,310])+110*n,"s3cl"); u.s3cl=0; asDyn(u,"s3clAS",0); if(n) fx(B,u,"중첩 "+n+" 소모","buff"); } });
+  /* 11) 칼 헤론 */ reg("칼 헤론",{ skn:TIP.$["칼 헤론"].skn, mana:TIP.$["칼 헤론"].mana, tip:TIP["칼 헤론"],
+    init:(B,u)=>{ u.range=2; u.s3khE=0; u.s3khX=0; u.s3khA=0; u.s3khL=[]; },
+    ss:(B,u)=>{ u.atkPct+=15; u.ls=(u.ls||0)+10; },
+    tick:(B,u)=>{ const on=B.t<u.s3khE; if(!on&&!u.s3khX&&!u.s3khA) return;
+      const ex=on?Math.max(0,(u.asPct||0)+u.s3khX):0; if(Math.abs(ex-u.s3khX)>1e-9||Math.abs(ex-u.s3khA)>1e-9){ u.asPct-=ex-u.s3khX; u.atkPct+=ex-u.s3khA; u.s3khX=ex; u.s3khA=ex; AC.reIv(u); } },
+    pre:(B,u,t,d)=>{ if(!(B.t<u.s3khE)) return null; const cn=cone(B,u,t,2), m=cn.length===1?1.5:1; let mine=d;
+      cn.forEach(x=>{ const dm=Math.max(1,Math.round(physT(B,u,x,L(u,[160,160,165]),L(u,[15,25,40]))*m)); if(x===t) mine=dm; else{ const r=physHit(B,u,x,dm,"s3kh"); u.s3khL.forEach(w=>{ if(B.t<w.end) w.tally+=r; }); } }); return mine; },
+    atk:(B,u,t,r)=>{ (u.s3khL||[]).forEach(w=>{ if(B.t<w.end) w.tally+=r; }); },
+    cast:(B,u)=>{ u.s3khE=Math.max(u.s3khE,B.t+8); const w={tally:0,end:B.t+5}; u.s3khL.push(w); fx(B,u,"공속→공격력 전환 8초","buff");
+      q(B,5,()=>{ if(!u.alive) return; const g=AC.addShield(B,u,w.tally*0.2); fx(B,u,"보호막 +"+Math.round(g||0),"buff"); }); } });
+  /* 12) 챈슬러 */ reg("챈슬러",{ skn:TIP.$.챈슬러.skn, mana:TIP.$.챈슬러.mana, tip:TIP["챈슬러"],
+    init:(B,u)=>{ const src=B.refs&&B.refs[u.uid]; if(src&&src.s3chMA>0) H.addMA(u,src.s3chMA); },
+    ss:(B,u)=>{ H.addHp(u,100); H.addMA(u,5); },
+    cast:(B,u)=>{ const g=AC.tShield(B,u,L(u,[500,575,650])*MA(u),3); fx(B,u,"보호막 +"+Math.round(g||0),"buff"); const T=foes(B,u).filter(x=>cheb(x,u)<=1), v=L(u,[200,300,480]);
+      const tick=(x,val)=>{ if(!u.alive||!x.alive||x.disabled) return; magA(B,u,x,val,"s3cs"); if(!x.alive){ u.atkPct+=4; H.addMA(u,4); u.def+=4; u.res=(u.res||0)+4; fx(B,u,"처치! 마공·공격력 +4%, 방어·마저 +4","buff");
+          if(u.s3ss){ H.addMA(u,1); const src=B.refs&&B.refs[u.uid]; if(src) src.s3chMA=(src.s3chMA||0)+1; fx(B,u,"마법공격력 영구 +1%","buff"); } } };
+      T.forEach(x=>{ for(let i=1;i<=3;i++) q(B,0.5*i,()=>tick(x,v/3)); for(let i=1;i<=2;i++) q(B,1.5+0.5*i,()=>tick(x,v/2)); }); } });
+  /* 13) 세라 */ reg("세라",{ skn:TIP.$.세라.skn, mana:TIP.$.세라.mana, need:1, tip:TIP["세라"],
+    ss:(B,u)=>{ H.addMA(u,25); },
+    cast:(B,u,tg)=>{ fx(B,u,"마법 화살","sk5"); const vr=Math.round(tg.R)-Math.round(u.R), vc=Math.round(tg.C)-Math.round(u.C); const hits=rayHits(B,u,vr,vc,40); if(!hits.length) hits.push(tg);
+      if(hits[0]) magA(B,u,hits[0],L(u,[240,360,575]),"s3sr"); if(hits[1]) magA(B,u,hits[1],L(u,[150,225,360]),"s3sr");
+      if(u.s3n%3===0){ fx(B,u,"3번째 시전","sk5"); foes(B,u).sort((a,b)=>(dstEu(a,u)-dstEu(b,u))||(a.uid-b.uid)).slice(0,3).forEach(x=>{ stun(B,x,1.25); magA(B,u,x,L(u,[150,225,360]),"s3sr"); }); } } });
+  S3.t3={HERO:X.HERO};
+}catch(e){ console.error("s3p_t3",e); } })();
+
+/* ===== S3 영웅 스킬: 4코스트 13명 — 발리스타·카린·태오·키리엘·아일린·연희·에이스·리·유신·미스트·라이언·녹스·멜키르 (AC.seasonId==="s3" 에서만 동작 · 임시 이미지/연출)
+   ★ 툴팁 문구: 사용자 원문(/workspace/s3/t4_tooltips_verbatim.txt) 그대로, [대괄호 메모]는 툴팁 제외·구현 규칙으로만 사용 (gen_t4.py 가 parse_t4.py 로 읽어 생성). s3n_t1.js 의 영웅 프레임워크(S3.t1x)에 등록한다. */
+(function(){ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.S3||!AC.S3.t1x) return; try{
+  const S3=AC.S3, H=S3.H, C=AC_CONFIG, X=S3.t1x, fx=X.fx, MA=X.MA, L=X.L, foes=X.foes, cheb=X.cheb, target=X.target, magA=X.magA, phys=X.phys, physT=X.physT, physHit=X.physHit, stun=X.stun, heal=X.heal, ensembleLv=X.ensembleLv, reg=X.reg;
+  const TIP={"발리스타": [["가장 멀리 있는 적 4명을 사격합니다. 사격 시 처음 적중당한 적에게 물리 피해를 입힙니다. ", "슈퍼스타 효과: 공격력 +5%, 추가로 사격하여 60%의 피해를 입힙니다."], ["피해량(물+마): 360% / 360% / 750% + 40 / 60 / 200"]], "카린": [["대상 및 대상과 인접한 적에게 3회 튕기는 파동을 발사합니다. 튕길 때마다 마법 피해를 입히고 1초 동안 기절시킵니다. 추가로 카린의 생명력을 회복합니다.  ", "슈퍼스타 효과: 생명력 +200, 마법공격력 +15"], ["피해량(마): 120 / 180 / 1200", "회복량(마): 120 / 160 / 800"]], "태오": [["현재 대상에게 표식을 남기고, 4초 동안 대상으로 지정할 수 없는 그림자를 생성합니다. 그림자는 태오 공격력에 비례한 공격력을 지닙니다. 짧은 시간이 지나거나 표식이 남은 적의 생명력이 일정 수치 아래로 떨어지면 그림자가 추가 물리 피해를 입힙니다.  ", "슈퍼스타 효과: 생명력 +100, 공격력 +5%"], ["생명력 수치 하한선(마): 15%", "그림자 공격력(물): 185% / 185% / 370% ", "추가 피해량(물): 350% / 350% / 700% "]], "키리엘": [["점멸하여 현재 대상과 멀어진 후 물리 피해를 입힙니다. 3번 사용할 때마다 직선상의 모든 적에게 환영 별빛을 낙하하여 물리 피해를 입힙니다.  ", "슈퍼스타 효과: 공격력 +15%"], ["피해량(물): 370% / 370% / 740% ", "환영 별빛 피해량(물+마): 350% / 350% / 700% + 80 / 120 / 360"]], "아일린": [["가장 멀리 있는 표식이 없는 대상에게 창을 던져 표식을 남깁니다. 이후 표식이 남은 모든 적에게 차례대로 돌진한 뒤 물리 피해를 입히고, 돌진 경로에 있는 적에게는 물리 피해를 입힙니다.  ", "슈퍼스타 효과: 생명력 +100, 공격 속도 +10%"], ["돌진 피해량(물): 190% / 190% / 380% ", "경로 피해량(마): 80 / 120 / 400 "]], "연희": [["현재 대상에게 입맞춤을 보냅니다. 마법 피해를 입히고 잠시 기절시킵니다. 이전에 입맞춤을 받은 대상일 경우, 강화된 마법 피해를 입힙니다.", "슈퍼스타 효과: 마법공격력 +15%"], ["피해량(마): 275 / 410 / 820", "강화 피해량(마): 480 / 720 / 1440"]], "에이스": [["가장 가까운 3칸 내의 적 세 명에게 물리 피해를 세 번 나누어 입힙니다. 세 번의 공격 후 살아남은 적 하나당 마나를 돌려받습니다.  ", "합주 보너스: 삼중주로 입힌 피해의 20%만큼 생명력을 회복합니다.  ", "슈퍼스타 효과: 생명력 +100, 공격 속도 +10%"], ["1회 당 피해량(물): 275% / 275% / 550% ", "돌려받는 마나(마): 12 / 12 / 20"]], "리": [["기본 지속 효과: 2초마다 인접한 적에게 마법 피해를 입힙니다.  ", "사용 시: 보호막을 얻습니다. 5초 동안 리가 매초 기본 지속 효과 피해를 입히며, 추가로 대상 최대 생명력의 1%에 해당하는 마법 피해를 입힙니다.  ", "슈퍼스타 효과: 생명력 +150, 기본 지속 효과가 항상 최대 생명력에 비례하는 마법 피해를 입힙니다."], ["피해량(마): 100 / 150 / 1000", "보호막(마): 600 / 750 / 2000"]], "유신": [["현재 대상 및 대상과 가장 가까운 적 3명에게 빠른 속도의 투사체를 나누어 던집니다. 마법 저항을 1만큼 감소시키고 마법 피해를 입힙니다.  ", "슈퍼스타 효과: 투사체 3개를 추가로 던집니다."], ["투사체 개수(기본+공격속도 비례): 21+40% 당1", "1개 당 피해량(마): 45 / 70 / 225"]], "미스트": [["기본 지속 효과: 추가 생명력에 따라 공격력이 증가합니다.  ", "사용 시: 6초 동안 방어력 및 마법 저항이 100만큼 증가합니다. 또한 가장 가까운 적을 3번 내리쳐 적중할 때마다 물리 피해를 입히고 생명력을 회복합니다. 이 스킬로 적을 처치하면 추가로 한 번 찍기 공격을 가합니다.  ", "슈퍼스타 효과: 생명력 +150, 공격력 +10%  "], ["생명력 비례 공격력 증가(생): 3%", "피해량(물): 260% / 260% / 525% ", "회복량(생): 5%"]], "라이언": [["주위 가장 큰 적 무리를 기절시키고 각각 마법 피해를 입힙니다. 기본 생명력 회복량 + 라이언이 입힌 총 피해의 50%에 해당하는 생명력을 회복합니다.  ", "슈퍼스타 효과: 생명력 +100, 최대 마나가 25 감소합니다."], ["피해량(마): 150 / 225 / 1200", "생명력 회복: 250 / 300 / 600 ", "기절 지속시간: 1.75 / 2 / 8 "]], "녹스": [["기본 지속 효과: 치명타 확률에 비례해 마법 공격력을 얻습니다.  ", "사용 시: 생명력이 가장 낮은 적 4/4/6명에게 마법 피해를 입힙니다. 가능할 경우 항상 치명타로 적용됩니다. 전투가 끝날 때까지 마법 공격력이 40% 증가합니다.  ", "슈퍼스타 효과: 마법 공격력 +15%"], ["피해량(마): 160 / 240 / 540"]], "멜키르": [["근처 칸을 찍습니다. 2칸 내의 적에게 물리 피해를 입히고 5초 동안 표식을 남깁니다. 표식이 남은 적은 받는 모든 피해가 10%만큼 증가합니다.  ", "멜키르가 표식이 남은 적을 공격할 때 강화된 물리 피해를 입힙니다.  ", "슈퍼스타 효과: 생명력 +150, 공격력 +10%  "], ["표식 유지 시간(마): 5%(초)", "찍기 피해량(물):225% / 225% / 450% ", "강화된 공격 피해량(물): 185% / 185% / 370%"]], "$": {"발리스타": {"skn": "하드 스타일 사격", "mana": [0, 75]}, "카린": {"skn": "자진모리장단", "mana": [60, 120]}, "태오": {"skn": "그림자 칼춤", "mana": [30, 50]}, "키리엘": {"skn": "사이키델릭 환영별빛 포화", "mana": [0, 45]}, "아일린": {"skn": "Baddie", "mana": [10, 50]}, "연희": {"skn": "파괴의 손키스", "mana": [0, 30]}, "에이스": {"skn": "삼중주", "mana": [0, 60]}, "리": {"skn": "드럼 앤 베이스", "mana": [60, 120]}, "유신": {"skn": "잉글리쉬 드릴", "mana": [30, 105]}, "미스트": {"skn": "철퇴 가져와", "mana": [30, 100]}, "라이언": {"skn": "악마의 휘몰이", "mana": [70, 160]}, "녹스": {"skn": "메탈 신봉자", "mana": [40, 120]}, "멜키르": {"skn": "파괴의 힘 베어내기", "mana": [70, 120]}}};
+  const q=(B,dt,fn)=>S3.q(B,B.t+dt,()=>{ try{ fn(); }catch(e){ console.error("s3q_t4 q",e); } });
+  const inB=(R,c)=>R>=0&&R<C.rows*2&&c>=0&&c<C.cols;
+  const freeC=(B,R,c)=>inB(R,c)&&!B.units.some(x=>x.alive&&Math.round(x.R)===R&&Math.round(x.C)===c);
+  const dstEu=(a,b)=>Math.hypot(Math.round(a.R)-Math.round(b.R),Math.round(a.C)-Math.round(b.C));
+  const byFar=(B,u)=>foes(B,u).sort((a,b)=>(AC.dist(b,u)-AC.dist(a,u))||(a.uid-b.uid));
+  const byNear=(B,u)=>foes(B,u).sort((a,b)=>(dstEu(a,u)-dstEu(b,u))||(a.uid-b.uid));
+  /* 시전 중 기본 공격 잠금 (AC.s1HitLock: 지속 d초 + 1초) */
+  const lock=(B,u,dur)=>{ try{ if(AC.s1HitLock) AC.s1HitLock(B,u,Math.max(0,dur-1)); }catch(e){} };
+  /* 직선(광선): 시전자 칸에서 방향으로 0.25칸씩 전진하며 지나는 칸의 적을 거리순으로 수집 (한 칸 폭) — 3코스트(s3p_t3)와 동일 */
+  const rayHits=(B,u,vr,vc,maxLen)=>{ const l=Math.hypot(vr,vc); if(l<1e-9) return []; const F=foes(B,u), seen=new Set(), out=[], r0=Math.round(u.R), c0=Math.round(u.C);
+    for(let s=0.25;s<=maxLen+1e-9;s+=0.25){ const R=Math.round(r0+vr/l*s), c=Math.round(c0+vc/l*s); if(!inB(R,c)) break; const k=R*100+c; if(seen.has(k)) continue; seen.add(k); F.filter(x=>Math.round(x.R)===R&&Math.round(x.C)===c).forEach(x=>{ if(!out.includes(x)) out.push(x); }); }
+    return out; };
+  /* 직선 처음 적중 (S2 빅토리아 first): P→Q 선분 위 가장 가까운 적 (관통 없음, 폭 0.6칸) */
+  const first=(B,u,P,Qt,def)=>{ const vR=Qt.R-P.R, vC=Qt.C-P.C, L2=vR*vR+vC*vC||1; return foes(B,u).filter(x=>{ const k=((x.R-P.R)*vR+(x.C-P.C)*vC)/L2; return k>0&&k<=1.05&&Math.hypot(x.R-(P.R+vR*k),x.C-(P.C+vC*k))<=0.6; }).sort((x,y)=>AC.dist(x,P)-AC.dist(y,P))[0]||def; };
+  /* (마) 피해 + 치명타: force=true 면 치명타 능력(치확>0)이 있을 때 항상 치명타 (녹스) */
+  const magCk=(B,u,x,v,id,force)=>{ if(!x||!x.alive) return 0; let ck=false, k=1; if(force&&(u.crit||0)>0){ ck=true; const a=AC._s1oCH.call(AC,B,u,x,100,true,true), b=AC._s1oCH.call(AC,B,u,x,100,false,true); if(b>0&&isFinite(a)) k=a/b; }
+    const d=Math.max(1,Math.round(v*MA(u)*100/(100+Math.max(0,x.res||0))*X.amp(u,x)*k)); B.events.push({k:"hit",mg:1,a:u.uid,b:x.uid,d,crit:ck,sk:true,rg:true,aR:u.R,aC:u.C,bR:x.R,bC:x.C}); return AC.applyDmg(B,u,x,d,{id:"sk:"+id,s3:1}); };
+  /* 선분 시작칸→도착칸 사이(양 끝 제외) 칸에 있는 적 */
+  const pathFoes=(B,u,r0,c0,r1,c1,ex)=>{ const n=Math.max(Math.abs(r1-r0),Math.abs(c1-c0)), seen=new Set(), out=[]; for(let i=1;i<n;i++){ const R=Math.round(r0+(r1-r0)*i/n), c=Math.round(c0+(c1-c0)*i/n), k=R*100+c; if(seen.has(k)) continue; seen.add(k);
+      foes(B,u).forEach(x=>{ if(x!==ex&&Math.round(x.R)===R&&Math.round(x.C)===c&&!out.includes(x)) out.push(x); }); } return out; };
+
+  /* 1) 발리스타 — S2 빅토리아 스킬 로직 복사 (가장 먼 적 4명 · 먼 순서 회전 · 0.4초 조준 후 0.15초 간격 · 처음 적중한 적에게 (물+마)) */
+  reg("발리스타",{ skn:TIP.$.발리스타.skn, mana:TIP.$.발리스타.mana, need:1, tip:TIP["발리스타"],
+    ss:(B,u)=>{ u.atkPct+=5; },
+    cast:(B,u)=>{ const E=byFar(B,u); if(!E.length) return; const NS=4, plan=Array.from({length:NS},(_,i)=>E[i%E.length]); if(u.s3ss) plan.push(E[0]); const DL=0.4, GP=0.15, FLY=0.4;
+      lock(B,u,DL+(plan.length-1)*GP+FLY); fx(B,u,"조준","sk5");
+      plan.forEach((x,i)=>q(B,DL+i*GP,()=>{ if(!u.alive) return; let t=x.alive&&!x.disabled?x:null;
+        if(!t){ for(let k=1;k<plan.length&&!t;k++){ const y=plan[(i+k)%plan.length]; if(y.alive&&!y.disabled) t=y; } if(!t) t=byFar(B,u)[0]; }   /* 대상이 먼저 죽으면 남은 사격은 살아있는 적에게 · 모두 죽었으면 중단 */
+        if(!t) return; const h=first(B,u,{R:u.R,C:u.C},t,t), k=i>=NS?0.6:1; fx(B,u,"사격","sk5");
+        q(B,FLY,()=>{ if(!h.alive) return; physHit(B,u,h,physT(B,u,h,L(u,[360,360,750]),L(u,[40,60,200]))*k,"s3vb"); }); })); } });
+  /* 2) 카린 — 대상과 인접한 적 사이를 3번 튕기는 파동 */
+  reg("카린",{ skn:TIP.$.카린.skn, mana:TIP.$.카린.mana, need:1, tip:TIP["카린"],
+    ss:(B,u)=>{ H.addHp(u,200); H.addMA(u,15); },
+    cast:(B,u,tg)=>{ const ord=[tg].concat(foes(B,u).filter(x=>x!==tg&&cheb(x,tg)<=1).sort((a,b)=>(dstEu(a,tg)-dstEu(b,tg))||(a.uid-b.uid))); fx(B,u,"파동","sk5");
+      for(let i=0;i<3;i++) q(B,0.2*i,()=>{ if(!u.alive) return; const x=ord[i%ord.length], t=x.alive?x:ord.find(y=>y.alive); if(t){ fx(B,t,"튕김 "+(i+1),"sk5"); magA(B,u,t,L(u,[120,180,1200]),"s3kr"); stun(B,t,1); }
+        if(i===2) heal(B,u,L(u,[120,160,800])*MA(u),"s3kr"); }); } });
+  /* 3) 태오 — 표식 + 지정 불가 그림자(4초): 그림자 공격 (물) + 1초 후/표식 적 생명력이 (마)15% 미만이면 추가 (물) */
+  reg("태오",{ skn:TIP.$.태오.skn, mana:TIP.$.태오.mana, need:1, tip:TIP["태오"],
+    init:(B,u)=>{ u.s3tw=[]; },
+    ss:(B,u)=>{ H.addHp(u,100); u.atkPct+=5; },
+    tick:(B,u)=>{ const R=u.s3tw; if(!R||!R.length) return; for(const r of R){ if(r.over) continue; const mt=B.units.find(x=>x.uid===r.tid);
+        if(B.t>=r.end){ r.over=1; continue; }
+        if(!r.fx){ if(!mt||!mt.alive){ r.fx=1; } else if(B.t>=r.t0+1-1e-9||mt.hp<mt.maxHp*0.15*MA(u)){ r.fx=1; fx(B,mt,"그림자 추가 피해","sk5"); phys(B,u,mt,L(u,[350,350,700]),"s3twx"); } }
+        if(B.t>=r.nx-1e-9){ r.nx+=Math.max(0.3,u.iv||1); const t=(mt&&mt.alive&&!mt.disabled)?mt:target(B,u); if(t) phys(B,u,t,L(u,[185,185,370]),"s3tw"); } }
+      u.s3tw=R.filter(r=>!r.over); },
+    cast:(B,u,tg)=>{ fx(B,u,"표식 · 그림자","sk5"); fx(B,tg,"표식","dis"); (u.s3tw=u.s3tw||[]).push({tid:tg.uid,t0:B.t,end:B.t+4,nx:B.t+0.3,fx:0,over:0}); } });
+  /* 4) 키리엘 — 적이 인접하면 최대 2칸 점멸 후 사격 · 3번째 시전마다 직선 환영 별빛 */
+  reg("키리엘",{ skn:TIP.$.키리엘.skn, mana:TIP.$.키리엘.mana, need:1, tip:TIP["키리엘"],
+    ss:(B,u)=>{ u.atkPct+=15; },
+    cast:(B,u,tg)=>{ const F=foes(B,u);
+      if(F.some(x=>cheb(x,u)<=1)){ const r0=Math.round(u.R), c0=Math.round(u.C); let best=null;
+        for(let dR=-2;dR<=2;dR++) for(let dC=-2;dC<=2;dC++){ if(!dR&&!dC) continue; const R=r0+dR, c=c0+dC; if(!freeC(B,R,c)) continue; const md=Math.min(...F.map(x=>Math.max(Math.abs(R-Math.round(x.R)),Math.abs(c-Math.round(x.C))))), sc=md*10-Math.hypot(dR,dC); if(md>1&&(!best||sc>best.sc)) best={sc,R,c}; }
+        if(best){ u.R=best.R; u.C=best.c; fx(B,u,"점멸","buff"); } }
+      const t=(tg&&tg.alive)?tg:target(B,u); if(!t) return; fx(B,u,"사격","sk5"); phys(B,u,t,L(u,[370,370,740]),"s3kl");
+      if(u.s3n%3===0){ fx(B,u,"환영 별빛","sk5"); const hits=rayHits(B,u,Math.round(t.R)-Math.round(u.R),Math.round(t.C)-Math.round(u.C),40); if(!hits.length) hits.push(t);
+        q(B,0.3,()=>{ if(!u.alive) return; hits.forEach(x=>{ if(x.alive) physHit(B,u,x,physT(B,u,x,L(u,[350,350,700]),L(u,[80,120,360])),"s3kls"); }); }); } } });
+  /* 5) 아일린 — 가장 먼 표식 없는 적에 창 표식(전투 내 유지) → 표식 적 전원에게 차례로 돌진 (물) + 경로 적 (마값·물리) */
+  reg("아일린",{ skn:TIP.$.아일린.skn, mana:TIP.$.아일린.mana, need:1, tip:TIP["아일린"],
+    init:(B,u)=>{ u.s3ayM={}; },
+    ss:(B,u)=>{ H.addHp(u,100); H.addAS(u,10); },
+    cast:(B,u)=>{ const M=(u.s3ayM=u.s3ayM||{}), un=byFar(B,u).filter(x=>!M[x.uid])[0]; if(un){ M[un.uid]=1; fx(B,un,"표식","dis"); fx(B,u,"창 던지기","sk5"); }
+      const GP=0.25, ST=0.3, mk=foes(B,u).filter(x=>M[x.uid]); if(!mk.length) return; lock(B,u,ST+GP*mk.length);
+      q(B,ST,()=>{ if(!u.alive) return; const list=[]; let from={R:u.R,C:u.C}; const pool=foes(B,u).filter(x=>M[x.uid]); while(pool.length){ pool.sort((a,b)=>(dstEu(a,from)-dstEu(b,from))||(a.uid-b.uid)); const x=pool.shift(); list.push(x); from=x; }   /* 가까운 표식 적부터 차례대로 */
+        list.forEach((x,i)=>q(B,GP*i,()=>{ if(!u.alive||!x.alive||x.disabled) return; const r0=Math.round(u.R), c0=Math.round(u.C); let dest=null;
+          if(cheb(u,x)>1){ let bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=Math.round(x.R)+dr, c=Math.round(x.C)+dc; if(!freeC(B,R,c)) continue; const d=Math.hypot(R-r0,c-c0); if(d<bd){ bd=d; dest=[R,c]; } } }
+          if(dest){ const path=pathFoes(B,u,r0,c0,dest[0],dest[1],x); u.R=dest[0]; u.C=dest[1]; fx(B,u,"돌진","buff"); path.forEach(y=>{ if(y.alive) physHit(B,u,y,physT(B,u,y,0,L(u,[80,120,400])),"s3ayp"); }); }
+          phys(B,u,x,L(u,[190,190,380]),"s3ay"); })); }); } });
+  /* 6) 연희 — 입맞춤 (이전에 입맞춤을 받은 대상이면 강화) */
+  reg("연희",{ skn:TIP.$.연희.skn, mana:TIP.$.연희.mana, need:1, tip:TIP["연희"],
+    init:(B,u)=>{ u.s3yhK={}; },
+    ss:(B,u)=>{ H.addMA(u,15); },
+    cast:(B,u,tg)=>{ const K=(u.s3yhK=u.s3yhK||{}), was=!!K[tg.uid]; K[tg.uid]=1; fx(B,tg,was?"강화 입맞춤":"입맞춤","sk5"); magA(B,u,tg,was?L(u,[480,720,1440]):L(u,[275,410,820]),"s3yh"); stun(B,tg,1); } });
+  /* 7) 에이스 — 3칸 내 가장 가까운 적 3명에게 3번 분할 · 생존 적당 마나 환급 · 합주: 입힌 피해 20% 흡혈 */
+  reg("에이스",{ skn:TIP.$.에이스.skn, mana:TIP.$.에이스.mana, need:1, tip:TIP["에이스"],
+    ss:(B,u)=>{ H.addHp(u,100); H.addAS(u,10); },
+    pick:(B,u)=>byNear(B,u).filter(x=>cheb(x,u)<=3)[0],
+    cast:(B,u)=>{ const T=byNear(B,u).filter(x=>cheb(x,u)<=3).slice(0,3); if(!T.length) return; let tot=0; const GP=0.25; lock(B,u,GP*2+0.1); fx(B,u,"삼중주","sk5");
+      for(let i=0;i<3;i++) q(B,GP*i,()=>{ if(!u.alive) return; T.forEach(x=>{ if(x.alive&&!x.disabled) tot+=phys(B,u,x,L(u,[275,275,550]),"s3ac")||0; });
+        if(i===2){ const sv=T.filter(x=>x.alive).length; if(sv){ AC._mT=B.t; { const l1=u.s1hLock, l2=u.s1lock; u.s1hLock=0; u.s1lock=0; AC.s1MGain(B,u,L(u,[12,12,20])*MA(u)*sv); u.s1hLock=l1; u.s1lock=l2; } fx(B,u,"마나 환급 ×"+sv,"buff"); }
+          const e=ensembleLv(B,u); if(e&&tot>0) heal(B,u,tot*0.2*e,"s3ac"); } }); } });
+  /* 8) 리 — 패시브: 2초마다 인접 적 (마) · 사용: 보호막 + 5초 매초 패시브 피해 + 대상 최대 생명력 1% 마법 피해 */
+  { const pulse=(B,u,bonus)=>{ foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>{ magA(B,u,x,L(u,[100,150,1000]),"s3li"); if(bonus&&x.alive) magA(B,u,x,x.maxHp*0.01/MA(u),"s3li"); }); };
+    reg("리",{ skn:TIP.$.리.skn, mana:TIP.$.리.mana, tip:TIP["리"],
+      init:(B,u)=>{ u.s3liN=2; },
+      ss:(B,u)=>{ H.addHp(u,150); },
+      tick:(B,u)=>{ if(B.t>=u.s3liN-1e-9){ u.s3liN+=2; pulse(B,u,!!u.s3ss); } },
+      cast:(B,u)=>{ const g=AC.tShield(B,u,L(u,[600,750,2000])*MA(u),5); fx(B,u,"보호막 +"+Math.round(g||0),"buff"); for(let i=1;i<=5;i++) q(B,i,()=>{ if(u.alive) pulse(B,u,true); }); } }); }
+  /* 9) 유신 — 현재 대상 + 대상과 가장 가까운 적 3명에게 21발(+추가 공속 40%당 1, 슈퍼스타 +3) 분할: 마저 -1 후 (마) */
+  reg("유신",{ skn:TIP.$.유신.skn, mana:TIP.$.유신.mana, need:1, tip:TIP["유신"],
+    ss:()=>{},
+    cast:(B,u,tg)=>{ const list=[tg].concat(foes(B,u).filter(x=>x!==tg).sort((a,b)=>(dstEu(a,tg)-dstEu(b,tg))||(a.uid-b.uid)).slice(0,3)), n=21+Math.floor(Math.max(0,u.asPct||0)/40)+(u.s3ss?3:0), GP=0.05; lock(B,u,GP*n+0.1); fx(B,u,"잉글리쉬 드릴 ×"+n,"sk5");
+      for(let i=0;i<n;i++) q(B,0.1+GP*i,()=>{ if(!u.alive) return; let x=null; for(let k=0;k<list.length&&!x;k++){ const y=list[(i+k)%list.length]; if(y.alive&&!y.disabled) x=y; } if(!x) return;
+        AC.debuff(B,x,"res",()=>{ if((x.res||0)>0) x.res=Math.max(0,x.res-1); }); magA(B,u,x,L(u,[45,70,225]),"s3ys"); }); } });
+  /* 10) 미스트 — 패시브: 추가 생명력(현재 최대 − 성급 기본)의 3%만큼 공격력 · 사용: 6초 방어·마저 +100, 가장 가까운 적 3번 + 처치 시 1번 추가 */
+  reg("미스트",{ skn:TIP.$.미스트.skn, mana:TIP.$.미스트.mana, need:1, tip:TIP["미스트"],
+    init:(B,u)=>{ u.s3msA=0; },
+    ss:(B,u)=>{ H.addHp(u,150); u.atkPct+=10; },
+    tick:(B,u)=>{ const base=(u.s&&u.s.hp)||(u._s1b0&&u._s1b0.hp)||u.maxHp, v=Math.max(0,u.maxHp-base)*0.03; if(Math.abs(v-(u.s3msA||0))>1e-6){ u.yeo=(u.yeo||0)+v-(u.s3msA||0); u.s3msA=v; } },
+    cast:(B,u)=>{ u.def+=100; u.res=(u.res||0)+100; fx(B,u,"방어력·마저 +100","buff"); q(B,6,()=>{ u.def-=100; u.res-=100; });
+      const GP=0.35; let total=3, done=0; lock(B,u,0.1+GP*2);
+      const smash=()=>{ if(!u.alive) return; const x=byNear(B,u)[0]; if(!x) return; fx(B,u,"내려찍기 "+(done+1),"sk5"); phys(B,u,x,L(u,[260,260,525]),"s3ms"); heal(B,u,u.maxHp*0.05,"s3ms"); if(!x.alive){ total++; fx(B,u,"처치! 추가 찍기","buff"); } done++; if(done<total) q(B,GP,smash); };
+      q(B,0.1,smash); } });
+  /* 11) 라이언 — S2 카론 로직: 가장 큰 적 무리 기절 + (마), 회복 = 기본 + 입힌 총 피해 50% */
+  reg("라이언",{ skn:TIP.$.라이언.skn, mana:TIP.$.라이언.mana, need:1, tip:TIP["라이언"],
+    ss:(B,u)=>{ H.addHp(u,100); if(u.s1mMax>0) u.s1mMax=Math.max(1,u.s1mMax-25); },
+    cast:(B,u)=>{ const F=foes(B,u); if(!F.length) return; const c=F.map(x=>({x,n:F.filter(y=>cheb(x,y)<=1).length})).sort((a,b)=>b.n-a.n||(AC.dist(a.x,u)-AC.dist(b.x,u)))[0].x, R0=c.R, C0=c.C; fx(B,u,"악마의 휘몰이","sk5");
+      q(B,0.45,()=>{ if(!u.alive) return; const o={R:c.alive?c.R:R0,C:c.alive?c.C:C0}; let tot=0; foes(B,u).filter(x=>cheb(x,o)<=1).forEach(x=>{ tot+=magA(B,u,x,L(u,[150,225,1200]),"s3ry")||0; stun(B,x,L(u,[1.75,2,8])); });
+        heal(B,u,L(u,[250,300,600])*MA(u)+tot*0.5,"s3ry"); }); } });
+  /* 12) 녹스 — 패시브: 치명타 확률에 비례해 마법공격력 (치확 1%당 +0.5) · 사용: 생명력 낮은 적 4/4/6명 치명타 (마) + 전투 끝까지 마법공격력 +40% (사용마다 중첩) */
+  reg("녹스",{ skn:TIP.$.녹스.skn, mana:TIP.$.녹스.mana, need:1, tip:TIP["녹스"],
+    init:(B,u)=>{ u.s3nxA=0; },
+    ss:(B,u)=>{ H.addMA(u,15); },
+    tick:(B,u)=>{ const v=Math.min(100,Math.max(0,u.crit||0))*0.5; if(Math.abs(v-(u.s3nxA||0))>1e-6){ H.addMA(u,v-(u.s3nxA||0)); u.s3nxA=v; } },
+    cast:(B,u)=>{ const n=Math.round(L(u,[4,4,6])), T=foes(B,u).sort((a,b)=>(a.hp-b.hp)||(a.uid-b.uid)).slice(0,n); fx(B,u,"메탈 신봉자","sk5");
+      T.forEach(x=>magCk(B,u,x,L(u,[160,240,540]),"s3nx",true)); H.addMA(u,40); fx(B,u,"마법공격력 +40%","buff"); } });
+  /* 13) 멜키르 — 근처 칸 찍기: 2칸 내 (물) + 5×(1+마공)초 표식(받는 모든 피해 +10%) · 표식 적 기본 공격은 강화 (물) */
+  reg("멜키르",{ skn:TIP.$.멜키르.skn, mana:TIP.$.멜키르.mana, need:1, tip:TIP["멜키르"],
+    ss:(B,u)=>{ H.addHp(u,150); u.atkPct+=10; },
+    pre:(B,u,t,d)=>{ if(t&&t.s3mkU===u.uid&&B.t<t.s3mkE) return d*L(u,[185,185,370])/100; return null; },
+    cast:(B,u,tg)=>{ fx(B,u,"찍기","sk5"); const dur=5*MA(u); foes(B,u).filter(x=>cheb(x,tg)<=2).forEach(x=>{ phys(B,u,x,L(u,[225,225,450]),"s3mk"); if(x.alive){ x.s3mkE=B.t+dur; x.s3mkU=u.uid; fx(B,x,"표식 "+Math.round(dur*10)/10+"초","dis"); } }); } });
+  /* 멜키르 표식: 표식이 남은 적이 받는 모든 피해 +10% (아군이 가하는 피해) */
+  { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ try{ if(t&&t.s3mkE&&B.t<t.s3mkE&&a&&a.side!==t.side&&d>0) d*=1.1; }catch(e){} return o.call(this,B,a,t,d,op); }; }
+  S3.t4={HERO:X.HERO};
+}catch(e){ console.error("s3q_t4",e); } })();
 
 </script>
 </body>
