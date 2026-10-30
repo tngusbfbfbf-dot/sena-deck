@@ -17386,7 +17386,10 @@ window.S3AUGL=[
   const mDir=el=>{ const a=(el._a||0)*Math.PI/180, m=el._f?1:-1; return [m*Math.cos(a),m*Math.sin(a)]; };
   const recoil=(el,big)=>{ try{ const rk=el.querySelector(".rk"); if(!rk||!rk.animate) return; const d=mDir(el), k=big?9:5, T="translate("+(-d[0]*k).toFixed(2)+"px,"+(-d[1]*k).toFixed(2)+"px)", s=spd(), tot=Math.max(40,(70+190)/s);
       rk.animate([{transform:"translate(0,0)",easing:"ease-out"},{transform:T,offset:70/260,easing:"cubic-bezier(.25,.6,.3,1)"},{transform:"translate(0,0)"}],{duration:tot}); }catch(e){} };
-  const fire=(B,u,t,n,big)=>{ try{ if(typeof document==="undefined"||u.side!=="me"||!AC.anim||AC.anim.B!==B) return; const els=iconEls(), now=performance.now(), tp=unitXY(B,t); if(!tp) return; cv();
+  const fire=(B,u,t,n,big)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B) return; const now=performance.now(), tp=unitXY(B,t); if(!tp) return;
+      if(u.side!=="me"){ /* 상대 오르카: 대기석 소총 아이콘이 화면에 없으므로 오르카 주변(반원)에서 같은 탄환 발사 (사용자 pt2093u) */ const op=unitXY(B,u); if(!op) return; cv(); const k=Math.min(n,8);
+        for(let i=0;i<k&&BUL.length<32;i++){ const a=-Math.PI/2+(i-(k-1)/2)*0.32, x0=op[0]+Math.cos(a)*26, y0=op[1]+Math.sin(a)*26, dist=Math.hypot(tp[0]-x0,tp[1]-y0); BUL.push({x0,y0,t,tx:tp[0],ty:tp[1],t0:now+i*12,dur:Math.min(220,Math.max(70,dist/3))/spd()}); } return; }
+      const els=iconEls(); cv();
       for(let i=0;i<Math.min(n,els.length);i++){ const el=els[i], r=(el.querySelector('.rk')||el).getBoundingClientRect(), img=el.querySelector("img"), cx=r.left+r.width/2, cy=r.top+r.height/2, d=mDir(el), L=((img&&img.offsetWidth)||r.width)*0.48;
         if(now-(el._rt||0)>40){ el._rt=now; recoil(el,big); } if(BUL.length>=32) continue; const x0=cx+d[0]*L, y0=cy+d[1]*L, dist=Math.hypot(tp[0]-x0,tp[1]-y0); BUL.push({x0,y0,t,tx:tp[0],ty:tp[1],t0:now,dur:Math.min(220,Math.max(70,dist/3*1))/spd()}); } }catch(e){} };
   const drawBul=()=>{ if(!CV||!CV.isConnected) return; try{ fitCv(); CX.clearRect(0,0,window.innerWidth,window.innerHeight); const now=performance.now(), B=AIM.B;
@@ -17431,7 +17434,7 @@ window.S3AUGL=[
     const base=atk*coef/100, k=(base>0&&isFinite(d))?d/base:100/(100+Math.max(0,t.def||0));     /* k = 물리 경로 총 배율(방어력·피해 증감) */
     return d+add*MA(u)*k; };
   const conduct=(B,u,t,n)=>{ u.s3cn=(u.s3cn||0)+1; u.s3ct=t; u.s3ctT=B.t; const x4=u.s3cn%4===0, mul=x4?2:1, coef=L(u,[60,60,444]), add=L(u,[15,25,144]);
-    fx(B,u,x4?"지휘 ×2 (4번째)":"지휘","sk5"); pulse();
+    B.events.push({k:"sk3",id:"s3fOcL",a:u.uid,b:t.uid,aR:u.R,aC:u.C,R:t.R,C:t.C,x4:x4?1:0}); pulse();   /* 지휘 스포트라이트 (s3n_t1fx.js) · 글자 연출 제거 */
     let fired=0; for(let i=0;i<n;i++){ if(!t.alive) break; fired++; const d=Math.max(1,Math.round(phys(B,u,t,coef,add)*mul));
       B.events.push({k:"hit",a:u.uid,b:t.uid,d,crit:false,sk:true,rg:true,aR:u.R,aC:u.C,bR:t.R,bC:t.C}); AC.applyDmg(B,u,t,d,{id:"sk:s3rifle",s3:1}); } fire(B,u,t,fired,x4); };
   const mana=(B,u)=>{ AC._mT=B.t; AC.s1MGain(B,u,10+5*gN(u,"i4")+2*gN(u,"i13")+10*gN(u,"m4")+4*gN(u,"m13")); AC.s1MGain(B,u,10); };
@@ -17671,22 +17674,24 @@ window.S3AUGL=[
   const fit=()=>{ const dpr=Math.min(2,window.devicePixelRatio||1), w=window.innerWidth, h=window.innerHeight; if(CV.width!==Math.round(w*dpr)||CV.height!==Math.round(h*dpr)){ CV.width=Math.round(w*dpr); CV.height=Math.round(h*dpr); } CX.setTransform(CV.width/w,0,0,CV.height/h,0,0); };
   if(typeof document!=="undefined"&&!document.getElementById("s3escss")){ const s=document.createElement("style"); s.id="s3escss";
     s.textContent=".s3esb{position:fixed;z-index:99992;pointer-events:none;margin:-34px 0 0 6px;padding:0 4px;border-radius:8px;background:rgba(40,16,0,.82);border:1px solid #ffb347;color:#ffd27a;font:700 11px/16px sans-serif;text-shadow:0 1px 1px #000;white-space:nowrap}"; document.head.appendChild(s); }
-  const vis=(B,u,hit,list)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B) return; const p0=unitXY(B,u), p1=unitXY(B,hit); if(!p0||!p1) return; cv(); VB=B; if(VF.length>120) return;
-      VF.push({k:"b",x0:p0[0],y0:p0[1],x1:p1[0],y1:p1[1],t0:performance.now(),dur:Math.min(240,Math.max(90,Math.hypot(p1[0]-p0[0],p1[1]-p0[1])/2.5))/spd(),hit,list}); if(!raf) raf=requestAnimationFrame(loop); }catch(e){} };
+  const vis=(B,u,hit,list,ci,fl)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B) return; const p0=unitXY(B,u), p1=unitXY(B,hit); if(!p0||!p1) return; cv(); VB=B; if(VF.length>120) return;
+      VF.push({k:"b",x0:p0[0],y0:p0[1],x1:p1[0],y1:p1[1],t0:performance.now(),dur:fl*1000/spd(),hit,list,ci:ci||0,en:u.side!=="me"}); if(!raf) raf=requestAnimationFrame(loop); }catch(e){} };
   const loop=()=>{ raf=0; try{ const B=AC.anim&&AC.anim.B; if(!CV||!CV.isConnected) return; fit(); CX.clearRect(0,0,window.innerWidth,window.innerHeight); const now=performance.now();
       for(let i=VF.length-1;i>=0;i--){ const f=VF[i], k=(now-f.t0)/f.dur; if(f.k==="b"){
-          if(k>=1){ const c=B&&unitXY(B,f.hit); VF.splice(i,1); VF.push({k:"x",t0:now,dur:420/spd(),hit:f.hit,list:f.list,c:c||[f.x1,f.y1]}); continue; }
+          if(k>=1){ const c=B&&unitXY(B,f.hit); VF.splice(i,1); VF.push({k:"x",t0:now,dur:300/spd(),hit:f.hit,list:f.list,c:c||[f.x1,f.y1],ci:f.ci,en:f.en}); continue; }
           const q=B&&unitXY(B,f.hit); if(q){ f.x1=q[0]; f.y1=q[1]; } const hx=f.x0+(f.x1-f.x0)*k, hy=f.y0+(f.y1-f.y0)*k, tk=Math.max(0,k-0.5), tx=f.x0+(f.x1-f.x0)*tk, ty=f.y0+(f.y1-f.y0)*tk;
-          CX.save(); CX.lineCap="round"; const g=CX.createLinearGradient(tx,ty,hx,hy); g.addColorStop(0,"rgba(255,170,40,0)"); g.addColorStop(1,"rgba(255,246,190,1)"); CX.strokeStyle=g; CX.lineWidth=3; CX.shadowColor="rgba(255,160,30,.95)"; CX.shadowBlur=9; CX.beginPath(); CX.moveTo(tx,ty); CX.lineTo(hx,hy); CX.stroke();
-          CX.fillStyle="#fff7c8"; CX.beginPath(); CX.arc(hx,hy,3.6,0,6.2832); CX.fill(); CX.restore();
+          const P=f.ci?[255,205,70]:[90,175,255], rgba=a=>"rgba("+P[0]+","+P[1]+","+P[2]+","+a+")";
+          CX.save(); CX.lineCap="round"; const g=CX.createLinearGradient(tx,ty,hx,hy); g.addColorStop(0,rgba(0)); g.addColorStop(1,rgba(.9)); CX.strokeStyle=g; CX.lineWidth=2.4; CX.shadowColor=rgba(1); CX.shadowBlur=12; CX.beginPath(); CX.moveTo(tx,ty); CX.lineTo(hx,hy); CX.stroke();
+          const rg=CX.createRadialGradient(hx,hy,0,hx,hy,9); rg.addColorStop(0,"rgba(255,255,255,1)"); rg.addColorStop(.4,rgba(.9)); rg.addColorStop(1,rgba(0)); CX.fillStyle=rg; CX.beginPath(); CX.arc(hx,hy,9,0,6.2832); CX.fill();
+          for(let s2=0;s2<5;s2++){ const an=s2*1.2566+k*9+f.t0, rr=4+3*Math.sin(k*12+s2); CX.fillStyle=rgba(.85); CX.beginPath(); CX.arc(hx+Math.cos(an)*rr-(hx-tx)*0.15*s2/5,hy+Math.sin(an)*rr-(hy-ty)*0.15*s2/5,1.6,0,6.2832); CX.fill(); }
+          CX.restore();
         } else { if(k>=1){ VF.splice(i,1); continue; } const a=1-k; CX.save(); CX.globalAlpha=a;
-          const cc=B&&unitXY(B,f.hit)||f.c; const r0=14+36*k;
-          const gr=CX.createRadialGradient(cc[0],cc[1],2,cc[0],cc[1],r0); gr.addColorStop(0,"rgba(255,250,200,.95)"); gr.addColorStop(.55,"rgba(255,170,40,.65)"); gr.addColorStop(1,"rgba(255,110,20,0)"); CX.fillStyle=gr; CX.beginPath(); CX.arc(cc[0],cc[1],r0,0,6.2832); CX.fill();
-          CX.strokeStyle="#ffd24a"; CX.lineWidth=2.4; CX.shadowColor="#ff9a1f"; CX.shadowBlur=8; CX.beginPath(); CX.arc(cc[0],cc[1],r0+4,0,6.2832); CX.stroke();
-          for(const x of (f.list||[])){ if(x===f.hit) continue; const p=B&&unitXY(B,x); if(!p) continue; CX.globalAlpha=a*.75; CX.strokeStyle="#ffe27a"; CX.lineWidth=2; CX.beginPath(); CX.arc(p[0],p[1],10+26*k,0,6.2832); CX.stroke(); }
+          const cc=B&&unitXY(B,f.hit)||f.c; const r0=6+16*k, P=f.ci?[255,205,70]:[90,175,255], rgba=a=>"rgba("+P[0]+","+P[1]+","+P[2]+","+a+")";
+          const gr=CX.createRadialGradient(cc[0],cc[1],1,cc[0],cc[1],r0); gr.addColorStop(0,"rgba(255,255,255,.95)"); gr.addColorStop(.5,rgba(.7)); gr.addColorStop(1,rgba(0)); CX.fillStyle=gr; CX.beginPath(); CX.arc(cc[0],cc[1],r0,0,6.2832); CX.fill();
+          CX.strokeStyle=rgba(.9); CX.lineWidth=1.6; CX.shadowColor=rgba(1); CX.shadowBlur=6; for(let s2=0;s2<6;s2++){ const an=s2*1.0472+f.t0, r1=r0*0.6, r2=r0*1.15; CX.beginPath(); CX.moveTo(cc[0]+Math.cos(an)*r1,cc[1]+Math.sin(an)*r1); CX.lineTo(cc[0]+Math.cos(an)*r2,cc[1]+Math.sin(an)*r2); CX.stroke(); }
+          for(const x of (f.list||[])){ if(x===f.hit) continue; const p=B&&unitXY(B,x); if(!p) continue; CX.globalAlpha=a*.6; CX.strokeStyle=rgba(.8); CX.lineWidth=1.4; CX.beginPath(); CX.arc(p[0],p[1],5+10*k,0,6.2832); CX.stroke(); }
+          if(f.en){ CX.globalAlpha=a; CX.shadowBlur=0; CX.strokeStyle="rgba(255,40,40,.9)"; CX.lineWidth=1.2; CX.beginPath(); CX.arc(cc[0],cc[1],r0*1.2+3,0,6.2832); CX.stroke(); }
           CX.restore(); } }
-      /* 방어력 감소 배지 */
-      for(const [uid,m] of [...BD]){ const x=m.u, ok=B&&m.B===B&&x.alive&&(x.s3esD||0)>0; if(!ok){ m.el.remove(); BD.delete(uid); continue; } const p=unitXY(B,x); if(p){ m.el.style.left=p[0].toFixed(1)+"px"; m.el.style.top=p[1].toFixed(1)+"px"; } const tx="🛡−"+Math.round(x.s3esD*10)/10; if(m.tx!==tx){ m.tx=tx; m.el.textContent=tx; } }
       if(VF.length||BD.size) raf=requestAnimationFrame(loop); }catch(e){} };
   const badge=(B,x)=>{ try{ if(typeof document==="undefined"||!AC.anim||AC.anim.B!==B||BD.has(x.uid)) return; const el=document.createElement("div"); el.className="s3esb"; document.body.appendChild(el); BD.set(x.uid,{u:x,el,B}); if(!raf) raf=requestAnimationFrame(loop); }catch(e){} };
   const clean=()=>{ try{ VF.length=0; for(const m of BD.values()) m.el.remove(); BD.clear(); if(CV){ CV.remove(); CV=null; CX=null; } if(raf&&typeof cancelAnimationFrame!=="undefined") cancelAnimationFrame(raf); raf=0; }catch(e){} };
@@ -17695,18 +17700,18 @@ window.S3AUGL=[
   /* ---- 전투 시작: 슈퍼스타 = 공격력 +5% ---- */
   { const o=AC.skStart; AC.skStart=function(B){ const r=o.apply(this,arguments); try{ for(const u of B.units){ if(!isE(u)) continue; u.s3es=1; u.s1n=u.name; u.s3esN=0; u.s3esBusy=0; if(u.s3ss) u.atkPct+=5; } }catch(e){ console.error(e); } return r; }; }
   /* ---- 폭발: 처음 맞은 적 + 인접 8칸의 모든 적에게 물리 피해 1회씩 → 방어력 고정값 감소(누적, 0 미만 불가) ---- */
-  const explode=(B,u,h)=>{ const coef=L(u,[55,55,1000]), add=L(u,[20,30,100]), red=L(u,[3,5,20]);
-    const T=foes(B,u).filter(x=>x===h||H.cheb(x,h)<=1); vis(B,u,h,T);
+  const explode=(B,u,h,T0)=>{ const coef=L(u,[55,55,1000]), add=L(u,[20,30,100]), red=L(u,[3,5,20]);
+    const T=T0||foes(B,u).filter(x=>x===h||H.cheb(x,h)<=1);
     for(const x of T){ if(!x.alive) continue; const d=Math.max(1,Math.round(physT(B,u,x,coef,add)));
-      B.events.push({k:"hit",a:u.uid,b:x.uid,d,crit:false,sk:true,rg:true,aR:u.R,aC:u.C,bR:x.R,bC:x.C}); AC.applyDmg(B,u,x,d,{id:"sk:s3es",s3:1});
-      if(x.alive){ const cur=Math.max(0,x.def||0), dec=Math.min(cur,red); if(dec>0){ x.def=cur-dec; x.s3esD=(x.s3esD||0)+dec; if(B.t-(x.s3esFx||-9)>0.4){ x.s3esFx=B.t; fx(B,x,"방어력 −"+Math.round(x.s3esD*10)/10,"debuff"); } } badge(B,x); } }
+      B.events.push({k:"hit",a:u.uid,b:x.uid,d,crit:false,sk:true,rg:true,s3nofx:1,pd:0,aR:u.R,aC:u.C,bR:x.R,bC:x.C}); AC.applyDmg(B,u,x,d,{id:"sk:s3es",s3:1});
+      if(x.alive){ const cur=Math.max(0,x.def||0), dec=Math.min(cur,red); if(dec>0){ x.def=cur-dec; x.s3esD=(x.s3esD||0)+dec; } } }
     return T.length; };
   /* ---- 스킬: 가장 먼 적(시전 시점) 방향으로 N발을 1.75초에 걸쳐 균등 발사 · 궤적에 적이 없으면 중단 → 미발사 1발당 마나 1 ---- */
-  const cast=(B,u)=>{ const tg=farthest(B,u); if(!tg){ u.s3esBusy=0; return; } const N=shotsOf(u), gap=N>1?SPAN/(N-1):0; let ax=tg.C, ay=tg.R; u.s3esN++; u.s3esLast={N,fired:0,unfired:0,gain:0,t:B.t}; fx(B,u,SKN+" · "+N+"발","sk5");
+  const cast=(B,u)=>{ const tg=farthest(B,u); if(!tg){ u.s3esBusy=0; return; } const N=shotsOf(u), gap=N>1?SPAN/(N-1):0; let ax=tg.C, ay=tg.R; u.s3esN++; u.s3esLast={N,fired:0,unfired:0,gain:0,t:B.t};
     const shot=i=>{ if(!u.alive){ u.s3esBusy=0; return; } if(tg.alive){ ax=tg.C; ay=tg.R; } const h=rayHit(B,u,ax,ay);
-      if(!h){ const un=N-i; u.s3esLast.unfired=un; u.s3esLast.gain=un; u.s3esBusy=0; if(un>0){ AC._mT=B.t; const n23=gN(u,"i23"), m23=gN(u,"m23"); AC.s1MGain(B,u,un/(1+0.15*n23+0.30*m23)); /* 일반 고정값: 미발사 1발당 정확히 마나 1 (수정룡의 의복 +15% 등 마나 획득 보정은 사전 상쇄) */ fx(B,u,"사격 중단 · 마나 +"+un,"buff"); } return; }
-      u.s3esLast.fired++; explode(B,u,h);
-      if(i+1<N) S3.q(B,B.t+gap,()=>shot(i+1)); else u.s3esBusy=0; };
+      if(!h){ const un=N-i; u.s3esLast.unfired=un; u.s3esLast.gain=un; u.s3esBusy=0; if(un>0){ AC._mT=B.t; const n23=gN(u,"i23"), m23=gN(u,"m23"); AC.s1MGain(B,u,un/(1+0.15*n23+0.30*m23)); /* 일반 고정값: 미발사 1발당 정확히 마나 1 (수정룡의 의복 +15% 등 마나 획득 보정은 사전 상쇄) */ } return; }
+      u.s3esLast.fired++; { const FL=0.12, T=foes(B,u).filter(x=>x===h||H.cheb(x,h)<=1); vis(B,u,h,T,i%2,FL); S3.q(B,B.t+FL,()=>{ if(!u.alive) return; const h2=h.alive?h:null; if(h2) explode(B,u,h2,T.filter(x=>x.alive&&(x===h2||H.cheb(x,h2)<=1))); }); }
+      if(i+1<N) S3.q(B,B.t+gap,()=>shot(i+1)); else S3.q(B,B.t+0.121,()=>{ u.s3esBusy=0; }); };
     shot(0); };
   AC.s1CF=AC.s1CF||{};
   AC.s1CF[KEY]=(B,u)=>{ if(u.s3esBusy) return; /* 사격 진행 중에는 새 시전 시작 안 함 */ if(!AC.s1MUse(u)) return; u.s3esBusy=1; cast(B,u); };
@@ -18236,7 +18241,7 @@ window.S3AUGL=[
   { const RIMC=0xff2a2a, RIMW=1.8;
     let RUN=0; const sideOf=(B,uid)=>{ const u=uid!=null&&B&&B.units&&B.units.find(x=>x.uid===uid); return u?u.side:null; };
     const run=(px,EN,fn)=>{ const S=px.scene; if(!EN||!S||!S.add) return fn(); const c=px.cell?px.cell():{W:60,H:60}, m=Math.min(c.W,c.H);
-      const rim=(o,draw)=>{ if(!o||o._s3rim) return o; o._s3rim=1; const g=S.add.graphics(); const up=()=>{ if(!o.active||!g.active){ if(g.active) g.destroy(); S.events.off("update",up); return; } g.setDepth((o.depth||36)+0.5); g.clear(); if(!o.visible) return; const a=Math.min(1,(o.alpha==null?1:o.alpha)*1.2); if(a<0.03) return; g.lineStyle(RIMW,RIMC,a); draw(g,o); }; S.events.on("update",up); return o; };
+      const rim=(o,draw)=>{ if(!o||o._s3rim) return o; o._s3rim=1; /* 테두리용 그래픽은 원본 생성기로 만들어 패치된 A.graphics→rimGfx→rim 무한 재귀 방지 */ const g=oG.call(A); g._s3rim=1; const up=()=>{ if(!o.active||!g.active){ if(g.active) g.destroy(); S.events.off("update",up); return; } g.setDepth((o.depth||36)+0.5); g.clear(); if(!o.visible) return; const a=Math.min(1,(o.alpha==null?1:o.alpha)*1.2); if(a<0.03) return; g.lineStyle(RIMW,RIMC,a); draw(g,o); }; S.events.on("update",up); return o; };
       const rimImg=o=>rim(o,(g,o)=>{ const w=Math.max(o.displayWidth,o.displayHeight); if(w<m*1.2) return; g.strokeCircle(o.x,o.y,w*0.46); });
       const rimShape=o=>rim(o,(g,o)=>{ const w=o.displayWidth, h=o.displayHeight; if(Math.max(w,h)<m*0.8) return; if(o.type==="Arc"||o.type==="Ellipse") g.strokeEllipse(o.x,o.y,w,h); else { const ox=o.originX==null?0.5:o.originX, oy=o.originY==null?0.5:o.originY; g.strokeRect(o.x-w*ox,o.y-h*oy,w,h); } });
       const rimGfx=o=>{ const best={s:0}; const rec=(nm,f)=>{ const k=o[nm]; o[nm]=function(){ const r=f.apply(null,arguments); if(r&&r.s>best.s&&r.s>=m*0.9) Object.assign(best,r); return k.apply(this,arguments); }; };
@@ -18299,6 +18304,64 @@ window.S3AUGL=[
         for(let i=0;i<d.length;i+=4){ const l=(d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255; d[i]=20+60*l; d[i+1]=8+30*l; d[i+2]=24+70*l; } g.putImageData(D,0,0); TX.addCanvas(key,c); }catch(e){ return null; } }
     const im=S.add.image(0,0,key); const sz=Math.max(best.displayWidth,best.displayHeight)||m*0.9; im.setScale(sz/Math.max(im.frame.width,im.frame.height)); return im; };
 }catch(e){ console.warn("S3 태오 그림자",e); } })();
+/* ===== S3 오르카 지휘 스포트라이트 · 황금 소멸 · 장미 (사용자 pt2093u) ===== */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.PX) return; const PX=AC.PX;
+  const goldCopy=function(S,uid,m){ const V=this.units&&this.units[uid]; if(!V||!V.c||!V.c.list) return null; let best=null; const walk=L=>L.forEach(o=>{ if(o.list) walk(o.list); else if(o.type==="Image"&&o.texture&&o.texture.key!=="__DEFAULT"&&o.texture.key!=="__MISSING"){ if(!best||o.displayWidth*o.displayHeight>best.displayWidth*best.displayHeight) best=o; } }); walk(V.c.list); if(!best) return null;
+    const fr=best.frame, key="s3f_ocG_"+best.texture.key+"_"+fr.name, TX=S.textures;
+    if(!TX.exists(key)){ try{ const c=document.createElement("canvas"); c.width=fr.cutWidth; c.height=fr.cutHeight; const g=c.getContext("2d"); g.drawImage(fr.source.image,fr.cutX,fr.cutY,fr.cutWidth,fr.cutHeight,0,0,fr.cutWidth,fr.cutHeight); const D=g.getImageData(0,0,c.width,c.height), d=D.data;
+        for(let i=0;i<d.length;i+=4){ const l=(d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255; d[i]=Math.min(255,120+150*l); d[i+1]=Math.min(255,80+140*l); d[i+2]=Math.min(255,10+80*l*l); } g.putImageData(D,0,0); TX.addCanvas(key,c); }catch(e){ return null; } }
+    const im=S.add.image(V.c.x+best.x*(V.c.scaleX||1),V.c.y+best.y*(V.c.scaleY||1),key); const sz=Math.max(best.displayWidth,best.displayHeight)||m*0.9; im.setScale(sz/Math.max(im.frame.width,im.frame.height)*(V.c.scaleX||1)); return im; };
+  const rose=(S,x,y,m)=>{ const g=S.add.graphics(); g.setPosition(x,y+m*0.18); const k=m/60;
+    g.lineStyle(2.2*k,0x2f7a2a,1); g.beginPath(); g.moveTo(0,0); g.lineTo(2*k,-14*k); g.lineTo(0,-24*k); g.strokePath();
+    g.fillStyle(0x3d9a35,1); g.fillEllipse(-5*k,-10*k,9*k,4.5*k); g.fillEllipse(6*k,-16*k,8*k,4*k);
+    g.fillStyle(0x7a0614,1); g.fillCircle(0,-28*k,7.5*k); g.fillStyle(0xb50f24,1); g.fillCircle(-2.5*k,-29*k,5.2*k); g.fillCircle(3*k,-27.5*k,4.6*k); g.fillStyle(0xe2364a,1); g.fillCircle(0,-29.5*k,3*k); g.fillStyle(0x7a0614,1); g.fillCircle(0.5*k,-29.5*k,1.3*k);
+    g.setDepth(9); g.setAlpha(0); S.tweens.add({targets:g,alpha:1,duration:400}); return g; };
+  const draw=function(st){ const S=this.scene, g=st.g, cam=S.cameras.main, {W,H}=this.cell(), m=Math.min(W,H); g.clear();
+    const now=S.time.now, live=now-st.last<1100, a=Math.max(0,Math.min(1,live?(now-st.t0)/220:1-(now-st.last-1100)/300)); if(a<=0&&!live) return false;
+    const U=this.units&&this.units[st.tid]; let tx=st.x, ty=st.y; if(U&&U.c){ tx=U.c.x; ty=U.c.y; } st.x=st.x==null?tx:st.x+(tx-st.x)*0.25; st.y=st.y==null?ty:st.y+(ty-st.y)*0.25;
+    const x=st.x, y=st.y+m*0.3, top=Math.max(cam.worldView.y,y-m*4.2), rw=m*0.62, rh=m*0.22;
+    g.fillStyle(0x000000,0.26*a); g.fillRect(cam.worldView.x,cam.worldView.y,cam.worldView.width,cam.worldView.height);
+    for(let i=0;i<4;i++){ const f=1-i*0.22; g.fillStyle(0xfff1c4,0.07*a); g.fillTriangle(x-m*0.05*f,top,x+m*0.05*f,top,x+rw*f,y); g.fillTriangle(x-m*0.05*f,top,x+rw*f,y,x-rw*f,y); }
+    g.fillStyle(0xfff6d8,0.28*a); g.fillEllipse(x,y,rw*2,rh*2); g.fillStyle(0xffffff,0.18*a); g.fillEllipse(x,y,rw*1.2,rh*1.2);
+    if(st.en){ g.lineStyle(1.5,0xff2a2a,0.85*a); g.beginPath(); g.moveTo(x-m*0.05,top); g.lineTo(x-rw,y); g.moveTo(x+m*0.05,top); g.lineTo(x+rw,y); g.strokePath(); g.strokeEllipse(x,y,rw*2,rh*2); }
+    return true; };
+  const tick=function(){ const S=this.scene; if(!S) return; const L=S._s3oc; if(!L) return; const B=L.B, end=!B||!AC.anim||AC.anim.B!==B;  /* 마지막 적 처치(B.done) 직후에도 장미는 전투 화면이 끝날 때까지 유지 */
+    for(const id in L.sp){ const st=L.sp[id]; const t=B&&B.units.find(u=>u.uid===st.tid);
+      if(!end&&t&&!t.alive&&!L.dead[st.tid]){ L.dead[st.tid]=1; const {W,H}=this.cell(), m=Math.min(W,H), U=this.units&&this.units[st.tid], x=U&&U.c?U.c.x:st.x, y=U&&U.c?U.c.y:st.y;
+        const gi=goldCopy.call(this,S,st.tid,m); if(gi){ gi.setDepth(40); gi.setAlpha(0); S.tweens.add({targets:gi,alpha:1,duration:160,onComplete:()=>S.tweens.add({targets:gi,alpha:0,y:gi.y-m*0.25,duration:900,ease:"Sine.easeIn",onComplete:()=>gi.destroy()})}); }
+        L.roses.push(rose(S,x,y,m)); }
+      if(end||!draw.call(this,st)){ st.g.destroy(); delete L.sp[id]; } }
+    if(end){ L.roses.forEach(r=>r.destroy()); S._s3oc=null; } };
+  { const oU=PX.sync; if(oU) PX.sync=function(){ const r=oU.apply(this,arguments); try{ const S=this.scene; if(S&&!S._s3ocH){ S._s3ocH=1; const self=this; S.events.on("postupdate",()=>{ try{ tick.call(self); }catch(e){} }); } }catch(_){} return r; }; }
+  const oF=PX.sk3fx; PX.sk3fx=function(B,e){ if(!e||e.id!=="s3fOcL") return oF.apply(this,arguments); const S=this.scene; if(!S) return;
+    if(!S._s3ocH){ S._s3ocH=1; const self=this; S.events.on("postupdate",()=>{ try{ tick.call(self); }catch(er){} }); }
+    let L=S._s3oc; if(!L||L.B!==B){ if(L){ L.roses.forEach(r=>r.destroy()); for(const k in L.sp) L.sp[k].g.destroy(); } L=S._s3oc={B,sp:{},roses:[],dead:{}}; }
+    const a=B.units.find(u=>u.uid===e.a); let st=L.sp[e.a]; const now=S.time.now;
+    if(!st){ st=L.sp[e.a]={g:S.add.graphics().setDepth(30),t0:now,x:null,y:null,en:!!(a&&a.side!=="me")}; }
+    else if(now-st.last>1400) st.t0=now;
+    st.tid=e.b; st.last=now; };
+}catch(e){ console.warn("S3 오르카 스포트라이트",e); } })();
+/* ===== S3 스쿨드: 소형 실(무지개, 시차) · 파쇄 4초 묶임 표시 (S1 s1skBurst 실 모양 이식 · S1 코드 미수정 · 사용자 pt2095u) ===== */
+(function(){ try{ if(typeof AC==="undefined"||AC.seasonId!=="s3"||!AC.PX) return; const PX=AC.PX, RB=[0xff4d4d,0xff9a3c,0xffe14d,0x5be36b,0x4db8ff,0x6a5cff,0xc35cff];
+  const oF=PX.sk3fx; PX.sk3fx=function(B,e,slow){ if(!e||(e.id!=="s3fSkR"&&e.id!=="s3fSkB")) return oF.apply(this,arguments); const S=this.scene; if(!S) return; slow=slow||1;
+    const {W,H}=this.cell(), m=Math.min(W,H), P=(uid,R,C)=>{ const V=this.units[uid]; return V&&V.c&&V.c.active?[V.c.x,V.c.y]:this.px(R,C); };
+    const cs=B&&B.units&&B.units.find(x=>x.uid===e.a), en=!!(cs&&cs.side!=="me");
+    if(e.id==="s3fSkR"){ const [cx,cy]=this.px(e.R,e.C), k=e.i||0, sd=k*1.7, g=S.add.graphics().setDepth(45); g.setBlendMode(1); const st={p:0};
+      const draw=(p,a)=>{ const [tx,ty]=P(e.b,e.R,e.C); g.clear(); const ex=cx+(tx-cx)*p, ey=cy+(ty-cy)*p;
+        for(let j=0;j<3;j++){ const c=RB[(k*2+j)%7]; g.lineStyle(Math.max(1.2,m*(0.022-j*0.004)),c,a*(0.95-j*0.15)).beginPath(); const N=10; for(let s=0;s<=N;s++){ const q=s/N, x=cx+(ex-cx)*q, y=cy+(ey-cy)*q, nx=-(ey-cy), ny=ex-cx, L=Math.hypot(nx,ny)||1, w=Math.sin(q*Math.PI*2+sd+j)*m*0.06*(1-q*0.5); s?g.lineTo(x+nx/L*w,y+ny/L*w):g.moveTo(x,y); } g.strokePath(); }
+        if(p>=1){ g.fillStyle(RB[k%7],0.8*a).fillCircle(tx,ty,m*0.08); } };
+      S.tweens.add({targets:st,p:1,duration:200*slow,ease:"Quad.easeOut",onUpdate:()=>draw(st.p,1),onComplete:()=>{ const s2={a:1}; S.tweens.add({targets:s2,a:0,duration:300*slow,onUpdate:()=>draw(1,s2.a),onComplete:()=>g.destroy()}); }}); return; }
+    /* 묶임: 파쇄 지속(dur) 동안 카드에 무지개 실 감김 · 갱신 시 재시작 · 사망/전투 종료 시 제거 · 적 시전이면 감김 범위에 얇은 붉은 테두리 */
+    const V0=this.units[e.b]; if(!V0||!V0.c) return; if(V0.s3skB&&V0.s3skB.active) V0.s3skB.destroy(); const g=S.add.graphics().setDepth(48); g.setBlendMode(1); V0.s3skB=g; const t0=S.time.now, sz=V0.sz||m*0.9, seed=Math.random()*6, durMs=(e.dur||4)*1000*slow;
+    const alive=()=>{ const u=B&&B.units&&B.units.find(x=>x.uid===e.b); return u&&u.alive&&AC.anim&&AC.anim.B===B; };
+    const loop=()=>{ const V=this.units[e.b]; if(!g.active||V0.s3skB!==g) return; if(!V||!V.c||!V.c.active||!alive()||S.time.now-t0>durMs){ S.tweens.add({targets:g,alpha:0,duration:200,onComplete:()=>g.destroy()}); if(V0.s3skB===g) V0.s3skB=null; return; }
+      const x=V.c.x, y=V.c.y, h=sz*0.5, ph=(S.time.now-t0)/1000; g.clear();
+      for(let i=0;i<5;i++){ const c=RB[(i*3)%7], yy=y-h*0.7+i*h*0.35, wob=Math.sin(ph*3+i+seed)*h*0.08; g.lineStyle(Math.max(1.5,m*0.028),c,0.85).beginPath(); g.moveTo(x-h*1.05,yy+h*0.18+wob); g.lineTo(x+h*1.05,yy-h*0.18-wob); g.strokePath(); }
+      for(let i=0;i<2;i++){ const c=RB[(i*4+1)%7]; g.lineStyle(Math.max(1.2,m*0.02),c,0.7).beginPath(); g.moveTo(x-h*0.9,y+(i?h*0.8:-h*0.8)); g.lineTo(x+h*0.9,y+(i?-h*0.8:h*0.8)); g.strokePath(); }
+      if(en){ g.lineStyle(1.5,0xff2a2a,0.85); g.strokeRect(x-h*1.1,y-h*1.0,h*2.2,h*2.0); }
+      requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); };
+}catch(e){ console.warn("S3 스쿨드 실",e); } })();
 
 /* ===== S3 영웅 스킬: 2코스트 13명 — 손오공·카르마·블랙로즈·린·루리·백각·아리스·레긴레이프·크리스·지크·엘리스·실베스타·플라튼 (AC.seasonId==="s3" 에서만 동작 · 임시 이미지/연출)
    ★ 툴팁 문구: 사용자 원문(t1928u) 그대로 (gen_t2.py 가 test/t2_tips.py 에서 생성). s3n_t1.js 의 영웅 프레임워크(S3.t1x)에 등록한다. */
@@ -18758,9 +18821,16 @@ window.S3AUGL=[
   /* 3) 스쿨드 — 카오스 이론 */
   reg("스쿨드",{ skn:TIP.$.스쿨드.skn, mana:TIP.$.스쿨드.mana, need:1, tip:TIP["스쿨드"],
     ss:(B,u)=>{ H.addMA(u,5); if(u.s1mMax>0) u.s1mMax=Math.max(1,u.s1mMax-5); },
-    cast:(B,u,tg)=>{ magA(B,u,tg,L(u,[360,540,4000]),"s3sk"); const n=5+Math.max(0,(u.s3n||1)-1), v=L(u,[70,105,400]); let last={R:tg.R,C:tg.C}; fx(B,u,"소형 실타래 ×"+n,"sk5");
-      for(let i=0;i<n;i++) q(B,0.25+0.06*i,()=>{ if(!u.alive) return; let x=tg.alive?tg:foes(B,u).sort((a,b)=>(Math.hypot(a.R-last.R,a.C-last.C)-Math.hypot(b.R-last.R,b.C-last.C))||(String(a.uid)<String(b.uid)?-1:1))[0]; if(!x) return; if(x===tg) last={R:tg.R,C:tg.C};
-        if(S3.shred) S3.shred(B,x,"sh",4); magA(B,u,x,v,"s3skS"); }); } });
+    /* S1 실타래 연출 이식 (사용자 pt2095u): s1skThrow 0.45초 포물선 → 도착 시 주 피해 + s1skBurst → 0.2초 뒤부터 0.06초 간격 소형 실(무지개)이 닿을 때 피해+파쇄 4초 · 글자 연출 없음 */
+    cast:(B,u,tg)=>{ const n=5+Math.max(0,(u.s3n||1)-1), v=L(u,[70,105,400]), R0=tg.R, C0=tg.C; let last={R:tg.R,C:tg.C};
+      const nf=fn=>{ const n0=B.events.length; fn(); for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid){ h.s3nofx=1; h.pd=0; } } };
+      const rec={until:B.t+0.65}; u.s3pieH=rec; if(!u.brFly) u.brFly=true; q(B,0.65,()=>{ if(u.s3pieH===rec){ u.s3pieH=null; if(u.brFly===true) u.brFly=false; } });
+      B.events.push({k:"sk3",id:"s1skThrow",a:u.uid,aR:u.R,aC:u.C,R:R0,C:C0});
+      q(B,0.45,()=>{ if(!u.alive) return; const cR=tg.alive?tg.R:R0, cC=tg.alive?tg.C:C0; if(tg.alive){ last={R:tg.R,C:tg.C}; nf(()=>magA(B,u,tg,L(u,[360,540,4000]),"s3sk")); }
+        B.events.push({k:"sk3",id:"s1skBurst",a:u.uid,R:cR,C:cC,bs:[]});
+        for(let i=0;i<n;i++) q(B,0.06*i,()=>{ if(!u.alive) return; const pick=()=>tg.alive?tg:foes(B,u).sort((a,b)=>(Math.hypot(a.R-last.R,a.C-last.C)-Math.hypot(b.R-last.R,b.C-last.C))||(String(a.uid)<String(b.uid)?-1:1))[0];
+          const x0=pick(); if(!x0) return; B.events.push({k:"sk3",id:"s3fSkR",a:u.uid,b:x0.uid,R:cR,C:cC,i});
+          q(B,0.2,()=>{ if(!u.alive) return; const x=x0.alive?x0:pick(); if(!x) return; if(x===tg) last={R:tg.R,C:tg.C}; if(S3.shred) S3.shred(B,x,"sh",4); nf(()=>magA(B,u,x,v,"s3skS")); B.events.push({k:"sk3",id:"s3fSkB",a:u.uid,b:x.uid,dur:4}); }); }); }); } });
   S3.t5={HERO:X.HERO,push};
 }catch(e){ console.error("s3r_t5",e); } })();
 
