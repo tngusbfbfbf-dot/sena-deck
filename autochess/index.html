@@ -17921,7 +17921,7 @@ window.S3AUGL=[
   const MUZ=PX.ORCA_IMG&&PX.ORCA_IMG.muzzle;
   const load=function(){ const S=this.scene; if(!S||S._s3fL) return; S._s3fL=1; const M=SRC();
     for(const k in M){ const im=new Image(); im.onload=()=>{ const TX=this.scene&&this.scene.textures; if(!TX) return; if(!TX.exists("s3f_"+k)) TX.addImage("s3f_"+k,im);
-      { /* Canvas 렌더러는 setTint 미지원 → 픽셀 재채색 사본 (파이 보라 · 파스칼 금 · 실비아 흑보라) */ const RC={hring:[["P",[170,80,255]],["L",[205,175,255]],["G",[255,200,60]],["N",[80,230,110]],["W",[235,240,255]],["R",[150,12,30]],["N2",[160,100,45]],["K",[95,25,125]]],naura:[["G",[255,205,70]],["D",[30,24,32]],["L",[200,170,255]],["B",[70,150,255]],["N",[80,230,110]],["W",[235,240,255]],["P",[160,70,255]],["K",[90,20,120]]],nsh:[["B",[90,170,255]],["W",[240,244,255]]],sil:[["P",[160,70,255]]],bolt:[["G",[255,215,80]]],orb:[["K",[95,30,150]],["R",[150,10,25]],["B",[60,140,255]],["G",[255,200,60]],["N",[80,230,110]],["R2",[150,60,30]]],shard:[["R",[170,15,30]],["L",[205,175,255]],["N",[160,100,45]],["B",[80,160,255]],["P",[170,90,255]],["K",[90,20,120]]],trail:[["K",[90,25,120]],["R",[140,10,25]]],zring:[["G",[255,205,70]]]}[k]||[];
+      { /* Canvas 렌더러는 setTint 미지원 → 픽셀 재채색 사본 (파이 보라 · 파스칼 금 · 실비아 흑보라) */ const RC={hring:[["P",[170,80,255]],["L",[205,175,255]],["G",[255,200,60]],["N",[80,230,110]],["W",[235,240,255]],["R",[150,12,30]],["N2",[160,100,45]],["K",[95,25,125]],["D",[40,32,46]]],naura:[["G",[255,205,70]],["D",[30,24,32]],["L",[200,170,255]],["B",[70,150,255]],["N",[80,230,110]],["W",[235,240,255]],["P",[160,70,255]],["K",[90,20,120]],["R",[160,15,30]]],nsh:[["B",[90,170,255]],["W",[240,244,255]]],sil:[["P",[160,70,255]]],bolt:[["G",[255,215,80]]],orb:[["K",[95,30,150]],["R",[150,10,25]],["B",[60,140,255]],["G",[255,200,60]],["N",[80,230,110]],["R2",[150,60,30]]],shard:[["R",[170,15,30]],["L",[205,175,255]],["N",[160,100,45]],["B",[80,160,255]],["P",[170,90,255]],["K",[90,20,120]],["G",[255,205,70]]],trail:[["K",[90,25,120]],["R",[140,10,25]],["G",[255,200,60]]],zring:[["G",[255,205,70]]]}[k]||[];
         for(const [sf,[r0,g0,b0]] of RC){ if(TX.exists("s3f_"+k+sf)) continue; const c=document.createElement("canvas"); c.width=im.width; c.height=im.height; const g=c.getContext("2d"); g.drawImage(im,0,0); const D=g.getImageData(0,0,c.width,c.height), d=D.data;
           for(let i=0;i<d.length;i+=4){ const l=Math.max(d[i],d[i+1],d[i+2])/255, w=sf==="K"?0:Math.max(0,l-0.85)*4; d[i]=Math.min(255,r0*l+255*w); d[i+1]=Math.min(255,g0*l+255*w); d[i+2]=Math.min(255,b0*l+255*w); } g.putImageData(D,0,0); TX.addCanvas("s3f_"+k+sf,c); } }
       if((k==="tx"||k==="trail")&&!TX.exists("s3f_"+k+"B")){ /* 선란 푸른 베기: 원본 밝기를 유지한 채 청색 계열로 재채색 */ const c=document.createElement("canvas"); c.width=im.width; c.height=im.height; const g=c.getContext("2d"); g.drawImage(im,0,0); const D=g.getImageData(0,0,c.width,c.height), d=D.data;
@@ -18172,6 +18172,59 @@ window.S3AUGL=[
       C.forEach(([R,c],i)=>{ const [x,y]=this.px(R,c), p={x,y,on:false}; pts.push(p);
         S.time.delayedCall(ch+i*dt,()=>{ const g=S.add.graphics().setDepth(44); star(g,m*0.2); g.setPosition(x,y).setScale(0.2); p.g=g; p.on=true; drawLn(); rimG(g,(r,o)=>r.strokeRect(o.x-cw/2,o.y-chh/2,cw,chh)); T.add({targets:g,scaleX:1,scaleY:1,duration:90*sl,ease:"Back.easeOut"}); });
         S.time.delayedCall(ch+n*dt+gp+(i+1)*dt,()=>{ p.on=false; drawLn(); if(p.g) T.add({targets:p.g,alpha:0,scaleX:1.6,scaleY:1.6,duration:140*sl,onComplete:()=>p.g.destroy()}); pop(img("hringL",x,y,0.8,42)||img("hringP",x,y,0.8,42),{s0:0.3,s1:1.2,a1:0.9,d1:70,hold:0,d2:150}); spark("shardL",x,y,3,0.4,0.16); if(i===n-1) S.time.delayedCall(200,()=>ln.destroy()); }); }); return; }
+    /* ===== 4코스트 9명 연출 (사용자 pt2082u) — 글자 없음 · 피해는 로직이 도착 시점에 맞춤 · 적 스킬 범위는 rimG ===== */
+    if(/^s3f(AyS|AyM|AyD|YhK|AcS|LiW|YsP|MsS|RyC|NxB|MkJ|MkX)$/.test(id)) img._nr=1;
+    const ovr=(uid,D,f)=>{ const U=this.units&&this.units[uid]; if(!U||!U.c) return; const t0=S.time.now; const up=()=>{ if(!U.c.active){ S.events.off("postupdate",up); return; } const k=Math.min(1,(S.time.now-t0)/D), p=f(k); if(p) U.c.setPosition(p[0],p[1]); if(k>=1) S.events.off("postupdate",up); }; S.events.on("postupdate",up); };
+    const starG=(g,r,c0,c1,a0)=>{ const Pp=[]; for(let k=0;k<10;k++){ const a=-Math.PI/2+k*Math.PI/5, rr=k%2?r*0.42:r; Pp.push({x:Math.cos(a)*rr,y:Math.sin(a)*rr}); } g.fillStyle(c0,a0==null?0.3:a0).fillCircle(0,0,r*1.5).fillStyle(c1,0.95).fillPoints(Pp,true).fillStyle(0xffffff,0.9).fillCircle(0,0,r*0.22); };
+    const heartG=(g,r,c,a)=>{ g.fillStyle(c,a==null?1:a).fillCircle(-r*0.5,-r*0.25,r*0.56).fillCircle(r*0.5,-r*0.25,r*0.56).fillTriangle(-r*1.04,-r*0.05,r*1.04,-r*0.05,0,r*1.05); };
+    const tpos=uid=>{ const u=unit(uid); return u&&u.alive?this.px(u.R,u.C):null; };
+    if(id==="s3fAyS"){ /* 아일린: 머리 위 회전 창 페이드 인 → 대상에게 곧게 날아가 꽂힘 */ const PRE=(e.pre||0.25)*1000*sl, D=(e.fl||0.2)*1000*sl, hx=ax, hy=ay-m*0.8, a=Math.atan2(by-hy,bx-hx), g=S.add.graphics().setDepth(46);
+      g.fillStyle(0x3a1460,1).fillRect(-m*0.42,-1.6,m*0.66,3.2).fillStyle(0xb48cff,1).fillTriangle(m*0.22,-m*0.09,m*0.22,m*0.09,m*0.44,0).fillStyle(0xe8dcff,1).fillTriangle(m*0.26,-m*0.04,m*0.26,m*0.04,m*0.38,0).fillStyle(0x8a5ae0,0.9).fillCircle(-m*0.42,0,2.4);
+      g.setPosition(hx,hy).setAlpha(0).setRotation(a-Math.PI*3);
+      T.add({targets:g,alpha:1,rotation:a,duration:PRE,ease:"Quad.easeOut",onComplete:()=>{ const tr=S.add.graphics().setDepth(45), H=[]; fly(g,hx,hy,bx,by,D,"Quad.easeIn",(x,y)=>{ H.push([x,y]); if(H.length>7) H.shift(); tr.clear(); H.forEach((p,j)=>tr.fillStyle(0x9a6aff,0.06+0.06*j).fillCircle(p[0],p[1],1+0.6*j)); },
+        ()=>{ tr.destroy(); T.add({targets:g,alpha:0,delay:180*sl,duration:200*sl,onComplete:()=>g.destroy()}); pop(img("hringP",bx,by,0.75,41),{s0:0.3,s1:1.2,a1:0.95,d1:70,hold:0,d2:150}); spark("shardP",bx,by,5,0.5,0.2); }); }}); return; }
+    if(id==="s3fAyM"){ /* 아일린: 보랏빛 별모양 표식 (대상 머리 위, 유지) */ const g=S.add.graphics().setDepth(47); starG(g,m*0.16,0x7a3ae0,0xc8a0ff,0.28); g.setPosition(bx,by-m*0.45).setScale(0.2); T.add({targets:g,scaleX:1,scaleY:1,duration:160*sl,ease:"Back.easeOut"}); follow(g,e.b,e.dur||120,-0.45); return; }
+    if(id==="s3fAyD"){ /* 아일린: 표식 대상에게 보랏빛 직선 잔상을 남기며 비교적 느리게 돌진 (유닛 위치 보간) */ const [x0,y0]=this.px(e.fR,e.fC), [x1,y1]=this.px(e.tR,e.tC), D=(e.fl||0.35)*1000*sl, ln=S.add.graphics().setDepth(42), au=img("nauraP",x0,y0,0.9,41);
+      const ez=k=>k<0.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+      ovr(e.a,D,k=>{ const kk=ez(k), x=x0+(x1-x0)*kk, y=y0+(y1-y0)*kk; ln.clear(); ln.lineStyle(m*0.32,0x7a3ae0,0.22).lineBetween(x0,y0,x,y); ln.lineStyle(m*0.12,0xa070ff,0.55).lineBetween(x0,y0,x,y); ln.lineStyle(2,0xe8dcff,0.9).lineBetween(x0+(x-x0)*0.5,y0+(y-y0)*0.5,x,y); if(au) au.setPosition(x,y); return [x,y]; });
+      S.time.delayedCall(D,()=>{ if(au) fadeKill(au,160); fadeKill(ln,260); const p=tpos(e.b)||[bx,by]; pop(img("hringP",p[0],p[1],0.9,41),{s0:0.3,s1:1.25,a1:0.95,d1:80,hold:0,d2:170}); const t=img("trailK",p[0],p[1],1.2,44); if(t){ t.setRotation(Math.atan2(y1-y0,x1-x0)+0.6); pop(t,{s0:0.6,s1:1.1,a1:1,d1:50,hold:20,d2:150}); } spark("shardP",p[0],p[1],5,0.5,0.2); }); return; }
+    if(id==="s3fYhK"){ /* 연희: 보라-붉은 그라데이션 하트 + 잔상 (강화 시 큰 하트) */ const D=(e.fl||0.3)*1000*sl, r=m*(e.big?0.3:0.18), g=S.add.graphics().setDepth(46);
+      const draw=gg=>{ heartG(gg,r*1.35,0xff3a6a,0.25); heartG(gg,r,0xc8203e,1); heartG(gg,r*0.78,0xb02a78,1); heartG(gg,r*0.55,0x9a3ae0,1); heartG(gg,r*0.28,0xe8c8ff,0.9); }; draw(g); g.setPosition(ax,ay);
+      let lt=0; const ob={k:0}; T.add({targets:ob,k:1,duration:D,ease:"Sine.easeIn",onUpdate:()=>{ const k=ob.k, p=tpos(e.b)||[bx,by], x=ax+(p[0]-ax)*k, y=ay+(p[1]-ay)*k-Math.sin(k*Math.PI)*m*0.35; g.setPosition(x,y).setScale(1+0.12*Math.sin(k*20));
+        if(S.time.now-lt>28){ lt=S.time.now; const gh=S.add.graphics().setDepth(45); heartG(gh,r*0.85,0xc02a6a,0.45); heartG(gh,r*0.45,0x9a3ae0,0.5); gh.setPosition(x,y); T.add({targets:gh,alpha:0,scaleX:0.4,scaleY:0.4,duration:260*sl,onComplete:()=>gh.destroy()}); } },
+        onComplete:()=>{ const [x,y]=[g.x,g.y]; g.destroy(); pop(img("nauraP",x,y,e.big?1.4:1.0,41),{s0:0.3,s1:1.2,a1:0.85,d1:80,hold:20,d2:200}); pop(img("hringR",x,y,e.big?1.1:0.75,42),{s0:0.3,s1:1.25,a1:0.9,d1:80,hold:0,d2:160});
+          for(let j=0;j<(e.big?7:5);j++){ const a=j/(e.big?7:5)*6.283, h=S.add.graphics().setDepth(45); heartG(h,r*0.32,j%2?0x9a3ae0:0xd02a5a,0.95); h.setPosition(x,y); T.add({targets:h,x:x+Math.cos(a)*m*0.5,y:y+Math.sin(a)*m*0.5-m*0.1,alpha:0,duration:320*sl,ease:"Quad.easeOut",onComplete:()=>h.destroy()}); } }}); return; }
+    if(id==="s3fAcS"){ /* 에이스: 금빛 베기 */ const t=img("trailG",bx,by,1.3,44)||img("trailR",bx,by,1.3,44); if(t){ t.setRotation(((e.i||0)%3-1)*0.9+0.3); pop(t,{s0:0.6,s1:1.12,a1:1,d1:50,hold:20,d2:150}); } pop(img("hringG",bx,by,0.6,41),{s0:0.3,s1:1.15,a1:0.8,d1:60,hold:0,d2:130}); spark("shardG",bx,by,4,0.45,0.18); return; }
+    if(id==="s3fLiW"){ /* 리: 검정빛 파동이 리 중심으로 빠르게 퍼짐 (인접 1칸) · 기본 펄스는 작고 옅게 */ const big=!!e.big, Rr=m*1.5*(big?1:0.85), A=big?1:0.45; const r=ringGrow("hringD",ax,ay,Rr,39,big?320:260); if(r&&!big) r.setAlpha(0.5);
+      const g=S.add.graphics().setDepth(38); g.fillStyle(0x0c0a10,0.42*A).fillCircle(0,0,Rr).lineStyle(big?3:2,0x4a4058,0.9*A).strokeCircle(0,0,Rr); g.setPosition(ax,ay).setScale(0.12); rimG(g,(rr,o)=>rr.strokeCircle(o.x,o.y,Rr*o.scaleX));
+      T.add({targets:g,scaleX:1,scaleY:1,duration:(big?150:130)*sl,ease:"Quad.easeOut",onComplete:()=>fadeKill(g,big?220:170)}); if(big) pop(img("nauraD",ax,ay,1.4,37),{s0:0.4,s1:1.3,a1:0.7,d1:120,hold:0,d2:200}); return; }
+    if(id==="s3fYsP"){ /* 유신: 보라→검정 투사체, 이타노 서커스(사방으로 퍼졌다가 곡선으로 대상에게) */ const D=(e.fl||0.35)*1000*sl, i=e.i||0, a0=ang+Math.PI+((i*2.399)%6.283)-Math.PI, sp=m*(1.0+0.5*((i*0.37)%1)), cx=ax+Math.cos(a0)*sp, cy=ay+Math.sin(a0)*sp-m*0.3, g=S.add.graphics().setDepth(45), H=[], r=m*0.075;
+      const ob={k:0}; T.add({targets:ob,k:1,duration:D,ease:"Sine.easeIn",onUpdate:()=>{ const k=ob.k, p=tpos(e.b)||[bx,by], u1=1-k, x=u1*u1*ax+2*u1*k*cx+k*k*p[0], y=u1*u1*ay+2*u1*k*cy+k*k*p[1]; H.push([x,y]); if(H.length>9) H.shift(); g.clear();
+        H.forEach((q,j)=>{ const f=j/H.length; g.fillStyle(f>0.6?0x7a3ae0:f>0.3?0x3a1a50:0x0a0610,0.25+0.6*f).fillCircle(q[0],q[1],r*(0.35+0.6*f)); }); g.fillStyle(0x0a0610,1).fillCircle(x,y,r*1.15).fillStyle(0xa060ff,1).fillCircle(x,y,r*0.8).fillStyle(0xe8d0ff,1).fillCircle(x,y,r*0.35); },
+        onComplete:()=>{ const q=H[H.length-1]||[bx,by]; g.destroy(); pop(img("hringK",q[0],q[1],0.4,41),{s0:0.3,s1:1.2,a1:0.85,d1:50,hold:0,d2:100}); spark("shardK",q[0],q[1],2,0.3,0.14); }}); return; }
+    if(id==="s3fMsS"){ /* 미스트: 위에서 빠르게 내리침 → 폭발 */ const D=(e.fl||0.08)*1000*sl, g=S.add.graphics().setDepth(46); g.fillStyle(0x5a4a3a,1).fillRect(-2,-m*0.6,4,m*0.6).fillStyle(0x8a8a90,1).fillCircle(0,0,m*0.16).fillStyle(0xd0d0d8,1).fillCircle(-m*0.04,-m*0.04,m*0.06);
+      g.setPosition(bx+m*0.25,by-m*1.1).setRotation(-0.5); T.add({targets:g,x:bx,y:by-m*0.05,rotation:0.25,duration:D,ease:"Quad.easeIn",onComplete:()=>{ fadeKill(g,120,40);
+        pop(img("nauraG",bx,by,1.2,41),{s0:0.3,s1:1.3,a1:0.9,d1:80,hold:10,d2:200}); ringGrow("hringG",bx,by,m*0.75,42,280); spark("shardN",bx,by,6,0.6,0.22); if(!light) S.cameras.main.shake(70*sl,0.004); }}); return; }
+    if(id==="s3fRyC"){ /* 라이언: 검붉은 할퀴기 (직사각형 3×3 범위) */ const DL=(e.dl||0.45)*1000*sl, {W:cw,H:chh}=this.cell(), wR=cw*3, hR=chh*3, g=S.add.graphics().setDepth(38);
+      g.fillStyle(0x3a0610,1).fillRect(-wR/2,-hR/2,wR,hR).lineStyle(2,0x8a1020,0.9).strokeRect(-wR/2,-hR/2,wR,hR); g.setPosition(bx,by).setAlpha(0); rimG(g,(r,o)=>r.strokeRect(o.x-wR/2,o.y-hR/2,wR,hR)); T.add({targets:g,alpha:0.38,duration:DL,onUpdate:()=>{ const p=tpos(e.b); if(p) g.setPosition(p[0],p[1]); }});
+      S.time.delayedCall(DL,()=>{ const bx=g.x, by=g.y; const cl=S.add.graphics().setDepth(45), ob={k:0}; T.add({targets:ob,k:1,duration:110*sl,onUpdate:()=>{ cl.clear(); for(let j=-1;j<=1;j++){ const ox=j*wR*0.26, x0=bx+ox-wR*0.32, y0=by-hR*0.42, x1=bx+ox+wR*0.32, y1=by+hR*0.42, xk=x0+(x1-x0)*ob.k, yk=y0+(y1-y0)*ob.k;
+          cl.lineStyle(m*0.2,0x5a0612,0.55).lineBetween(x0,y0,xk,yk).lineStyle(m*0.08,0xb01a2a,0.95).lineBetween(x0,y0,xk,yk).lineStyle(2,0xff8a8a,0.9).lineBetween(x0+(xk-x0)*0.4,y0+(yk-y0)*0.4,xk,yk); } },onComplete:()=>fadeKill(cl,240,60)});
+        fadeKill(g,260,120); pop(img("nauraD",bx,by,2.4,40),{s0:0.5,s1:1.2,a1:0.6,d1:100,hold:30,d2:220}); [[-1,-1],[1,-1],[-1,1],[1,1],[0,0]].forEach(([dx,dy])=>spark("shardR",bx+dx*cw,by+dy*chh,2,0.4,0.18)); if(!light) S.cameras.main.shake(90*sl,0.004); }); return; }
+    if(id==="s3fNxB"){ /* 녹스: 검붉은 섬광이 위에서 천천히 내리꽂힘 → 1.5초 꽂혀 있다가 폭발 */ const DUR=(e.dur||1.5)*1000*sl, DS=Math.min(DUR*0.45,650*sl), g=S.add.graphics().setDepth(46), gl=img("nauraR",bx,by,0.8,45)||img("nauraD",bx,by,0.8,45);
+      g.fillStyle(0x7a0a18,0.35).fillEllipse(0,-m*0.3,m*0.36,m*0.95).fillStyle(0x9a0e20,1).fillTriangle(-m*0.08,-m*0.75,m*0.08,-m*0.75,0,0).fillStyle(0xff6a6a,1).fillTriangle(-m*0.03,-m*0.65,m*0.03,-m*0.65,0,-m*0.05).fillStyle(0x2a0208,1).fillRect(-m*0.12,-m*0.8,m*0.24,m*0.06);
+      let last=[bx,by]; const t0=S.time.now; if(gl) gl.setAlpha(0); g.setAlpha(0);
+      const tk=()=>{ if(!g.active) return; const el=S.time.now-t0, p=tpos(e.b)||last; last=p; const k=Math.min(1,el/DS), ez=k*k; g.setPosition(p[0],p[1]-m*0.05-(1-ez)*m*2.2).setAlpha(Math.min(1,el/(150*sl)));
+        if(gl){ gl.setPosition(p[0],p[1]).setAlpha(k>=1?0.45+0.25*Math.sin(el/60):0); } if(k>=1&&!g._hit){ g._hit=1; pop(img("hringR",p[0],p[1],0.6,42),{s0:0.3,s1:1.1,a1:0.85,d1:60,hold:0,d2:140}); }
+        if(el>=DUR){ g.destroy(); if(gl) gl.destroy(); pop(img("hringR",p[0],p[1],1.1,43),{s0:0.3,s1:1.35,a1:1,d1:90,hold:0,d2:200}); pop(img("nauraD",p[0],p[1],1.3,42),{s0:0.4,s1:1.3,a1:0.85,d1:90,hold:20,d2:220}); spark("shardR",p[0],p[1],7,0.65,0.22); return; }
+        S.time.delayedCall(30,tk); }; tk(); return; }
+    if(id==="s3fMkJ"){ /* 멜키르: 위로 잠깐 떴다가 대각선으로 빠르게 내리꽂힘(연출만) → 2칸 내 붉은 폭발·파편 → 원위치 복귀 */ const LD=(e.land||0.3)*1000*sl, UP=LD*0.5, RT=220*sl, D=LD+60*sl+RT, {W:cw,H:chh}=this.cell(), [tx,ty]=this.px(e.R,e.C), hx=ax-(tx-ax)*0.15, hy=ay-m*0.9;
+      ovr(e.a,D,k=>{ const t=k*D; if(t<UP){ const q=t/UP, ez=1-(1-q)*(1-q); return [ax+(hx-ax)*ez,ay+(hy-ay)*ez]; } if(t<LD){ const q=(t-UP)/(LD-UP), ez=q*q; return [hx+(tx-hx)*ez,hy+(ty-hy)*ez]; } if(t<LD+60*sl) return [tx,ty]; const q=(t-LD-60*sl)/RT, ez=q<0.5?2*q*q:1-Math.pow(-2*q+2,2)/2; return [tx+(ax-tx)*ez,ty+(ay-ty)*ez]; });
+      S.time.delayedCall(LD,()=>{ const wR=cw*5, hR=chh*5, g=S.add.graphics().setDepth(38); g.fillStyle(0x8a0a18,0.4).fillRect(-wR/2,-hR/2,wR,hR).lineStyle(2,0xd02a2a,0.85).strokeRect(-wR/2,-hR/2,wR,hR); g.setPosition(tx,ty).setScale(0.2); rimG(g,(r,o)=>r.strokeRect(o.x-wR/2*o.scaleX,o.y-hR/2*o.scaleY,wR*o.scaleX,hR*o.scaleY));
+        T.add({targets:g,scaleX:1,scaleY:1,duration:140*sl,ease:"Quad.easeOut",onComplete:()=>fadeKill(g,260,60)}); ringGrow("hringR",tx,ty,m*2.4,40,380); pop(img("nauraR",tx,ty,2.2,39)||img("nauraD",tx,ty,2.2,39),{s0:0.3,s1:1.3,a1:0.85,d1:110,hold:30,d2:240}); pop(img("hringR",tx,ty,1.2,41),{s0:0.3,s1:1.3,a1:1,d1:80,hold:0,d2:180});
+        for(let j=0;j<12;j++){ const a=j/12*6.283+Math.random()*0.4, d=m*(1.2+Math.random()*1.0), s=img("shardR",tx,ty,0.26,44); if(!s) break; s.setRotation(a+Math.PI/2); T.add({targets:s,x:tx+Math.cos(a)*d,y:ty+Math.sin(a)*d,angle:s.angle+200,alpha:0,duration:420*sl,ease:"Quad.easeOut",onComplete:()=>s.destroy()}); }
+        if(!light) S.cameras.main.shake(130*sl,0.006); }); return; }
+    if(id==="s3fMkX"){ /* 멜키르: 검붉은 십자가 표식 (표식 유지 시간 동안) */ const g=S.add.graphics().setDepth(47), s=m*0.13; g.fillStyle(0x2a0208,0.9).fillRect(-s*0.3-1,-s*1.5-1,s*0.6+2,s*2.6+2).fillRect(-s-1,-s*0.9-1,s*2+2,s*0.6+2).fillStyle(0x9a0e1e,1).fillRect(-s*0.3,-s*1.5,s*0.6,s*2.6).fillRect(-s,-s*0.9,s*2,s*0.6);
+      g.setPosition(bx,by-m*0.42).setScale(0.2); T.add({targets:g,scaleX:1,scaleY:1,duration:150*sl,ease:"Back.easeOut"}); follow(g,e.b,e.dur||5,-0.42); return; }
     if(id==="s3fDe"){ /* 델론즈: 푸른 베기만 · 공격 속도 보너스 0→160%+ 에 따라 1→5겹, 겹마다 각도·크기·밝기 증가 */
       const n=Math.max(1,Math.min(5,1+Math.floor((e.as||0)/40))), sd=e.sd?1:-1;
       for(let i=0;i<n;i++){ const k=i/4, t=img("trailB",bx,by,1.25+0.22*i,41+i); if(!t) break; t.setRotation(ang+Math.PI/2+sd*(i%2?-1:1)*(0.25+0.42*i)).setAlpha(0);
@@ -18559,70 +18612,81 @@ window.S3AUGL=[
         cells.forEach(([R,c],i)=>q(B,CH+cells.length*DT+GAP+(i+1)*DT,()=>{ if(i===cells.length-1) unhold(u,rec); if(!u.alive) return;
           foes(B,u).filter(x=>Math.round(x.R)===R&&Math.round(x.C)===c).forEach(x=>nf(B,u,()=>physHit(B,u,x,physT(B,u,x,L(u,[350,350,700]),L(u,[80,120,360])),"s3kls"))); }));
         q(B,tot+0.05,()=>unhold(u,rec)); } } });
-  /* 5) 아일린 — 가장 먼 표식 없는 적에 창 표식(전투 내 유지) → 표식 적 전원에게 차례로 돌진 (물) + 경로 적 (마값·물리) */
+  /* 5) 아일린 — 머리 위 회전 창 페이드 인 → 가장 먼 표식 없는 적에게 꽂힘 → 보랏빛 별 표식(전투 내 유지) → 표식 적 전원에게 차례로 보랏빛 잔상 돌진(1회 0.35초, brFly 홀드) · 경로 적 피해 (사용자 pt2082u) */
   reg("아일린",{ skn:TIP.$.아일린.skn, mana:TIP.$.아일린.mana, need:1, tip:TIP["아일린"],
     init:(B,u)=>{ u.s3ayM={}; },
     ss:(B,u)=>{ H.addHp(u,100); H.addAS(u,10); },
-    cast:(B,u)=>{ const M=(u.s3ayM=u.s3ayM||{}), un=byFar(B,u).filter(x=>!M[x.uid])[0]; if(un){ M[un.uid]=1; fx(B,un,"표식","dis"); fx(B,u,"창 던지기","sk5"); }
-      const GP=0.25, ST=0.3, mk=foes(B,u).filter(x=>M[x.uid]); if(!mk.length) return; lock(B,u,ST+GP*mk.length);
-      q(B,ST,()=>{ if(!u.alive) return; const list=[]; let from={R:u.R,C:u.C}; const pool=foes(B,u).filter(x=>M[x.uid]); while(pool.length){ pool.sort((a,b)=>(dstEu(a,from)-dstEu(b,from))||(a.uid-b.uid)); const x=pool.shift(); list.push(x); from=x; }   /* 가까운 표식 적부터 차례대로 */
-        list.forEach((x,i)=>q(B,GP*i,()=>{ if(!u.alive||!x.alive||x.disabled) return; const r0=Math.round(u.R), c0=Math.round(u.C); let dest=null;
+    cast:(B,u)=>{ const M=(u.s3ayM=u.s3ayM||{}), un=byFar(B,u).filter(x=>!M[x.uid])[0], PRE=0.25, DUR=0.35;
+      const fl=un?Math.max(0.12,dstEu(u,un)*0.06):0, ST=un?PRE+fl+0.05:0.05;
+      const go=()=>{ const pool=foes(B,u).filter(x=>M[x.uid]); if(!pool.length){ unhold(u,rec); return; } const list=[]; let from={R:u.R,C:u.C}; while(pool.length){ pool.sort((a,b)=>(dstEu(a,from)-dstEu(b,from))||(a.uid-b.uid)); const x=pool.shift(); list.push(x); from=x; }
+        rec.until=B.t+DUR*list.length+0.1;
+        const dash=i=>{ const x=list[i]; const next=()=>{ if(i+1<list.length) dash(i+1); else unhold(u,rec); }; if(!u.alive){ unhold(u,rec); return; } if(!x.alive||x.disabled){ next(); return; }
+          const r0=Math.round(u.R), c0=Math.round(u.C); let dest=null;
           if(cheb(u,x)>1){ let bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=Math.round(x.R)+dr, c=Math.round(x.C)+dc; if(!freeC(B,R,c)) continue; const d=Math.hypot(R-r0,c-c0); if(d<bd){ bd=d; dest=[R,c]; } } }
-          if(dest){ const path=pathFoes(B,u,r0,c0,dest[0],dest[1],x); u.R=dest[0]; u.C=dest[1]; fx(B,u,"돌진","buff"); path.forEach(y=>{ if(y.alive) physHit(B,u,y,physT(B,u,y,0,L(u,[80,120,400])),"s3ayp"); }); }
-          phys(B,u,x,L(u,[190,190,380]),"s3ay"); })); }); } });
-  /* 6) 연희 — 입맞춤 (이전에 입맞춤을 받은 대상이면 강화) */
+          const tR=dest?dest[0]:r0, tC=dest?dest[1]:c0, path=dest?pathFoes(B,u,r0,c0,tR,tC,x):[], n=Math.max(1,Math.max(Math.abs(tR-r0),Math.abs(tC-c0)));
+          V(B,"s3fAyD",u,x,{fR:r0,fC:c0,tR,tC,fl:DUR}); if(dest){ u.R=tR; u.C=tC; }
+          path.forEach(y=>{ const k=Math.max(1,Math.max(Math.abs(Math.round(y.R)-r0),Math.abs(Math.round(y.C)-c0))); q(B,DUR*Math.min(0.95,k/n),()=>{ if(u.alive&&y.alive) nf(B,u,()=>physHit(B,u,y,physT(B,u,y,0,L(u,[80,120,400])),"s3ayp")); }); });
+          q(B,DUR,()=>{ if(u.alive&&x.alive) nf(B,u,()=>phys(B,u,x,L(u,[190,190,380]),"s3ay")); next(); }); };
+        dash(0); };
+      const rec={until:B.t+ST+DUR*(foes(B,u).filter(x=>M[x.uid]).length+1)+0.2}; hold(B,u,rec);
+      if(un){ V(B,"s3fAyS",u,un,{pre:PRE,fl}); q(B,PRE+fl,()=>{ if(un.alive){ M[un.uid]=1; V(B,"s3fAyM",u,un,{dur:120}); } }); }
+      q(B,ST,go); q(B,ST+DUR*(foes(B,u).length+1)+0.3,()=>unhold(u,rec)); } });
+  /* 6) 연희 — 보라-붉은 그라데이션 하트가 잔상을 남기며 날아감 → 도착 시 (마) + 1초 기절 · 강화 시 큰 하트 */
   reg("연희",{ skn:TIP.$.연희.skn, mana:TIP.$.연희.mana, need:1, tip:TIP["연희"],
     init:(B,u)=>{ u.s3yhK={}; },
     ss:(B,u)=>{ H.addMA(u,15); },
-    cast:(B,u,tg)=>{ const K=(u.s3yhK=u.s3yhK||{}), was=!!K[tg.uid]; K[tg.uid]=1; fx(B,tg,was?"강화 입맞춤":"입맞춤","sk5"); magA(B,u,tg,was?L(u,[480,720,1440]):L(u,[275,410,820]),"s3yh"); stun(B,tg,1); } });
-  /* 7) 에이스 — 3칸 내 가장 가까운 적 3명에게 3번 분할 · 생존 적당 마나 환급 · 합주: 입힌 피해 20% 흡혈 */
+    cast:(B,u,tg)=>{ const K=(u.s3yhK=u.s3yhK||{}), was=!!K[tg.uid]; K[tg.uid]=1; const fl=0.2+dstEu(u,tg)*0.05; V(B,"s3fYhK",u,tg,{fl,big:was?1:0});
+      q(B,fl,()=>{ if(!u.alive||!tg.alive) return; nf(B,u,()=>magA(B,u,tg,was?L(u,[480,720,1440]):L(u,[275,410,820]),"s3yh")); stun(B,tg,1); }); } });
+  /* 7) 에이스 — 3칸 내 가장 가까운 적 3명에게 동시에 금빛 베기 3회(0.25초 간격) · 생존 적당 마나 환급 · 합주: 입힌 피해 20% 흡혈 */
   reg("에이스",{ skn:TIP.$.에이스.skn, mana:TIP.$.에이스.mana, need:1, tip:TIP["에이스"],
     ss:(B,u)=>{ H.addHp(u,100); H.addAS(u,10); },
     pick:(B,u)=>byNear(B,u).filter(x=>cheb(x,u)<=3)[0],
-    cast:(B,u)=>{ const T=byNear(B,u).filter(x=>cheb(x,u)<=3).slice(0,3); if(!T.length) return; let tot=0; const GP=0.25; lock(B,u,GP*2+0.1); fx(B,u,"삼중주","sk5");
-      for(let i=0;i<3;i++) q(B,GP*i,()=>{ if(!u.alive) return; T.forEach(x=>{ if(x.alive&&!x.disabled) tot+=phys(B,u,x,L(u,[275,275,550]),"s3ac")||0; });
-        if(i===2){ const sv=T.filter(x=>x.alive).length; if(sv){ AC._mT=B.t; { const l1=u.s1hLock, l2=u.s1lock; u.s1hLock=0; u.s1lock=0; AC.s1MGain(B,u,L(u,[12,12,20])*MA(u)*sv); u.s1hLock=l1; u.s1lock=l2; } fx(B,u,"마나 환급 ×"+sv,"buff"); }
+    cast:(B,u)=>{ const T=byNear(B,u).filter(x=>cheb(x,u)<=3).slice(0,3); if(!T.length) return; let tot=0; const GP=0.25; lock(B,u,GP*2+0.1);
+      for(let i=0;i<3;i++) q(B,GP*i,()=>{ if(!u.alive) return; T.forEach(x=>{ if(x.alive&&!x.disabled){ V(B,"s3fAcS",u,x,{i}); tot+=nf(B,u,()=>phys(B,u,x,L(u,[275,275,550]),"s3ac"))||0; } });
+        if(i===2){ const sv=T.filter(x=>x.alive).length; if(sv){ AC._mT=B.t; { const l1=u.s1hLock, l2=u.s1lock; u.s1hLock=0; u.s1lock=0; AC.s1MGain(B,u,L(u,[12,12,20])*MA(u)*sv); u.s1hLock=l1; u.s1lock=l2; } }
           const e=ensembleLv(B,u); if(e&&tot>0) heal(B,u,tot*0.2*e,"s3ac"); } }); } });
-  /* 8) 리 — 패시브: 2초마다 인접 적 (마) · 사용: 보호막 + 5초 매초 패시브 피해 + 대상 최대 생명력 1% 마법 피해 */
-  { const pulse=(B,u,bonus)=>{ foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>{ magA(B,u,x,L(u,[100,150,1000]),"s3li"); if(bonus&&x.alive) magA(B,u,x,x.maxHp*0.01/MA(u),"s3li"); }); };
+  /* 8) 리 — 패시브: 2초마다 인접 적 (마) + 작고 옅은 검정 파동 · 사용: 보호막 + 5초 매초 검정 파동(인접 1칸) 패시브 피해 + 대상 최대 생명력 1% */
+  { const pulse=(B,u,bonus,big)=>{ V(B,"s3fLiW",u,u,{big:big?1:0}); foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>{ nf(B,u,()=>magA(B,u,x,L(u,[100,150,1000]),"s3li")); if(bonus&&x.alive) nf(B,u,()=>magA(B,u,x,x.maxHp*0.01/MA(u),"s3li")); }); };
     reg("리",{ skn:TIP.$.리.skn, mana:TIP.$.리.mana, tip:TIP["리"],
       init:(B,u)=>{ u.s3liN=2; },
       ss:(B,u)=>{ H.addHp(u,150); },
-      tick:(B,u)=>{ if(B.t>=u.s3liN-1e-9){ u.s3liN+=2; pulse(B,u,!!u.s3ss); } },
-      cast:(B,u)=>{ const g=AC.tShield(B,u,L(u,[600,750,2000])*MA(u),5); fx(B,u,"보호막 +"+Math.round(g||0),"buff"); for(let i=1;i<=5;i++) q(B,i,()=>{ if(u.alive) pulse(B,u,true); }); } }); }
-  /* 9) 유신 — 현재 대상 + 대상과 가장 가까운 적 3명에게 21발(+추가 공속 40%당 1, 슈퍼스타 +3) 분할: 마저 -1 후 (마) */
+      tick:(B,u)=>{ if(B.t>=u.s3liN-1e-9){ u.s3liN+=2; pulse(B,u,!!u.s3ss,false); } },
+      cast:(B,u)=>{ AC.tShield(B,u,L(u,[600,750,2000])*MA(u),5); V(B,"s3fShW",u,u,{dur:5}); for(let i=1;i<=5;i++) q(B,i,()=>{ if(u.alive) pulse(B,u,true,true); }); } }); }
+  /* 9) 유신 — 보라→검정 그라데이션 투사체를 이타노 서커스 곡선으로 나누어 던짐 → 도착 시 마저 -1 후 (마) */
   reg("유신",{ skn:TIP.$.유신.skn, mana:TIP.$.유신.mana, need:1, tip:TIP["유신"],
     ss:()=>{},
-    cast:(B,u,tg)=>{ const list=[tg].concat(foes(B,u).filter(x=>x!==tg).sort((a,b)=>(dstEu(a,tg)-dstEu(b,tg))||(a.uid-b.uid)).slice(0,3)), n=21+Math.floor(Math.max(0,u.asPct||0)/40)+(u.s3ss?3:0), GP=0.05; lock(B,u,GP*n+0.1); fx(B,u,"잉글리쉬 드릴 ×"+n,"sk5");
+    cast:(B,u,tg)=>{ const list=[tg].concat(foes(B,u).filter(x=>x!==tg).sort((a,b)=>(dstEu(a,tg)-dstEu(b,tg))||(a.uid-b.uid)).slice(0,3)), n=21+Math.floor(Math.max(0,u.asPct||0)/40)+(u.s3ss?3:0), GP=0.05, FL=0.35; lock(B,u,GP*n+0.1);
       for(let i=0;i<n;i++) q(B,0.1+GP*i,()=>{ if(!u.alive) return; let x=null; for(let k=0;k<list.length&&!x;k++){ const y=list[(i+k)%list.length]; if(y.alive&&!y.disabled) x=y; } if(!x) return;
-        AC.debuff(B,x,"res",()=>{ if((x.res||0)>0) x.res=Math.max(0,x.res-1); }); magA(B,u,x,L(u,[45,70,225]),"s3ys"); }); } });
-  /* 10) 미스트 — 패시브: 추가 생명력(현재 최대 − 성급 기본)의 3%만큼 공격력 · 사용: 6초 방어·마저 +100, 가장 가까운 적 3번 + 처치 시 1번 추가 */
+        V(B,"s3fYsP",u,x,{fl:FL,i}); q(B,FL,()=>{ if(!u.alive||!x.alive) return; AC.debuff(B,x,"res",()=>{ if((x.res||0)>0) x.res=Math.max(0,x.res-1); }); nf(B,u,()=>magA(B,u,x,L(u,[45,70,225]),"s3ys")); }); }); } });
+  /* 10) 미스트 — 패시브: 추가 생명력의 3%만큼 공격력 · 사용: 6초 방어·마저 +100, 가장 가까운 적 빠르게 3번 내리치며 폭발(0.25초 간격) + 처치 시 1번 추가 */
   reg("미스트",{ skn:TIP.$.미스트.skn, mana:TIP.$.미스트.mana, need:1, tip:TIP["미스트"],
     init:(B,u)=>{ u.s3msA=0; },
     ss:(B,u)=>{ H.addHp(u,150); u.atkPct+=10; },
     tick:(B,u)=>{ const base=(u.s&&u.s.hp)||(u._s1b0&&u._s1b0.hp)||u.maxHp, v=Math.max(0,u.maxHp-base)*0.03; if(Math.abs(v-(u.s3msA||0))>1e-6){ u.yeo=(u.yeo||0)+v-(u.s3msA||0); u.s3msA=v; } },
-    cast:(B,u)=>{ u.def+=100; u.res=(u.res||0)+100; fx(B,u,"방어력·마저 +100","buff"); q(B,6,()=>{ u.def-=100; u.res-=100; });
-      const GP=0.35; let total=3, done=0; lock(B,u,0.1+GP*2);
-      const smash=()=>{ if(!u.alive) return; const x=byNear(B,u)[0]; if(!x) return; fx(B,u,"내려찍기 "+(done+1),"sk5"); phys(B,u,x,L(u,[260,260,525]),"s3ms"); heal(B,u,u.maxHp*0.05,"s3ms"); if(!x.alive){ total++; fx(B,u,"처치! 추가 찍기","buff"); } done++; if(done<total) q(B,GP,smash); };
+    cast:(B,u)=>{ u.def+=100; u.res=(u.res||0)+100; V(B,"s3fShW",u,u,{dur:6}); q(B,6,()=>{ u.def-=100; u.res-=100; });
+      const GP=0.25, HT=0.08; let total=3, done=0; lock(B,u,0.1+GP*2);
+      const smash=()=>{ if(!u.alive) return; const x=byNear(B,u)[0]; if(!x) return; V(B,"s3fMsS",u,x,{fl:HT}); q(B,HT,()=>{ if(!u.alive) return; if(x.alive){ nf(B,u,()=>phys(B,u,x,L(u,[260,260,525]),"s3ms")); heal(B,u,u.maxHp*0.05,"s3ms"); if(!x.alive) total++; } done++; if(done<total) q(B,GP-HT,smash); }); };
       q(B,0.1,smash); } });
-  /* 11) 라이언 — S2 카론 로직: 가장 큰 적 무리 기절 + (마), 회복 = 기본 + 입힌 총 피해 50% */
+  /* 11) 라이언 — S2 카론 로직: 가장 큰 적 무리 기절 + (마), 회복 = 기본 + 입힌 총 피해 50% · 판정 3×3 유지, 연출은 검붉은 직사각형 할퀴기 */
   reg("라이언",{ skn:TIP.$.라이언.skn, mana:TIP.$.라이언.mana, need:1, tip:TIP["라이언"],
     ss:(B,u)=>{ H.addHp(u,100); if(u.s1mMax>0) u.s1mMax=Math.max(1,u.s1mMax-25); },
-    cast:(B,u)=>{ const F=foes(B,u); if(!F.length) return; const c=F.map(x=>({x,n:F.filter(y=>cheb(x,y)<=1).length})).sort((a,b)=>b.n-a.n||(AC.dist(a.x,u)-AC.dist(b.x,u)))[0].x, R0=c.R, C0=c.C; fx(B,u,"악마의 휘몰이","sk5");
-      q(B,0.45,()=>{ if(!u.alive) return; const o={R:c.alive?c.R:R0,C:c.alive?c.C:C0}; let tot=0; foes(B,u).filter(x=>cheb(x,o)<=1).forEach(x=>{ tot+=magA(B,u,x,L(u,[150,225,1200]),"s3ry")||0; stun(B,x,L(u,[1.75,2,8])); });
+    cast:(B,u)=>{ const F=foes(B,u); if(!F.length) return; const c=F.map(x=>({x,n:F.filter(y=>cheb(x,y)<=1).length})).sort((a,b)=>b.n-a.n||(AC.dist(a.x,u)-AC.dist(b.x,u)))[0].x, R0=Math.round(c.R), C0=Math.round(c.C); V(B,"s3fRyC",u,c,{dl:0.45});
+      q(B,0.45,()=>{ if(!u.alive) return; const o=c.alive?{R:Math.round(c.R),C:Math.round(c.C)}:{R:R0,C:C0}; let tot=0; foes(B,u).filter(x=>cheb(x,o)<=1).forEach(x=>{ tot+=nf(B,u,()=>magA(B,u,x,L(u,[150,225,1200]),"s3ry"))||0; stun(B,x,L(u,[1.75,2,8])); });
         heal(B,u,L(u,[250,300,600])*MA(u)+tot*0.5,"s3ry"); }); } });
-  /* 12) 녹스 — 패시브: 치명타 확률에 비례해 마법공격력 (치확 1%당 +0.5) · 사용: 생명력 낮은 적 4/4/6명 치명타 (마) + 전투 끝까지 마법공격력 +40% (사용마다 중첩) */
+  /* 12) 녹스 — 패시브: 치명타 확률에 비례해 마법공격력 · 사용: 생명력 낮은 적 4/4/6명(시전 시 고정)에 검붉은 섬광이 위에서 천천히 꽂힘 → 1.5초 뒤 폭발하며 일괄 치명타 (마) · 마법공격력 +40% 즉시 */
   reg("녹스",{ skn:TIP.$.녹스.skn, mana:TIP.$.녹스.mana, need:1, tip:TIP["녹스"],
     init:(B,u)=>{ u.s3nxA=0; },
     ss:(B,u)=>{ H.addMA(u,15); },
     tick:(B,u)=>{ const v=Math.min(100,Math.max(0,u.crit||0))*0.5; if(Math.abs(v-(u.s3nxA||0))>1e-6){ H.addMA(u,v-(u.s3nxA||0)); u.s3nxA=v; } },
-    cast:(B,u)=>{ const n=Math.round(L(u,[4,4,6])), T=foes(B,u).sort((a,b)=>(a.hp-b.hp)||(a.uid-b.uid)).slice(0,n); fx(B,u,"메탈 신봉자","sk5");
-      T.forEach(x=>magCk(B,u,x,L(u,[160,240,540]),"s3nx",true)); H.addMA(u,40); fx(B,u,"마법공격력 +40%","buff"); } });
-  /* 13) 멜키르 — 근처 칸 찍기: 2칸 내 (물) + 5×(1+마공)초 표식(받는 모든 피해 +10%) · 표식 적 기본 공격은 강화 (물) */
+    cast:(B,u)=>{ const n=Math.round(L(u,[4,4,6])), T=foes(B,u).sort((a,b)=>(a.hp-b.hp)||(a.uid-b.uid)).slice(0,n), DL=1.5; T.forEach(x=>V(B,"s3fNxB",u,x,{dur:DL}));
+      H.addMA(u,40); q(B,DL,()=>{ T.forEach(x=>{ if(x.alive) nf(B,u,()=>magCk(B,u,x,L(u,[160,240,540]),"s3nx",true)); }); }); } });
+  /* 13) 멜키르 — 위로 떴다가 대상 칸으로 대각선 내리꽂힘(연출만, 원위치 복귀) → 착지 시 2칸 내 (물) + 붉은 폭발·파편 + 검붉은 십자가 표식 5×(1+마공)초(받는 모든 피해 +10%) · 표식 적 기본 공격 강화 */
   reg("멜키르",{ skn:TIP.$.멜키르.skn, mana:TIP.$.멜키르.mana, need:1, tip:TIP["멜키르"],
     ss:(B,u)=>{ H.addHp(u,150); u.atkPct+=10; },
     pre:(B,u,t,d)=>{ if(t&&t.s3mkU===u.uid&&B.t<t.s3mkE) return d*L(u,[185,185,370])/100; return null; },
-    cast:(B,u,tg)=>{ fx(B,u,"찍기","sk5"); const dur=5*MA(u); foes(B,u).filter(x=>cheb(x,tg)<=2).forEach(x=>{ phys(B,u,x,L(u,[225,225,450]),"s3mk"); if(x.alive){ x.s3mkE=B.t+dur; x.s3mkU=u.uid; fx(B,x,"표식 "+Math.round(dur*10)/10+"초","dis"); } }); } });
+    cast:(B,u,tg)=>{ const LD=0.3, R0=Math.round(tg.R), C0=Math.round(tg.C), rec={until:B.t+LD+0.3}; hold(B,u,rec); V(B,"s3fMkJ",u,tg,{land:LD,R:R0,C:C0});
+      q(B,LD,()=>{ if(u.alive){ const o={R:R0,C:C0}, dur=5*MA(u); foes(B,u).filter(x=>cheb(x,o)<=2).forEach(x=>{ nf(B,u,()=>phys(B,u,x,L(u,[225,225,450]),"s3mk")); if(x.alive){ x.s3mkE=B.t+dur; x.s3mkU=u.uid; V(B,"s3fMkX",u,x,{dur}); } }); } });
+      q(B,LD+0.3,()=>unhold(u,rec)); } });
   /* 멜키르 표식: 표식이 남은 적이 받는 모든 피해 +10% (아군이 가하는 피해) */
   { const o=AC.applyDmg; AC.applyDmg=function(B,a,t,d,op){ try{ if(t&&t.s3mkE&&B.t<t.s3mkE&&a&&a.side!==t.side&&d>0) d*=1.1; }catch(e){} return o.call(this,B,a,t,d,op); }; }
   /* S3 4코스트 스킬 아이콘 (사용자 선택 pt1958u · 세나링크 원작 아이콘 72px webp · gen_t4.py 가 src/t4_icons.json 에서 주입) */
