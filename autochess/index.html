@@ -17921,7 +17921,7 @@ window.S3AUGL=[
   const MUZ=PX.ORCA_IMG&&PX.ORCA_IMG.muzzle;
   const load=function(){ const S=this.scene; if(!S||S._s3fL) return; S._s3fL=1; const M=SRC();
     for(const k in M){ const im=new Image(); im.onload=()=>{ const TX=this.scene&&this.scene.textures; if(!TX) return; if(!TX.exists("s3f_"+k)) TX.addImage("s3f_"+k,im);
-      { /* Canvas 렌더러는 setTint 미지원 → 픽셀 재채색 사본 (파이 보라 · 파스칼 금 · 실비아 흑보라) */ const RC={hring:[["P",[170,80,255]],["G",[255,200,60]]],naura:[["G",[255,205,70]]],sil:[["P",[160,70,255]]],bolt:[["G",[255,215,80]]],orb:[["K",[95,30,150]]]}[k]||[];
+      { /* Canvas 렌더러는 setTint 미지원 → 픽셀 재채색 사본 (파이 보라 · 파스칼 금 · 실비아 흑보라) */ const RC={hring:[["P",[170,80,255]],["G",[255,200,60]]],naura:[["G",[255,205,70]],["B",[70,150,255]]],sil:[["P",[160,70,255]]],bolt:[["G",[255,215,80]]],orb:[["K",[95,30,150]],["R",[150,10,25]],["B",[60,140,255]],["G",[255,200,60]]],shard:[["R",[170,15,30]]],zring:[["G",[255,205,70]]]}[k]||[];
         for(const [sf,[r0,g0,b0]] of RC){ if(TX.exists("s3f_"+k+sf)) continue; const c=document.createElement("canvas"); c.width=im.width; c.height=im.height; const g=c.getContext("2d"); g.drawImage(im,0,0); const D=g.getImageData(0,0,c.width,c.height), d=D.data;
           for(let i=0;i<d.length;i+=4){ const l=Math.max(d[i],d[i+1],d[i+2])/255, w=sf==="K"?0:Math.max(0,l-0.85)*4; d[i]=Math.min(255,r0*l+255*w); d[i+1]=Math.min(255,g0*l+255*w); d[i+2]=Math.min(255,b0*l+255*w); } g.putImageData(D,0,0); TX.addCanvas("s3f_"+k+sf,c); } }
       if((k==="tx"||k==="trail")&&!TX.exists("s3f_"+k+"B")){ /* 선란 푸른 베기: 원본 밝기를 유지한 채 청색 계열로 재채색 */ const c=document.createElement("canvas"); c.width=im.width; c.height=im.height; const g=c.getContext("2d"); g.drawImage(im,0,0); const D=g.getImageData(0,0,c.width,c.height), d=D.data;
@@ -18011,6 +18011,36 @@ window.S3AUGL=[
         const b=S.add.graphics().setDepth(41).setPosition(bx,by); b.fillStyle(0xff8a20,0.8).fillCircle(0,0,m*0.18).fillStyle(0xffe0a0,0.9).fillCircle(0,0,m*0.08); T.add({targets:b,scale:2.2,alpha:0,duration:260*sl,ease:"Quad.easeOut",onComplete:()=>b.destroy()}); }}); return; }
     if(id==="s3fBi"){ pop(img("pierce",bx,by,1.5,40),{s0:0.3,s1:1.3,d1:110,hold:60,d2:220}); const r=img("hring",bx,by,1,38); if(r){ r.setTint(0xffc070); pop(r,{s0:0.3,s1:1.8,a1:0.8,d1:220,hold:0,d2:200}); } if(!light) S.cameras.main.shake(180*sl,0.007); return; }
     if(id==="s3fBiD"){ const g=img("mark",bx-m*0.32,by-m*0.32,0.32,45); if(!g) return; g.setAlpha(0.85); follow(g,e.b,e.dur||3,-0.32); return; }
+    /* ===== S3 2코스트 전용 연출 ===== */
+    if(id==="s3fKaJ"){ /* 카르마 포물선 도약 */ const U=this.units&&this.units[e.a]; const [fx0,fy0]=this.px(e.fR,e.fC), D=(e.dur||0.3)*1000*sl;
+      if(U&&U.body){ const o={k:0}; T.add({targets:o,k:1,duration:D,ease:"Linear",onUpdate:()=>{ if(U.body) U.body.y=-Math.sin(Math.PI*o.k)*m*0.9; },onComplete:()=>{ if(U.body) U.body.y=0; }}); }
+      for(let i=1;i<=5;i++){ const k=i/6, x=fx0+(bx-fx0)*k, y=fy0+(by-fy0)*k-Math.sin(Math.PI*k)*m*0.9, d=img("nauraG",x,y,0.35,38); if(d){ d.setAlpha(0); T.add({targets:d,alpha:{from:0.7,to:0},delay:D*k,duration:240*sl,onComplete:()=>d.destroy()}); } }
+      S.time.delayedCall(D,()=>{ pop(img("zringG",ax,ay,1.2,39),{s0:0.3,s1:1.2,a1:0.8,d1:140,hold:0,d2:180}); if(!light) S.cameras.main.shake(100*sl,0.004); }); return; }
+    if(id==="s3fKaS"){ /* 카르마 초상화 위 금강전 회전 0.3초 */ const g=img("kgsw",ax,ay,1.4,43); if(!g) return; const D=(e.dur||0.3)*1000*sl; g.setAlpha(1);
+      T.add({targets:g,angle:720,duration:D,ease:"Linear",onUpdate:()=>{ const v=unit(e.a); if(v){ const [x,y]=this.px(v.R,v.C); g.setPosition(x,y); } },onComplete:()=>T.add({targets:g,alpha:0,scale:g.scaleX*1.3,duration:120*sl,onComplete:()=>g.destroy()})}); return; }
+    if(id==="s3fKaB"){ /* 회전 종료: 인접 일괄 타격 고리 + 자신 강화 기운 */ const r=img("hringG",ax,ay,0.5,39); if(r){ const k=m*3.2/Math.max(r.frame.width,r.frame.height); T.add({targets:r,scaleX:k,scaleY:k,alpha:{from:1,to:0},duration:300*sl,ease:"Quad.easeOut",onComplete:()=>r.destroy()}); }
+      const au=img("nauraG",ax,ay,1.3,37); if(au){ au.setAlpha(0); T.add({targets:au,alpha:{from:0.85,to:0},scale:au.scaleX*1.25,duration:700*sl,ease:"Quad.easeOut",onUpdate:()=>{ const v=unit(e.a); if(v){ const [x,y]=this.px(v.R,v.C); au.setPosition(x,y); } },onComplete:()=>au.destroy()}); }
+      for(let n=0;n<6;n++){ const a=n/6*6.283, sp=img("shard",ax,ay,0.2,42); if(!sp) break; sp.setRotation(a+Math.PI/2); T.add({targets:sp,x:ax+Math.cos(a)*m*0.9,y:ay+Math.sin(a)*m*0.9,alpha:0,duration:260*sl,onComplete:()=>sp.destroy()}); } return; }
+    if(id==="s3fBrA"){ /* 블랙로즈 검붉은 굵은 구 탄환 */ const D=(e.fl||0.3)*1000*sl, o=img("orbR",ax,ay,0.62,41); if(!o) return;
+      T.add({targets:o,x:bx,y:by,angle:540,duration:D,ease:"Linear",onComplete:()=>{ o.destroy(); pop(img("orbR",bx,by,0.9,41),{s0:0.5,s1:1.4,a1:0.9,d1:90,hold:0,d2:160}); }}); return; }
+    if(id==="s3fBrB"){ /* 피격: 인접 적 쪽으로 파편 + 탄환이 이어 날아감 */ const D=(e.fl||0.2)*1000*sl;
+      (e.to||[]).forEach(([R,C])=>{ const [x,y]=this.px(R,C), a=Math.atan2(y-by,x-bx);
+        for(let n=0;n<3;n++){ const sp=img("shardR",bx,by,0.24,42); if(!sp) break; const aa=a+(n-1)*0.3; sp.setRotation(aa+Math.PI/2); T.add({targets:sp,x:bx+Math.cos(aa)*m*0.6,y:by+Math.sin(aa)*m*0.6,alpha:0,duration:220*sl,onComplete:()=>sp.destroy()}); }
+        const o=img("orbR",bx,by,0.45,41); if(o) T.add({targets:o,x,y,angle:360,duration:D,ease:"Linear",onComplete:()=>{ o.destroy(); pop(img("orbR",x,y,0.7,41),{s0:0.5,s1:1.3,a1:0.85,d1:80,hold:0,d2:150}); }}); }); return; }
+    if(id==="s3fLi"){ /* 린: 푸른 오오라 휘감긴 마법 구체 포물선 투척 */ const D=(e.fl||0.5)*1000*sl, sc=e.sm?0.75:1, o=img("orbB",ax,ay,0.5*sc,41), au=img("nauraB",ax,ay,0.95*sc,40); const ob={k:0};
+      T.add({targets:ob,k:1,duration:D,ease:"Linear",onUpdate:()=>{ const k=ob.k, x=ax+(bx-ax)*k, y=ay+(by-ay)*k-Math.sin(Math.PI*k)*m*1.4; if(o) o.setPosition(x,y).setAngle(k*500); if(au) au.setPosition(x,y).setAngle(-k*400); },
+        onComplete:()=>{ if(o) o.destroy(); if(au) au.destroy(); pop(img("nauraB",bx,by,1.6*sc,40),{s0:0.3,s1:1.2,a1:0.9,d1:120,hold:30,d2:220}); }}); return; }
+    if(id==="s3fRuD"){ /* 루리 돌진 잔상 */ const [x1,y1]=this.px(e.tR,e.tC); for(let i=0;i<4;i++){ const k=i/4, d=img("nauraB",ax+(x1-ax)*k,ay+(y1-ay)*k,0.5,36); if(d) T.add({targets:d,alpha:{from:0.6,to:0},duration:220*sl,delay:i*25*sl,onComplete:()=>d.destroy()}); } return; }
+    if(id==="s3fRuC"){ /* 0.15초 차징 */ const g=img("orbB",ax,ay,0.2,42); if(g){ T.add({targets:g,scaleX:g.scaleX*2.4,scaleY:g.scaleY*2.4,alpha:{from:0.5,to:1},duration:(e.dur||0.15)*1000*sl,onUpdate:()=>{ const v=unit(e.a); if(v){ const [x,y]=this.px(v.R,v.C); g.setPosition(x,y); } },onComplete:()=>g.destroy()}); } return; }
+    if(id==="s3fRuM"){ /* 푸른 미사일 2발: 일직선 진행하며 서로 회전 + 잔상 꼬리 */ const D=(e.fl||0.26)*1000*sl, dx=bx-ax, dy=by-ay, L0=Math.hypot(dx,dy)||1, nx=-dy/L0, ny=dx/L0, ob={k:0};
+      const M=[0,1].map(()=>{ const g=S.add.graphics().setDepth(42); g.fillStyle(0x2a6cff,1).fillCircle(0,0,5).fillStyle(0xbfe0ff,1).fillCircle(0,0,2.2); return g; }), tr=S.add.graphics().setDepth(41), P=[[],[]];
+      T.add({targets:ob,k:1,duration:D,ease:"Linear",onUpdate:()=>{ const k=ob.k; tr.clear(); M.forEach((g,i)=>{ const w=Math.sin(k*Math.PI*4+(i?Math.PI:0))*m*0.16, x=ax+dx*k+nx*w, y=ay+dy*k+ny*w; g.setPosition(x,y); P[i].push([x,y]); if(P[i].length>9) P[i].shift();
+          P[i].forEach((p,j)=>{ tr.fillStyle(0x4a9cff,0.08+0.06*j).fillCircle(p[0],p[1],1.5+0.35*j); }); }); },
+        onComplete:()=>{ M.forEach(g=>g.destroy()); tr.destroy(); pop(img("orbB",bx,by,0.8,42),{s0:0.4,s1:1.3,a1:0.95,d1:80,hold:0,d2:170}); }}); return; }
+    if(id==="s3fBgT"){ /* 백각: 금빛 오오라 투사체 → 대상 칸 */ const D=(e.fl||0.35)*1000*sl, o=img("orbG",ax,ay,0.45,41), au=img("nauraG",ax,ay,0.8,40);
+      T.add({targets:[o,au].filter(Boolean),x:bx,y:by,duration:D,ease:"Quad.easeIn",onComplete:()=>{ if(o) o.destroy(); if(au) au.destroy(); }}); return; }
+    if(id==="s3fBgW"){ /* 금빛 파동 (3회) */ for(let n=0;n<2;n++){ const r=img("hringG",bx,by,0.35,38); if(!r) break; const k=m*3.3/Math.max(r.frame.width,r.frame.height); r.setAlpha(0); T.add({targets:r,scaleX:k,scaleY:k,alpha:{from:1,to:0},delay:n*80*sl,duration:420*sl,ease:"Quad.easeOut",onComplete:()=>r.destroy()}); }
+      pop(img("nauraG",bx,by,1.0,37),{s0:0.4,s1:1.2,a1:0.7,d1:110,hold:0,d2:260}); return; }
     if(id==="s3fDe"){ /* 델론즈: 푸른 베기만 · 공격 속도 보너스 0→160%+ 에 따라 1→5겹, 겹마다 각도·크기·밝기 증가 */
       const n=Math.max(1,Math.min(5,1+Math.floor((e.as||0)/40))), sd=e.sd?1:-1;
       for(let i=0;i<n;i++){ const k=i/4, t=img("trailB",bx,by,1.25+0.22*i,41+i); if(!t) break; t.setRotation(ang+Math.PI/2+sd*(i%2?-1:1)*(0.25+0.42*i)).setAlpha(0);
@@ -18033,45 +18063,55 @@ window.S3AUGL=[
   const leapAdj=(B,u,t0,txt)=>{ if(!t0||cheb(u,t0)<=1) return false; let best=null,bd=1e9; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const R=Math.round(t0.R)+dr, c=Math.round(t0.C)+dc; if(!freeC(B,R,c)) continue; const d=Math.abs(R-u.R)+Math.abs(c-u.C); if(d<bd){ bd=d; best=[R,c]; } }
     if(best){ u.R=best[0]; u.C=best[1]; fx(B,u,txt||"도약","buff"); return true; } return false; };
   const q=(B,dt,fn)=>S3.q(B,B.t+dt,fn);
+  /* 전용 연출 이벤트(s3n_t1fx.js) · nf: 그 안에서 난 피격은 기본 투사체/베기선 없이 숫자만 */
+  const V=(B,id,u,t,o)=>{ B.events.push(Object.assign({k:"sk3",id,a:u.uid,aR:u.R,aC:u.C,b:t?t.uid:null,R:t?t.R:u.R,C:t?t.C:u.C},o||{})); };
+  const nf=(B,u,fn)=>{ const n0=B.events.length; const r=fn(); for(let j=n0;j<B.events.length;j++){ const h=B.events[j]; if(h.k==="hit"&&h.a===u.uid){ h.s3nofx=1; h.pd=0; } } return r; };
 
   /* 1) 손오공 */ reg("손오공",{ skn:"럼블 베이스 강화", mana:[40,90], tip:TIP["손오공"],
     ss:(B,u)=>H.addHp(u,350), init:(B,u)=>{ u.s3sgC=0; },
     cast:(B,u)=>{ const g=Math.round(L(u,[215,245,275])*MA(u)); H.addHp(u,g); fx(B,u,"최대 생명력 +"+g,"buff"); u.s3sgC=(u.s3sgC||0)+1; fx(B,u,"다음 공격 강화","buff"); },
-    atk:(B,u,t)=>{ if(!(u.s3sgC>0)||!t||!t.alive) return; u.s3sgC--; physHit(B,u,t,physT(B,u,t,160,u.maxHp*0.10/MA(u)),"s3sg"); } });
+    atk:(B,u,t)=>{ if(!(u.s3sgC>0)||!t||!t.alive) return; u.s3sgC--; const tid=t.uid; B.events.push({k:"sk3",id:"s1wkClone",a:u.uid,b:t.uid,R:t.R,C:t.C,aR:u.R,aC:u.C,i:0});   /* S1 오공 분신(근두운)→여의봉 내려치기 연출 · 0.3초 뒤 타격 시 피해 */
+      q(B,0.3,()=>{ const x=B.units.find(v=>v.uid===tid&&v.alive); if(!x||!u.alive) return; nf(B,u,()=>physHit(B,u,x,physT(B,u,x,160,u.maxHp*0.10/MA(u)),"s3sg")); }); } });
   /* 2) 카르마 */ reg("카르마",{ skn:"금강전 재주넘기", mana:[50,120], need:1, tip:TIP["카르마"],
     pick:(B,u)=>foes(B,u).filter(x=>cheb(x,u)<=1+(u.range||1)).sort((a,b)=>(b.hp-a.hp)||(a.uid-b.uid))[0],
     ss:(B,u)=>{ H.addHp(u,200); H.addMA(u,20); },
-    cast:(B,u,tg)=>{ leapAdj(B,u,tg); magA(B,u,tg,L(u,[240,360,560]),"s3ka");
-      q(B,0.75,()=>{ if(!u.alive) return; fx(B,u,"금강전 회전","sk5"); foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>magA(B,u,x,L(u,[140,210,315]),"s3ka")); u.atkPct+=10; H.addMA(u,10); fx(B,u,"공격력·마공 +10%","buff"); }); } });   /* 원문 순서: 도약 → 회전 → 전투 종료까지 +10% (시전마다 누적) */
+    cast:(B,u,tg)=>{ const fR=u.R, fC=u.C, tid=tg.uid; leapAdj(B,u,tg); V(B,"s3fKaJ",u,tg,{fR,fC,dur:0.3});   /* 포물선 도약 0.3초 → 착지 시 도약 피해 → 금강전 0.3초 회전 → 인접 일괄 피해 + 강화 */
+      q(B,0.3,()=>{ if(!u.alive) return; const t=B.units.find(v=>v.uid===tid&&v.alive); if(t) nf(B,u,()=>magA(B,u,t,L(u,[240,360,560]),"s3ka")); V(B,"s3fKaS",u,u,{dur:0.3}); });
+      q(B,0.6,()=>{ if(!u.alive) return; V(B,"s3fKaB",u,u); nf(B,u,()=>foes(B,u).filter(x=>cheb(x,u)<=1).forEach(x=>magA(B,u,x,L(u,[140,210,315]),"s3ka"))); u.atkPct+=10; H.addMA(u,10); }); } });   /* 원문 순서: 도약 → 회전 → 전투 종료까지 +10% (시전마다 누적) */
   /* 3) 블랙로즈 */ reg("블랙로즈",{ skn:"위험한 앙상블", mana:[40,135], need:1, tip:TIP["블랙로즈"],
     ss:(B,u)=>{ u.atkPct+=20; },
-    cast:(B,u,tg)=>{ const adj=foes(B,u).filter(x=>x!==tg&&cheb(x,tg)<=1); phys(B,u,tg,725,"s3br"); const died=!tg.alive;
-      adj.forEach(x=>{ if(x.alive) phys(B,u,x,72.5*MA(u),"s3br"); });          /* 인접: 725%의 10% × (1+마공/100) = 물리(방어력만) */
-      if(died) adj.forEach(x=>{ if(x.alive) stun(B,x,L(u,[1.5,1.5,2])); }); } });
+    cast:(B,u,tg)=>{ const tid=tg.uid; V(B,"s3fBrA",u,tg,{fl:0.3});   /* 검붉은 구 탄환 0.3초 비행 → 본체 피격 → 인접 적에게 파편·탄환 0.2초 → 인접 피해(·기절) */
+      q(B,0.3,()=>{ if(!u.alive) return; const t=B.units.find(v=>v.uid===tid&&v.alive); if(!t) return; const adj=foes(B,u).filter(x=>x!==t&&cheb(x,t)<=1); nf(B,u,()=>phys(B,u,t,725,"s3br")); const died=!t.alive;
+        V(B,"s3fBrB",u,t,{to:adj.map(x=>[x.R,x.C]),fl:0.2}); const ids=adj.map(x=>x.uid);
+        q(B,0.2,()=>{ ids.forEach(id=>{ const x=B.units.find(v=>v.uid===id&&v.alive); if(!x) return; nf(B,u,()=>phys(B,u,x,72.5*MA(u),"s3br")); if(died&&x.alive) stun(B,x,L(u,[1.5,1.5,2])); }); }); }); } });   /* 인접: 725%의 10% × (1+마공/100) = 물리(방어력만) · 원 대상 사망 시 인접 기절 */
   /* 4) 린 */ (()=>{ const best=(B,u,ex)=>{ let b=null; const U=B.units.filter(x=>x.alive&&x!==u&&!x.disabled&&!x.s3horse);
       for(const c of U){ if(ex&&ex.some(e=>e[0]===Math.round(c.R)&&e[1]===Math.round(c.C))) continue; if(cheb(c,u)>(u.range||1)) continue; if(c.side!==u.side&&(c.disabled||(c.untg&&B.t<c.untg))) continue;
         const A=U.filter(x=>cheb(x,c)<=1), n=A.length, e=A.filter(x=>x.side!==u.side&&!(x.untg&&B.t<x.untg)).length; if(!e) continue; const k=[n,e,-AC.dist(c,u),-c.uid]; if(!b||k[0]>b.k[0]||(k[0]===b.k[0]&&(k[1]>b.k[1]||(k[1]===b.k[1]&&(k[2]>b.k[2]||(k[2]===b.k[2]&&k[3]>b.k[3])))))) b={c:rc(c),k}; } return b&&b.c; };
-    const volley=(B,u,c,m)=>{ fx(B,u,"하이노트","sk5"); foes(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>magA(B,u,x,L(u,[140,210,315])*m,"s3li"));
+    const volley0=(B,u,c,m)=>{ foes(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>magA(B,u,x,L(u,[140,210,315])*m,"s3li"));
       allyOf(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>heal(B,x,L(u,[80,120,160])*MA(u)*m,"s3li")); };
+    /* 푸른 오오라 마법 구체를 포물선으로 0.5초 투척 → 낙하 시 피해·회복 */
+    const volley=(B,u,c,m)=>{ B.events.push({k:"sk3",id:"s3fLi",a:u.uid,aR:u.R,aC:u.C,b:null,R:c[0],C:c[1],fl:0.5,sm:m<1?1:0}); q(B,0.5,()=>{ if(u.alive) nf(B,u,()=>volley0(B,u,c,m)); }); };
     reg("린",{ skn:"하이노트", mana:[0,60], need:1, tip:TIP["린"], pick:(B,u)=>best(B,u), ss:()=>{},
       cast:(B,u,c)=>{ volley(B,u,c,1); if(u.s3ss&&u.s3n%2===0) q(B,0.4,()=>{ if(!u.alive) return; const c2=best(B,u,[c])||best(B,u); if(c2) volley(B,u,c2,0.4); }); } }); })();
   /* 5) 루리 */ reg("루리",{ skn:"저돌적 보컬", mana:[0,30], need:1, tip:TIP["루리"],
     ss:(B,u)=>{ u.atkPct+=25; u.s3ruN=4; }, init:(B,u)=>{ u.s3ruN=2; },
     cast:(B,u,tg)=>{ const N=u.s3ruN||2, adjE=foes(B,u).some(x=>cheb(x,u)<=1); let best=null,bk=null; const r0=Math.round(u.R), c0=Math.round(u.C), F=foes(B,u);
       for(let dr=-N;dr<=N;dr++) for(let dc=-N;dc<=N;dc++){ if(!dr&&!dc) continue; const R=r0+dr, c=c0+dc; if(!freeC(B,R,c)) continue; const st=Math.max(Math.abs(dr),Math.abs(dc));
-        const k=adjE?[Math.min(...F.map(x=>cdist(R,c,x))),-st,0]:[-Math.max(1,cdist(R,c,tg)),-Math.hypot(R-tg.R,c-tg.C),-st]; if(!bk||k[0]>bk[0]||(k[0]===bk[0]&&(k[1]>bk[1]||(k[1]===bk[1]&&k[2]>bk[2])))){ bk=k; best=[R,c]; } }
-      if(best&&(adjE||cdist(best[0],best[1],tg)<cheb(u,tg))){ u.R=best[0]; u.C=best[1]; fx(B,u,"돌진","buff"); }   /* 적이 인접: 빈칸으로 돌진 · 아니면 대상 쪽으로 최대 N칸 */
-      q(B,0.25,()=>{ if(!u.alive) return; const t=(tg&&tg.alive&&!tg.disabled)?tg:target(B,u); if(!t) return; fx(B,u,"미사일","sk5"); const o=[Math.round(u.R),Math.round(u.C)], d=Math.max(1,cheb(u,t));
-        q(B,0.08*d,()=>{ const tt=t.alive?t:target(B,u); if(!tt) return; const e=[Math.round(tt.R),Math.round(tt.C)], n=Math.max(1,Math.max(Math.abs(e[0]-o[0]),Math.abs(e[1]-o[1]))); let hit=null;
-          for(let i=1;i<=n&&!hit;i++){ const R=Math.round(o[0]+(e[0]-o[0])*i/n), c=Math.round(o[1]+(e[1]-o[1])*i/n); hit=foes(B,u).find(x=>Math.round(x.R)===R&&Math.round(x.C)===c); }
-          hit=hit||tt; physHit(B,u,hit,physT(B,u,hit,L(u,[290,290,300]),L(u,[40,60,90])),"s3ru"); }); }); } });
+        if(!adjE&&dr!==0) continue; const rg=u.range||1, dT=cdist(R,c,tg); if(!adjE&&dT>rg) continue;   /* 인접 적 없음: 좌우로만, 대상과 사거리 이내 최대 거리 유지 */
+        const k=adjE?[Math.min(...F.map(x=>cdist(R,c,x))),-st,0]:[dT,-Math.abs(dc),0]; if(!bk||k[0]>bk[0]||(k[0]===bk[0]&&(k[1]>bk[1]||(k[1]===bk[1]&&k[2]>bk[2])))){ bk=k; best=[R,c]; } }
+      if(best){ V(B,"s3fRuD",u,u,{tR:best[0],tC:best[1]}); u.R=best[0]; u.C=best[1]; }   /* 적이 인접: 탈출 돌진 · 아니면 대상과 최대 사거리를 유지하며 좌우로 최대 N칸 */
+      V(B,"s3fRuC",u,u,{dur:0.15});   /* 0.15초 차징 → 푸른 미사일 2발(서로 회전·잔상) 칸당 0.13초 → 경로상 처음 적중한 적 */
+      q(B,0.15,()=>{ if(!u.alive) return; const t=(tg&&tg.alive&&!tg.disabled)?tg:target(B,u); if(!t) return; const o=[Math.round(u.R),Math.round(u.C)], e=[Math.round(t.R),Math.round(t.C)], n=Math.max(1,Math.max(Math.abs(e[0]-o[0]),Math.abs(e[1]-o[1]))); let hit=null, hi=n;
+        for(let i=1;i<=n&&!hit;i++){ const R=Math.round(o[0]+(e[0]-o[0])*i/n), c=Math.round(o[1]+(e[1]-o[1])*i/n); hit=foes(B,u).find(x=>Math.round(x.R)===R&&Math.round(x.C)===c); if(hit) hi=i; }
+        hit=hit||t; const fl=0.13*Math.max(1,hi), hid=hit.uid; V(B,"s3fRuM",u,hit,{fl});
+        q(B,fl,()=>{ const x=B.units.find(v=>v.uid===hid&&v.alive); if(!x||!u.alive) return; nf(B,u,()=>physHit(B,u,x,physT(B,u,x,L(u,[290,290,300]),L(u,[40,60,90])),"s3ru")); }); }); } });
   /* 6) 백각 */ reg("백각",{ skn:"환상적 스케일 폭탄", mana:[30,90], need:1, tip:TIP["백각"],
     ss:(B,u)=>H.addMA(u,5),
     init:(B,u)=>{ const e=ensembleLv(B,u); if(e&&u.s1mMax){ u.s1mMax=Math.max(1,u.s1mMax-15*e); u.mana=Math.min(u.mana||0,u.s1mMax); } },
-    cast:(B,u,tg)=>{ const c=rc(tg);
-      for(let k=0;k<3;k++){ const wave=()=>{ if(!u.alive) return; fx(B,u,"파동 "+(k+1),"sk5"); const n=u.s3ss?k+1:1;
-          for(let h=0;h<n;h++) foes(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>magA(B,u,x,L(u,[110,165,255]),"s3bg")); };
-        if(k===0) wave(); else q(B,k,wave); } } });
+    cast:(B,u,tg)=>{ const c=rc(tg), FL=0.35; B.events.push({k:"sk3",id:"s3fBgT",a:u.uid,aR:u.R,aC:u.C,b:null,R:c[0],C:c[1],fl:FL});   /* 금빛 오오라 투사체 0.35초 → 대상 칸에서 2초에 걸쳐 금빛 파동 3회 */
+      for(let k=0;k<3;k++){ const wave=()=>{ if(!u.alive) return; B.events.push({k:"sk3",id:"s3fBgW",a:u.uid,aR:u.R,aC:u.C,b:null,R:c[0],C:c[1],i:k}); const n=u.s3ss?k+1:1;
+          nf(B,u,()=>{ for(let h=0;h<n;h++) foes(B,u).filter(x=>Math.max(Math.abs(Math.round(x.R)-c[0]),Math.abs(Math.round(x.C)-c[1]))<=1).forEach(x=>magA(B,u,x,L(u,[110,165,255]),"s3bg")); }); };
+        q(B,FL+k,wave); } } });
   /* 7) 아리스 */ reg("아리스",{ skn:"댄스 타임", mana:[40,80], tip:TIP["아리스"],
     red:(B,t)=>t.s3ss?10:0, ss:(B,u)=>{ u.ampAll=(u.ampAll||0)+18; },
     cast:(B,u)=>{ const tot=L(u,[500,575,650]); for(let i=1;i<=4;i++) q(B,0.5*i,()=>{ if(u.alive) heal(B,u,tot/4,"s3ar"); });
